@@ -23,6 +23,8 @@
 		connection.set(null);
 	}
 
+	export let anchor: HTMLDivElement;
+
 	let menu: Menu;
 </script>
 
@@ -31,7 +33,13 @@
 		<Icon class="material-icons" aria-label="Wallet">wallet</Icon>
 		<Label>{$shortAddress}</Label>
 	</Button>
-	<Menu bind:this={menu} class="menu-floating">
+	<Menu
+		bind:this={menu}
+		class="menu-floating-right"
+		anchor={false}
+		bind:anchorElement={anchor}
+		anchorCorner="BOTTOM_LEFT"
+	>
 		<List>
 			<Item on:SMUI:action={disconnectWallet}>
 				<Text>Disconnect</Text>
@@ -46,9 +54,8 @@
 {/if}
 
 <style>
-	:global(.menu-floating) {
-		transform-origin: center top;
+	/* Hack to make the menu appear on the right */
+	:global(.menu-floating-right) {
 		left: unset !important;
-		top: 56px !important;
 	}
 </style>
