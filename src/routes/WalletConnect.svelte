@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { connection } from '$lib/stores';
 	import { connect } from '$lib/wallet';
-	import Button, { Label, Icon } from '@smui/button';
 	import { derived } from 'svelte/store';
+
+	import Button, { Label, Icon } from '@smui/button';
+	import List, { Item, Text } from '@smui/list';
+	import Menu from '@smui/menu';
 
 	const shortAddress = derived(connection, ($connection) => {
 		if ($connection) {
@@ -19,16 +22,33 @@
 	function disconnectWallet() {
 		connection.set(null);
 	}
+
+	let menu: Menu;
 </script>
 
 {#if $shortAddress}
-	<Button on:click={disconnectWallet}>
+	<Button on:click={() => menu.setOpen(true)}>
 		<Icon class="material-icons" aria-label="Wallet">wallet</Icon>
 		<Label>{$shortAddress}</Label>
 	</Button>
+	<Menu bind:this={menu} class="menu-floating">
+		<List>
+			<Item on:SMUI:action={disconnectWallet}>
+				<Text>Disconnect</Text>
+			</Item>
+		</List>
+	</Menu>
 {:else}
 	<Button on:click={connectWallet}>
 		<Icon class="material-icons" aria-label="Wallet">wallet</Icon>
 		<Label>Connect Wallet</Label>
 	</Button>
 {/if}
+
+<style>
+	:global(.menu-floating) {
+		transform-origin: center top;
+		left: unset !important;
+		top: 56px !important;
+	}
+</style>

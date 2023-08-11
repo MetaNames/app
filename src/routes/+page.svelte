@@ -1,44 +1,40 @@
 <script lang="ts">
-	import { Row, Title } from '@smui/top-app-bar';
 	import IconButton from '@smui/icon-button';
-
 	import Section from '@smui/top-app-bar/src/Section.svelte';
-	import TopAppBar from '@smui/top-app-bar/src/TopAppBar.svelte';
+	import TopAppBar, { AutoAdjust, Row, Title } from '@smui/top-app-bar';
+
 	import WalletConnect from './WalletConnect.svelte';
 
-	let dense = true;
+	let topAppBar: TopAppBar;
 </script>
 
 <svelte:head>
 	<title>Meta Names</title>
 </svelte:head>
 
-<TopAppBar variant="static" {dense}>
-	<div class="topbar-container">
-		<Row>
-			<Section>
-				<IconButton class="material-icons">menu</IconButton>
-				<Title>Meta Names</Title>
-			</Section>
+<TopAppBar bind:this={topAppBar} variant="standard">
+	<Row>
+		<Section>
+			<IconButton class="material-icons">menu</IconButton>
+			<Title>Meta Names</Title>
+		</Section>
 
-			<Section align="end" toolbar>
-				<WalletConnect />
-			</Section>
-		</Row>
-	</div>
+		<Section align="end" toolbar>
+			<WalletConnect />
+		</Section>
+	</Row>
 </TopAppBar>
 
-<div class="hero hero-primary">
-	<div class="content">
-		<h1>Meta Names</h1>
-		<h5>The only name you need</h5>
+<AutoAdjust {topAppBar}>
+	<div class="hero hero-primary">
+		<div class="content">
+			<h1>Meta Names</h1>
+			<h5>The only name you need</h5>
+		</div>
 	</div>
-</div>
+</AutoAdjust>
 
 <style>
-	.topbar-container {
-		padding: 0.5rem 0;
-	}
 	.content {
 		max-width: 1280px;
 		margin: 0 auto;
