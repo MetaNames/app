@@ -4,6 +4,7 @@
 
 	import Section from '@smui/top-app-bar/src/Section.svelte';
 	import TopAppBar from '@smui/top-app-bar/src/TopAppBar.svelte';
+	import WalletConnect from './WalletConnect.svelte';
 
 	let dense = true;
 </script>
@@ -21,7 +22,7 @@
 			</Section>
 
 			<Section align="end" toolbar>
-				<IconButton class="material-icons" aria-label="Wallet">wallet</IconButton>
+				<WalletConnect />
 			</Section>
 		</Row>
 	</div>
