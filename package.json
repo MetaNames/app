@@ -47,6 +47,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"meta-names-sdk": "git+https://yeboster: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@github.com/MetaNames/sdk",
 		"partisia-sdk": "^0.1.1"
 	}
 }

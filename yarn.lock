@@ -475,6 +475,20 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@partisiablockchain/abi-client-ts@^3.13.0":
+  version "3.13.0"
+  resolved "https://gitlab.com/api/v4/projects/36918028/packages/npm/@partisiablockchain/abi-client-ts/-/@partisiablockchain/abi-client-ts-3.13.0.tgz#bf71d327bfac06738c7eefb108145ff962b2de8f"
+  integrity sha1-v3HTJ7+sBnOMfu+xCBRf+WKy3o8=
+  dependencies:
+    "@secata-public/bitmanipulation-ts" "^3.0.1"
+    "@types/bn.js" "^5.1.0"
+    "@types/elliptic" "^6.4.14"
+    bn.js "^5.2.0"
+    elliptic "^6.5.4"
+    hash.js "^1.1.7"
+    prettier "^2.6.2"
+    unfetch "^4.2.0"
+
 "@playwright/test@^1.28.1":
   version "1.37.0"
   resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.37.0.tgz#5b3b60dabaabc0d5d3021fb5a5bb8250b424c71d"
@@ -515,6 +529,15 @@
     "@types/estree" "^1.0.0"
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
+
+"@secata-public/bitmanipulation-ts@^3.0.1", "@secata-public/bitmanipulation-ts@^3.0.2":
+  version "3.0.5"
+  resolved "https://gitlab.com/api/v4/projects/37426093/packages/npm/@secata-public/bitmanipulation-ts/-/@secata-public/bitmanipulation-ts-3.0.5.tgz#77be50b8cb994c2c38a8fb1053df01a14b198bbb"
+  integrity sha1-d75QuMuZTCw4qPsQU98BoUsZi7s=
+  dependencies:
+    "@types/bn.js" "^5.1.0"
+    bn.js "^5.2.0"
+    prettier "^2.6.2"
 
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
@@ -662,7 +685,7 @@
     svelte-hmr "^0.15.3"
     vitefu "^0.2.4"
 
-"@types/bn.js@^5.1.0":
+"@types/bn.js@*", "@types/bn.js@^5.1.0":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-5.1.1.tgz#b51e1b55920a4ca26e9285ff79936bbdec910682"
   integrity sha512-qNrYbZqMx0uJAfKnKclPh+dTwK33KfLHYqtyODwd5HnXOjnkhc4qgn3BrK6RWyGZm5+sIFE7Q7Vz6QQtJB7w7g==
@@ -686,6 +709,13 @@
   resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.5.1.tgz#b29aa1f91a59f35e29ff8f7cb24faf1a3a750554"
   integrity sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==
 
+"@types/elliptic@^6.4.14":
+  version "6.4.14"
+  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.14.tgz#7bbaad60567a588c1f08b10893453e6b9b4de48e"
+  integrity sha512-z4OBcDAU0GVwDTuwJzQCiL6188QvZMkvoERgcVjq0/mPM8jCfdwZ3x5zQEVoL9WCAru3aG5wl3Z5Ww5wBWn7ZQ==
+  dependencies:
+    "@types/bn.js" "*"
+
 "@types/estree@*", "@types/estree@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.1.tgz#aa22750962f3bf0e79d753d3cc067f010c95f194"
@@ -697,9 +727,9 @@
   integrity sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==
 
 "@types/node@*":
-  version "20.4.9"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.4.9.tgz#c7164e0f8d3f12dfae336af0b1f7fdec8c6b204f"
-  integrity sha512-8e2HYcg7ohnTUbHk8focoklEQYvemQmu9M/f43DZVx43kHn0tE3BY/6gSDxS7k0SprtS0NHvj+L80cGLnoOUcQ==
+  version "20.4.10"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.4.10.tgz#73c9480791e3ddeb4887a660fc93a7f59353ad45"
+  integrity sha512-vwzFiiy8Rn6E0MtA13/Cxxgpan/N6UeNYR9oUu6kuJWxu6zCk98trcDp8CBhbtaeuq9SykCmXkFr2lWLoPcvLg==
 
 "@types/node@10.12.18":
   version "10.12.18"
@@ -1557,6 +1587,11 @@ domain-browser@^4.22.0:
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-4.22.0.tgz#6ddd34220ec281f9a65d3386d267ddd35c491f9f"
   integrity sha512-IGBwjF7tNk3cwypFNH/7bfzBcgSCbaMOD3GsaY1AU/JRrnHnYgEM0+9kQt52iZxjNsjBtJYtao146V+f8jFZNw==
 
+dotenv@^16.0.3:
+  version "16.3.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
+  integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
+
 elliptic@^6.4.0, elliptic@^6.5.3, elliptic@^6.5.4:
   version "6.5.4"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.4.tgz#da37cebd31e79a1367e941b592ed1fbebd58abbb"
@@ -2410,6 +2445,17 @@ merkletreejs@^0.2.31:
     treeify "^1.1.0"
     web3-utils "^1.3.4"
 
+"meta-names-sdk@git+https://yeboster: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@github.com/MetaNames/sdk":
+  version "0.0.1"
+  resolved "git+https://yeboster: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@github.com/MetaNames/sdk#fb1fd54b9230a71cb9c682630b28383cad261f7d"
+  dependencies:
+    "@partisiablockchain/abi-client-ts" "^3.13.0"
+    "@secata-public/bitmanipulation-ts" "^3.0.2"
+    dotenv "^16.0.3"
+    partisia-blockchain-applications-rpc "^1.0.10"
+    partisia-sdk "^0.1.1"
+    tr46 "^4.1.1"
+
 micromatch@^4.0.2, micromatch@^4.0.4:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-4.0.5.tgz#bc8999a7cbbf77cdc89f132f6e467051b49090c6"
@@ -2719,6 +2765,13 @@ parse-asn1@^5.0.0, parse-asn1@^5.1.5:
     pbkdf2 "^3.0.3"
     safe-buffer "^5.1.1"
 
+partisia-blockchain-applications-rpc@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/partisia-blockchain-applications-rpc/-/partisia-blockchain-applications-rpc-1.0.10.tgz#af00e75e6f489b8d2a618932df9c77b13cf39335"
+  integrity sha512-oXFO6N3vw13Rvi/G+nAn/+g1RSLnTkw/sF010e+6Wfxt8XjTdmMtIKYIFj2Qttp/3lcC5IRLHfEioLTtXP/9qw==
+  dependencies:
+    axios "^0.21.1"
+
 partisia-crypto@^1.0.2:
   version "1.0.19"
   resolved "https://registry.yarnpkg.com/partisia-crypto/-/partisia-crypto-1.0.19.tgz#dbf5933b2dcc372ba9564c3729c12762aa4762c9"
@@ -2894,7 +2947,7 @@ prettier-plugin-svelte@^2.10.1:
   resolved "https://registry.yarnpkg.com/prettier-plugin-svelte/-/prettier-plugin-svelte-2.10.1.tgz#e1abbe5689e8a926c60b8bc42e61233556ca90d1"
   integrity sha512-Wlq7Z5v2ueCubWo0TZzKc9XHcm7TDxqcuzRuGd0gcENfzfT4JZ9yDlCbEgxWgiPmLHkBjfOtpAWkcT28MCDpUQ==
 
-prettier@^2.8.0:
+prettier@^2.6.2, prettier@^2.8.0:
   version "2.8.8"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.8.tgz#e8c5d7e98a4305ffe3de2e1fc4aca1a71c28b1da"
   integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
@@ -2930,7 +2983,7 @@ punycode@^1.4.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
   integrity sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==
 
-punycode@^2.1.0:
+punycode@^2.1.0, punycode@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.0.tgz#f67fa67c94da8f4d0cfff981aee4118064199b8f"
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
@@ -3440,6 +3493,13 @@ totalist@^3.0.0:
   resolved "https://registry.yarnpkg.com/totalist/-/totalist-3.0.1.tgz#ba3a3d600c915b1a97872348f79c127475f6acf8"
   integrity sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==
 
+tr46@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/tr46/-/tr46-4.1.1.tgz#281a758dcc82aeb4fe38c7dfe4d11a395aac8469"
+  integrity sha512-2lv/66T7e5yNyhAAC4NaKe5nVavzuGJQVVtRYLyQ2OI8tsJ61PMLlelehb0wi2Hx6+hT/OJUWZcw8MjlSRnxvw==
+  dependencies:
+    punycode "^2.3.0"
+
 tr46@~0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
@@ -3510,6 +3570,11 @@ undici@~5.23.0:
   integrity sha512-1D7w+fvRsqlQ9GscLBwcAJinqcZGHUKjbOmXdlE/v8BvEGXjeWAax+341q44EuTcHXXnfyKNbKRq4Lg7OzhMmg==
   dependencies:
     busboy "^1.6.0"
+
+unfetch@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/unfetch/-/unfetch-4.2.0.tgz#7e21b0ef7d363d8d9af0fb929a5555f6ef97a3be"
+  integrity sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==
 
 uri-js@^4.2.2:
   version "4.4.1"
