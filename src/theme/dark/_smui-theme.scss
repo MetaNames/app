@@ -12,15 +12,15 @@
 
 html,
 body {
-  background-color: #000;
+  background-color: theme.$background;
   color: theme.$on-surface;
   margin: 0;
 }
 
 a {
-  color: #866efe;
+  color: #b0a1fe;
 }
 
 a:visited {
-  color: color.scale(#866efe, $lightness: -35%);
+  color: color.scale(#b0a1fe, $lightness: -15%);
 }
