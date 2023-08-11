@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"prepare": "npm run smui-theme-light && npm run smui-theme-dark",
+		"prepare": "yarn run smui-theme-light && yarn run smui-theme-dark",
 		"smui-theme-light": "smui-theme compile static/smui.css -i src/theme",
 		"smui-theme-dark": "smui-theme compile static/smui-dark.css -i src/theme/dark",
 		"dev": "vite dev",
@@ -18,6 +18,7 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
+		"@material/typography": "^14.0.0",
 		"@playwright/test": "^1.28.1",
 		"@smui/icon-button": "^7.0.0-beta.14",
 		"@smui/top-app-bar": "^7.0.0-beta.14",
