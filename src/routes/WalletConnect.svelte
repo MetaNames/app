@@ -23,9 +23,12 @@
 		connection.set(null);
 	}
 
-	export let anchor: HTMLDivElement;
-
 	let menu: Menu;
+
+	export let anchor: HTMLDivElement;
+	export const closeMenu = () => {
+		menu && menu.setOpen(false);
+	};
 </script>
 
 {#if $shortAddress}

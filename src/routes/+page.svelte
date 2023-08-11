@@ -6,9 +6,10 @@
 
 	import WalletConnect from './WalletConnect.svelte';
 
-	let topAppBar: TopAppBar;
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
+	let topAppBar: TopAppBar;
+	let walletConnect: WalletConnect;
 </script>
 
 <svelte:head>
@@ -40,13 +41,13 @@
 			</Section>
 
 			<Section align="end" toolbar>
-				<WalletConnect {anchor} />
+				<WalletConnect {anchor} bind:this={walletConnect} />
 			</Section>
 		</Row>
 	</div>
 </TopAppBar>
 
-<AutoAdjust {topAppBar}>
+<AutoAdjust {topAppBar} on:mousewheel={() => walletConnect.closeMenu()}>
 	<div class="hero hero-primary">
 		<div class="content">
 			<h1>Meta Names</h1>
