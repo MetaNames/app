@@ -1,13 +1,14 @@
 @use 'sass:color';
 
 @use '@material/theme/color-palette';
-@use '@material/theme/styles';
-
 @use '@material/theme/index' as theme with ($primary: #6849fe,
   $secondary: #676778,
   $surface: #fff,
   $background: #fff,
   $error: color-palette.$red-900);
+
+@use '@material/theme/styles';
+@use '@material/typography/index' as typography;
 
 html,
 body {
@@ -24,8 +25,6 @@ a:visited {
 }
 
 // Import the mixins.
-@use '@material/typography/index' as typography;
-
 html {
   @include typography.typography('body1');
 }
