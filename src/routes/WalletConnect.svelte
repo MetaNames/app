@@ -27,7 +27,7 @@
 
 	export let anchor: HTMLDivElement;
 	export const closeMenu = () => {
-		menu && menu.setOpen(false);
+		menu && menu.isOpen && menu.setOpen(false);
 	};
 </script>
 
@@ -55,10 +55,3 @@
 		<Label>Connect Wallet</Label>
 	</Button>
 {/if}
-
-<style>
-	/* Hack to make the menu appear on the right */
-	:global(.menu-floating-right) {
-		left: unset !important;
-	}
-</style>
