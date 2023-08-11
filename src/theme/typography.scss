@@ -1,4 +1,4 @@
-@use '@material/typography/index' as typography;
+@use '@material/typography' as typography;
 
 html {
   @include typography.typography('body1');
