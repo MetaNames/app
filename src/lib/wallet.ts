@@ -9,9 +9,9 @@ export type WalletConnection = {
 
 export type OptionalWalletConnection = WalletConnection | undefined | null
 
-const sdk = new PartisiaSdk()
-
 export const connect = async () => {
+  const sdk = new PartisiaSdk()
+
   await sdk.connect({
     chainId: config.chainId,
     permissions: config.permissions,
