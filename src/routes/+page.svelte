@@ -1,6 +1,8 @@
 <script lang="ts">
 	import Layout from './Layout.svelte';
 	import LookUp from './LookUp.svelte';
+
+	import '../styles/hero.scss';
 </script>
 
 <svelte:head>
@@ -25,28 +27,7 @@
 	</div>
 </Layout>
 
-<style>
-	.content {
-		max-width: 1280px;
-		margin: 0 auto;
-		padding: 8rem;
-		text-align: center;
-
-		@media only screen and (max-width: 600px) {
-			padding: 10%;
-		}
-	}
-
-	.hero-primary {
-		color: var(--mdc-theme-text-primary-on-dark);
-		background-color: var(--mdc-theme-primary);
-	}
-
-	.hero-secondary {
-		background-color: var(--mdc-theme-background);
-		/* color: var(--mdc-theme-text-primary-on-dark); */
-	}
-
+<style lang="scss">
 	.lookup-container {
 		display: inline-block;
 	}

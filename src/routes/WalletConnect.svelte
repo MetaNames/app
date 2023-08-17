@@ -7,6 +7,8 @@
 	import List, { Item, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
+	import '../styles/wallet-connect.scss';
+
 	const shortAddress = derived(connection, ($connection) => {
 		if ($connection) {
 			const address = $connection.connection.account.address;
