@@ -547,6 +547,17 @@
     "@material/theme" "^14.0.0"
     tslib "^2.1.0"
 
+"@metanames/sdk@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-1.0.0.tgz#1330fadbe4fcdc87f6da653b15e4eb04dc9c542e"
+  integrity sha512-iSFDo9Nwy56rijH4KRGs4f1XL0nIWTecAi/t841xHb2GCU7Oyr9oD2iyyJSoiHIsFVX20HHeCQJPqa/zm9pxiQ==
+  dependencies:
+    "@partisiablockchain/abi-client-ts" "^3.13.0"
+    "@secata-public/bitmanipulation-ts" "^3.0.2"
+    partisia-blockchain-applications-rpc "^1.0.10"
+    partisia-sdk "^0.1.1"
+    tr46 "^4.1.1"
+
 "@noble/hashes@^1.2.0":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.1.tgz#8831ef002114670c603c458ab8b11328406953a9"
@@ -1762,11 +1773,6 @@ domain-browser@^4.22.0:
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-4.22.0.tgz#6ddd34220ec281f9a65d3386d267ddd35c491f9f"
   integrity sha512-IGBwjF7tNk3cwypFNH/7bfzBcgSCbaMOD3GsaY1AU/JRrnHnYgEM0+9kQt52iZxjNsjBtJYtao146V+f8jFZNw==
 
-dotenv@^16.0.3:
-  version "16.3.1"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
-  integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
-
 elliptic@^6.4.0, elliptic@^6.5.3, elliptic@^6.5.4:
   version "6.5.4"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.4.tgz#da37cebd31e79a1367e941b592ed1fbebd58abbb"
@@ -2619,17 +2625,6 @@ merkletreejs@^0.2.31:
     crypto-js "^3.1.9-1"
     treeify "^1.1.0"
     web3-utils "^1.3.4"
-
-"meta-names-sdk@git+https://yeboster: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@github.com/MetaNames/sdk":
-  version "0.0.1"
-  resolved "git+https://yeboster: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@github.com/MetaNames/sdk#5b6d849fb61ee3995a52ad20160869f57a447004"
-  dependencies:
-    "@partisiablockchain/abi-client-ts" "^3.13.0"
-    "@secata-public/bitmanipulation-ts" "^3.0.2"
-    dotenv "^16.0.3"
-    partisia-blockchain-applications-rpc "^1.0.10"
-    partisia-sdk "^0.1.1"
-    tr46 "^4.1.1"
 
 micromatch@^4.0.2, micromatch@^4.0.4:
   version "4.0.5"
