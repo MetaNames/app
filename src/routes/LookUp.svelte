@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { metaNames } from '$lib';
-	import { RecordClassEnum } from 'meta-names-sdk';
+	import { RecordClassEnum } from '@metanames/sdk';
 
 	import Button from '@smui/button';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from 'meta-names-sdk/lib/models/domain';
+	import type { Domain as DomainModel } from '@metanames/sdk/lib/models/domain';
 	import Domain from './Domain.svelte';
 
 	const validator = metaNames.domainRepository.domainValidator;

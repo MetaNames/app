@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Domain } from 'meta-names-sdk/lib/models/domain';
+	import type { Domain } from '@metanames/sdk/lib/models/domain';
 
 	import Card, { Content as CardContent } from '@smui/card';
 	import { Icon } from '@smui/icon-button';
