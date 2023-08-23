@@ -1,3 +1,3 @@
-import { MetaNames, Enviroment } from '@metanames/sdk'
+import { MetaNamesSdk, Enviroment } from '@metanames/sdk'
 
-export const metaNames = new MetaNames(Enviroment.testnet)
+export const metaNamesSdk = new MetaNamesSdk(Enviroment.testnet)

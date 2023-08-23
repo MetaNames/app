@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { metaNames } from '$lib';
-	import { RecordClassEnum } from '@metanames/sdk';
+	import { metaNamesSdk } from '$lib';
 
 	import Button from '@smui/button';
 	import Textfield from '@smui/textfield';
@@ -8,7 +7,7 @@
 	import type { Domain as DomainModel } from '@metanames/sdk/lib/models/domain';
 	import Domain from './Domain.svelte';
 
-	const validator = metaNames.domainRepository.domainValidator;
+	const validator = metaNamesSdk.domainRepository.domainValidator;
 
 	let domain: DomainModel | null;
 	let domainName: string = '';
@@ -19,7 +18,7 @@
 	async function submit() {
 		if (domainName === '') {
 			invalid = true;
-		} else domain = await metaNames.domainRepository.find(domainName);
+		} else domain = await metaNamesSdk.domainRepository.find(domainName);
 	}
 </script>
 
