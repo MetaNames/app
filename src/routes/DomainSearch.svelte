@@ -2,20 +2,23 @@
 	import { metaNamesSdk } from '$lib';
 
 	import Button from '@smui/button';
+	import Card, { Content as CardContent } from '@smui/card';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
 	import type { Domain as DomainModel } from '@metanames/sdk/lib/models/domain';
-	import Domain from './Domain.svelte';
 
 	const validator = metaNamesSdk.domainRepository.domainValidator;
 
 	let domain: DomainModel | null;
 	let domainName: string = '';
+	let nameSearched: string = '';
 
 	$: errors = invalid ? validator.errors : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 
 	async function submit() {
+		nameSearched = domainName;
+
 		if (domainName === '') {
 			invalid = true;
 		} else domain = await metaNamesSdk.domainRepository.find(domainName);
@@ -38,14 +41,28 @@
 	</formgroup>
 </form>
 {#if domain}
-	<div class="domain-container">
-		<Domain {domain} />
-	</div>
+	<Card>
+		<CardContent>
+			<div class="card-content">
+				<span>{nameSearched}</span>
+				<span class="chip registered">registered</span>
+			</div>
+		</CardContent>
+	</Card>
 {:else if domain === null}
-	<p>Not found</p>
+	<Card>
+		<CardContent>
+			<div class="card-content">
+				<span>{nameSearched}</span>
+				<span class="chip available">available</span>
+			</div>
+		</CardContent>
+	</Card>
 {/if}
 
 <style lang="scss">
+	@use '@material/theme/color-palette';
+
 	form {
 		> formgroup {
 			margin: 0.5rem 0;
@@ -56,7 +73,25 @@
 		align-items: center;
 	}
 
-	.domain-container {
-		margin-top: 1rem;
+	.card-content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.chip {
+		padding: 0.3rem;
+		border-radius: 1rem;
+		font-size: 0.7rem;
+		font-weight: 500;
+
+		&.available {
+			background-color: color-palette.$light-green-300;
+		}
+
+		&.registered {
+			background-color: color-palette.$orange-a200;
+		}
 	}
 </style>

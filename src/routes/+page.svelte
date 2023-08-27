@@ -1,5 +1,5 @@
 <script lang="ts">
-	import LookUp from './LookUp.svelte';
+	import DomainSearch from './DomainSearch.svelte';
 </script>
 
 <svelte:head>
@@ -9,8 +9,8 @@
 <div class="content">
 	<h3>Find your Meta Name</h3>
 	<p>Choose your decentralised name to use it for wallets, social, websites, and more!</p>
-	<div class="lookup-container">
-		<LookUp />
+	<div class="search-container">
+		<DomainSearch />
 	</div>
 </div>
 
@@ -20,7 +20,7 @@
 		margin-bottom: 0.5rem;
 	}
 
-	.lookup-container {
+	.search-container {
 		display: inline-block;
 	}
 
