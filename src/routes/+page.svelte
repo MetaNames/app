@@ -8,16 +8,10 @@
 	<title>Meta Names</title>
 </svelte:head>
 
-<div class="hero-primary">
-	<div class="content">
-		<h1>Meta Names</h1>
-		<h5>The only name you need</h5>
-	</div>
-</div>
 <div class="hero-secondary">
 	<div class="content">
-		<h1>Look Up</h1>
-		<h5>Find your Meta Name</h5>
+		<h3>Find your Meta Name</h3>
+		<p>Choose your decentralised name to use it for wallets, social, websites, and more!</p>
 		<div class="lookup-container">
 			<LookUp />
 		</div>
