@@ -15,6 +15,7 @@
 
 	$: errors = invalid ? validator.errors : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
+	$: pageRedirectLink = domain ? `/name/${domain.name}` : `/register/${nameSearched}`;
 
 	async function submit() {
 		nameSearched = domainName;
@@ -40,25 +41,27 @@
 		<Button variant="raised" type="submit">Find</Button>
 	</formgroup>
 </form>
-{#if domain}
-	<Card>
-		<CardContent>
-			<div class="card-content">
-				<span>{nameSearched}</span>
-				<span class="chip registered">registered</span>
-			</div>
-		</CardContent>
-	</Card>
-{:else if domain === null}
-	<Card>
-		<CardContent>
-			<div class="card-content">
-				<span>{nameSearched}</span>
-				<span class="chip available">available</span>
-			</div>
-		</CardContent>
-	</Card>
-{/if}
+<a class="domain-link" href={pageRedirectLink}>
+	{#if domain}
+		<Card>
+			<CardContent>
+				<div class="card-content">
+					<span>{nameSearched}</span>
+					<span class="chip registered">registered</span>
+				</div>
+			</CardContent>
+		</Card>
+	{:else if domain === null}
+		<Card>
+			<CardContent>
+				<div class="card-content">
+					<span>{nameSearched}</span>
+					<span class="chip available">available</span>
+				</div>
+			</CardContent>
+		</Card>
+	{/if}
+</a>
 
 <style lang="scss">
 	@use '@material/theme/color-palette';
@@ -93,5 +96,10 @@
 		&.registered {
 			background-color: color-palette.$orange-a200;
 		}
+	}
+
+	.domain-link {
+		text-decoration: none;
+		color: inherit;
 	}
 </style>
