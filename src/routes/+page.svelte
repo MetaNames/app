@@ -1,7 +1,5 @@
 <script lang="ts">
 	import DomainSearch from './DomainSearch.svelte';
-
-	import '../styles/app.scss';
 </script>
 
 <svelte:head>

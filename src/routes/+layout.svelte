@@ -6,6 +6,8 @@
 
 	import WalletConnect from './WalletConnect.svelte';
 
+	import '../styles/app.scss';
+
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
 </script>
