@@ -15,7 +15,7 @@
 
 	$: errors = invalid ? validator.errors : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
-	$: pageRedirectLink = domain ? `/name/${domain.name}` : `/register/${nameSearched}`;
+	$: pageRedirectLink = domain ? `/domain/${domain.name}` : `/register/${nameSearched}`;
 
 	async function submit() {
 		nameSearched = domainName;
