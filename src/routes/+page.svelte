@@ -1,5 +1,7 @@
 <script lang="ts">
 	import DomainSearch from './DomainSearch.svelte';
+
+	import '../styles/app.scss';
 </script>
 
 <svelte:head>
@@ -22,15 +24,5 @@
 
 	.search-container {
 		display: inline-block;
-	}
-
-	.content {
-		align-self: center;
-		flex-grow: 1;
-
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
 	}
 </style>
