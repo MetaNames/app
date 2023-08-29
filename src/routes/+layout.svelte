@@ -34,7 +34,9 @@
 			<Row>
 				<Section>
 					<IconButton class="material-icons">menu</IconButton>
-					<Title>Meta Names</Title>
+					<Title>
+						<a href="/">Meta Names</a>
+					</Title>
 				</Section>
 
 				<Section align="end" toolbar>
@@ -47,6 +49,11 @@
 </main>
 
 <style>
+	a {
+		text-decoration: none;
+		color: inherit;
+	}
+
 	main {
 		display: flex;
 		flex-direction: column;
