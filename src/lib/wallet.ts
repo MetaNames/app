@@ -1,13 +1,7 @@
 import PartisiaSdk from 'partisia-sdk'
 import config from './config'
-import type { ISdkConnection } from 'partisia-sdk/dist/sdk'
 
-export type WalletConnection = {
-  connection: ISdkConnection
-  seed: string
-}
-
-export type OptionalWalletConnection = WalletConnection | undefined | null
+export type OptionalWalletClient = PartisiaSdk | undefined | null
 
 export const connect = async () => {
   const sdk = new PartisiaSdk()
@@ -18,6 +12,6 @@ export const connect = async () => {
     dappName: config.dAppName,
   })
 
-  if (sdk.connection) return { connection: sdk.connection, seed: sdk.seed }
+  if (sdk.connection) return sdk
   else throw new Error('Connection failed')
 }

@@ -1,4 +1,4 @@
 import { writable } from 'svelte/store';
-import type { OptionalWalletConnection } from '$lib/wallet';
+import type { OptionalWalletClient as OptionalWalletClient } from '$lib/wallet';
 
-export const connection = writable<OptionalWalletConnection>(null);
+export const walletClient = writable<OptionalWalletClient>(null);

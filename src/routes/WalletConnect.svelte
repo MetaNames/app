@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { connection } from '$lib/stores';
+	import { walletClient } from '$lib/stores';
 	import { connect } from '$lib/wallet';
 	import { derived } from 'svelte/store';
 
@@ -9,28 +9,25 @@
 
 	import '../styles/wallet-connect.scss';
 
-	const shortAddress = derived(connection, ($connection) => {
-		if ($connection) {
-			const address = $connection.connection.account.address;
+	const shortAddress = derived(walletClient, ($client) => {
+		if ($client?.connection) {
+			const address = $client.connection.account.address;
 			return address.slice(0, 4) + '...' + address.slice(-4);
 		}
 	});
 
 	async function connectWallet() {
-		const conn = await connect();
-		connection.set(conn);
+		const client = await connect();
+		walletClient.set(client);
 	}
 
 	function disconnectWallet() {
-		connection.set(null);
+		walletClient.set(null);
 	}
 
 	let menu: Menu;
 
 	export let anchor: HTMLDivElement;
-	export const closeMenu = () => {
-		menu && menu.isOpen && menu.setOpen(false);
-	};
 </script>
 
 {#if $shortAddress}
