@@ -137,9 +137,6 @@
 	.submit {
 		display: flex;
 		justify-content: center;
-
-		button {
-		}
 	}
 
 	.years {
