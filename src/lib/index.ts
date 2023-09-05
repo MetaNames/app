@@ -1,3 +1,8 @@
 import { MetaNamesSdk, Enviroment } from '@metanames/sdk'
+import config from './config'
 
-export const metaNamesSdk = new MetaNamesSdk(Enviroment.testnet)
+const environment = config.environment === 'test' ? Enviroment.testnet : Enviroment.mainnet
+
+export const metaNamesSdk = new MetaNamesSdk(environment)
+
+export const metaNamesSdkFactory = () => new MetaNamesSdk(environment)

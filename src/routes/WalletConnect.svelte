@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { walletClient } from '$lib/stores';
+	import { metaNamesSdkAuthenticated, walletClient } from '$lib/stores';
 	import { connect } from '$lib/wallet';
 	import { derived } from 'svelte/store';
 
-	import Button, { Label, Icon } from '@smui/button';
+	import Button, { Icon, Label } from '@smui/button';
 	import List, { Item, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
+	import { metaNamesSdkFactory } from '$lib';
 	import '../styles/wallet-connect.scss';
 
 	const shortAddress = derived(walletClient, ($client) => {
@@ -19,10 +20,15 @@
 	async function connectWallet() {
 		const client = await connect();
 		walletClient.set(client);
+
+		const sdk = metaNamesSdkFactory();
+		sdk.setSigningStrategy('partisiaSdk', client);
+		metaNamesSdkAuthenticated.set(sdk);
 	}
 
 	function disconnectWallet() {
 		walletClient.set(null);
+		metaNamesSdkAuthenticated.set(null);
 	}
 
 	let menu: Menu;

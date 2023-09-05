@@ -1,8 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+
 	import { metaNamesSdk } from '$lib';
+	import { metaNamesSdkAuthenticated, walletClient, walletConnected } from '$lib/stores';
+
 	import type { Domain as DomainModel } from '@metanames/sdk';
+	import { get } from 'svelte/store';
+
 	import Button, { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
 	import IconButton from '@smui/icon-button';
@@ -28,6 +33,28 @@
 
 		if (domain) goto(`/domain/${domain.name}`);
 	});
+
+	async function registerDomain() {
+		const client = get(walletClient);
+		if (!client?.connection) return;
+
+		const sdk = get(metaNamesSdkAuthenticated);
+		if (!sdk) return;
+
+		const { hasError, trxHash: approveTrx } = await sdk.domainRepository.approveMintFees(
+			domainName,
+			years
+		);
+		if (hasError) throw new Error(`Failed to approve mint fees. Transaction: ${approveTrx}`);
+
+		const { hasError: registerHasError, trxHash: registerTrx } = await sdk.domainRepository.mint({
+			domain: domainName,
+			to: client.connection.account.address
+		});
+		if (registerHasError) throw new Error(`Failed to register domain. Transaction: ${registerTrx}`);
+
+		goto(`/domain/${domainName}`);
+	}
 </script>
 
 <svelte:head>
@@ -61,7 +88,12 @@
 						</div>
 
 						<div class="submit">
-							<Button class="button" disabled={totalFeesAmount === 0} variant="raised">
+							<Button
+								class="button"
+								disabled={!$walletConnected}
+								on:click={registerDomain}
+								variant="raised"
+							>
 								<Label>Register</Label>
 							</Button>
 						</div>
