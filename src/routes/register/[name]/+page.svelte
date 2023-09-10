@@ -47,7 +47,7 @@
 		);
 		if (hasError) throw new Error(`Failed to approve mint fees. Transaction: ${approveTrx}`);
 
-		const { hasError: registerHasError, trxHash: registerTrx } = await sdk.domainRepository.mint({
+		const { hasError: registerHasError, trxHash: registerTrx } = await sdk.domainRepository.register({
 			domain: domainName,
 			to: client.connection.account.address
 		});
