@@ -18,6 +18,8 @@
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 
 	async function submit() {
+		if (invalid) return
+
 		nameSearched = domainName;
 		isLoading = true;
 
