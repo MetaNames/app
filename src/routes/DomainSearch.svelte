@@ -12,17 +12,20 @@
 	let domain: DomainModel | null;
 	let domainName: string = '';
 	let nameSearched: string = '';
+	let isLoading: boolean = false;
 
 	$: errors = invalid ? validator.errors : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
-	$: pageRedirectLink = domain ? `/domain/${domain.name}` : `/register/${nameSearched}`;
 
 	async function submit() {
 		nameSearched = domainName;
+		isLoading = true;
 
 		if (domainName === '') {
 			invalid = true;
 		} else domain = await metaNamesSdk.domainRepository.find(domainName);
+
+		isLoading = false;
 	}
 </script>
 
@@ -41,8 +44,8 @@
 		<Button variant="raised" type="submit">Find</Button>
 	</formgroup>
 </form>
-<a class="domain-link" href={pageRedirectLink}>
-	{#if domain}
+{#if domain}
+	<a class="domain-link" href={`/domain/${domain.name}`}>
 		<Card>
 			<CardContent>
 				<div class="card-content">
@@ -51,7 +54,9 @@
 				</div>
 			</CardContent>
 		</Card>
-	{:else if domain === null}
+	</a>
+{:else if domain === null}
+	<a class="domain-link" href={`/register/${nameSearched}`}>
 		<Card>
 			<CardContent>
 				<div class="card-content">
@@ -60,8 +65,18 @@
 				</div>
 			</CardContent>
 		</Card>
-	{/if}
-</a>
+	</a>
+{:else if isLoading}
+	<Card>
+		<CardContent>
+			<div class="card-content">
+				<span>{nameSearched}</span>
+
+				<span class="chip">loading spinner</span>
+			</div>
+		</CardContent>
+	</Card>
+{/if}
 
 <style lang="scss">
 	@use '@material/theme/color-palette';
@@ -88,6 +103,7 @@
 		border-radius: 1rem;
 		font-size: 0.7rem;
 		font-weight: 500;
+		background-color: color-palette.$grey-300;
 
 		&.available {
 			background-color: color-palette.$light-green-300;
