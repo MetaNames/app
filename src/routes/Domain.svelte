@@ -1,9 +1,15 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk/lib/models/domain';
 
-	import Card, { Content as CardContent } from '@smui/card';
+
+	import Card, { Content as CardContent, MediaContent } from '@smui/card';
+	import Media from '@smui/card/src/Media.svelte';
 	import { Icon } from '@smui/icon-button';
 	import Select, { Option } from '@smui/select';
+
+	import { toSvg } from "jdenticon";
+
+	$: domainAvatar = domain.name && toSvg(domain.name, 600);
 
 	export let domain: Domain;
 
@@ -11,6 +17,15 @@
 </script>
 
 <Card>
+	<Media aspectRatio="16x9">
+		<MediaContent>
+			<div class="avatar">
+				<div class="svg">
+					{@html domainAvatar}
+				</div>
+			</div>
+		</MediaContent>
+	</Media>
 	<CardContent>
 		<h5 class="domain">{domain.name}</h5>
 		<div class="details-row">
@@ -43,6 +58,17 @@
 </Card>
 
 <style lang="scss">
+	.avatar {
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+
+		& .svg {
+			display: relative;
+			top: -50pt;
+			left: -50%;
+		}
+	}
 	h6 {
 		margin-top: 1rem;
 		margin-bottom: 0.5rem;
@@ -53,9 +79,10 @@
 	}
 
 	.domain {
-		text-transform: uppercase;
 		margin-top: 0rem;
 		margin-bottom: 1rem;
+		font-size: 2rem;
+		font-weight: 800;
 	}
 
 	.details-row {
