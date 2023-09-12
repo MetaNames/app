@@ -8,8 +8,8 @@
 		Meta Names
 	</div>
 	<div class="links">
-		<a href="mailto:metanames@proton.me">Contact us</a>
-		<a href="https://x.com/metanames_">Twitter</a>
+		<a href="mailto:metanames@proton.me" target="_blank">Contact us</a>
+		<a href="https://x.com/metanames_" target="_blank">Twitter</a>
 	</div>
 </footer>
 
