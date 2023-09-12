@@ -9,7 +9,7 @@
 
 	const validator = metaNamesSdk.domainRepository.domainValidator;
 
-	let domain: DomainModel | null;
+	let domain: DomainModel | null | undefined;
 	let domainName: string = '';
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
@@ -20,12 +20,12 @@
 	async function submit() {
 		if (invalid) return;
 
+		if (domainName === '') return;
+
 		nameSearched = domainName;
 		isLoading = true;
 
-		if (domainName === '') {
-			invalid = true;
-		} else domain = await metaNamesSdk.domainRepository.find(domainName);
+		domain = await metaNamesSdk.domainRepository.find(domainName);
 
 		isLoading = false;
 	}
