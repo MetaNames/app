@@ -34,6 +34,7 @@
 <form class="lookup-form" on:submit|preventDefault={submit}>
 	<formgroup>
 		<Textfield
+			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
 			bind:invalid
