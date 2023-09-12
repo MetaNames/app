@@ -2,6 +2,7 @@
 	import { metaNamesSdk } from '$lib';
 
 	import Card, { Content as CardContent } from '@smui/card';
+	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
 	import type { Domain as DomainModel } from '@metanames/sdk/lib/models/domain';
@@ -82,7 +83,7 @@
 			<div class="card-content">
 				<span>{nameSearched}</span>
 
-				<span class="chip">loading spinner</span>
+				<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 			</div>
 		</CardContent>
 	</Card>
