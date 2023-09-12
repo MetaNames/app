@@ -8,6 +8,7 @@
 	import Logo from './Logo.svelte';
 
 	import '../styles/app.scss';
+	import Footer from './Footer.svelte';
 
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
@@ -50,6 +51,7 @@
 		</div>
 	</TopAppBar>
 	<slot />
+	<Footer />
 </main>
 
 <style>
