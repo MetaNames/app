@@ -1,37 +1,43 @@
 <script>
-	import Logo from "./Logo.svelte";
-
+	import Logo from './Logo.svelte';
 </script>
-<footer class="card-secondary">
+
+<footer>
 	<div class="logo">
-    <Logo />
-    Meta Names
-  </div>
+		<Logo />
+		Meta Names
+	</div>
 	<div class="links">
-    <a href="mailto:metanames@proton.me">Contact us</a>
-    <a href="https://x.com/metanames_">Twitter</a>
-  </div>
+		<a href="mailto:metanames@proton.me">Contact us</a>
+		<a href="https://x.com/metanames_">Twitter</a>
+	</div>
 </footer>
 
 <style>
-  .logo {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
+	.logo {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
 
-  .links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+	.links {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		& a {
+			color: var(--mdc-theme-on-primary);
+		}
+	}
 
 	footer {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-evenly;
 		align-items: center;
-		padding: 2rem;
+		padding: 1rem;
+
+		background-color: var(--mdc-theme-primary);
 
 		@media only screen and (max-width: 600px) {
 			flex-direction: column;
