@@ -35,7 +35,6 @@
 		>
 			<Row>
 				<Section>
-					<IconButton class="material-icons">menu</IconButton>
 					<Title>
 						<a class="link-logo" href="/">
 							<Logo/>
