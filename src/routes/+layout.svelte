@@ -5,6 +5,7 @@
 	import { Anchor } from '@smui/menu-surface';
 
 	import WalletConnect from './WalletConnect.svelte';
+	import Logo from './Logo.svelte';
 
 	import '../styles/app.scss';
 
@@ -35,7 +36,10 @@
 				<Section>
 					<IconButton class="material-icons">menu</IconButton>
 					<Title>
-						<a href="/">Meta Names</a>
+						<a class="link-logo" href="/">
+							<Logo/>
+							<span>Meta Names</span>
+						</a>
 					</Title>
 				</Section>
 
@@ -49,9 +53,18 @@
 </main>
 
 <style>
-	a {
+	.link-logo {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+
 		text-decoration: none;
 		color: inherit;
+	}
+
+	svg {
+		width: 1.5rem;
+		height: 1.5rem;
 	}
 
 	main {
@@ -63,5 +76,9 @@
 
 		min-height: 100vh;
 		background-color: var(--mdc-theme-background);
+	}
+
+	.logo {
+		color: white;
 	}
 </style>
