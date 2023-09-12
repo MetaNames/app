@@ -39,7 +39,7 @@
 			variant="outlined"
 			bind:value={domainName}
 			bind:invalid
-			label="Domain"
+			label="Domain name"
 			withTrailingIcon={true}
 		>
 			<svelte:fragment slot="trailingIcon">
@@ -61,7 +61,7 @@
 			<CardContent>
 				<div class="card-content">
 					<span>{nameSearched}</span>
-					<span class="chip registered">registered</span>
+					<span class="chip registered">Registered</span>
 				</div>
 			</CardContent>
 		</Card>
@@ -72,7 +72,7 @@
 			<CardContent>
 				<div class="card-content">
 					<span>{nameSearched}</span>
-					<span class="chip available">available</span>
+					<span class="chip available">Available</span>
 				</div>
 			</CardContent>
 		</Card>
@@ -90,7 +90,9 @@
 {/if}
 
 <style lang="scss">
+	@use 'sass:color';
 	@use '@material/theme/color-palette';
+	@use '../theme/colors.scss';
 
 	form {
 		> formgroup {
@@ -113,15 +115,17 @@
 		padding: 0.3rem;
 		border-radius: 1rem;
 		font-size: 0.7rem;
-		font-weight: 500;
 		background-color: color-palette.$grey-300;
+		font-weight: 700;
 
 		&.available {
-			background-color: color-palette.$light-green-300;
+			background-color: color.scale(color-palette.$light-green-400, $whiteness: 50%);
+			color: color-palette.$light-green-900;
 		}
 
 		&.registered {
-			background-color: color-palette.$orange-a200;
+			background-color: color.scale(colors.$primary, $whiteness: 60%);
+			color: color.scale(colors.$primary, $whiteness: -20%);
 		}
 	}
 
