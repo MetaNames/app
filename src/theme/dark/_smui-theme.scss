@@ -1,0 +1,26 @@
+@use 'sass:color';
+
+@use '@material/theme/color-palette';
+@use '@material/theme/index' as theme with ($primary: #6849fe,
+  $secondary: color.scale(#676778, $whiteness: -10%),
+  $surface: color.adjust(color-palette.$grey-900, $blue: +4),
+  $background: #242424,
+  $error: color-palette.$red-700);
+@use '@material/theme/styles';
+
+@import '../typography';
+
+html,
+body {
+  background-color: theme.$background;
+  color: theme.$on-surface;
+  margin: 0;
+}
+
+a {
+  color: #b0a1fe;
+}
+
+a:visited {
+  color: color.scale(#b0a1fe, $lightness: -15%);
+}
