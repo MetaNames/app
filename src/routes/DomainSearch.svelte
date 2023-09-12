@@ -2,6 +2,7 @@
 	import { metaNamesSdk } from '$lib';
 
 	import Card, { Content as CardContent } from '@smui/card';
+	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
 	import type { Domain as DomainModel } from '@metanames/sdk/lib/models/domain';
@@ -9,7 +10,7 @@
 
 	const validator = metaNamesSdk.domainRepository.domainValidator;
 
-	let domain: DomainModel | null;
+	let domain: DomainModel | null | undefined;
 	let domainName: string = '';
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
@@ -20,12 +21,12 @@
 	async function submit() {
 		if (invalid) return;
 
+		if (domainName === '') return;
+
 		nameSearched = domainName;
 		isLoading = true;
 
-		if (domainName === '') {
-			invalid = true;
-		} else domain = await metaNamesSdk.domainRepository.find(domainName);
+		domain = await metaNamesSdk.domainRepository.find(domainName);
 
 		isLoading = false;
 	}
@@ -34,10 +35,11 @@
 <form class="lookup-form" on:submit|preventDefault={submit}>
 	<formgroup>
 		<Textfield
+			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
 			bind:invalid
-			label="Domain"
+			label="Domain name"
 			withTrailingIcon={true}
 		>
 			<svelte:fragment slot="trailingIcon">
@@ -59,7 +61,7 @@
 			<CardContent>
 				<div class="card-content">
 					<span>{nameSearched}</span>
-					<span class="chip registered">registered</span>
+					<span class="chip registered">Registered</span>
 				</div>
 			</CardContent>
 		</Card>
@@ -70,7 +72,7 @@
 			<CardContent>
 				<div class="card-content">
 					<span>{nameSearched}</span>
-					<span class="chip available">available</span>
+					<span class="chip available">Available</span>
 				</div>
 			</CardContent>
 		</Card>
@@ -81,14 +83,16 @@
 			<div class="card-content">
 				<span>{nameSearched}</span>
 
-				<span class="chip">loading spinner</span>
+				<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 			</div>
 		</CardContent>
 	</Card>
 {/if}
 
 <style lang="scss">
+	@use 'sass:color';
 	@use '@material/theme/color-palette';
+	@use '../theme/colors.scss';
 
 	form {
 		> formgroup {
@@ -111,15 +115,17 @@
 		padding: 0.3rem;
 		border-radius: 1rem;
 		font-size: 0.7rem;
-		font-weight: 500;
 		background-color: color-palette.$grey-300;
+		font-weight: 700;
 
 		&.available {
-			background-color: color-palette.$light-green-300;
+			background-color: color.scale(color-palette.$light-green-400, $whiteness: 50%);
+			color: color-palette.$light-green-900;
 		}
 
 		&.registered {
-			background-color: color-palette.$orange-a200;
+			background-color: color.scale(colors.$primary, $whiteness: 60%);
+			color: color.scale(colors.$primary, $whiteness: -20%);
 		}
 	}
 
