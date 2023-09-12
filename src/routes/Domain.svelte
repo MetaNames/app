@@ -13,6 +13,10 @@
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 250);
 
+	import { toSvg } from "jdenticon";
+
+	$: domainAvatar = domain.name && toSvg(domain.name, 600);
+
 	export let domain: Domain;
 
 	let selectedRecord: string;
