@@ -9,7 +9,7 @@
 
 	import { toSvg } from "jdenticon";
 
-	$: domainAvatar = domain.name && toSvg(domain.name, 600);
+	$: domainAvatar = domain.name && toSvg(domain.name, 250);
 
 	export let domain: Domain;
 
@@ -64,9 +64,8 @@
 		overflow: hidden;
 
 		& .svg {
-			display: relative;
-			top: -50pt;
-			left: -50%;
+			display: flex;
+			justify-content: center;
 		}
 	}
 	h6 {
