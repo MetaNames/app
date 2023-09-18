@@ -17,6 +17,7 @@
 
 	$: errors = invalid ? validator.errors : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
+	$: nameSearchedLabel = nameSearched ? `${nameSearched}.meta` : null;
 
 	async function submit() {
 		if (invalid) return;
@@ -60,7 +61,7 @@
 		<Card>
 			<CardContent>
 				<div class="card-content">
-					<span>{nameSearched}</span>
+					<span>{nameSearchedLabel}</span>
 					<span class="chip registered">Registered</span>
 				</div>
 			</CardContent>
@@ -71,7 +72,7 @@
 		<Card>
 			<CardContent>
 				<div class="card-content">
-					<span>{nameSearched}</span>
+					<span>{nameSearchedLabel}</span>
 					<span class="chip available">Available</span>
 				</div>
 			</CardContent>
@@ -81,7 +82,7 @@
 	<Card>
 		<CardContent>
 			<div class="card-content">
-				<span>{nameSearched}</span>
+				<span>{nameSearchedLabel}</span>
 
 				<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 			</div>
