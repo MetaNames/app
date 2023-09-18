@@ -15,7 +15,7 @@
 
 	import { toSvg } from "jdenticon";
 
-	$: domainAvatar = domain.name && toSvg(domain.name, 600);
+	$: domainAvatar = domain.name && toSvg(domain.name, 250);
 
 	export let domain: Domain;
 
