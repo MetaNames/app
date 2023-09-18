@@ -5,7 +5,7 @@
 <footer>
 	<div class="logo">
 		<Logo />
-		Meta Names
+		<span>Meta Names</span>
 	</div>
 	<div class="links">
 		<a href="mailto:metanames@proton.me" target="_blank">Contact us</a>
@@ -24,10 +24,11 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
 
-		& a {
-			color: var(--mdc-theme-on-primary);
-		}
+	a,
+	span {
+		color: var(--mdc-theme-on-primary);
 	}
 
 	footer {
