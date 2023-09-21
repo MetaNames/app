@@ -854,6 +854,19 @@
     "@smui/floating-label" "^7.0.0-beta.14"
     svelte2tsx "^0.6.15"
 
+"@smui/paper@^7.0.0-beta.15":
+  version "7.0.0-beta.15"
+  resolved "https://registry.yarnpkg.com/@smui/paper/-/paper-7.0.0-beta.15.tgz#b17a747d0fc0e4acec20a3996c13f086b1d376ca"
+  integrity sha512-qJgu41Gn/5fjhzo9rEhVnYm3U2SL9ECCD1nfmqbRMUzVlaeWrlSwWqJcJSAR6Og2ya8BYBoJetbxUdlLU8X9GA==
+  dependencies:
+    "@material/elevation" "^14.0.0"
+    "@material/feature-targeting" "^14.0.0"
+    "@material/shape" "^14.0.0"
+    "@material/theme" "^14.0.0"
+    "@material/typography" "^14.0.0"
+    "@smui/common" "^7.0.0-beta.15"
+    svelte2tsx "^0.6.21"
+
 "@smui/ripple@^7.0.0-beta.14":
   version "7.0.0-beta.14"
   resolved "https://registry.yarnpkg.com/@smui/ripple/-/ripple-7.0.0-beta.14.tgz#267b1c9655e26a7b27776ffae746f15f2be092b3"
