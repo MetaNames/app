@@ -27,6 +27,13 @@
 		if (res.hasError) console.error(res.errorMessage);
 		else toggleEdit();
 	}
+
+  async function destroy() {
+    // TODO: Ask for confirmation
+    const recordClass = RecordClassEnum[klass as keyof typeof RecordClassEnum];
+    const res = await repository.delete({ class: recordClass });
+    if (res.hasError) console.error(res.errorMessage);
+  }
 </script>
 
 <div>
@@ -37,6 +44,6 @@
 		<IconButton class="material-icons" on:click={toggleEdit}>cancel</IconButton>
 	{:else}
 		<IconButton class="material-icons" on:click={toggleEdit} {disabled}>edit</IconButton>
-		<IconButton class="material-icons" {disabled}>delete</IconButton>
+		<IconButton class="material-icons" on:click={destroy} {disabled}>delete</IconButton>
 	{/if}
 </div>
