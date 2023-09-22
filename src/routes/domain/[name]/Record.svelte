@@ -13,7 +13,7 @@
 	let recordValue = String(value);
 
 	$: label = klass.toString();
-	$: disabled = !edit || !walletConnected;
+	$: disabled = !edit;
 
 	let edit = false;
 
@@ -43,7 +43,7 @@
 		<IconButton class="material-icons" on:click={save}>save</IconButton>
 		<IconButton class="material-icons" on:click={toggleEdit}>cancel</IconButton>
 	{:else}
-		<IconButton class="material-icons" on:click={toggleEdit} {disabled}>edit</IconButton>
-		<IconButton class="material-icons" on:click={destroy} {disabled}>delete</IconButton>
+		<IconButton class="material-icons" on:click={toggleEdit} disabled={!$walletConnected}>edit</IconButton>
+		<IconButton class="material-icons" on:click={destroy} disabled={!$walletConnected}>delete</IconButton>
 	{/if}
 </div>

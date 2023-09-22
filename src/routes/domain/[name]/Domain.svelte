@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk/lib/models/domain';
-	import Button from '@smui/button/src/Button.svelte';
+
+	import Records from './Records.svelte';
 
 	import Card, { Content as CardContent, MediaContent } from '@smui/card';
 	import Media from '@smui/card/src/Media.svelte';
@@ -8,9 +9,7 @@
 	import Paper, { Content } from '@smui/paper';
 	import Tab, { Label } from '@smui/tab';
 	import TabBar from '@smui/tab-bar';
-
 	import { toSvg } from 'jdenticon';
-	import Record from './Record.svelte';
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 250);
 
@@ -62,16 +61,7 @@
 		{:else if tabActive === 'Records'}
 			<Paper variant="unelevated">
 				<Content>
-					<div class="records">
-						<formgroup>
-							{#each Object.keys(records) as key}
-							<Record repository={domain.recordRepository} klass={key} value={records[key]} />
-							{/each}
-						</formgroup>
-						<formgroup>
-							<Button variant="raised">Add record</Button>
-						</formgroup>
-					</div>
+					<Records {records} repository={domain.records} />
 				</Content>
 			</Paper>
 		{/if}
@@ -121,13 +111,4 @@
 		}
 	}
 
-	.records {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-
-		& formgroup {
-			margin: 0.5rem 0;
-		}
-	}
 </style>
