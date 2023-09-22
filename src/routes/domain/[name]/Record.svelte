@@ -4,6 +4,7 @@
 
 	import { RecordClassEnum } from '@metanames/sdk';
 	import type { RecordRepository } from '@metanames/sdk';
+	import { walletConnected } from '$lib/stores';
 
 	export let klass: string;
 	export let value: string;
@@ -12,7 +13,7 @@
 	let recordValue = String(value);
 
 	$: label = klass.toString();
-	$: disabled = !edit;
+	$: disabled = !edit || !walletConnected;
 
 	let edit = false;
 
@@ -35,7 +36,7 @@
 		<IconButton class="material-icons" on:click={save}>save</IconButton>
 		<IconButton class="material-icons" on:click={toggleEdit}>cancel</IconButton>
 	{:else}
-		<IconButton class="material-icons" on:click={toggleEdit}>edit</IconButton>
-		<IconButton class="material-icons">delete</IconButton>
+		<IconButton class="material-icons" on:click={toggleEdit} {disabled}>edit</IconButton>
+		<IconButton class="material-icons" {disabled}>delete</IconButton>
 	{/if}
 </div>
