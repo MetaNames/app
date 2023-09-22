@@ -54,7 +54,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@metanames/sdk": "^2.0.2",
+		"@metanames/sdk": "^2.0.3",
 		"jdenticon": "^3.2.0",
 		"partisia-sdk": "^0.1.1"
 	}
