@@ -4,7 +4,7 @@
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
-	import Domain from '../../Domain.svelte';
+	import Domain from './Domain.svelte';
 
 	import CircularProgress from '@smui/circular-progress';
 
