@@ -28,22 +28,43 @@
 		else toggleEdit();
 	}
 
-  async function destroy() {
-    // TODO: Ask for confirmation
-    const recordClass = RecordClassEnum[klass as keyof typeof RecordClassEnum];
-    const res = await repository.delete(recordClass);
-    if (res.hasError) console.error(res.errorMessage);
-  }
+	async function destroy() {
+		// TODO: Ask for confirmation
+		const recordClass = RecordClassEnum[klass as keyof typeof RecordClassEnum];
+		const res = await repository.delete(recordClass);
+		if (res.hasError) console.error(res.errorMessage);
+	}
 </script>
 
-<div>
+<div class="record-container">
 	<label for={label}>{label}</label>
 	<Textfield for={label} bind:value={recordValue} variant="outlined" {disabled} />
 	{#if edit}
 		<IconButton class="material-icons" on:click={save}>save</IconButton>
 		<IconButton class="material-icons" on:click={toggleEdit}>cancel</IconButton>
 	{:else}
-		<IconButton class="material-icons" on:click={toggleEdit} disabled={!$walletConnected}>edit</IconButton>
-		<IconButton class="material-icons" on:click={destroy} disabled={!$walletConnected}>delete</IconButton>
+		<div class="actions">
+			<IconButton class="material-icons" on:click={toggleEdit} disabled={!$walletConnected}
+				>edit</IconButton
+			>
+			<IconButton class="material-icons" on:click={destroy} disabled={!$walletConnected}
+				>delete</IconButton
+			>
+		</div>
 	{/if}
 </div>
+
+<style lang="scss">
+	.record-container {
+		width: 100%;
+		display: grid;
+		grid-template-columns: 1fr 2fr 1fr;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.actions {
+		display: flex;
+    justify-content: flex-end;
+	}
+</style>
