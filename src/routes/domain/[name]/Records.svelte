@@ -18,13 +18,14 @@
 	$: unusedRecordsClasses = Object.values(RecordClassEnum).filter(
 		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
 	);
+	$: selectRecordInvalid = selectedRecordClass === '';
+	$: recordValueInvalid = newRecordValue === '';
 
 	let selectedRecordClass: string | undefined;
 	let newRecordValue: string = '';
 
 	async function createRecord() {
-		// TODO: Add error handling
-		if (!selectedRecordClass) return;
+		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) return;
 
 		const recordClass = getRecordClassFrom(selectedRecordClass);
 		const res = await repository.create({ class: recordClass, data: newRecordValue });
@@ -38,20 +39,32 @@
 </script>
 
 <div class="records">
+	<!-- TODO: Hide edit elements until edit button is not clicked -->
 	<formgroup>
 		{#each Object.keys(records) as key}
 			<RecordComponent {repository} klass={key} value={records[key]} />
 		{/each}
 	</formgroup>
 	<br />
-	<formgroup>
-		<!-- TODO: Hide fields until clicking on "Add record" button -->
-		<Select bind:value={selectedRecordClass} label="Select Class" {disabled}>
+	<formgroup class="add-record">
+		<Select
+			bind:value={selectedRecordClass}
+			label="Select Class"
+			{disabled}
+			invalid={selectRecordInvalid}
+			variant="outlined"
+		>
 			{#each unusedRecordsClasses as klass}
 				<Option value={klass}>{klass}</Option>
 			{/each}
 		</Select>
-		<Textfield bind:value={newRecordValue} label="Record value" {disabled} />
+		<Textfield
+			bind:value={newRecordValue}
+			label="Record value"
+			{disabled}
+			invalid={recordValueInvalid}
+			variant="outlined"
+		/>
 		<Button variant="raised" on:click={createRecord} {disabled}>Add record</Button>
 	</formgroup>
 </div>
@@ -68,7 +81,20 @@
 
 		& formgroup {
 			margin: 0.5rem 0;
-			width: 100%
+			width: 100%;
+		}
+	}
+
+	@media (max-width: 800px) {
+		.records {
+			& formgroup {
+				width: 100%;
+			}
+			& .add-record {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+			}
 		}
 	}
 </style>
