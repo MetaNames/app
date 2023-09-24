@@ -31,7 +31,7 @@
   async function destroy() {
     // TODO: Ask for confirmation
     const recordClass = RecordClassEnum[klass as keyof typeof RecordClassEnum];
-    const res = await repository.delete({ class: recordClass });
+    const res = await repository.delete(recordClass);
     if (res.hasError) console.error(res.errorMessage);
   }
 </script>
