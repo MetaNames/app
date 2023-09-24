@@ -2,7 +2,6 @@
 	import IconButton from '@smui/icon-button/src/IconButton.svelte';
 	import Textfield from '@smui/textfield';
 
-	import { RecordClassEnum } from '@metanames/sdk';
 	import type { RecordRepository } from '@metanames/sdk';
 	import { walletConnected } from '$lib/stores';
 	import { getRecordClassFrom } from '$lib';
