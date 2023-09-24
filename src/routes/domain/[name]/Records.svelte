@@ -8,6 +8,7 @@
 
 	import RecordComponent from './Record.svelte';
 	import Textfield from '@smui/textfield';
+	import { getRecordClassFrom } from '$lib';
 
 	export let records: Record<string, string>;
 	export let repository: RecordRepository;
@@ -25,7 +26,7 @@
 		// TODO: Add error handling
 		if (!selectedRecordClass) return;
 
-		const recordClass = RecordClassEnum[selectedRecordClass as keyof typeof RecordClassEnum];
+		const recordClass = getRecordClassFrom(selectedRecordClass);
 		const res = await repository.create({ class: recordClass, data: newRecordValue });
 		if (res.hasError) console.error(res.errorMessage);
 		else {

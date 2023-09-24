@@ -5,6 +5,7 @@
 	import { RecordClassEnum } from '@metanames/sdk';
 	import type { RecordRepository } from '@metanames/sdk';
 	import { walletConnected } from '$lib/stores';
+	import { getRecordClassFrom } from '$lib';
 
 	export let klass: string;
 	export let value: string;
@@ -22,7 +23,7 @@
 	}
 
 	async function save() {
-		const recordClass = RecordClassEnum[klass as keyof typeof RecordClassEnum];
+		const recordClass = getRecordClassFrom(klass);
 		const res = await repository.update({ class: recordClass, data: recordValue });
 		if (res.hasError) console.error(res.errorMessage);
 		else toggleEdit();
@@ -30,7 +31,7 @@
 
 	async function destroy() {
 		// TODO: Ask for confirmation
-		const recordClass = RecordClassEnum[klass as keyof typeof RecordClassEnum];
+		const recordClass = getRecordClassFrom(klass);
 		const res = await repository.delete(recordClass);
 		if (res.hasError) console.error(res.errorMessage);
 	}
