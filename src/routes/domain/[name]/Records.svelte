@@ -22,11 +22,14 @@
 	let newRecordValue: string = '';
 
 	async function createRecord() {
+		// TODO: Add error handling
+		if (!selectedRecordClass) return;
+
 		const recordClass = RecordClassEnum[selectedRecordClass as keyof typeof RecordClassEnum];
 		const res = await repository.create({ class: recordClass, data: newRecordValue });
 		if (res.hasError) console.error(res.errorMessage);
 		else {
-			records[recordClass] = newRecordValue;
+			records[selectedRecordClass] = newRecordValue;
 			selectedRecordClass = undefined;
 			newRecordValue = '';
 		}
@@ -64,6 +67,7 @@
 
 		& formgroup {
 			margin: 0.5rem 0;
+			width: 100%
 		}
 	}
 </style>
