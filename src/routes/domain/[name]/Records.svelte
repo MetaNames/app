@@ -12,11 +12,13 @@
 	export let records: Record<string, string>;
 	export let repository: RecordRepository;
 
-  $: disabled = !$walletConnected;
+	$: disabled = !$walletConnected;
 	$: existingRecordClasses = Object.keys(records);
-	$: recordsClasses = Object.values(RecordClassEnum).filter((klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass));
+	$: unusedRecordsClasses = Object.values(RecordClassEnum).filter(
+		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
+	);
 
-	let selectedRecordClass: RecordClassEnum;
+	let selectedRecordClass: string | undefined;
 	let newRecordValue: string = '';
 
 	async function createRecord() {
@@ -24,7 +26,7 @@
 		const res = await repository.create({ class: recordClass, data: newRecordValue });
 		if (res.hasError) console.error(res.errorMessage);
 		else {
-			records[selectedRecordClass] = newRecordValue;
+			records[recordClass] = newRecordValue;
 			selectedRecordClass = undefined;
 			newRecordValue = '';
 		}
@@ -41,10 +43,10 @@
 	<formgroup>
 		<!-- TODO: Hide fields until clicking on "Add record" button -->
 		<Select bind:value={selectedRecordClass} label="Select Class" {disabled}>
-      {#each recordsClasses as klass}
-        <Option value={klass}>{klass}</Option>
-      {/each}
-    </Select>
+			{#each unusedRecordsClasses as klass}
+				<Option value={klass}>{klass}</Option>
+			{/each}
+		</Select>
 		<Textfield bind:value={newRecordValue} label="Record value" {disabled} />
 		<Button variant="raised" on:click={createRecord} {disabled}>Add record</Button>
 	</formgroup>
