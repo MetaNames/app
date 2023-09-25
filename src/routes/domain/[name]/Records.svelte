@@ -21,6 +21,7 @@
 	$: selectRecordInvalid = selectedRecordClass === '';
 	$: recordValueInvalid = newRecordValue === '';
 
+	let editMode = false;
 	let selectedRecordClass: string | undefined;
 	let newRecordValue: string = '';
 
@@ -39,42 +40,42 @@
 </script>
 
 <div class="records">
-	<!-- TODO: Hide edit elements until edit button is not clicked -->
 	<formgroup>
 		{#each Object.keys(records) as key}
-			<RecordComponent {repository} klass={key} value={records[key]} />
+			<RecordComponent {repository} klass={key} value={records[key]} editMode={editMode} />
 		{/each}
 	</formgroup>
 	<br />
-	<formgroup class="add-record">
-		<Select
-			class="mobile--mt-1"
-			bind:value={selectedRecordClass}
-			label="Select Class"
-			{disabled}
-			invalid={selectRecordInvalid}
-			variant="outlined"
-		>
-			{#each unusedRecordsClasses as klass}
-				<Option value={klass}>{klass}</Option>
-			{/each}
-		</Select>
-		<Textfield
-			class="mobile--mt-1"
-			bind:value={newRecordValue}
-			label="Record value"
-			{disabled}
-			invalid={recordValueInvalid}
-			variant="outlined"
-		/>
-		<Button class="mobile--mt-1" variant="raised" on:click={createRecord} {disabled}>Add record</Button>
-	</formgroup>
+	{#if !editMode}
+		<Button variant="raised" on:click={() => (editMode = true)} {disabled}>Edit</Button>
+	{:else}
+		<formgroup class="add-record">
+			<Select
+				class="mobile--mt-1"
+				bind:value={selectedRecordClass}
+				label="Select Class"
+				invalid={selectRecordInvalid}
+				variant="outlined"
+			>
+				{#each unusedRecordsClasses as klass}
+					<Option value={klass}>{klass}</Option>
+				{/each}
+			</Select>
+			<Textfield
+				class="mobile--mt-1"
+				bind:value={newRecordValue}
+				label="Record value"
+				invalid={recordValueInvalid}
+				variant="outlined"
+			/>
+			<Button class="mobile--mt-1" variant="raised" on:click={createRecord}>Add record</Button>
+		</formgroup>
+	{/if}
 </div>
 
 <style lang="scss">
 	br {
 		margin: 1rem 0;
-		// TODO: Add separator color
 	}
 	.records {
 		display: flex;

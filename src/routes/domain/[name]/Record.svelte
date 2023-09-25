@@ -11,6 +11,7 @@
 	export let klass: string;
 	export let value: string;
 	export let repository: RecordRepository;
+	export let editMode = false;
 
 	let recordValue = String(value);
 	let dialogOpen = false;
@@ -39,7 +40,7 @@
 	}
 </script>
 
-<div class="record-container">
+<div class="record-container {editMode ? 'edit' : ''}">
 	<Dialog
 		bind:open={dialogOpen}
 		aria-labelledby="confirmation-title"
@@ -59,15 +60,19 @@
 	<label for={label}>{label}</label>
 	<Textfield for={label} bind:value={recordValue} variant="outlined" {disabled} />
 	{#if edit}
-		<IconButton class="material-icons" on:click={save}>save</IconButton>
-		<IconButton class="material-icons" on:click={toggleEdit}>cancel</IconButton>
-	{:else}
+		<div class="actions">
+			<IconButton class="material-icons" on:click={save}>save</IconButton>
+			<IconButton class="material-icons" on:click={toggleEdit}>cancel</IconButton>
+		</div>
+	{:else if editMode}
 		<div class="actions">
 			<IconButton class="material-icons" on:click={toggleEdit} disabled={!$walletConnected}
 				>edit</IconButton
 			>
-			<IconButton class="material-icons" on:click={() => (dialogOpen = true)} disabled={!$walletConnected}
-				>delete</IconButton
+			<IconButton
+				class="material-icons"
+				on:click={() => (dialogOpen = true)}
+				disabled={!$walletConnected}>delete</IconButton
 			>
 		</div>
 	{/if}
@@ -77,9 +82,13 @@
 	.record-container {
 		width: 100%;
 		display: grid;
-		grid-template-columns: 1fr 2fr 1fr;
+		grid-template-columns: 1fr 2fr;
 		align-items: center;
 		justify-content: space-between;
+		&.edit {
+			display: grid;
+			grid-template-columns: 1fr 2fr 1fr;
+		}
 	}
 
 	.actions {
