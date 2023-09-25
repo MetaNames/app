@@ -21,7 +21,7 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content">
+<div class="content domain">
 	{#if domain}
 		<Domain {domain} />
 	{:else if domain === undefined}
@@ -31,3 +31,15 @@
 		<a href="/">Go back</a>
 	{/if}
 </div>
+
+<style lang="scss">
+	.domain {
+		min-width: 60vw;
+	}
+
+	@media (max-width: 768px) {
+		.domain {
+			min-width: 90vw;
+		}
+	}
+</style>

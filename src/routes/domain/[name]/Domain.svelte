@@ -23,17 +23,13 @@
 	let tabActive = 'Details';
 </script>
 
-<Card>
-	<Media aspectRatio="16x9">
-		<MediaContent>
-			<div class="avatar">
-				<div class="svg">
-					{@html domainAvatar}
-				</div>
-			</div>
-		</MediaContent>
-	</Media>
+<Card class="w-100">
 	<CardContent>
+		<div class="avatar">
+			<div class="svg">
+				{@html domainAvatar}
+			</div>
+		</div>
 		<h5 class="domain">{domain.name}</h5>
 		<TabBar {tabs} let:tab bind:active={tabActive}>
 			<Tab {tab}>
@@ -110,5 +106,4 @@
 			word-wrap: break-word;
 		}
 	}
-
 </style>

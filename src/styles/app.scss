@@ -18,7 +18,11 @@
   width: 50vw;
 }
 
-@media (max-width: 800px) {
+.w-100 {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
   .mobile--mt-1 {
     margin-top: 1rem;
   }

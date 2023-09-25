@@ -93,7 +93,7 @@
 		}
 	}
 
-	@media (max-width: 800px) {
+	@media (max-width: 768px) {
 		.records {
 			& formgroup {
 				width: 100%;
