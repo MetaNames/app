@@ -20,6 +20,7 @@
 	);
 	$: selectRecordInvalid = newRecordSubmitted && selectedRecordClass === '';
 	$: recordValueInvalid = newRecordSubmitted && newRecordValue === '';
+	$: editLabel = records && Object.keys(records).length > 0 ? 'Edit records' : 'Add record';
 
 	let editMode = false;
 	let selectedRecordClass: string | undefined;
@@ -52,7 +53,7 @@
 	</formgroup>
 	<br />
 	{#if !editMode}
-		<Button variant="raised" on:click={() => (editMode = true)} {disabled}>Edit</Button>
+		<Button variant="raised" on:click={() => (editMode = true)} {disabled}>{editLabel}</Button>
 	{:else}
 		<formgroup class="add-record">
 			<Select
