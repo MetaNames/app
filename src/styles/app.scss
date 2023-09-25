@@ -1,3 +1,5 @@
+@import './theme-overrides.scss';
+
 .content {
   align-self: center;
   flex-grow: 1;
@@ -12,7 +14,27 @@
   }
 }
 
-
 .domain-input {
   width: 50vw;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.mr-1 {
+  margin-right: 1rem;
+}
+
+@media (max-width: 768px) {
+  .mobile--mt-1 {
+    margin-top: 1rem;
+  }
+  .mobile--mr-0 {
+    margin-right: 0;
+  }
+
+  .mobile--w-100{
+    width: 100%;
+  }
 }

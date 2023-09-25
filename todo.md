@@ -1,10 +1,14 @@
 
 ## Add domain register
 
-- Ok - Redirect to register & show page from home
-- Ok - Add domain show page
-- Add domain register page
+- [x] Redirect to register & show page from home
+- [x] Add domain show page
+- [x] Add domain register page
 
+## Show domain page
+- [ ] Add tailwind accessibility helpers
+- [ ] Improve details tab
 
-## Improve search
--  Add deferred search
+### Subdomains tab
+- [ ] Show all subdomains
+- [ ] Link to subdomain

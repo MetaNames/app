@@ -1,36 +1,35 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk/lib/models/domain';
 
+	import Records from './Records.svelte';
+
 	import Card, { Content as CardContent, MediaContent } from '@smui/card';
 	import Media from '@smui/card/src/Media.svelte';
 	import { Icon } from '@smui/icon-button';
 	import Paper, { Content } from '@smui/paper';
-	import Select, { Option } from '@smui/select';
 	import Tab, { Label } from '@smui/tab';
 	import TabBar from '@smui/tab-bar';
-
 	import { toSvg } from 'jdenticon';
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 250);
 
 	export let domain: Domain;
 
-	let selectedRecord: string;
+	const records = Object.fromEntries(
+		[...domain.records].map(([key, value]) => [key, value.toString()])
+	);
+
 	let tabs = ['Details', 'Records'];
 	let tabActive = 'Details';
 </script>
 
-<Card>
-	<Media aspectRatio="16x9">
-		<MediaContent>
-			<div class="avatar">
-				<div class="svg">
-					{@html domainAvatar}
-				</div>
-			</div>
-		</MediaContent>
-	</Media>
+<Card class="w-100">
 	<CardContent>
+		<div class="avatar">
+			<div class="svg">
+				{@html domainAvatar}
+			</div>
+		</div>
 		<h5 class="domain">{domain.name}</h5>
 		<TabBar {tabs} let:tab bind:active={tabActive}>
 			<Tab {tab}>
@@ -58,20 +57,7 @@
 		{:else if tabActive === 'Records'}
 			<Paper variant="unelevated">
 				<Content>
-					<h6>Records</h6>
-					<formgroup>
-						<Select bind:value={selectedRecord} label="Record type" variant="outlined">
-							{#each domain.records as [key]}
-								<Option value={key}>{key}</Option>
-							{/each}
-						</Select>
-					</formgroup>
-					{#if selectedRecord}
-						<div class="value-container">
-							<p>Value</p>
-							<span>{domain.records.get(selectedRecord)}</span>
-						</div>
-					{/if}
+					<Records {records} repository={domain.recordRepository} />
 				</Content>
 			</Paper>
 		{/if}
