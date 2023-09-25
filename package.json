@@ -27,7 +27,10 @@
 		"@smui/list": "^7.0.0-beta.14",
 		"@smui/menu": "^7.0.0-beta.14",
 		"@smui/menu-surface": "^7.0.0-beta.14",
+		"@smui/paper": "^7.0.0-beta.15",
 		"@smui/select": "^7.0.0-beta.14",
+		"@smui/tab": "^7.0.0-beta.15",
+		"@smui/tab-bar": "^7.0.0-beta.15",
 		"@smui/textfield": "^7.0.0-beta.14",
 		"@smui/top-app-bar": "^7.0.0-beta.14",
 		"@sveltejs/adapter-auto": "^2.0.0",
@@ -51,7 +54,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@metanames/sdk": "^2.0.2",
+		"@metanames/sdk": "^2.0.3",
+		"jdenticon": "^3.2.0",
 		"partisia-sdk": "^0.1.1"
 	}
 }

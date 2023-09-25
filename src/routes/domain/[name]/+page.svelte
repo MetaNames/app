@@ -3,7 +3,10 @@
 	import { metaNamesSdk } from '$lib';
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
+
 	import Domain from '../../Domain.svelte';
+
+	import CircularProgress from '@smui/circular-progress';
 
 	let domain: DomainModel | null;
 
@@ -22,7 +25,7 @@
 	{#if domain}
 		<Domain {domain} />
 	{:else if domain === undefined}
-		<p>Loading...</p>
+		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else if domain === null}
 		<p>Domain not found</p>
 		<a href="/">Go back</a>
