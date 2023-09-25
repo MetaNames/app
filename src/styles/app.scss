@@ -1,3 +1,5 @@
+@import './theme-overrides.scss';
+
 .content {
   align-self: center;
   flex-grow: 1;
@@ -11,7 +13,6 @@
     width: 100%;
   }
 }
-
 
 .domain-input {
   width: 50vw;
