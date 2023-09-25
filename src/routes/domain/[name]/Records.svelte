@@ -18,14 +18,18 @@
 	$: unusedRecordsClasses = Object.values(RecordClassEnum).filter(
 		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
 	);
-	$: selectRecordInvalid = selectedRecordClass === '';
-	$: recordValueInvalid = newRecordValue === '';
+	$: selectRecordInvalid = newRecordSubmitted && selectedRecordClass === '';
+	$: recordValueInvalid = newRecordSubmitted && newRecordValue === '';
 
 	let editMode = false;
 	let selectedRecordClass: string | undefined;
 	let newRecordValue: string = '';
+	let newRecordSubmitted = false;
 
 	async function createRecord() {
+		if (selectedRecordClass === undefined) selectedRecordClass = '';
+		newRecordSubmitted = true;
+
 		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) return;
 
 		const recordClass = getRecordClassFrom(selectedRecordClass);
@@ -35,6 +39,7 @@
 			records[selectedRecordClass] = newRecordValue;
 			selectedRecordClass = undefined;
 			newRecordValue = '';
+			newRecordSubmitted = false;
 		}
 	}
 </script>
@@ -42,7 +47,7 @@
 <div class="records">
 	<formgroup>
 		{#each Object.keys(records) as key}
-			<RecordComponent {repository} klass={key} value={records[key]} editMode={editMode} />
+			<RecordComponent {repository} klass={key} value={records[key]} {editMode} />
 		{/each}
 	</formgroup>
 	<br />
