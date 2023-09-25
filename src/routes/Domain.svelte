@@ -59,13 +59,13 @@
 			<Paper variant="unelevated">
 				<Content>
 					<h6>Records</h6>
-					<fieldset>
+					<div>
 						<Select bind:value={selectedRecord} label="Record type" variant="outlined">
 							{#each domain.records as [key]}
 								<Option value={key}>{key}</Option>
 							{/each}
 						</Select>
-					</fieldset>
+					</div>
 					{#if selectedRecord}
 						<div class="value-container">
 							<p>Value</p>

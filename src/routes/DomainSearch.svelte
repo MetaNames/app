@@ -34,7 +34,7 @@
 </script>
 
 <form class="lookup-form" on:submit|preventDefault={submit}>
-	<fieldset>
+	<div>
 		<Textfield
 			class="domain-input"
 			variant="outlined"
@@ -54,7 +54,7 @@
 				{/if}
 			</svelte:fragment>
 		</Textfield>
-	</fieldset>
+	</div>
 </form>
 {#if domain}
 	<a class="domain-link" href={`/domain/${domain.name}`}>
@@ -96,7 +96,7 @@
 	@use '../theme/colors.scss';
 
 	form {
-		> fieldset {
+		> div {
 			margin: 0.5rem 0;
 		}
 

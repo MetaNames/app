@@ -46,16 +46,18 @@
 </script>
 
 <div class="records">
-	<fieldset>
+	<div>
 		{#each Object.keys(records) as key}
-			<RecordComponent {repository} klass={key} value={records[key]} {editMode} />
+			<div class="mt-1">
+				<RecordComponent {repository} klass={key} value={records[key]} {editMode} />
+			</div>
 		{/each}
-	</fieldset>
+	</div>
 	<br />
 	{#if !editMode}
 		<Button variant="raised" on:click={() => (editMode = true)} {disabled}>{editLabel}</Button>
 	{:else}
-		<fieldset class="add-record">
+		<div class="add-record">
 			<Select
 				class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
 				bind:value={selectedRecordClass}
@@ -75,7 +77,7 @@
 				variant="outlined"
 			/>
 			<Button class="mobile--mt-1" variant="raised" on:click={createRecord}>Add record</Button>
-		</fieldset>
+		</div>
 	{/if}
 </div>
 
@@ -88,7 +90,7 @@
 		flex-direction: column;
 		align-items: center;
 
-		& fieldset {
+		& div {
 			margin: 0.5rem 0;
 			width: 100%;
 		}
@@ -102,7 +104,7 @@
 
 	@media (max-width: 768px) {
 		.records {
-			& fieldset {
+			& div {
 				width: 100%;
 			}
 			& .add-record {
