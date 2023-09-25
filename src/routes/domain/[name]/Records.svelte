@@ -56,7 +56,7 @@
 	{:else}
 		<formgroup class="add-record">
 			<Select
-				class="mobile--mt-1"
+				class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
 				bind:value={selectedRecordClass}
 				label="Select Class"
 				invalid={selectRecordInvalid}
@@ -67,7 +67,7 @@
 				{/each}
 			</Select>
 			<Textfield
-				class="mobile--mt-1"
+				class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
 				bind:value={newRecordValue}
 				label="Record value"
 				invalid={recordValueInvalid}
@@ -90,6 +90,12 @@
 		& formgroup {
 			margin: 0.5rem 0;
 			width: 100%;
+		}
+
+		& .add-record {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 	}
 
