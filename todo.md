@@ -6,8 +6,9 @@
 - [x] Add domain register page
 
 ## Show domain page
-- [ ] Add tailwind accessibility helpers
 - [ ] Improve details tab
+- [ ] Add tailwind accessibility helpers
+- [ ] Show avatar if record is present
 
 ### Subdomains tab
 - [ ] Show all subdomains
