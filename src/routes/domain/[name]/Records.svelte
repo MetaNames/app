@@ -48,6 +48,7 @@
 	<br />
 	<formgroup class="add-record">
 		<Select
+			class="mobile--mt-1"
 			bind:value={selectedRecordClass}
 			label="Select Class"
 			{disabled}
@@ -59,13 +60,14 @@
 			{/each}
 		</Select>
 		<Textfield
+			class="mobile--mt-1"
 			bind:value={newRecordValue}
 			label="Record value"
 			{disabled}
 			invalid={recordValueInvalid}
 			variant="outlined"
 		/>
-		<Button variant="raised" on:click={createRecord} {disabled}>Add record</Button>
+		<Button class="mobile--mt-1" variant="raised" on:click={createRecord} {disabled}>Add record</Button>
 	</formgroup>
 </div>
 
