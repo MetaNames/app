@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Button, { Label } from '@smui/button';
+	import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import IconButton from '@smui/icon-button/src/IconButton.svelte';
 	import Textfield from '@smui/textfield';
 
@@ -11,6 +13,7 @@
 	export let repository: RecordRepository;
 
 	let recordValue = String(value);
+	let dialogOpen = false;
 
 	$: label = klass.toString();
 	$: disabled = !edit;
@@ -29,14 +32,30 @@
 	}
 
 	async function destroy() {
-		// TODO: Ask for confirmation
 		const recordClass = getRecordClassFrom(klass);
 		const res = await repository.delete(recordClass);
 		if (res.hasError) console.error(res.errorMessage);
+		else location.reload();
 	}
 </script>
 
 <div class="record-container">
+	<Dialog
+		bind:open={dialogOpen}
+		aria-labelledby="confirmation-title"
+		aria-describedby="confirmation-content"
+	>
+		<Title id="simple-title">Confirm action</Title>
+		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Actions>
+			<Button>
+				<Label>No</Label>
+			</Button>
+			<Button on:click={destroy}>
+				<Label>Yes</Label>
+			</Button>
+		</Actions>
+	</Dialog>
 	<label for={label}>{label}</label>
 	<Textfield for={label} bind:value={recordValue} variant="outlined" {disabled} />
 	{#if edit}
@@ -47,7 +66,7 @@
 			<IconButton class="material-icons" on:click={toggleEdit} disabled={!$walletConnected}
 				>edit</IconButton
 			>
-			<IconButton class="material-icons" on:click={destroy} disabled={!$walletConnected}
+			<IconButton class="material-icons" on:click={() => (dialogOpen = true)} disabled={!$walletConnected}
 				>delete</IconButton
 			>
 		</div>
@@ -65,6 +84,6 @@
 
 	.actions {
 		display: flex;
-    justify-content: flex-end;
+		justify-content: flex-end;
 	}
 </style>
