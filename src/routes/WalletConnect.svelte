@@ -9,6 +9,7 @@
 
 	import { metaNamesSdkFactory } from '$lib';
 	import '../styles/wallet-connect.scss';
+	import { goto } from '$app/navigation';
 
 	const shortAddress = derived(walletClient, ($client) => {
 		if ($client?.connection) {
@@ -49,6 +50,9 @@
 		anchorCorner="BOTTOM_LEFT"
 	>
 		<List>
+			<Item on:SMUI:action={() => goto('/profile')}>
+				<Text>Profile</Text>
+			</Item>
 			<Item on:SMUI:action={disconnectWallet}>
 				<Text>Disconnect</Text>
 			</Item>
