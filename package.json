@@ -55,8 +55,9 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@metanames/sdk": "^2.1.0",
+		"@metanames/sdk": "^2.2.0",
 		"jdenticon": "^3.2.0",
-		"partisia-sdk": "^0.1.1"
+		"partisia-sdk": "^0.1.1",
+		"svelte-table": "^0.6.1"
 	}
 }

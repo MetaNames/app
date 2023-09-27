@@ -7,6 +7,8 @@
 	import Domain from './Domain.svelte';
 
 	import CircularProgress from '@smui/circular-progress';
+	import Paper from '@smui/paper';
+	import Button from '@smui/button';
 
 	let domain: DomainModel | null;
 
@@ -27,8 +29,10 @@
 	{:else if domain === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else if domain === null}
-		<p>Domain not found</p>
-		<a href="/">Go back</a>
+		<Paper class="w-100 text-center" variant="raised">
+				<h3>Domain not found</h3>
+				<Button href="/" variant="raised">Go back</Button>
+		</Paper>
 	{/if}
 </div>
 

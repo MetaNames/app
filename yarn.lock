@@ -644,10 +644,10 @@
     "@material/theme" "^14.0.0"
     tslib "^2.1.0"
 
-"@metanames/sdk@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-2.1.0.tgz#266989470ee3c567b43d342dfeb50e3a6c5f991a"
-  integrity sha512-nCyFcsGgqFQIvTCQKF1tpBwtXgEFTbderiEzhGwEKJqgxBpuiWPZvyIZhtgXKTTjemWD83qBdqk4WffFrLqhUA==
+"@metanames/sdk@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-2.2.0.tgz#e28b9f8525d61039d6326b9d00e07eb020327ca6"
+  integrity sha512-RIXfsjrJPvaWivjgktgYTSGCahmwcUVdyn8V3uq7P75apDkhubONcJBIDCPvUSMSx1TWdDlXBz9lOkVJFHySqA==
   dependencies:
     "@partisiablockchain/abi-client-ts" "^3.13.0"
     "@secata-public/bitmanipulation-ts" "^3.0.2"
@@ -3776,6 +3776,11 @@ svelte-preprocess@^5.0.4:
     magic-string "^0.27.0"
     sorcery "^0.11.0"
     strip-indent "^3.0.0"
+
+svelte-table@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/svelte-table/-/svelte-table-0.6.1.tgz#0700a25eac21372b9c6d37d91e0e5b6ffe890609"
+  integrity sha512-DfSwLs19mtp9V4rFo4oYv8T0YWFOR0Yy+43qtj3fPbZhd1h3vyycJ5c6mFlxICnsNYOD7WOjmQ/EpXY85mmJMQ==
 
 svelte2tsx@^0.6.15:
   version "0.6.20"
