@@ -45,7 +45,7 @@
 	async function getDomains(walletAddress: string | undefined) {
 		if (!walletAddress) return [];
 
-		const domains: Domain[] = await $metaNamesSdkAuthenticated?.domainRepository?.findByOwner(
+		const domains = await $metaNamesSdkAuthenticated?.domainRepository?.findByOwner(
 			walletAddress
 		);
 		if (domains) return domains;
