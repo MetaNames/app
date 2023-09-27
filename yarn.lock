@@ -644,10 +644,10 @@
     "@material/theme" "^14.0.0"
     tslib "^2.1.0"
 
-"@metanames/sdk@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-2.1.0.tgz#266989470ee3c567b43d342dfeb50e3a6c5f991a"
-  integrity sha512-nCyFcsGgqFQIvTCQKF1tpBwtXgEFTbderiEzhGwEKJqgxBpuiWPZvyIZhtgXKTTjemWD83qBdqk4WffFrLqhUA==
+"@metanames/sdk@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-2.2.0.tgz#e28b9f8525d61039d6326b9d00e07eb020327ca6"
+  integrity sha512-RIXfsjrJPvaWivjgktgYTSGCahmwcUVdyn8V3uq7P75apDkhubONcJBIDCPvUSMSx1TWdDlXBz9lOkVJFHySqA==
   dependencies:
     "@partisiablockchain/abi-client-ts" "^3.13.0"
     "@secata-public/bitmanipulation-ts" "^3.0.2"
