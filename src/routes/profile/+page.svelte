@@ -14,25 +14,25 @@
 			key: 'name',
 			title: 'Domain Name',
 			sortable: true,
-      parseHTML: true,
-      value: (row: Domain) => row.name,
+			parseHTML: true,
+			value: (row: Domain) => row.name,
 			renderValue: (row: Domain) => {
-        return `<a href="/domain/${row.name}">${row.name}</a>`;
-      }
+				return `<a href="/domain/${row.name}">${row.name}</a>`;
+			}
 		},
 		{
 			key: 'parentId',
 			title: 'Parent',
 			sortable: true,
-      parseHTML: true,
-      value: (row: Domain) => row.parentId ?? '',
+			parseHTML: true,
+			value: (row: Domain) => row.parentId ?? '',
 			renderValue: (row: Domain) => {
-        if (row.parentId) {
-          return `<a href="/domain/${row.parentId}">${row.parentId}</a>`;
-        } else {
-          return '';
-        }
-      }
+				if (row.parentId) {
+					return `<a href="/domain/${row.parentId}">${row.parentId}</a>`;
+				} else {
+					return '';
+				}
+			}
 		},
 		{
 			key: 'tokenId',
@@ -58,13 +58,18 @@
 		<div class="paper-content">
 			{#if $walletConnected}
 				<h3>Profile</h3>
-        <p class="address-title">Wallet address</p>
+				<p class="address-title">Wallet address</p>
 				<p>{walletAddress}</p>
-        <h4>Domains</h4>
+				<h4>Domains</h4>
 				{#await getDomains(walletAddress)}
-          <CircularProgress style="height: 32px; width: 32px;" indeterminate />
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 				{:then domains}
-					<SvelteTable {columns} rows={domains} />
+					{#if domains.length === 0}
+						<p>No domains found</p>
+						<a href="/">Register a domain!</a>
+					{:else}
+						<SvelteTable {columns} rows={domains} />
+					{/if}
 				{/await}
 			{:else}
 				<h3>Connect the Wallet</h3>
@@ -75,12 +80,12 @@
 </div>
 
 <style lang="scss">
-  .address-title {
-    font-weight: bold;
-  }
-  .profile {
-    min-width: 60vw;
-  }
+	.address-title {
+		font-weight: bold;
+	}
+	.profile {
+		min-width: 60vw;
+	}
 
 	.paper-content {
 		padding: 1rem;
