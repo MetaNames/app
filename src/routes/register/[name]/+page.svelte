@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 
 	import { metaNamesSdk } from '$lib';
 	import { metaNamesSdkAuthenticated, walletClient, walletConnected } from '$lib/stores';
@@ -10,17 +11,23 @@
 
 	import Button, { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
+	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
-	import { onMount } from 'svelte';
 
 	let domain: DomainModel | null;
 
-	const domainName = $page.params.name;
-	let years = 1;
+	const nameParam = $page.params.name;
 
+	let years = 1;
+	let feesApproved = false;
+
+	$: domainName = nameParam.endsWith('.meta') ? nameParam : `${nameParam}.meta`;
+	$: charsLabel = nameParam.length > 1 ? 'chars' : 'char';
+	$: fees = metaNamesSdk.domainRepository.calculateMintFees(nameParam);
+	$: nameLength = nameParam.length > 5 ? '5+' : nameParam.length;
 	$: pageName = domain ? domain.name + ' | ' : '';
-	$: fees = metaNamesSdk.domainRepository.calculateMintFees(domainName);
 	$: totalFeesAmount = fees.amount * years;
+	$: yearsLabel = years === 1 ? 'year' : 'years';
 
 	function addYears(amount: number) {
 		if (years + amount < 1) return;
@@ -34,23 +41,41 @@
 		if (domain) goto(`/domain/${domain.name}`);
 	});
 
-	async function registerDomain() {
+	function getContext() {
 		const client = get(walletClient);
 		if (!client?.connection) return;
+
+		const address = client.connection.account.address;
 
 		const sdk = get(metaNamesSdkAuthenticated);
 		if (!sdk) return;
 
-		const { hasError, trxHash: approveTrx } = await sdk.domainRepository.approveMintFees(
+		return { address, sdk };
+	}
+
+	async function approveFees() {
+		const context = getContext();
+		if (!context) return;
+
+		const { hasError, trxHash: approveTrx } = await context.sdk.domainRepository.approveMintFees(
 			domainName,
 			years
 		);
 		if (hasError) throw new Error(`Failed to approve mint fees. Transaction: ${approveTrx}`);
+		else feesApproved = true;
+	}
 
-		const { hasError: registerHasError, trxHash: registerTrx } = await sdk.domainRepository.register({
-			domain: domainName,
-			to: client.connection.account.address
-		});
+	async function registerDomain() {
+		const context = getContext();
+		if (!context) return;
+
+		if (!feesApproved) throw new Error('Fees not approved');
+
+		const { hasError: registerHasError, trxHash: registerTrx } =
+			await context.sdk.domainRepository.register({
+				domain: domainName,
+				to: context.address
+			});
 		if (registerHasError) throw new Error(`Failed to register domain. Transaction: ${registerTrx}`);
 
 		goto(`/domain/${domainName}`);
@@ -71,38 +96,42 @@
 						<h4>{domainName}</h4>
 
 						<div class="years">
-							<IconButton class="material-icons" on:click={() => addYears(-1)}>remove</IconButton>
-							<span>{years}</span>
+							<IconButton class="material-icons" on:click={() => addYears(-1)} disabled={years == 1}
+								>remove</IconButton
+							>
+							<span>{years} {yearsLabel}</span>
 							<IconButton class="material-icons" on:click={() => addYears(1)}>add</IconButton>
 						</div>
 
 						<div class="fees">
+							<p class="text-center">Price breakdown</p>
 							<div class="row">
-								<span>1 year registration</span>
+								<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
 								<span>{fees.amount} {fees.token}</span>
 							</div>
 							<div class="row">
-								<span>Total</span>
-								<span>{totalFeesAmount} {fees.token}</span>
+								<span>Total (excluding network fees)</span>
+								<span><b>{totalFeesAmount}</b> {fees.token}</span>
 							</div>
 						</div>
 
 						<div class="submit">
-							<Button
-								class="button"
-								disabled={!$walletConnected}
-								on:click={registerDomain}
-								variant="raised"
-							>
-								<Label>Register</Label>
-							</Button>
+							{#if !feesApproved}
+								<Button disabled={!$walletConnected} on:click={approveFees} variant="raised">
+									<Label>Approve fees</Label>
+								</Button>
+							{:else}
+								<Button disabled={!$walletConnected} on:click={registerDomain} variant="raised">
+									<Label>Register domain</Label>
+								</Button>
+							{/if}
 						</div>
 					</div></Content
 				>
 			</Card>
 		</div>
 	{:else if domain === undefined}
-		<p>Loading...</p>
+		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{/if}
 </div>
 
@@ -132,21 +161,26 @@
 			justify-content: space-between;
 			width: 100%;
 		}
+
+		@media (max-width: 768px) {
+			.row {
+				flex-direction: column;
+				align-items: center;
+				padding-top: 1rem;
+			}
+		}
 	}
 
 	.submit {
 		display: flex;
 		justify-content: center;
+		margin-top: 1rem;
 	}
 
 	.years {
 		display: flex;
 		justify-content: space-evenly;
 		align-items: center;
-
-		button {
-			padding: 1rem;
-		}
 
 		span {
 			font-size: xx-large;
