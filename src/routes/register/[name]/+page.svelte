@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 
 	import { metaNamesSdk } from '$lib';
 	import { metaNamesSdkAuthenticated, walletClient, walletConnected } from '$lib/stores';
@@ -10,8 +11,8 @@
 
 	import Button, { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
+	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
-	import { onMount } from 'svelte';
 
 	let domain: DomainModel | null;
 
@@ -102,7 +103,7 @@
 			</Card>
 		</div>
 	{:else if domain === undefined}
-		<p>Loading...</p>
+		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{/if}
 </div>
 
@@ -143,10 +144,6 @@
 		display: flex;
 		justify-content: space-evenly;
 		align-items: center;
-
-		button {
-			padding: 1rem;
-		}
 
 		span {
 			font-size: xx-large;
