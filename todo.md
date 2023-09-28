@@ -19,5 +19,5 @@
 
 ## Profile page
 
-- [ ] Show all managed domains
-- [ ] Link to domain
+- [x] Show all managed domains
+- [z] Link to domain
