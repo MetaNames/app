@@ -75,10 +75,6 @@
 			justify-content: center;
 		}
 	}
-	h6 {
-		margin-top: 1rem;
-		margin-bottom: 0.5rem;
-	}
 
 	.icon {
 		padding: 0.5rem;
@@ -96,14 +92,5 @@
 		flex-direction: row;
 		align-items: center;
 		margin-top: 1rem;
-	}
-
-	.value-container {
-		margin-top: 1rem;
-
-		> span {
-			font-family: monospace;
-			word-wrap: break-word;
-		}
 	}
 </style>
