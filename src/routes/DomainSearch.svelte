@@ -14,15 +14,22 @@
 	let domainName: string = '';
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
+	let debounceTimer: NodeJS.Timer;
 
 	$: errors = invalid ? validator.errors : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 	$: nameSearchedLabel = nameSearched ? `${nameSearched}.meta` : null;
 
+	function debounce() {
+		clearTimeout(debounceTimer);
+		debounceTimer = setTimeout(async () => await submit(), 500);
+	}
+
 	async function submit() {
 		if (invalid) return;
 
 		if (domainName === '') return;
+		if (domainName === nameSearched) return;
 
 		nameSearched = domainName;
 		isLoading = true;
@@ -39,6 +46,7 @@
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
+			on:keyup={() => debounce()}
 			bind:invalid
 			label="Domain name"
 			withTrailingIcon={true}
