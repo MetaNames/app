@@ -18,6 +18,7 @@
 
 	const domainName = $page.params.name;
 	let years = 1;
+	let feesApproved = false;
 
 	$: pageName = domain ? domain.name + ' | ' : '';
 	$: fees = metaNamesSdk.domainRepository.calculateMintFees(domainName);
@@ -35,22 +36,39 @@
 		if (domain) goto(`/domain/${domain.name}`);
 	});
 
-	async function registerDomain() {
+	function getContext() {
 		const client = get(walletClient);
 		if (!client?.connection) return;
+
+		const address = client.connection.account.address;
 
 		const sdk = get(metaNamesSdkAuthenticated);
 		if (!sdk) return;
 
-		const { hasError, trxHash: approveTrx } = await sdk.domainRepository.approveMintFees(
+		return { address, sdk };
+	}
+
+	async function approveFees() {
+		const context = getContext();
+		if (!context) return;
+
+		const { hasError, trxHash: approveTrx } = await context.sdk.domainRepository.approveMintFees(
 			domainName,
 			years
 		);
 		if (hasError) throw new Error(`Failed to approve mint fees. Transaction: ${approveTrx}`);
+		else feesApproved = true;
+	}
 
-		const { hasError: registerHasError, trxHash: registerTrx } = await sdk.domainRepository.register({
+	async function registerDomain() {
+		const context = getContext();
+		if (!context) return;
+
+		if (!feesApproved) throw new Error('Fees not approved');
+
+		const { hasError: registerHasError, trxHash: registerTrx } = await context.sdk.domainRepository.register({
 			domain: domainName,
-			to: client.connection.account.address
+			to: context.address
 		});
 		if (registerHasError) throw new Error(`Failed to register domain. Transaction: ${registerTrx}`);
 
@@ -89,14 +107,23 @@
 						</div>
 
 						<div class="submit">
+							{#if !feesApproved }
 							<Button
-								class="button"
+								disabled={!$walletConnected}
+								on:click={approveFees}
+								variant="raised"
+							>
+								<Label>Approve fees</Label>
+							</Button>
+							{:else}
+							<Button
 								disabled={!$walletConnected}
 								on:click={registerDomain}
 								variant="raised"
 							>
-								<Label>Register</Label>
+								<Label>Register domain</Label>
 							</Button>
+							{/if}
 						</div>
 					</div></Content
 				>
