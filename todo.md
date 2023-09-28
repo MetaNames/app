@@ -4,6 +4,7 @@
 - [x] Redirect to register & show page from home
 - [x] Add domain show page
 - [x] Add domain register page
+- [x] Add two buttons: approval and mint
 
 ## Show domain page
 
