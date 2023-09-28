@@ -16,13 +16,18 @@
 
 	let domain: DomainModel | null;
 
-	const domainName = $page.params.name;
+	const nameParam = $page.params.name;
+
 	let years = 1;
 	let feesApproved = false;
 
+	$: domainName = nameParam.endsWith('.meta') ? nameParam : `${nameParam}.meta`;
+	$: charsLabel = nameParam.length > 1 ? 'chars' : 'char';
+	$: fees = metaNamesSdk.domainRepository.calculateMintFees(nameParam);
+	$: nameLength = nameParam.length > 5 ? '5+' : nameParam.length;
 	$: pageName = domain ? domain.name + ' | ' : '';
-	$: fees = metaNamesSdk.domainRepository.calculateMintFees(domainName);
 	$: totalFeesAmount = fees.amount * years;
+	$: yearsLabel = years === 1 ? 'year' : 'years';
 
 	function addYears(amount: number) {
 		if (years + amount < 1) return;
@@ -66,10 +71,11 @@
 
 		if (!feesApproved) throw new Error('Fees not approved');
 
-		const { hasError: registerHasError, trxHash: registerTrx } = await context.sdk.domainRepository.register({
-			domain: domainName,
-			to: context.address
-		});
+		const { hasError: registerHasError, trxHash: registerTrx } =
+			await context.sdk.domainRepository.register({
+				domain: domainName,
+				to: context.address
+			});
 		if (registerHasError) throw new Error(`Failed to register domain. Transaction: ${registerTrx}`);
 
 		goto(`/domain/${domainName}`);
@@ -90,39 +96,34 @@
 						<h4>{domainName}</h4>
 
 						<div class="years">
-							<IconButton class="material-icons" on:click={() => addYears(-1)}>remove</IconButton>
-							<span>{years}</span>
+							<IconButton class="material-icons" on:click={() => addYears(-1)} disabled={years == 1}
+								>remove</IconButton
+							>
+							<span>{years} {yearsLabel}</span>
 							<IconButton class="material-icons" on:click={() => addYears(1)}>add</IconButton>
 						</div>
 
 						<div class="fees">
+							<p class="text-center">Price breakdown</p>
 							<div class="row">
-								<span>1 year registration</span>
+								<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
 								<span>{fees.amount} {fees.token}</span>
 							</div>
 							<div class="row">
-								<span>Total</span>
-								<span>{totalFeesAmount} {fees.token}</span>
+								<span>Total (excluding network fees)</span>
+								<span><b>{totalFeesAmount}</b> {fees.token}</span>
 							</div>
 						</div>
 
 						<div class="submit">
-							{#if !feesApproved }
-							<Button
-								disabled={!$walletConnected}
-								on:click={approveFees}
-								variant="raised"
-							>
-								<Label>Approve fees</Label>
-							</Button>
+							{#if !feesApproved}
+								<Button disabled={!$walletConnected} on:click={approveFees} variant="raised">
+									<Label>Approve fees</Label>
+								</Button>
 							{:else}
-							<Button
-								disabled={!$walletConnected}
-								on:click={registerDomain}
-								variant="raised"
-							>
-								<Label>Register domain</Label>
-							</Button>
+								<Button disabled={!$walletConnected} on:click={registerDomain} variant="raised">
+									<Label>Register domain</Label>
+								</Button>
 							{/if}
 						</div>
 					</div></Content
@@ -160,11 +161,20 @@
 			justify-content: space-between;
 			width: 100%;
 		}
+
+		@media (max-width: 768px) {
+			.row {
+				flex-direction: column;
+				align-items: center;
+				padding-top: 1rem;
+			}
+		}
 	}
 
 	.submit {
 		display: flex;
 		justify-content: center;
+		margin-top: 1rem;
 	}
 
 	.years {
