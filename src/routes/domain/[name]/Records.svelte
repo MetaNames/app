@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
-	import { walletConnected } from '$lib/stores';
+	import { walletAddress, walletConnected } from '$lib/stores';
 
 	import Button from '@smui/button/src/Button.svelte';
 	import Select, { Option } from '@smui/select';
@@ -10,10 +10,11 @@
 	import Textfield from '@smui/textfield';
 	import { getRecordClassFrom } from '$lib';
 
+	export let ownerAddress: string;
 	export let records: Record<string, string>;
 	export let repository: RecordRepository;
 
-	$: disabled = !$walletConnected;
+	$: canEdit = $walletAddress === ownerAddress;
 	$: existingRecordClasses = Object.keys(records);
 	$: unusedRecordsClasses = Object.values(RecordClassEnum).filter(
 		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
@@ -53,31 +54,33 @@
 			</div>
 		{/each}
 	</div>
-	<br />
-	{#if !editMode}
-		<Button variant="raised" on:click={() => (editMode = true)} {disabled}>{editLabel}</Button>
-	{:else}
-		<div class="add-record">
-			<Select
-				class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
-				bind:value={selectedRecordClass}
-				label="Select Class"
-				invalid={selectRecordInvalid}
-				variant="outlined"
-			>
-				{#each unusedRecordsClasses as klass}
-					<Option value={klass}>{klass}</Option>
-				{/each}
-			</Select>
-			<Textfield
-				class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
-				bind:value={newRecordValue}
-				label="Record value"
-				invalid={recordValueInvalid}
-				variant="outlined"
-			/>
-			<Button class="mobile--mt-1" variant="raised" on:click={createRecord}>Add record</Button>
-		</div>
+	{#if canEdit}
+		<br />
+		{#if !editMode}
+			<Button variant="raised" on:click={() => (editMode = true)}>{editLabel}</Button>
+		{:else}
+			<div class="add-record">
+				<Select
+					class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
+					bind:value={selectedRecordClass}
+					label="Select Class"
+					invalid={selectRecordInvalid}
+					variant="outlined"
+				>
+					{#each unusedRecordsClasses as klass}
+						<Option value={klass}>{klass}</Option>
+					{/each}
+				</Select>
+				<Textfield
+					class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
+					bind:value={newRecordValue}
+					label="Record value"
+					invalid={recordValueInvalid}
+					variant="outlined"
+				/>
+				<Button class="mobile--mt-1" variant="raised" on:click={createRecord}>Add record</Button>
+			</div>
+		{/if}
 	{/if}
 </div>
 

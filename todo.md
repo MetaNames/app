@@ -7,8 +7,8 @@
 
 ## Show domain page
 
-- [ ] Show edit button only if user manages domain
-- [ ] Improve details tab
+- [x] Show edit button only if user manages domain
+- [x] Improve details tab
 - [ ] Add tailwind accessibility helpers
 - [ ] Show avatar if record is present
 

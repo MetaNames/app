@@ -60,7 +60,7 @@
 		{:else if tabActive === 'Records'}
 			<Paper variant="unelevated">
 				<Content>
-					<Records {records} repository={domain.recordRepository} />
+					<Records ownerAddress={domain.owner} {records} repository={domain.recordRepository} />
 				</Content>
 			</Paper>
 		{/if}
