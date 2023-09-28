@@ -3,8 +3,7 @@
 
 	import Records from './Records.svelte';
 
-	import Card, { Content as CardContent, MediaContent } from '@smui/card';
-	import Media from '@smui/card/src/Media.svelte';
+	import Card, { Content as CardContent } from '@smui/card';
 	import { Icon } from '@smui/icon-button';
 	import Paper, { Content } from '@smui/paper';
 	import Tab, { Label } from '@smui/tab';
@@ -44,7 +43,11 @@
 						<span class="icon">
 							<Icon class="material-icons" aria-label="Parent">supervisor_account</Icon>
 						</span>
-						<div>{domain.parentId || 'Parent not present'}</div>
+						{#if domain.parentId}
+							<a href={`/domain/${domain.parentId}`}>{domain.parentId}</a>
+						{:else}
+							<div>Parent not present</div>
+						{/if}
 					</div>
 					<div class="details-row">
 						<span class="icon">
@@ -57,7 +60,7 @@
 		{:else if tabActive === 'Records'}
 			<Paper variant="unelevated">
 				<Content>
-					<Records {records} repository={domain.recordRepository} />
+					<Records ownerAddress={domain.owner} {records} repository={domain.recordRepository} />
 				</Content>
 			</Paper>
 		{/if}
@@ -74,10 +77,6 @@
 			display: flex;
 			justify-content: center;
 		}
-	}
-	h6 {
-		margin-top: 1rem;
-		margin-bottom: 0.5rem;
 	}
 
 	.icon {
@@ -96,14 +95,5 @@
 		flex-direction: row;
 		align-items: center;
 		margin-top: 1rem;
-	}
-
-	.value-container {
-		margin-top: 1rem;
-
-		> span {
-			font-family: monospace;
-			word-wrap: break-word;
-		}
 	}
 </style>
