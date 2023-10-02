@@ -655,6 +655,16 @@
     partisia-sdk "^0.1.1"
     tr46 "^4.1.1"
 
+"@metanames/sdk@https://github.com/MetaNames/sdk.git#add-metamask-snap":
+  version "2.3.0"
+  resolved "https://github.com/MetaNames/sdk.git#0c2e591896c453ece2341950327540c88531f073"
+  dependencies:
+    "@partisiablockchain/abi-client-ts" "^3.13.0"
+    "@secata-public/bitmanipulation-ts" "^3.0.2"
+    partisia-blockchain-applications-rpc "^1.0.10"
+    partisia-sdk "^0.1.1"
+    tr46 "^4.1.1"
+
 "@noble/hashes@^1.2.0":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.1.tgz#8831ef002114670c603c458ab8b11328406953a9"

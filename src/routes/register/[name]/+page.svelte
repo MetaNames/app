@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	import { metaNamesSdk } from '$lib';
-	import { metaNamesSdkAuthenticated, walletClient, walletConnected } from '$lib/stores';
+	import { metaNamesSdkAuthenticated, walletAddress, walletConnected } from '$lib/stores';
 
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { get } from 'svelte/store';
@@ -42,10 +42,8 @@
 	});
 
 	function getContext() {
-		const client = get(walletClient);
-		if (!client?.connection) return;
-
-		const address = client.connection.account.address;
+		const address = get(walletAddress);
+		if (!address) return;
 
 		const sdk = get(metaNamesSdkAuthenticated);
 		if (!sdk) return;

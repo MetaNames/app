@@ -2,12 +2,10 @@
 	import type { Domain } from '@metanames/sdk';
 
 	import SvelteTable from 'svelte-table';
-	import { metaNamesSdkAuthenticated, walletClient, walletConnected } from '$lib/stores';
+	import { metaNamesSdkAuthenticated, walletAddress, walletConnected } from '$lib/stores';
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
-
-	$: walletAddress = $walletClient?.connection?.account.address;
 
 	const columns = [
 		{
@@ -42,7 +40,7 @@
 		}
 	];
 
-	async function getDomains(walletAddress: string | undefined) {
+	async function getDomains(walletAddress?: string) {
 		if (!walletAddress) return [];
 
 		const domains = await $metaNamesSdkAuthenticated?.domainRepository?.findByOwner(
@@ -59,9 +57,9 @@
 			{#if $walletConnected}
 				<h3>Profile</h3>
 				<p class="address-title">Wallet address</p>
-				<p>{walletAddress}</p>
+				<p>{$walletAddress}</p>
 				<h4>Domains</h4>
-				{#await getDomains(walletAddress)}
+				{#await getDomains($walletAddress)}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 				{:then domains}
 					{#if domains.length === 0}
