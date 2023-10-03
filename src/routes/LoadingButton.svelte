@@ -2,6 +2,8 @@
 	import Button, { Icon, Label } from '@smui/button';
 	import CircularProgress from '@smui/circular-progress';
 
+	let className = '';
+	export { className as class };
 	export let onClick: () => Promise<void>;
 	export let disabled = false;
 	export let variant: 'text' | 'raised' | 'unelevated' | 'outlined' = 'raised';
@@ -26,7 +28,7 @@
 	}
 </script>
 
-<Button disabled={isDisabled} on:click={handleClick} {variant}>
+<Button class={className} disabled={isDisabled} on:click={handleClick} {variant}>
 	<Label><slot /></Label>
 	{#if loading}
 		<div class="loading">
