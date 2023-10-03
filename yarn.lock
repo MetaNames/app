@@ -644,20 +644,9 @@
     "@material/theme" "^14.0.0"
     tslib "^2.1.0"
 
-"@metanames/sdk@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-2.3.0.tgz#f01f2f4fa434bb78005231f63f1b83bd82159229"
-  integrity sha512-QhMpr/CIMdhTLDGuNFojnzQRFLaP8EIFsmPLXp6weOX6jztJ8oaefZRNTfPmZSgetVOuHmd75/oUk1C6KYjjzA==
-  dependencies:
-    "@partisiablockchain/abi-client-ts" "^3.13.0"
-    "@secata-public/bitmanipulation-ts" "^3.0.2"
-    partisia-blockchain-applications-rpc "^1.0.10"
-    partisia-sdk "^0.1.1"
-    tr46 "^4.1.1"
-
 "@metanames/sdk@https://github.com/MetaNames/sdk.git#add-metamask-snap":
   version "2.3.0"
-  resolved "https://github.com/MetaNames/sdk.git#0c2e591896c453ece2341950327540c88531f073"
+  resolved "https://github.com/MetaNames/sdk.git#ff0512620c1c1aa98320fbc6d2f0fc79abafc49b"
   dependencies:
     "@partisiablockchain/abi-client-ts" "^3.13.0"
     "@secata-public/bitmanipulation-ts" "^3.0.2"
