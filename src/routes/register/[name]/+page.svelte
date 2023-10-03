@@ -9,10 +9,12 @@
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { get } from 'svelte/store';
 
-	import Button, { Label } from '@smui/button';
+	import { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
+
+	import LoadingButton from '../../LoadingButton.svelte';
 
 	let domain: DomainModel | null;
 
@@ -116,15 +118,22 @@
 						</div>
 
 						<div class="submit">
-							{#if !feesApproved}
-								<Button disabled={!$walletConnected} on:click={approveFees} variant="raised">
-									<Label>Approve fees</Label>
-								</Button>
-							{:else}
-								<Button disabled={!$walletConnected} on:click={registerDomain} variant="raised">
-									<Label>Register domain</Label>
-								</Button>
-							{/if}
+							<LoadingButton
+								disabled={!$walletConnected || feesApproved}
+								onClick={approveFees}
+								variant="raised"
+							>
+								<Label>Approve fees</Label>
+							</LoadingButton>
+						</div>
+						<div class="submit">
+							<LoadingButton
+								disabled={!$walletConnected || !feesApproved}
+								onClick={registerDomain}
+								variant="raised"
+							>
+								<Label>Register domain</Label>
+							</LoadingButton>
 						</div>
 					</div></Content
 				>
