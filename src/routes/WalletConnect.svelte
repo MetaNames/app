@@ -29,14 +29,15 @@
 		const client = await connectPartisia();
 		if (!client.connection) throw new Error('Connection failed');
 
+		$metaNamesSdk.setSigningStrategy('partisiaSdk', client);
+
 		const address = await getAddress(client);
 		walletAddress.set(address);
-
-		$metaNamesSdk.setSigningStrategy('partisiaSdk', client);
 	}
 
 	function disconnectWallet() {
 		walletAddress.set(undefined);
+		$metaNamesSdk.resetSigningStrategy();
 	}
 
 	let menu: Menu;
