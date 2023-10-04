@@ -39,12 +39,8 @@ export const connectMetaMask = async () => {
 export const getAddress = async (wallet: OptionalWalletClient): Promise<string | undefined> => {
   if (!wallet) return;
 
-  if ('connection' in wallet) {
-    if (!wallet.connection) return;
-
-    const address = wallet.connection.account.address;
-    return address;
-  } else if ('request' in wallet) {
+  if ('connection' in wallet) return wallet.connection?.account.address;
+  else if ('request' in wallet) {
     return await wallet.request({
       method: 'wallet_invokeSnap',
       params: {
