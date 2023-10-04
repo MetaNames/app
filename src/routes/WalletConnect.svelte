@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { walletAddress } from '$lib/stores';
+	import { metaNamesSdk, walletAddress } from '$lib/stores';
 	import { connectMetaMask, connectPartisia, getAddress } from '$lib/wallet';
 	import { derived } from 'svelte/store';
 
@@ -7,7 +7,6 @@
 	import List, { Item, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
-	import { getSDK  } from '$lib';
 	import '../styles/wallet-connect.scss';
 	import { goto } from '$app/navigation';
 
@@ -20,7 +19,7 @@
 	async function connectWithMetaMaskWallet() {
 		const metamask = await connectMetaMask();
 
-		getSDK().setSigningStrategy('MetaMask', metamask);
+		$metaNamesSdk.setSigningStrategy('MetaMask', metamask);
 
 		const address = await getAddress(metamask);
 		walletAddress.set(address);
@@ -33,7 +32,7 @@
 		const address = await getAddress(client);
 		walletAddress.set(address);
 
-		getSDK().setSigningStrategy('partisiaSdk', client);
+		$metaNamesSdk.setSigningStrategy('partisiaSdk', client);
 	}
 
 	function disconnectWallet() {
