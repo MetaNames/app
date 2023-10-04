@@ -39,7 +39,7 @@ export const connectMetaMask = async () => {
 export const getAddress = async (wallet: OptionalWalletClient): Promise<string | undefined> => {
   if (!wallet) return;
 
-  if (wallet instanceof PartisiaSdk) {
+  if ('connection' in wallet) {
     if (!wallet.connection) return;
 
     const address = wallet.connection.account.address;
