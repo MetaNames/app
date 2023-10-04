@@ -6,7 +6,7 @@
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
-	import { metaNamesSdk } from '$lib';
+	import { getSDK } from '$lib';
 
 	const columns = [
 		{
@@ -44,7 +44,7 @@
 	async function getDomains(walletAddress?: string) {
 		if (!walletAddress) return [];
 
-		const domains = await metaNamesSdk.domainRepository.findByOwner(
+		const domains = await getSDK().domainRepository.findByOwner(
 			walletAddress
 		);
 		if (domains) return domains;

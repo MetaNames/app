@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
-	import { metaNamesSdk } from '$lib';
+	import { getSDK } from '$lib';
 	import { walletAddress, walletConnected } from '$lib/stores';
 
 	import type { Domain as DomainModel } from '@metanames/sdk';
@@ -22,7 +22,7 @@
 
 	$: domainName = nameParam.endsWith('.meta') ? nameParam : `${nameParam}.meta`;
 	$: charsLabel = nameParam.length > 1 ? 'chars' : 'char';
-	$: fees = metaNamesSdk.domainRepository.calculateMintFees(nameParam);
+	$: fees = getSDK().domainRepository.calculateMintFees(nameParam);
 	$: nameLength = nameParam.length > 5 ? '5+' : nameParam.length;
 	$: pageName = domain ? domain.name + ' | ' : '';
 	$: totalFeesAmount = fees.amount * years;
@@ -35,7 +35,7 @@
 	}
 
 	onMount(async () => {
-		domain = await metaNamesSdk.domainRepository.find(domainName);
+		domain = await getSDK().domainRepository.find(domainName);
 
 		if (domain) goto(`/domain/${domain.name}`);
 	});
@@ -43,7 +43,7 @@
 	async function approveFees() {
 		if (!$walletConnected) return;
 
-		const { hasError, trxHash: approveTrx } = await metaNamesSdk.domainRepository.approveMintFees(
+		const { hasError, trxHash: approveTrx } = await getSDK().domainRepository.approveMintFees(
 			domainName,
 			years
 		);
@@ -58,7 +58,7 @@
 		if (!feesApproved) throw new Error('Fees not approved');
 
 		const { hasError: registerHasError, trxHash: registerTrx } =
-			await metaNamesSdk.domainRepository.register({
+			await getSDK().domainRepository.register({
 				domain: domainName,
 				to: address
 			});

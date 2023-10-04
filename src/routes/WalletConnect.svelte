@@ -7,7 +7,7 @@
 	import List, { Item, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
-	import { metaNamesSdk  } from '$lib';
+	import { getSDK  } from '$lib';
 	import '../styles/wallet-connect.scss';
 	import { goto } from '$app/navigation';
 
@@ -20,7 +20,7 @@
 	async function connectWithMetaMaskWallet() {
 		const metamask = await connectMetaMask();
 
-		metaNamesSdk.setSigningStrategy('MetaMask', metamask);
+		getSDK().setSigningStrategy('MetaMask', metamask);
 
 		const address = await getAddress(metamask);
 		walletAddress.set(address);
@@ -33,7 +33,7 @@
 		const address = await getAddress(client);
 		walletAddress.set(address);
 
-		metaNamesSdk.setSigningStrategy('partisiaSdk', client);
+		getSDK().setSigningStrategy('partisiaSdk', client);
 	}
 
 	function disconnectWallet() {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { metaNamesSdk } from '$lib';
+	import { getSDK } from '$lib';
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
@@ -15,7 +15,7 @@
 	$: pageName = domain ? domain.name + ' | ' : '';
 
 	onMount(async () => {
-		domain = await metaNamesSdk.domainRepository.find($page.params.name);
+		domain = await getSDK().domainRepository.find($page.params.name);
 	});
 </script>
 
