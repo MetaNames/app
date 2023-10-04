@@ -2,10 +2,11 @@
 	import type { Domain } from '@metanames/sdk';
 
 	import SvelteTable from 'svelte-table';
-	import { metaNamesSdkAuthenticated, walletAddress, walletConnected } from '$lib/stores';
+	import { walletAddress, walletConnected } from '$lib/stores';
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
+	import { metaNamesSdk } from '$lib';
 
 	const columns = [
 		{
@@ -43,7 +44,7 @@
 	async function getDomains(walletAddress?: string) {
 		if (!walletAddress) return [];
 
-		const domains = await $metaNamesSdkAuthenticated?.domainRepository?.findByOwner(
+		const domains = await metaNamesSdk.domainRepository.findByOwner(
 			walletAddress
 		);
 		if (domains) return domains;

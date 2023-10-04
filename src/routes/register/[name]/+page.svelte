@@ -4,10 +4,9 @@
 	import { onMount } from 'svelte';
 
 	import { metaNamesSdk } from '$lib';
-	import { metaNamesSdkAuthenticated, walletAddress, walletConnected } from '$lib/stores';
+	import { walletAddress, walletConnected } from '$lib/stores';
 
 	import type { Domain as DomainModel } from '@metanames/sdk';
-	import { get } from 'svelte/store';
 
 	import Button, { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
@@ -41,21 +40,10 @@
 		if (domain) goto(`/domain/${domain.name}`);
 	});
 
-	function getContext() {
-		const address = get(walletAddress);
-		if (!address) return;
-
-		const sdk = get(metaNamesSdkAuthenticated);
-		if (!sdk) return;
-
-		return { address, sdk };
-	}
-
 	async function approveFees() {
-		const context = getContext();
-		if (!context) return;
+		if (!$walletConnected) return;
 
-		const { hasError, trxHash: approveTrx } = await context.sdk.domainRepository.approveMintFees(
+		const { hasError, trxHash: approveTrx } = await metaNamesSdk.domainRepository.approveMintFees(
 			domainName,
 			years
 		);
@@ -64,15 +52,15 @@
 	}
 
 	async function registerDomain() {
-		const context = getContext();
-		if (!context) return;
+		const address = $walletAddress;
+		if (!address) return;
 
 		if (!feesApproved) throw new Error('Fees not approved');
 
 		const { hasError: registerHasError, trxHash: registerTrx } =
-			await context.sdk.domainRepository.register({
+			await metaNamesSdk.domainRepository.register({
 				domain: domainName,
-				to: context.address
+				to: address
 			});
 		if (registerHasError) throw new Error(`Failed to register domain. Transaction: ${registerTrx}`);
 
