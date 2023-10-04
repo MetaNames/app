@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
-	import { walletAddress, walletConnected } from '$lib/stores';
+	import { walletAddress } from '$lib/stores';
 
 	import Button from '@smui/button/src/Button.svelte';
 	import Select, { Option } from '@smui/select';

@@ -5,6 +5,4 @@ const environment = config.environment === 'test' ? Enviroment.testnet : Envirom
 
 export const metaNamesSdk = new MetaNamesSdk(environment)
 
-export const metaNamesSdkFactory = () => new MetaNamesSdk(environment)
-
 export const getRecordClassFrom = (string: string) => RecordClassEnum[string as keyof typeof RecordClassEnum]
