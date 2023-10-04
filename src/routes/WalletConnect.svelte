@@ -41,7 +41,7 @@
 	}
 
 	function disconnectWallet() {
-		walletAddress.set(null);
+		walletAddress.set(undefined);
 		metaNamesSdkAuthenticated.set(null);
 	}
 
