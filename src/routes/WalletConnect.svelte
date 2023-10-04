@@ -9,7 +9,6 @@
 
 	import '../styles/wallet-connect.scss';
 	import { goto } from '$app/navigation';
-	import { metaNamesSdkFactory } from '$lib';
 
 	const shortAddress = derived(walletAddress, ($address) => {
 		if ($address) return $address.slice(0, 4) + '...' + $address.slice(-4);
@@ -20,9 +19,7 @@
 	async function connectWithMetaMaskWallet() {
 		const metamask = await connectMetaMask();
 
-		const sdk = metaNamesSdkFactory()
-		sdk.setSigningStrategy('MetaMask', metamask);
-		metaNamesSdk.set(sdk);
+		$metaNamesSdk.setSigningStrategy('MetaMask', metamask);
 
 		const address = await getAddress(metamask);
 		walletAddress.set(address);
@@ -32,9 +29,7 @@
 		const client = await connectPartisia();
 		if (!client.connection) throw new Error('Connection failed');
 
-		const sdk = metaNamesSdkFactory()
-		sdk.setSigningStrategy('partisiaSdk', client);
-		metaNamesSdk.set(sdk);
+		$metaNamesSdk.setSigningStrategy('partisiaSdk', client);
 
 		const address = await getAddress(client);
 		walletAddress.set(address);
