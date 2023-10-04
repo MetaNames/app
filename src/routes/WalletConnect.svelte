@@ -71,11 +71,35 @@
 			</Item>
 		{:else}
 			<Item on:SMUI:action={connectWithMetaMaskWallet}>
-				<Text>Meta Mask Wallet</Text>
+				<Text>
+					<div class="item">
+						<img class="logo" src="/images/metamask.svg" alt="metamask wallet logo" />
+						<span>Meta Mask Wallet</span>
+					</div>
+				</Text>
 			</Item>
 			<Item on:SMUI:action={connectWithPartisiaWallet}>
-				<Text>Partisia Wallet</Text>
+				<Text>
+					<div class="item">
+						<img class="logo" src="/images/partisia-wallet.svg" alt="partisia wallet logo" />
+						<span>Partisia Wallet</span>
+					</div>
+				</Text>
 			</Item>
 		{/if}
 	</List>
 </Menu>
+
+<style lang="scss">
+	.logo {
+		height: 20pt;
+		width: 20pt;
+		margin-right: 0.8rem;
+	}
+
+	.item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+</style>
