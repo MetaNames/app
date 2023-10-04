@@ -42,7 +42,7 @@
 
 	function disconnectWallet() {
 		walletAddress.set(undefined);
-		metaNamesSdkAuthenticated.set(null);
+		metaNamesSdkAuthenticated.set(undefined);
 	}
 
 	let menu: Menu;
