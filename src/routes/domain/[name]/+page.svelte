@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { metaNamesSdk } from '$lib';
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
 	import Domain from './Domain.svelte';
+	import { metaNamesSdk } from '$lib/stores';
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
@@ -15,7 +15,7 @@
 	$: pageName = domain ? domain.name + ' | ' : '';
 
 	onMount(async () => {
-		domain = await metaNamesSdk.domainRepository.find($page.params.name);
+		domain = await $metaNamesSdk.domainRepository.find($page.params.name);
 	});
 </script>
 

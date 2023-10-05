@@ -1,14 +1,13 @@
 <script lang="ts">
-	import { metaNamesSdk } from '$lib';
-
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
 	import type { Domain as DomainModel } from '@metanames/sdk/lib/models/domain';
 	import IconButton from '@smui/icon-button/src/IconButton.svelte';
+	import { metaNamesSdk } from '$lib/stores';
 
-	const validator = metaNamesSdk.domainRepository.domainValidator;
+	const validator = $metaNamesSdk.domainRepository.domainValidator;
 
 	let domain: DomainModel | null | undefined;
 	let domainName: string = '';
@@ -34,7 +33,7 @@
 		nameSearched = domainName;
 		isLoading = true;
 
-		domain = await metaNamesSdk.domainRepository.find(domainName);
+		domain = await $metaNamesSdk.domainRepository.find(domainName);
 
 		isLoading = false;
 	}
