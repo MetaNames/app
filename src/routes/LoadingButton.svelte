@@ -35,9 +35,9 @@
 			<CircularProgress style="height: 20px; width: 20px;" indeterminate />
 		</div>
 	{:else if error}
-		<Icon class="material-icons" aria-label="Wallet">error</Icon>
+		<Icon class="material-icons" aria-label="error">error</Icon>
 	{:else if loading === false}
-		<Icon class="material-icons" aria-label="Wallet">done</Icon>
+		<Icon class="material-icons" aria-label="done">done</Icon>
 	{/if}
 </Button>
 
