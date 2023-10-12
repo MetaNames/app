@@ -6,6 +6,7 @@
 	import type { Domain as DomainModel } from '@metanames/sdk/lib/models/domain';
 	import IconButton from '@smui/icon-button/src/IconButton.svelte';
 	import { metaNamesSdk } from '$lib/stores';
+	import { goto } from '$app/navigation';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
 
@@ -28,7 +29,7 @@
 		if (invalid) return;
 
 		if (domainName === '') return;
-		if (domainName === nameSearched) return;
+		if (domainName === nameSearched) goto(`/register/${nameSearched}`);
 
 		nameSearched = domainName;
 		isLoading = true;
