@@ -6,17 +6,18 @@
 	import LoadingButton from '../../LoadingButton.svelte';
 
 	import { Label } from '@smui/button';
+	import { goto } from '$app/navigation';
 
 	export let domainName: string;
-  export let tld: string;
+	export let tld: string;
 
 	let years = 1;
 	let feesApproved = false;
 
-  $: nameWithoutTLD = domainName.replace(`.${tld}`, '');
+	$: nameWithoutTLD = domainName.endsWith(`.${tld}`) ? domainName.replace(`.${tld}`, '') : domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
 	$: fees = $metaNamesSdk.domainRepository.calculateMintFees(domainName);
-	$: nameLength = nameWithoutTLD.length > 5 ? '5+' : nameWithoutTLD.length;
+	$: nameLength = nameWithoutTLD.length > 5 ? '5+' : domainName.length;
 	$: totalFeesAmount = fees.amount * years;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
@@ -54,54 +55,52 @@
 	}
 </script>
 
-<div>
-	<Card>
-		<Content>
-			<div class="card-content">
-				<h4>{domainName}</h4>
+<Card>
+	<Content>
+		<div class="card-content">
+			<h4>{domainName}</h4>
 
-				<div class="years">
-					<IconButton class="material-icons" on:click={() => addYears(-1)} disabled={years == 1}
-						>remove</IconButton
-					>
-					<span>{years} {yearsLabel}</span>
-					<IconButton class="material-icons" on:click={() => addYears(1)}>add</IconButton>
-				</div>
+			<div class="years">
+				<IconButton class="material-icons" on:click={() => addYears(-1)} disabled={years == 1}
+					>remove</IconButton
+				>
+				<span>{years} {yearsLabel}</span>
+				<IconButton class="material-icons" on:click={() => addYears(1)}>add</IconButton>
+			</div>
 
-				<div class="fees">
-					<p class="text-center">Price breakdown</p>
-					<div class="row">
-						<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
-						<span>{fees.amount} {fees.token}</span>
-					</div>
-					<div class="row">
-						<span>Total (excluding network fees)</span>
-						<span><b>{totalFeesAmount}</b> {fees.token}</span>
-					</div>
+			<div class="fees">
+				<p class="text-center">Price breakdown</p>
+				<div class="row">
+					<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
+					<span>{fees.amount} {fees.token}</span>
 				</div>
+				<div class="row">
+					<span>Total (excluding network fees)</span>
+					<span><b>{totalFeesAmount}</b> {fees.token}</span>
+				</div>
+			</div>
 
-				<div class="submit">
-					<LoadingButton
-						disabled={!$walletConnected || feesApproved}
-						onClick={approveFees}
-						variant="raised"
-					>
-						<Label>Approve fees</Label>
-					</LoadingButton>
-				</div>
-				<div class="submit">
-					<LoadingButton
-						disabled={!$walletConnected || !feesApproved}
-						onClick={registerDomain}
-						variant="raised"
-					>
-						<Label>Register domain</Label>
-					</LoadingButton>
-				</div>
-			</div></Content
-		>
-	</Card>
-</div>
+			<div class="submit">
+				<LoadingButton
+					disabled={!$walletConnected || feesApproved}
+					onClick={approveFees}
+					variant="raised"
+				>
+					<Label>Approve fees</Label>
+				</LoadingButton>
+			</div>
+			<div class="submit">
+				<LoadingButton
+					disabled={!$walletConnected || !feesApproved}
+					onClick={registerDomain}
+					variant="raised"
+				>
+					<Label>Register domain</Label>
+				</LoadingButton>
+			</div>
+		</div></Content
+	>
+</Card>
 
 <style lang="scss">
 	h4 {

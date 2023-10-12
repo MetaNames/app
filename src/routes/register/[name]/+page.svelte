@@ -10,19 +10,25 @@
 	import CircularProgress from '@smui/circular-progress';
 
 	import DomainRegistration from './DomainRegistration.svelte';
+	import SubdomainRegistration from './SubdomainRegistration.svelte';
 
 	let domain: DomainModel | null;
+	let parentDomain: DomainModel | null;
 
 	const nameParam = $page.params.name;
-
 	const analyzedDomain = $metaNamesSdk.domainRepository.analyze(nameParam);
 
 	$: domainName = analyzedDomain.name;
+	$: parentDomainName = analyzedDomain.parentId;
 	$: pageName = domain ? domain.name + ' | ' : '';
 	$: tld = analyzedDomain.tld;
 
 	onMount(async () => {
 		domain = await $metaNamesSdk.domainRepository.find(domainName);
+
+		if (parentDomainName && parentDomainName !== tld)
+			parentDomain = await $metaNamesSdk.domainRepository.find(parentDomainName);
+		else parentDomain = null;
 
 		if (domain) goto(`/domain/${domain.name}`);
 	});
@@ -33,13 +39,20 @@
 </svelte:head>
 
 <div class="content">
-	{#if !domain}
+	{#if domain === undefined || parentDomain === undefined}
+		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+	{:else}
 		<div class="container">
 			<h2>Register</h2>
-			<DomainRegistration {domainName} {tld} />
+			{#if parentDomain}
+				<SubdomainRegistration {domainName} {parentDomainName} />
+			{:else if parentDomainName && !parentDomain}
+				<!-- TODO: Add warning that parent domain does not exist -->
+				<DomainRegistration domainName={parentDomainName} {tld} />
+			{:else}
+				<DomainRegistration {domainName} {tld} />
+			{/if}
 		</div>
-	{:else if domain === undefined}
-		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{/if}
 </div>
 
