@@ -49,7 +49,8 @@
 			on:keyup={() => debounce()}
 			bind:invalid
 			label="Domain name"
-			withTrailingIcon={true}
+			withTrailingIcon
+			autofocus
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
