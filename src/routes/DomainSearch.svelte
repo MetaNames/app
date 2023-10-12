@@ -22,7 +22,7 @@
 
 	function debounce() {
 		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(async () => await submit(), 500);
+		debounceTimer = setTimeout(async () => await submit(), 400);
 	}
 
 	async function submit() {
