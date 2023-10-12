@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
-	import { metaNamesSdk } from '$lib/stores';
+	import { alertMessage, metaNamesSdk } from '$lib/stores';
 
 	import type { Domain as DomainModel } from '@metanames/sdk';
 
@@ -26,8 +26,10 @@
 	onMount(async () => {
 		domain = await $metaNamesSdk.domainRepository.find(domainName);
 
-		if (parentDomainName && parentDomainName !== tld)
+		if (parentDomainName && parentDomainName !== tld) {
 			parentDomain = await $metaNamesSdk.domainRepository.find(parentDomainName);
+			if (!parentDomain) alertMessage.set('Parent domain not found, please register it first.');
+		}
 		else parentDomain = null;
 
 		if (domain) goto(`/domain/${domain.name}`);
@@ -47,7 +49,6 @@
 			{#if parentDomain}
 				<SubdomainRegistration {domainName} {parentDomainName} />
 			{:else if parentDomainName && !parentDomain}
-				<!-- TODO: Add warning that parent domain does not exist -->
 				<DomainRegistration domainName={parentDomainName} {tld} />
 			{:else}
 				<DomainRegistration {domainName} {tld} />
