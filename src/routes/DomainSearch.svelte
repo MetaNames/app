@@ -6,6 +6,7 @@
 	import type { Domain as DomainModel } from '@metanames/sdk/lib/models/domain';
 	import IconButton from '@smui/icon-button/src/IconButton.svelte';
 	import { metaNamesSdk } from '$lib/stores';
+	import { goto } from '$app/navigation';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
 
@@ -21,14 +22,14 @@
 
 	function debounce() {
 		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(async () => await submit(), 500);
+		debounceTimer = setTimeout(async () => await submit(), 400);
 	}
 
 	async function submit() {
 		if (invalid) return;
 
 		if (domainName === '') return;
-		if (domainName === nameSearched) return;
+		if (domainName === nameSearched) goto(`/register/${nameSearched}`);
 
 		nameSearched = domainName;
 		isLoading = true;
@@ -48,7 +49,8 @@
 			on:keyup={() => debounce()}
 			bind:invalid
 			label="Domain name"
-			withTrailingIcon={true}
+			withTrailingIcon
+			autofocus
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
