@@ -22,14 +22,14 @@
 
 	function debounce() {
 		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(async () => await submit(), 400);
+		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 
-	async function submit() {
+	async function search(submit = false) {
 		if (invalid) return;
 
 		if (domainName === '') return;
-		if (domainName === nameSearched) goto(`/register/${nameSearched}`);
+		if (submit && domainName === nameSearched) return goto(`/register/${nameSearched}`);
 
 		nameSearched = domainName;
 		isLoading = true;
@@ -37,6 +37,10 @@
 		domain = await $metaNamesSdk.domainRepository.find(domainName);
 
 		isLoading = false;
+	}
+
+	async function submit() {
+		await search(true);
 	}
 </script>
 
