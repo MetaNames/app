@@ -48,7 +48,7 @@
 		{#if theme === 'light'}
 			dark_mode
 		{:else}
-    light_mode
+			light_mode
 		{/if}
 	</IconButton>
 </div>
