@@ -26,13 +26,15 @@
 	onMount(async () => {
 		domain = await $metaNamesSdk.domainRepository.find(domainName);
 
+		if (domain) goto(`/domain/${domain.name}`);
+
 		if (parentDomainName && parentDomainName !== tld) {
 			parentDomain = await $metaNamesSdk.domainRepository.find(parentDomainName);
-			if (!parentDomain) alertMessage.set('Parent domain not found, please register it first.');
-		}
-		else parentDomain = null;
-
-		if (domain) goto(`/domain/${domain.name}`);
+			if (!parentDomain) {
+				alertMessage.set('Parent domain not found, please register it first.');
+				goto(`/register/${parentDomainName}`);
+			}
+		} else parentDomain = null;
 	});
 </script>
 
