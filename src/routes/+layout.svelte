@@ -11,11 +11,14 @@
 	import '../styles/app.scss';
 	import Footer from './Footer.svelte';
 	import { alertMessage } from '$lib/stores';
+	import ThemeSwitch from './ThemeSwitch.svelte';
 
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
 	let snackbarWithClose: Snackbar;
 	let snackbarMessage: string;
+
+	let theme: 'light' | 'dark';
 
 	alertMessage.subscribe((message) => {
 		if (!message) return;
@@ -30,7 +33,7 @@
 	});
 </script>
 
-<main>
+<main data-theme={theme}>
 	<TopAppBar variant="static">
 		<div
 			class={Object.keys(anchorClasses).join(' ')}
@@ -60,6 +63,8 @@
 				</Section>
 
 				<Section align="end" toolbar>
+					<ThemeSwitch bind:theme />
+					<span class="separator" />
 					<WalletConnect {anchor} />
 				</Section>
 			</Row>
@@ -84,6 +89,13 @@
 
 		text-decoration: none;
 		color: inherit;
+	}
+
+	.separator {
+		width: 1px;
+		height: 1.5rem;
+		background-color: var(--mdc-theme-on-primary);
+		margin: 0 1rem;
 	}
 
 	svg {
