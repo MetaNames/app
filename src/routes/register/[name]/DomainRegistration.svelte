@@ -17,7 +17,7 @@
 	$: nameWithoutTLD = domainName.endsWith(`.${tld}`) ? domainName.replace(`.${tld}`, '') : domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
 	$: fees = $metaNamesSdk.domainRepository.calculateMintFees(domainName);
-	$: nameLength = nameWithoutTLD.length > 5 ? '5+' : domainName.length;
+	$: nameLength = nameWithoutTLD.length > 5 ? '5+' : nameWithoutTLD.length;
 	$: totalFeesAmount = fees.amount * years;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
