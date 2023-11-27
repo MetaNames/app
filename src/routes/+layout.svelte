@@ -33,7 +33,19 @@
 	});
 </script>
 
-<main data-theme={theme}>
+<svelte:head>
+	{#if theme === undefined}
+		<link rel="stylesheet" href="/smui.css" media="(prefers-color-scheme: light)" />
+		<link rel="stylesheet" href="/smui-dark.css" media="screen and (prefers-color-scheme: dark)" />
+	{:else if theme === 'dark'}
+		<link rel="stylesheet" href="/smui.css" media="print" />
+		<link rel="stylesheet" href="/smui-dark.css" media="screen" />
+	{:else}
+		<link rel="stylesheet" href="/smui.css" />
+	{/if}
+</svelte:head>
+
+<main>
 	<TopAppBar variant="static">
 		<div
 			class={Object.keys(anchorClasses).join(' ')}

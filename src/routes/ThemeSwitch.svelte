@@ -3,35 +3,10 @@
 	import IconButton from '@smui/icon-button';
 	import { onMount } from 'svelte';
 
-	const storageKey = 'user-theme';
-
-	export let theme: 'light' | 'dark';
-
-	$: theme &&
-		browser &&
-		updateStyles() &&
-		window.localStorage.setItem(storageKey, JSON.stringify(theme));
+	export let theme: 'light' | 'dark' | undefined;
 
 	function toggleTheme() {
 		theme = theme === 'light' ? 'dark' : 'light';
-	}
-
-	function updateStyles() {
-		// Get the theme stylesheet link elements
-		const lightThemeStylesheet = document.getElementById('light-theme-asset') as HTMLLinkElement;
-		const darkThemeStylesheet = document.getElementById('dark-theme-asset') as HTMLLinkElement;
-
-		if (!lightThemeStylesheet || !darkThemeStylesheet) return;
-
-		if (theme === 'dark') {
-			darkThemeStylesheet.media = 'screen';
-			lightThemeStylesheet.media = 'not all';
-		} else if (theme === 'light') {
-			lightThemeStylesheet.media = 'all';
-			darkThemeStylesheet.media = 'not all';
-		}
-
-		return true;
 	}
 
 	onMount(() => {
