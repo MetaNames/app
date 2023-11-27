@@ -4,7 +4,7 @@
 
 <footer class="card-primary">
 	<div class="logo">
-		<Logo color="light" />
+		<Logo color="dark" />
 		<span>Meta Names</span>
 	</div>
 	<div class="links">
