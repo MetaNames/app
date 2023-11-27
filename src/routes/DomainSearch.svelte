@@ -143,6 +143,14 @@
 		}
 	}
 
+	:global(.domain-input) {
+		width: 60vw;
+
+		@media screen and (max-width: 600px) {
+			width: 80vw;
+		}
+	}
+
 	.domain-link {
 		text-decoration: none;
 		color: inherit;
