@@ -22,7 +22,7 @@
 	let tabActive = 'Details';
 </script>
 
-<Card class="w-100">
+<Card class="domain-container">
 	<CardContent>
 		<div class="avatar">
 			<div class="svg">
@@ -44,7 +44,9 @@
 							<Icon class="material-icons" aria-label="Parent">supervisor_account</Icon>
 						</span>
 						{#if domain.parentId}
-							<a href={`/domain/${domain.parentId}`}>{domain.parentId}</a>
+							<a href={`/domain/${domain.parentId}`}>
+								<span class="record-value">{domain.parentId}</span>
+							</a>
 						{:else}
 							<div>Parent not present</div>
 						{/if}
@@ -53,7 +55,7 @@
 						<span class="icon">
 							<Icon class="material-icons" aria-label="Owner">person</Icon>
 						</span>
-						<span>{domain.owner}</span>
+						<span class="record-value">{domain.owner}</span>
 					</div>
 				</Content>
 			</Paper>
@@ -90,10 +92,25 @@
 		font-weight: 800;
 	}
 
+	:global(.domain-container) {
+		min-width: 50wh;
+		width: 100%;
+	}
+
 	.details-row {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		margin-top: 1rem;
+	}
+
+	.record-value {
+		text-align: left;
+
+		@media screen and (max-width: 600px) {
+			max-width: 250px;
+			word-wrap: break-word;
+			overflow-wrap: break-word;
+		}
 	}
 </style>
