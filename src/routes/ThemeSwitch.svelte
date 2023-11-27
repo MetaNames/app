@@ -1,16 +1,12 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import IconButton from '@smui/icon-button';
-	import { onMount } from 'svelte';
-
-	const storageKey = 'user-theme';
 
 	export let theme: 'light' | 'dark';
 
 	$: theme &&
 		browser &&
-		updateStyles() &&
-		window.localStorage.setItem(storageKey, JSON.stringify(theme));
+		updateStyles()
 
 	function toggleTheme() {
 		theme = theme === 'light' ? 'dark' : 'light';
@@ -33,14 +29,6 @@
 
 		return true;
 	}
-
-	onMount(() => {
-		window
-			.matchMedia('(prefers-color-scheme: dark)')
-			.addEventListener('change', ({ matches: isDark }) => {
-				theme = isDark ? 'dark' : 'light';
-			});
-	});
 </script>
 
 <div class="layout" data-theme={theme}>
