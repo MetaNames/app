@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { metaNamesSdk, walletAddress } from '$lib/stores';
+	import { alertMessage, metaNamesSdk, walletAddress } from '$lib/stores';
 	import { connectMetaMask, connectPartisia, getAddress } from '$lib/wallet';
 	import { derived } from 'svelte/store';
 
@@ -17,22 +17,32 @@
 	$: buttonLabel = $shortAddress ? $shortAddress : 'Connect Wallet';
 
 	async function connectWithMetaMaskWallet() {
-		const metamask = await connectMetaMask();
+		try {
+			const metamask = await connectMetaMask();
 
-		$metaNamesSdk.setSigningStrategy('MetaMask', metamask);
+			$metaNamesSdk.setSigningStrategy('MetaMask', metamask);
 
-		const address = await getAddress(metamask);
-		walletAddress.set(address);
+			const address = await getAddress(metamask);
+			walletAddress.set(address);
+		} catch (e) {
+			alertMessage.set("Couldn't connect to MetaMask wallet");
+			console.log(e);
+		}
 	}
 
 	async function connectWithPartisiaWallet() {
-		const client = await connectPartisia();
-		if (!client.connection) throw new Error('Connection failed');
+		try {
+			const client = await connectPartisia();
+			if (!client.connection) throw new Error('Connection failed');
 
-		$metaNamesSdk.setSigningStrategy('partisiaSdk', client);
+			$metaNamesSdk.setSigningStrategy('partisiaSdk', client);
 
-		const address = await getAddress(client);
-		walletAddress.set(address);
+			const address = await getAddress(client);
+			walletAddress.set(address);
+		} catch (e) {
+			alertMessage.set("Couldn't connect to Partisia wallet");
+			console.log(e);
+		}
 	}
 
 	function disconnectWallet() {
