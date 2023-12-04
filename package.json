@@ -57,6 +57,7 @@
 	"type": "module",
 	"dependencies": {
 		"@metanames/sdk": "2.5.0",
+		"@vercel/analytics": "^1.1.1",
 		"jdenticon": "^3.2.0",
 		"partisia-sdk": "^0.1.1",
 		"svelte-table": "^0.6.1"

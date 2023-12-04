@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { dev } from '$app/environment';
+	import { inject } from '@vercel/analytics';
+
 	import IconButton from '@smui/icon-button';
 	import Section from '@smui/top-app-bar/src/Section.svelte';
 	import Snackbar, { Actions, Label } from '@smui/snackbar';
@@ -19,6 +22,9 @@
 	let snackbarMessage: string;
 
 	let theme: 'light' | 'dark';
+
+	// Analytics
+	inject({ mode: dev ? 'development' : 'production' });
 
 	alertMessage.subscribe((message) => {
 		if (!message) return;
