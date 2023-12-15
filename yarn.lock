@@ -663,14 +663,14 @@
     "@material/theme" "^14.0.0"
     tslib "^2.1.0"
 
-"@metanames/sdk@2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-2.5.0.tgz#84e06b5e425b703d4670ab85a7f7bcc64ebc8625"
-  integrity sha512-eC7Uif/e3EoyAp1k4urmRWWRvGyWtVR+tMKsjP0jodsWvs6sHNdsJNAllBgLSs5nhYvHKaW9b65tg0nfWkIhBw==
+"@metanames/sdk@2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-2.6.0.tgz#19405d9e28b820560a5ffef67dbf3a537e4e8518"
+  integrity sha512-tVgQcPh1iCSz/y2+Qd+M+6SSGEaPMp/41TVJBpFQdMPVd7xU3JtC0cqUQerYkMYe+Ycu9qru2L0ugZmwAPRLxw==
   dependencies:
-    "@partisiablockchain/abi-client-ts" "^3.13.0"
-    "@secata-public/bitmanipulation-ts" "^3.0.2"
-    partisia-blockchain-applications-rpc "^1.0.10"
+    "@partisiablockchain/abi-client" "^3.30.0"
+    "@secata-public/bitmanipulation-ts" "^3.0.6"
+    partisia-blockchain-applications-rpc "^1.0.12"
     partisia-sdk "^0.1.1"
     tr46 "^4.1.1"
 
@@ -700,19 +700,17 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@partisiablockchain/abi-client-ts@^3.13.0":
-  version "3.13.0"
-  resolved "https://gitlab.com/api/v4/projects/36918028/packages/npm/@partisiablockchain/abi-client-ts/-/@partisiablockchain/abi-client-ts-3.13.0.tgz#bf71d327bfac06738c7eefb108145ff962b2de8f"
-  integrity sha1-v3HTJ7+sBnOMfu+xCBRf+WKy3o8=
+"@partisiablockchain/abi-client@^3.30.0":
+  version "3.30.0"
+  resolved "https://registry.yarnpkg.com/@partisiablockchain/abi-client/-/abi-client-3.30.0.tgz#2ae760c27c93e56cf1a102b7c4ae1eccc8693207"
+  integrity sha512-26On5MhI6ppNRvPqM6R44ybIKupPfEAfRC5uROiaS9H8cHeUbQTkQ/Nl51PVcGVsDJctpAuNnFBWw7EeOMEoSw==
   dependencies:
-    "@secata-public/bitmanipulation-ts" "^3.0.1"
+    "@secata-public/bitmanipulation-ts" "3.0.6"
     "@types/bn.js" "^5.1.0"
     "@types/elliptic" "^6.4.14"
     bn.js "^5.2.0"
-    elliptic "^6.5.4"
     hash.js "^1.1.7"
     prettier "^2.6.2"
-    unfetch "^4.2.0"
 
 "@playwright/test@^1.28.1":
   version "1.37.0"
@@ -755,10 +753,10 @@
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
 
-"@secata-public/bitmanipulation-ts@^3.0.1", "@secata-public/bitmanipulation-ts@^3.0.2":
-  version "3.0.5"
-  resolved "https://gitlab.com/api/v4/projects/37426093/packages/npm/@secata-public/bitmanipulation-ts/-/@secata-public/bitmanipulation-ts-3.0.5.tgz#77be50b8cb994c2c38a8fb1053df01a14b198bbb"
-  integrity sha1-d75QuMuZTCw4qPsQU98BoUsZi7s=
+"@secata-public/bitmanipulation-ts@3.0.6", "@secata-public/bitmanipulation-ts@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@secata-public/bitmanipulation-ts/-/bitmanipulation-ts-3.0.6.tgz#d8efb554beb23d061a74c15190c52a76ecee71cb"
+  integrity sha512-hg4sGiGjhvl1/XMw4P4lsyh5DuSnw8ISQGyub7QjGnzvaY32o52Q7ZVU32fGsKTyyefpFs6wc62CpzhVeHm+Qg==
   dependencies:
     "@types/bn.js" "^5.1.0"
     bn.js "^5.2.0"
@@ -1467,6 +1465,11 @@ async-sema@^3.1.1:
   resolved "https://registry.yarnpkg.com/async-sema/-/async-sema-3.1.1.tgz#e527c08758a0f8f6f9f15f799a173ff3c40ea808"
   integrity sha512-tLRNUXati5MFePdAk8dw7Qt7DpxPB60ofAgn8WRhW6a2rcimZnYBP9oxHiv0OHy+Wz7kPMG+t4LGdt31+4EmGg==
 
+asynckit@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
+  integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
+
 available-typed-arrays@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
@@ -1478,6 +1481,15 @@ axios@^0.21.1:
   integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
   dependencies:
     follow-redirects "^1.14.0"
+
+axios@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.2.tgz#de67d42c755b571d3e698df1b6504cde9b0ee9f2"
+  integrity sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==
+  dependencies:
+    follow-redirects "^1.15.0"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
 
 axobject-query@^3.2.1:
   version "3.2.1"
@@ -1827,6 +1839,13 @@ color-support@^1.1.2:
   resolved "https://registry.yarnpkg.com/color-support/-/color-support-1.1.3.tgz#93834379a1cc9a0c61f82f52f0d04322251bd5a2"
   integrity sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==
 
+combined-stream@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.8.tgz#c3d45a8b34fd730631a110a8a2520682b31d5a7f"
+  integrity sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
+  dependencies:
+    delayed-stream "~1.0.0"
+
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
@@ -1968,6 +1987,11 @@ define-properties@^1.1.3:
   dependencies:
     has-property-descriptors "^1.0.0"
     object-keys "^1.1.1"
+
+delayed-stream@~1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
+  integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
 
 delegates@^1.0.0:
   version "1.0.0"
@@ -2380,12 +2404,26 @@ follow-redirects@^1.14.0:
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
   integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
 
+follow-redirects@^1.15.0:
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.3.tgz#fe2f3ef2690afce7e82ed0b44db08165b207123a"
+  integrity sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==
+
 for-each@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/for-each/-/for-each-0.3.3.tgz#69b447e88a0a5d32c3e7084f3f1710034b21376e"
   integrity sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==
   dependencies:
     is-callable "^1.1.3"
+
+form-data@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.0.tgz#93919daeaf361ee529584b9b31664dc12c9fa452"
+  integrity sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.8"
+    mime-types "^2.1.12"
 
 fs-minipass@^2.0.0:
   version "2.1.0"
@@ -2911,6 +2949,18 @@ miller-rabin@^4.0.0:
     bn.js "^4.0.0"
     brorand "^1.0.1"
 
+mime-db@1.52.0:
+  version "1.52.0"
+  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
+  integrity sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
+
+mime-types@^2.1.12:
+  version "2.1.35"
+  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.35.tgz#381a871b62a734450660ae3deee44813f70d959a"
+  integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
+  dependencies:
+    mime-db "1.52.0"
+
 mime@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/mime/-/mime-3.0.0.tgz#b374550dca3a0c18443b0c950a6a58f1931cf7a7"
@@ -3204,12 +3254,12 @@ parse-asn1@^5.0.0, parse-asn1@^5.1.5:
     pbkdf2 "^3.0.3"
     safe-buffer "^5.1.1"
 
-partisia-blockchain-applications-rpc@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/partisia-blockchain-applications-rpc/-/partisia-blockchain-applications-rpc-1.0.10.tgz#af00e75e6f489b8d2a618932df9c77b13cf39335"
-  integrity sha512-oXFO6N3vw13Rvi/G+nAn/+g1RSLnTkw/sF010e+6Wfxt8XjTdmMtIKYIFj2Qttp/3lcC5IRLHfEioLTtXP/9qw==
+partisia-blockchain-applications-rpc@^1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/partisia-blockchain-applications-rpc/-/partisia-blockchain-applications-rpc-1.0.12.tgz#576856424c0c31e944e8b09212fa41eab8e4fc4c"
+  integrity sha512-R9wXI50xJNmsj26YNz3NluI2bLsQgFXAjUDrQU4YXWjbFunIatai1WvR3fHbLStpcxhU6ftsaDgIKLPmpDK7bA==
   dependencies:
-    axios "^0.21.1"
+    axios "^1.6.2"
 
 partisia-crypto@^1.0.2:
   version "1.0.19"
@@ -3404,6 +3454,11 @@ process@^0.11.10:
   version "0.11.10"
   resolved "https://registry.yarnpkg.com/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
   integrity sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==
+
+proxy-from-env@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-1.1.0.tgz#e102f16ca355424865755d2c9e8ea4f24d58c3e2"
+  integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
 
 public-encrypt@^4.0.0:
   version "4.0.3"
@@ -4027,11 +4082,6 @@ undici@~5.23.0:
   integrity sha512-1D7w+fvRsqlQ9GscLBwcAJinqcZGHUKjbOmXdlE/v8BvEGXjeWAax+341q44EuTcHXXnfyKNbKRq4Lg7OzhMmg==
   dependencies:
     busboy "^1.6.0"
-
-unfetch@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/unfetch/-/unfetch-4.2.0.tgz#7e21b0ef7d363d8d9af0fb929a5555f6ef97a3be"
-  integrity sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==
 
 uri-js@^4.2.2:
   version "4.4.1"
