@@ -1,6 +1,6 @@
 {
 	"name": "meta-names-app",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"private": true,
 	"scripts": {
 		"prepare": "yarn run smui-theme-light && yarn run smui-theme-dark",
@@ -56,8 +56,9 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@metanames/sdk": "2.5.0",
+		"@metanames/sdk": "2.6.0",
 		"@vercel/analytics": "^1.1.1",
+		"@vercel/speed-insights": "^1.0.2",
 		"jdenticon": "^3.2.0",
 		"partisia-sdk": "^0.1.1",
 		"svelte-table": "^0.6.1"
