@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { dev } from '$app/environment';
+
 	import { inject } from '@vercel/analytics';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 	import IconButton from '@smui/icon-button';
 	import Section from '@smui/top-app-bar/src/Section.svelte';
@@ -25,6 +27,7 @@
 
 	// Analytics
 	inject({ mode: dev ? 'development' : 'production' });
+	injectSpeedInsights();
 
 	alertMessage.subscribe((message) => {
 		if (!message) return;
