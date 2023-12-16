@@ -7,6 +7,7 @@
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue } from '@smui/data-table';
 	import IconButton from '@smui/icon-button';
 	import LinearProgress from '@smui/linear-progress';
+	import Button from '@smui/button/src/Button.svelte';
 
 	let domains: Domain[] = [];
 	let sort: keyof Domain = 'tokenId';
@@ -72,10 +73,7 @@
 							</Cell>
 						</Row>
 					</Head>
-					{#if loaded && domains.length === 0}
-						<p>No domains found</p>
-						<a href="/">Register a domain!</a>
-					{:else}
+					{#if loaded && domains.length > 0}
 						<Body>
 							{#each domains as domain (domain.tokenId)}
 								<Row>
@@ -99,6 +97,10 @@
 						slot="progress"
 					/>
 				</DataTable>
+				{#if loaded && domains.length === 0}
+					<p>No domains found</p>
+					<Button href="/" variant="raised">Register a domain</Button>
+				{/if}
 			{:else}
 				<h3>Connect the Wallet</h3>
 				<p>To see your domains</p>
@@ -111,6 +113,7 @@
 	.address-title {
 		font-weight: bold;
 	}
+
 	.profile {
 		min-width: 60vw;
 	}
