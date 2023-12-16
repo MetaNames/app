@@ -1,54 +1,44 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk';
 
-	import SvelteTable from 'svelte-table';
 	import { metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
 
-	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
+	import DataTable, { Head, Body, Row, Cell, Label, SortValue } from '@smui/data-table';
+	import IconButton from '@smui/icon-button';
+	import LinearProgress from '@smui/linear-progress';
 
-	const columns = [
-		{
-			key: 'name',
-			title: 'Domain Name',
-			sortable: true,
-			parseHTML: true,
-			value: (row: Domain) => row.name,
-			renderValue: (row: Domain) => {
-				return `<a href="/domain/${row.name}">${row.name}</a>`;
-			}
-		},
-		{
-			key: 'parentId',
-			title: 'Parent',
-			sortable: true,
-			parseHTML: true,
-			value: (row: Domain) => row.parentId ?? '',
-			renderValue: (row: Domain) => {
-				if (row.parentId) {
-					return `<a href="/domain/${row.parentId}">${row.parentId}</a>`;
-				} else {
-					return '';
-				}
-			}
-		},
-		{
-			key: 'tokenId',
-			title: 'Token ID',
-			sortable: true,
-			value: (row: Domain) => row.tokenId
-		}
-	];
+	let domains: Domain[] = [];
+	let sort: keyof Domain = 'tokenId';
+	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
+
+	let loaded = false;
+
+	function handleSort() {
+		domains.sort((a, b) => {
+			const [aVal, bVal] = [a[sort], b[sort]][
+				sortDirection === 'ascending' ? 'slice' : 'reverse'
+			]();
+			if (typeof aVal === 'string' && typeof bVal === 'string') return aVal.localeCompare(bVal);
+			return Number(aVal) - Number(bVal);
+		});
+		domains = domains;
+	}
 
 	async function getDomains(walletAddress?: string) {
 		if (!walletAddress) return [];
 
-		const domains = await $metaNamesSdk.domainRepository.findByOwner(
-			walletAddress
-		);
-		if (domains) return domains;
-		else return [];
+		loaded = false;
+		const domains = await $metaNamesSdk.domainRepository.findByOwner(walletAddress);
+		loaded = true;
+
+		return domains;
 	}
+
+	walletAddress.subscribe(async (address) => {
+		domains = await getDomains(address);
+		handleSort();
+	});
 </script>
 
 <div class="profile content">
@@ -59,16 +49,56 @@
 				<p class="address-title">Wallet address</p>
 				<p>{$walletAddress}</p>
 				<h4>Domains</h4>
-				{#await getDomains($walletAddress)}
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-				{:then domains}
-					{#if domains.length === 0}
+				<DataTable
+					sortable
+					bind:sort
+					bind:sortDirection
+					on:SMUIDataTable:sorted={handleSort}
+					table$aria-label="Domain list"
+					class="w-100"
+				>
+					<Head>
+						<Row>
+							<Cell numeric columnId="tokenId">
+								<IconButton class="material-icons">arrow_upward</IconButton>
+								<Label>Token ID</Label>
+							</Cell>
+							<Cell class="w-80" columnId="name">
+								<Label>Domain Name</Label>
+								<IconButton class="material-icons">arrow_upward</IconButton>
+							</Cell>
+							<Cell columnId="parentId" sortable={false}>
+								<Label>Parent Name</Label>
+							</Cell>
+						</Row>
+					</Head>
+					{#if loaded && domains.length === 0}
 						<p>No domains found</p>
 						<a href="/">Register a domain!</a>
 					{:else}
-						<SvelteTable {columns} rows={domains} />
+						<Body>
+							{#each domains as domain (domain.tokenId)}
+								<Row>
+									<Cell numeric>{domain.tokenId}</Cell>
+									<Cell>
+										<a href="/domain/{domain.name}">{domain.name}</a>
+									</Cell>
+									<Cell>
+										{#if domain.parentId}
+											<a href="/domain/{domain.parentId}">{domain.parentId}</a>
+										{/if}
+									</Cell>
+								</Row>
+							{/each}
+						</Body>
 					{/if}
-				{/await}
+					<LinearProgress
+						closed={loaded}
+						indeterminate
+						aria-label="Data is being loaded..."
+						slot="progress"
+					/>
+				</DataTable>
 			{:else}
 				<h3>Connect the Wallet</h3>
 				<p>To see your domains</p>
