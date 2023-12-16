@@ -23,8 +23,10 @@
 		"@smui/button": "^7.0.0-beta.14",
 		"@smui/card": "^7.0.0-beta.14",
 		"@smui/circular-progress": "^7.0.0-beta.15",
+		"@smui/data-table": "^7.0.0-beta.15",
 		"@smui/dialog": "^7.0.0-beta.15",
 		"@smui/icon-button": "^7.0.0-beta.14",
+		"@smui/linear-progress": "^7.0.0-beta.15",
 		"@smui/list": "^7.0.0-beta.14",
 		"@smui/menu": "^7.0.0-beta.14",
 		"@smui/menu-surface": "^7.0.0-beta.14",
@@ -60,7 +62,6 @@
 		"@vercel/analytics": "^1.1.1",
 		"@vercel/speed-insights": "^1.0.2",
 		"jdenticon": "^3.2.0",
-		"partisia-sdk": "^0.1.1",
-		"svelte-table": "^0.6.1"
+		"partisia-sdk": "^0.1.1"
 	}
 }

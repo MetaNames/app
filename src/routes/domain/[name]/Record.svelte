@@ -58,7 +58,7 @@
 		</Actions>
 	</Dialog>
 	<label for={label}>{label}</label>
-	<Textfield for={label} bind:value={recordValue} variant="outlined" {disabled} />
+	<Textfield for={label} bind:value={recordValue} variant="outlined" textarea {disabled} />
 	{#if edit}
 		<div class="actions">
 			<IconButton class="material-icons" on:click={save}>save</IconButton>
@@ -88,6 +88,10 @@
 		&.edit {
 			display: grid;
 			grid-template-columns: 1fr 2fr 1fr;
+		}
+
+		:global(textarea:disabled) {
+			color: white !important;
 		}
 	}
 
