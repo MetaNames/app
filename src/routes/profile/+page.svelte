@@ -45,11 +45,8 @@
 <div class="profile content">
 	<Paper class="w-100" variant="raised">
 		<div class="paper-content">
+				<h3>Domains</h3>
 			{#if $walletConnected}
-				<h3>Profile</h3>
-				<p class="address-title">Wallet address</p>
-				<p>{$walletAddress}</p>
-				<h4>Domains</h4>
 				<DataTable
 					sortable
 					bind:sort
@@ -102,18 +99,13 @@
 					<Button href="/" variant="raised">Register a domain</Button>
 				{/if}
 			{:else}
-				<h3>Connect the Wallet</h3>
-				<p>To see your domains</p>
+				<p>Connect your wallet to see your domains</p>
 			{/if}
 		</div>
 	</Paper>
 </div>
 
 <style lang="scss">
-	.address-title {
-		font-weight: bold;
-	}
-
 	.profile {
 		min-width: 60vw;
 	}
