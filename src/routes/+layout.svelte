@@ -16,7 +16,6 @@
 	import '../styles/app.scss';
 	import Footer from './Footer.svelte';
 	import { alertMessage } from '$lib/stores';
-	import ThemeSwitch from './ThemeSwitch.svelte';
 
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
@@ -72,8 +71,6 @@
 				</Section>
 
 				<Section align="end" toolbar>
-					<ThemeSwitch bind:theme />
-					<span class="separator" />
 					<WalletConnect {anchor} />
 				</Section>
 			</Row>
