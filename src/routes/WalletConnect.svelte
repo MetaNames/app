@@ -14,7 +14,11 @@
 		if ($address) return $address.slice(0, 4) + '...' + $address.slice(-4);
 	});
 
+	let menu: Menu;
+	let isOpen = false;
+
 	$: buttonLabel = $shortAddress ? $shortAddress : 'Connect Wallet';
+	$: if(!menu?.isOpen()) isOpen = false;
 
 	async function connectWithMetaMaskWallet() {
 		try {
@@ -50,16 +54,15 @@
 		$metaNamesSdk.resetSigningStrategy();
 	}
 
-	let menu: Menu;
-
 	function toggleMenu() {
-		menu.setOpen(!menu.isOpen());
+		menu.setOpen(!isOpen);
+		isOpen = !isOpen;
 	}
 
 	export let anchor: HTMLDivElement;
 </script>
 
-<Button on:click={() => toggleMenu()}>
+<Button on:click={toggleMenu}>
 	<Icon class="material-icons" aria-label="Wallet">wallet</Icon>
 	<Label>{buttonLabel}</Label>
 </Button>
