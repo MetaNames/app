@@ -52,10 +52,14 @@
 
 	let menu: Menu;
 
+	function toggleMenu() {
+		menu.setOpen(!menu.isOpen());
+	}
+
 	export let anchor: HTMLDivElement;
 </script>
 
-<Button on:click={() => menu.setOpen(true)}>
+<Button on:click={() => toggleMenu()}>
 	<Icon class="material-icons" aria-label="Wallet">wallet</Icon>
 	<Label>{buttonLabel}</Label>
 </Button>
