@@ -8,7 +8,7 @@
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
-	import Button from '@smui/button';
+	import GoBackButton from './GoBackButton.svelte';
 
 	let domain: DomainModel | null;
 
@@ -26,14 +26,14 @@
 <div class="content domain">
 	{#if domain}
 		<Domain {domain} />
-		<br>
-		<Button href="/" variant="raised">Go back</Button>
+		<br />
+		<GoBackButton />
 	{:else if domain === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else if domain === null}
 		<Paper class="w-100 text-center" variant="raised">
-				<h3>Domain not found</h3>
-				<Button href="/" variant="raised">Go back</Button>
+			<h3>Domain not found</h3>
+			<GoBackButton />
 		</Paper>
 	{/if}
 </div>
