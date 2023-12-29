@@ -7,6 +7,7 @@
 
 	import { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
+	import ConnectionRequired from './ConnectionRequired.svelte';
 
 	export let domainName: string;
 	export let tld: string;
@@ -14,7 +15,9 @@
 	let years = 1;
 	let feesApproved = false;
 
-	$: nameWithoutTLD = domainName.endsWith(`.${tld}`) ? domainName.replace(`.${tld}`, '') : domainName;
+	$: nameWithoutTLD = domainName.endsWith(`.${tld}`)
+		? domainName.replace(`.${tld}`, '')
+		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
 	$: fees = $metaNamesSdk.domainRepository.calculateMintFees(domainName);
 	$: nameLength = nameWithoutTLD.length > 5 ? '5+' : nameWithoutTLD.length;
@@ -80,26 +83,28 @@
 				</div>
 			</div>
 
-			<div class="submit">
-				<LoadingButton
-					disabled={!$walletConnected || feesApproved}
-					onClick={approveFees}
-					variant="raised"
-				>
-					<Label>Approve fees</Label>
-				</LoadingButton>
-			</div>
-			<div class="submit">
-				<LoadingButton
-					disabled={!$walletConnected || !feesApproved}
-					onClick={registerDomain}
-					variant="raised"
-				>
-					<Label>Register domain</Label>
-				</LoadingButton>
-			</div>
-		</div></Content
-	>
+			<ConnectionRequired class="mt-1">
+				<div class="submit">
+					<LoadingButton
+						disabled={feesApproved}
+						onClick={approveFees}
+						variant="raised"
+					>
+						<Label>Approve fees</Label>
+					</LoadingButton>
+				</div>
+				<div class="submit mt-1">
+					<LoadingButton
+						disabled={!feesApproved}
+						onClick={registerDomain}
+						variant="raised"
+					>
+						<Label>Register domain</Label>
+					</LoadingButton>
+				</div>
+			</ConnectionRequired>
+		</div>
+	</Content>
 </Card>
 
 <style lang="scss">
@@ -135,7 +140,6 @@
 	.submit {
 		display: flex;
 		justify-content: center;
-		margin-top: 1rem;
 	}
 
 	.years {

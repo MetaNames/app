@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 
 	import LoadingButton from '../../LoadingButton.svelte';
+	import ConnectionRequired from './ConnectionRequired.svelte';
 
 	export let domainName: string;
 	export let parentDomainName: string;
@@ -57,9 +58,11 @@
 			</div>
 
 			<div class="submit">
-				<LoadingButton disabled={!$walletConnected} onClick={registerDomain} variant="raised">
-					<Label>Register subdomain</Label>
-				</LoadingButton>
+				<ConnectionRequired>
+					<LoadingButton onClick={registerDomain} variant="raised">
+						<Label>Register domain</Label>
+					</LoadingButton>
+				</ConnectionRequired>
 			</div>
 		</div></Content
 	>
