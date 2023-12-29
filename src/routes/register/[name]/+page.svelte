@@ -48,7 +48,7 @@
 	{:else}
 		<div class="container">
 			<h2>Register</h2>
-			{#if parentDomain}
+			{#if parentDomain && parentDomainName}
 				<SubdomainRegistration {domainName} {parentDomainName} />
 			{:else if parentDomainName && !parentDomain}
 				<DomainRegistration domainName={parentDomainName} {tld} />
