@@ -26,7 +26,7 @@
 <div class="content domain">
 	{#if domain}
 		<Domain {domain} />
-		<br />
+		<br class="my-1" />
 		<GoBackButton />
 	{:else if domain === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
