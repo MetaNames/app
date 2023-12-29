@@ -18,7 +18,7 @@
 	.subtitle {
 		text-transform: uppercase;
 		font-size: x-small;
-		color: var(--mdc-theme-text-hint-on-background)
+		color: var(--mdc-theme-text-hint-on-background);
 	}
 	h3 {
 		margin-top: 0;

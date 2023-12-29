@@ -1,4 +1,4 @@
-import { websiteUrl } from "$lib";
+import { websiteUrl } from '$lib';
 
 export async function GET() {
 	return new Response(

@@ -4,7 +4,7 @@
 	import WalletConnectButton from '../../WalletConnectButton.svelte';
 
 	let anchor: HTMLDivElement;
-	let className: string = "";
+	let className: string = '';
 
 	export { className as class };
 </script>

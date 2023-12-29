@@ -85,20 +85,12 @@
 
 			<ConnectionRequired class="mt-1">
 				<div class="submit">
-					<LoadingButton
-						disabled={feesApproved}
-						onClick={approveFees}
-						variant="raised"
-					>
+					<LoadingButton disabled={feesApproved} onClick={approveFees} variant="raised">
 						<Label>Approve fees</Label>
 					</LoadingButton>
 				</div>
 				<div class="submit mt-1">
-					<LoadingButton
-						disabled={!feesApproved}
-						onClick={registerDomain}
-						variant="raised"
-					>
+					<LoadingButton disabled={!feesApproved} onClick={registerDomain} variant="raised">
 						<Label>Register domain</Label>
 					</LoadingButton>
 				</div>

@@ -1,4 +1,3 @@
-
 ## Add domain register
 
 - [x] Redirect to register & show page from home

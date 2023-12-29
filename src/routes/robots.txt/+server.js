@@ -1,4 +1,4 @@
-import { websiteUrl } from "$lib";
+import { websiteUrl } from '$lib';
 
 export async function GET() {
 	return new Response(
@@ -7,7 +7,10 @@ export async function GET() {
      Allow: /
 
      Sitemap: ${websiteUrl}sitemap.xml
-		`.split('\n').map(line => line.trim()).join('\n'),
+		`
+			.split('\n')
+			.map((line) => line.trim())
+			.join('\n'),
 		{
 			headers: {
 				'Content-Type': 'text/plain'
@@ -15,4 +18,3 @@ export async function GET() {
 		}
 	);
 }
-
