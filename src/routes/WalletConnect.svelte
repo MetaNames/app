@@ -15,10 +15,9 @@
 	});
 
 	let menu: Menu;
-	let isOpen = false;
+	let toggleOpen = false;
 
 	$: buttonLabel = $shortAddress ? $shortAddress : 'Connect Wallet';
-	$: if(!menu?.isOpen()) isOpen = false;
 
 	async function connectWithMetaMaskWallet() {
 		try {
@@ -55,8 +54,8 @@
 	}
 
 	function toggleMenu() {
-		menu.setOpen(!isOpen);
-		isOpen = !isOpen;
+		toggleOpen = !toggleOpen;
+		menu.setOpen(toggleOpen);
 	}
 
 	export let anchor: HTMLDivElement;
@@ -68,6 +67,7 @@
 </Button>
 <Menu
 	bind:this={menu}
+	on:SMUIMenuSurface:closed={() => (toggleOpen = false)}
 	class="menu-floating-right"
 	anchor={false}
 	bind:anchorElement={anchor}
