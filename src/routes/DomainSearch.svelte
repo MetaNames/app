@@ -29,7 +29,11 @@
 		if (invalid) return;
 
 		if (domainName === '') return;
-		if (submit && domainName === nameSearched) return goto(`/register/${nameSearched}`);
+		if (submit && domainName === nameSearched) {
+			const url = domain ? `/domain/${nameSearched}` : `/register/${nameSearched}`;
+
+			return goto(url);
+		}
 
 		nameSearched = domainName;
 		isLoading = true;
