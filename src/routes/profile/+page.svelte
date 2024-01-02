@@ -45,7 +45,7 @@
 <div class="profile content">
 	<Paper class="w-100" variant="raised">
 		<div class="paper-content">
-				<h3>My Domains</h3>
+			<h3>My Domains</h3>
 			{#if $walletConnected}
 				<DataTable
 					sortable

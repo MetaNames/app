@@ -4,19 +4,25 @@
 	import Records from './Records.svelte';
 
 	import Card, { Content as CardContent } from '@smui/card';
-	import { Icon } from '@smui/icon-button';
 	import Paper, { Content } from '@smui/paper';
 	import Tab, { Label } from '@smui/tab';
 	import TabBar from '@smui/tab-bar';
 	import { toSvg } from 'jdenticon';
+	import Chip from './Chip.svelte';
+	import config from '$lib/config';
+	import { formatDate } from '$lib';
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 250);
+	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
 
 	export let domain: Domain;
+	export let isTld: boolean = false;
 
 	const records = Object.fromEntries(
 		[...domain.records].map(([key, value]) => [key, value.toString()])
 	);
+
+	const ownerBrowserUrl = `${config.browserUrl}/accounts/${domain.owner}`;
 
 	let tabs = ['Details', 'Records'];
 	let tabActive = 'Details';
@@ -29,7 +35,7 @@
 				{@html domainAvatar}
 			</div>
 		</div>
-		<h5 class="domain">{domain.name}</h5>
+		<h5 class="domain">{domainName}</h5>
 		<TabBar {tabs} let:tab bind:active={tabActive}>
 			<Tab {tab}>
 				<Label>{tab}</Label>
@@ -39,23 +45,33 @@
 		{#if tabActive === 'Details'}
 			<Paper variant="unelevated">
 				<Content>
-					<div class="details-row">
-						<span class="icon">
-							<Icon class="material-icons" aria-label="Parent">supervisor_account</Icon>
-						</span>
-						{#if domain.parentId}
-							<a href={`/domain/${domain.parentId}`}>
-								<span class="record-value">{domain.parentId}</span>
-							</a>
-						{:else}
-							<div>Parent not present</div>
+					<div class="mt-1">
+						{#if !isTld}
+							<Chip iconName="supervisor_account" label="Parent">
+								{#if domain.parentId}
+									<a href={`/domain/${domain.parentId}`} target="_blank">
+										{domain.parentId}
+									</a>
+								{:else}
+									<a href="/tld" target="_blank">meta</a>
+								{/if}
+							</Chip>
 						{/if}
 					</div>
-					<div class="details-row">
-						<span class="icon">
-							<Icon class="material-icons" aria-label="Owner">person</Icon>
-						</span>
-						<span class="record-value">{domain.owner}</span>
+					<div class="mt-1">
+						<Chip iconName="person" label="Owner">
+							<a href={ownerBrowserUrl} target="_blank">{domain.owner}</a>
+						</Chip>
+					</div>
+					<div class="mt-1">
+						<Chip iconName="schedule" label="Created">
+							{formatDate(domain.createdAt)}
+						</Chip>
+					</div>
+					<div class="mt-1">
+						<Chip iconName="schedule" label="Expires">
+							{domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+						</Chip>
 					</div>
 				</Content>
 			</Paper>
@@ -81,10 +97,6 @@
 		}
 	}
 
-	.icon {
-		padding: 0.5rem;
-	}
-
 	.domain {
 		margin-top: 0rem;
 		margin-bottom: 1rem;
@@ -95,22 +107,5 @@
 	:global(.domain-container) {
 		min-width: 50wh;
 		width: 100%;
-	}
-
-	.details-row {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		margin-top: 1rem;
-	}
-
-	.record-value {
-		text-align: left;
-
-		@media screen and (max-width: 600px) {
-			max-width: 250px;
-			word-wrap: break-word;
-			overflow-wrap: break-word;
-		}
 	}
 </style>

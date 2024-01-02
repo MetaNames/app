@@ -3,12 +3,12 @@
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
-	import Domain from './Domain.svelte';
+	import Domain from '../../../components/Domain.svelte';
 	import { metaNamesSdk } from '$lib/stores';
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
-	import Button from '@smui/button';
+	import GoBackButton from '../../../components/GoBackButton.svelte';
 
 	let domain: DomainModel | null;
 
@@ -23,29 +23,17 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content domain">
+<div class="content container">
 	{#if domain}
 		<Domain {domain} />
-		<br>
-		<Button href="/" variant="raised">Go back</Button>
+		<br class="my-1" />
+		<GoBackButton />
 	{:else if domain === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else if domain === null}
 		<Paper class="w-100 text-center" variant="raised">
-				<h3>Domain not found</h3>
-				<Button href="/" variant="raised">Go back</Button>
+			<h3>Domain not found</h3>
+			<GoBackButton />
 		</Paper>
 	{/if}
 </div>
-
-<style lang="scss">
-	.domain {
-		min-width: 60vw;
-	}
-
-	@media (max-width: 768px) {
-		.domain {
-			min-width: 90vw;
-		}
-	}
-</style>

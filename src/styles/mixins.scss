@@ -2,58 +2,58 @@ $amounts: (0, 1, 2, 3, 4);
 $types: (top, bottom, left, right);
 
 @each $type in $types {
-  @each $size in $amounts {
-    .m#{str-slice($type, 0, 1)}-#{$size} {
-      margin-#{$type}: #{$size * 0.8}em !important;
-    }
-  }
+	@each $size in $amounts {
+		.m#{str-slice($type, 0, 1)}-#{$size} {
+			margin-#{$type}: #{$size * 0.8}em !important;
+		}
+	}
 }
 
 @each $size in $amounts {
-  .m-#{$size} {
-    margin: #{$size * 0.8}em !important;
-  }
+	.m-#{$size} {
+		margin: #{$size * 0.8}em !important;
+	}
 }
 
 @each $size in $amounts {
-  .mx-#{$size} {
-    margin-left: #{$size * 0.8}em !important;
-  }
+	.mx-#{$size} {
+		margin-left: #{$size * 0.8}em !important;
+	}
 }
 
 @each $size in $amounts {
-  .my-#{$size} {
-    margin-top: #{$size * 0.8}em !important;
-  }
+	.my-#{$size} {
+		margin-top: #{$size * 0.8}em !important;
+	}
 }
 
 .m-auto {
-  margin: auto !important;
+	margin: auto !important;
 }
 
 .mx-auto {
-  margin-left: auto !important;
+	margin-left: auto !important;
 }
 
 .my-auto {
-  margin-top: auto !important;
+	margin-top: auto !important;
 }
 
 $percentages: (20%, 40%, 60%, 80%);
 $axis: (width, height);
 
 @each $type in $axis {
-  @each $size in $percentages {
-    .#{str-slice($type, 0, 1)}-#{str-slice(#{$size}, 0, 2)} {
-      #{$type}: #{$size};
-    }
-  }
+	@each $size in $percentages {
+		.#{str-slice($type, 0, 1)}-#{str-slice(#{$size}, 0, 2)} {
+			#{$type}: #{$size};
+		}
+	}
 }
 
 .w-100 {
-  width: 100%;
+	width: 100%;
 }
 
 .h-100 {
-  height: 100%;
+	height: 100%;
 }

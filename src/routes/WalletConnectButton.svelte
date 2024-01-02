@@ -1,24 +1,15 @@
 <script lang="ts">
-	import { alertMessage, metaNamesSdk, walletAddress } from '$lib/stores';
+	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
 	import { connectMetaMask, connectPartisia, getAddress } from '$lib/wallet';
-	import { derived } from 'svelte/store';
 
-	import Button, { Icon, Label } from '@smui/button';
 	import List, { Item, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
 	import '../styles/wallet-connect.scss';
-	import { goto } from '$app/navigation';
-
-	const shortAddress = derived(walletAddress, ($address) => {
-		if ($address) return $address.slice(0, 4) + '...' + $address.slice(-4);
-	});
+	import Button from '@smui/button';
 
 	let menu: Menu;
-	let isOpen = false;
-
-	$: buttonLabel = $shortAddress ? $shortAddress : 'Connect Wallet';
-	$: if(!menu?.isOpen()) isOpen = false;
+	let toggleOpen = false;
 
 	async function connectWithMetaMaskWallet() {
 		try {
@@ -52,33 +43,34 @@
 	function disconnectWallet() {
 		walletAddress.set(undefined);
 		$metaNamesSdk.resetSigningStrategy();
+
+		return true;
 	}
 
 	function toggleMenu() {
-		menu.setOpen(!isOpen);
-		isOpen = !isOpen;
+		toggleOpen = !toggleOpen;
+		menu.setOpen(toggleOpen);
 	}
 
 	export let anchor: HTMLDivElement;
+	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
 </script>
 
-<Button on:click={toggleMenu}>
-	<Icon class="material-icons" aria-label="Wallet">wallet</Icon>
-	<Label>{buttonLabel}</Label>
+<Button variant={connectButtonVariant} on:click={toggleMenu}>
+	<slot name="buttonLabel">Connect</slot>
 </Button>
 <Menu
 	bind:this={menu}
+	on:SMUIMenuSurface:closed={() => (toggleOpen = false)}
 	class="menu-floating-right"
-	anchor={false}
+	anchor={true}
 	bind:anchorElement={anchor}
 	anchorCorner="BOTTOM_LEFT"
 >
 	<List>
-		{#if $shortAddress}
-			<Item on:SMUI:action={() => goto('/profile')}>
-				<Text>Profile</Text>
-			</Item>
-			<Item on:SMUI:action={disconnectWallet}>
+		{#if $walletConnected}
+			<slot name="connectedMenuIems" />
+			<Item on:SMUI:action={() => disconnectWallet() && toggleMenu()}>
 				<Text>Disconnect</Text>
 			</Item>
 		{:else}

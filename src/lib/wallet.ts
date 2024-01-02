@@ -1,52 +1,52 @@
-import PartisiaSdk from 'partisia-sdk'
-import config from './config'
-import type { MetaMaskSdk } from '@metanames/sdk'
+import PartisiaSdk from 'partisia-sdk';
+import config from './config';
+import type { MetaMaskSdk } from '@metanames/sdk';
 
-export type OptionalWalletClient = PartisiaSdk | MetaMaskSdk | undefined | null
+export type OptionalWalletClient = PartisiaSdk | MetaMaskSdk | undefined | null;
 
 const metaMaskSnapId = 'npm:@partisiablockchain/snap';
 
 export const connectPartisia = async () => {
-  const sdk = new PartisiaSdk()
+	const sdk = new PartisiaSdk();
 
-  await sdk.connect({
-    chainId: config.chainId,
-    permissions: config.permissions,
-    dappName: config.dAppName,
-  })
+	await sdk.connect({
+		chainId: config.chainId,
+		permissions: config.permissions,
+		dappName: config.dAppName
+	});
 
-  if (sdk.connection) return sdk
-  else throw new Error('Connection failed')
-}
+	if (sdk.connection) return sdk;
+	else throw new Error('Connection failed');
+};
 
 export const connectMetaMask = async () => {
-  if (!('ethereum' in window)) {
-    throw new Error('MetaMask is not installed');
-  }
+	if (!('ethereum' in window)) {
+		throw new Error('MetaMask is not installed');
+	}
 
-  const metamask = window.ethereum as MetaMaskSdk;
+	const metamask = window.ethereum as MetaMaskSdk;
 
-  await metamask.request({
-    method: 'wallet_requestSnaps',
-    params: {
-      [metaMaskSnapId]: {}
-    }
-  });
+	await metamask.request({
+		method: 'wallet_requestSnaps',
+		params: {
+			[metaMaskSnapId]: {}
+		}
+	});
 
-  return metamask
-}
+	return metamask;
+};
 
 export const getAddress = async (wallet: OptionalWalletClient): Promise<string | undefined> => {
-  if (!wallet) return;
+	if (!wallet) return;
 
-  if ('connection' in wallet) return wallet.connection?.account.address;
-  else if ('request' in wallet) {
-    return await wallet.request({
-      method: 'wallet_invokeSnap',
-      params: {
-        snapId: metaMaskSnapId,
-        request: { method: 'get_address' }
-      },
-    })
-  } else return;
-}
+	if ('connection' in wallet) return wallet.connection?.account.address;
+	else if ('request' in wallet) {
+		return await wallet.request({
+			method: 'wallet_invokeSnap',
+			params: {
+				snapId: metaMaskSnapId,
+				request: { method: 'get_address' }
+			}
+		});
+	} else return;
+};

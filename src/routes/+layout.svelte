@@ -10,7 +10,7 @@
 	import TopAppBar, { Row, Title } from '@smui/top-app-bar';
 	import { Anchor } from '@smui/menu-surface';
 
-	import WalletConnect from './WalletConnect.svelte';
+	import WalletConnect from './WalletConnectStatus.svelte';
 	import Logo from './Logo.svelte';
 
 	import '../styles/app.scss';

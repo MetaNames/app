@@ -1,9 +1,9 @@
 <script lang="ts">
-	export let color: 'dark' | 'light' = "light";
+	export let color: 'dark' | 'light' = 'light';
 
-	const cssColor = color === "dark" ? "var(--mdc-theme-on-surface)" : "var(--mdc-theme-on-primary)";
+	const cssColor = color === 'dark' ? 'var(--mdc-theme-on-surface)' : 'var(--mdc-theme-on-primary)';
 
-	const style = `fill: ${cssColor};`
+	const style = `fill: ${cssColor};`;
 </script>
 
 <svg
@@ -37,8 +37,8 @@
 </svg>
 
 <style>
-  svg {
-    width: 3rem;
-    height: 4rem;
-  }
+	svg {
+		width: 3rem;
+		height: 4rem;
+	}
 </style>
