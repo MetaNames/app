@@ -48,7 +48,7 @@
 								<span class="record-value">{domain.parentId}</span>
 							</a>
 						{:else}
-							<div>Parent not present</div>
+							<div>Meta</div>
 						{/if}
 					</div>
 					<div class="details-row">

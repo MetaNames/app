@@ -3,12 +3,12 @@
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
-	import Domain from './Domain.svelte';
+	import Domain from '../../../components/Domain.svelte';
 	import { metaNamesSdk } from '$lib/stores';
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
-	import GoBackButton from './GoBackButton.svelte';
+	import GoBackButton from '../../../components/GoBackButton.svelte';
 
 	let domain: DomainModel | null;
 
@@ -23,7 +23,7 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content domain">
+<div class="content domain-container">
 	{#if domain}
 		<Domain {domain} />
 		<br class="my-1" />
@@ -37,15 +37,3 @@
 		</Paper>
 	{/if}
 </div>
-
-<style lang="scss">
-	.domain {
-		min-width: 60vw;
-	}
-
-	@media (max-width: 768px) {
-		.domain {
-			min-width: 90vw;
-		}
-	}
-</style>

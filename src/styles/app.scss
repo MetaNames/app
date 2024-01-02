@@ -16,6 +16,13 @@
 	}
 }
 
+.domain-container {
+	min-width: 60vw;
+}
+
+@media (max-width: 768px) {
+}
+
 .domain-input {
 	width: 50vw;
 }
@@ -33,6 +40,10 @@
 }
 
 @media (max-width: 768px) {
+	.domain-container {
+		min-width: 90vw;
+	}
+
 	.mobile--mt-1 {
 		margin-top: 1rem;
 	}
