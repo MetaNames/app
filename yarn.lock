@@ -727,10 +727,10 @@
     "@material/theme" "^14.0.0"
     tslib "^2.1.0"
 
-"@metanames/sdk@2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-2.6.0.tgz#19405d9e28b820560a5ffef67dbf3a537e4e8518"
-  integrity sha512-tVgQcPh1iCSz/y2+Qd+M+6SSGEaPMp/41TVJBpFQdMPVd7xU3JtC0cqUQerYkMYe+Ycu9qru2L0ugZmwAPRLxw==
+"@metanames/sdk@2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-2.7.0.tgz#678a615e32ee964871e9d6147eb53727921ad505"
+  integrity sha512-Ekoh/6QmcVjfSmJsUSqThxIi/OB5IkAJFTJ7UrMK/qyi0QLGyaBqUbATmMYPBkgLEo7Ae52N60IKl5Oq0CUUOg==
   dependencies:
     "@partisiablockchain/abi-client" "^3.30.0"
     "@secata-public/bitmanipulation-ts" "^3.0.6"
