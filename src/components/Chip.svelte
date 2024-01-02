@@ -19,9 +19,8 @@
 
 <style lang="scss">
 	.chip {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
+		display: grid;
+    grid-template-columns: 1fr 2fr;
 
 		.header {
 			display: flex;
@@ -38,8 +37,15 @@
 		}
 
 		.content {
+      display: flex;
+      align-items: start;
 			padding: 0.5rem;
 			margin-left: 0.5rem;
+
+			@media (max-width: 768px) {
+				max-width: 200px;
+				overflow-wrap: anywhere;
+			}
 		}
 	}
 </style>
