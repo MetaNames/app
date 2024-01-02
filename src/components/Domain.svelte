@@ -9,6 +9,7 @@
 	import Tab, { Label } from '@smui/tab';
 	import TabBar from '@smui/tab-bar';
 	import { toSvg } from 'jdenticon';
+	import Chip from './Chip.svelte';
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 250);
 	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
@@ -43,25 +44,23 @@
 				<Content>
 					<div class="details-row">
 						{#if !isTld}
-							<span class="icon">
-								<Icon class="material-icons" aria-label="Parent">supervisor_account</Icon>
-							</span>
-							{#if domain.parentId}
-								<a href={`/domain/${domain.parentId}`}>
-									<span class="record-value">{domain.parentId}</span>
-								</a>
-							{:else}
-								<a href="/tld">
-									<span class="record-value">meta</span>
-								</a>
-							{/if}
+							<Chip iconName="supervisor_account" label="Parent">
+								{#if domain.parentId}
+									<a href={`/domain/${domain.parentId}`}>
+										<span class="record-value">{domain.parentId}</span>
+									</a>
+								{:else}
+									<a href="/tld">
+										<span class="record-value">meta</span>
+									</a>
+								{/if}
+							</Chip>
 						{/if}
 					</div>
 					<div class="details-row">
-						<span class="icon">
-							<Icon class="material-icons" aria-label="Owner">person</Icon>
-						</span>
-						<span class="record-value">{domain.owner}</span>
+						<Chip iconName="person" label="Owner">
+							<span class="record-value">{domain.owner}</span>
+						</Chip>
 					</div>
 				</Content>
 			</Paper>
@@ -85,10 +84,6 @@
 			display: flex;
 			justify-content: center;
 		}
-	}
-
-	.icon {
-		padding: 0.5rem;
 	}
 
 	.domain {
