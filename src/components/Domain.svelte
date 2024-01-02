@@ -11,8 +11,10 @@
 	import { toSvg } from 'jdenticon';
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 250);
+	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
 
 	export let domain: Domain;
+	export let isTld: boolean = false;
 
 	const records = Object.fromEntries(
 		[...domain.records].map(([key, value]) => [key, value.toString()])
@@ -29,7 +31,7 @@
 				{@html domainAvatar}
 			</div>
 		</div>
-		<h5 class="domain">{domain.name}</h5>
+		<h5 class="domain">{domainName}</h5>
 		<TabBar {tabs} let:tab bind:active={tabActive}>
 			<Tab {tab}>
 				<Label>{tab}</Label>
@@ -40,15 +42,19 @@
 			<Paper variant="unelevated">
 				<Content>
 					<div class="details-row">
-						<span class="icon">
-							<Icon class="material-icons" aria-label="Parent">supervisor_account</Icon>
-						</span>
-						{#if domain.parentId}
-							<a href={`/domain/${domain.parentId}`}>
-								<span class="record-value">{domain.parentId}</span>
-							</a>
-						{:else}
-							<div>Meta</div>
+						{#if !isTld}
+							<span class="icon">
+								<Icon class="material-icons" aria-label="Parent">supervisor_account</Icon>
+							</span>
+							{#if domain.parentId}
+								<a href={`/domain/${domain.parentId}`}>
+									<span class="record-value">{domain.parentId}</span>
+								</a>
+							{:else}
+								<a href="/tld">
+									<span class="record-value">meta</span>
+								</a>
+							{/if}
 						{/if}
 					</div>
 					<div class="details-row">

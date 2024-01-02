@@ -23,7 +23,7 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content domain-container">
+<div class="content container">
 	{#if domain}
 		<Domain {domain} />
 		<br class="my-1" />
