@@ -40,7 +40,7 @@
 	}
 </script>
 
-<Card>
+<Card class="domain-container">
 	<Content>
 		<div class="card-content">
 			<h4>{domainName}</h4>

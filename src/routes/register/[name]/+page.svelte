@@ -42,20 +42,18 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content">
+<div class="content container">
 	{#if domain === undefined || parentDomain === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}
-		<div class="container">
-			<h2>Register</h2>
-			{#if parentDomain && parentDomainName}
-				<SubdomainRegistration {domainName} {parentDomainName} />
-			{:else if parentDomainName && !parentDomain}
-				<DomainRegistration domainName={parentDomainName} {tld} />
-			{:else}
-				<DomainRegistration {domainName} {tld} />
-			{/if}
-		</div>
+		<h2>Register</h2>
+		{#if parentDomain && parentDomainName}
+			<SubdomainRegistration {domainName} {parentDomainName} />
+		{:else if parentDomainName && !parentDomain}
+			<DomainRegistration domainName={parentDomainName} {tld} />
+		{:else}
+			<DomainRegistration {domainName} {tld} />
+		{/if}
 	{/if}
 </div>
 

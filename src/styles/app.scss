@@ -16,6 +16,11 @@
 	}
 }
 
+.domain-container {
+	min-width: 50wh;
+	width: 100%;
+}
+
 .domain-input {
 	width: 50vw;
 }
@@ -47,5 +52,10 @@
 
 	.mobile--w-100 {
 		width: 100%;
+	}
+
+	.domain-container {
+		min-width: 40wh;
+		width: 80%;
 	}
 }
