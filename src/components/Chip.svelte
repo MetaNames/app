@@ -3,9 +3,12 @@
 
 	export let iconName: string;
 	export let label: string;
+	let className: string;
+
+	export { className as class }
 </script>
 
-<div class="chip">
+<div class="chip {className}">
 	<span class="header">
 		<div class="icon">
 			<Icon class="material-icons" aria-label={iconName}>{iconName}</Icon>
