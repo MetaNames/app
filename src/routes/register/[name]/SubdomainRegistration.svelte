@@ -9,6 +9,7 @@
 
 	import LoadingButton from '../../LoadingButton.svelte';
 	import ConnectionRequired from './ConnectionRequired.svelte';
+	import Chip from '../../../components/Chip.svelte';
 
 	export let domainName: string;
 	export let parentDomainName: string;
@@ -40,17 +41,19 @@
 	}
 </script>
 
-<Card>
+<Card class="domain-container">
 	<Content>
 		<div class="card-content">
-			<h4>{domainName}</h4>
+			<h4 class="domain-title">{domainName}</h4>
 
 			<div class="content">
-				<span>Parent domain: <a href={parentLink}>{parentDomainName}</a></span>
+				<Chip class="flex" iconName="supervisor_account" label="Parent">
+					<a href={parentLink}>{parentDomainName}</a>
+				</Chip>
 			</div>
 
 			<div class="fees">
-				<p class="text-center">Price breakdown</p>
+				<p class="title text-center">Price breakdown</p>
 				<div class="row">
 					<span>Total (excluding network fees)</span>
 					<span><b>0</b> {fees.token}</span>
@@ -69,9 +72,11 @@
 </Card>
 
 <style lang="scss">
-	h4 {
+	.domain-title {
 		margin-top: 0;
 		text-align: center;
+
+		margin-bottom: 0.5rem;
 	}
 
 	.fees {
@@ -89,11 +94,19 @@
 			width: 100%;
 		}
 
+		.title {
+			font-weight: bold;
+		}
+
 		@media (max-width: 768px) {
 			.row {
 				flex-direction: column;
 				align-items: center;
 				padding-top: 1rem;
+			}
+
+			.title {
+				margin-bottom: 0;
 			}
 		}
 	}

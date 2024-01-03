@@ -103,9 +103,4 @@
 		font-size: 2rem;
 		font-weight: 800;
 	}
-
-	:global(.domain-container) {
-		min-width: 50wh;
-		width: 100%;
-	}
 </style>

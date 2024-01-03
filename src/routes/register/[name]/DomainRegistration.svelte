@@ -58,7 +58,7 @@
 	}
 </script>
 
-<Card>
+<Card class="domain-container">
 	<Content>
 		<div class="card-content">
 			<h4>{domainName}</h4>
@@ -72,7 +72,7 @@
 			</div>
 
 			<div class="fees">
-				<p class="text-center">Price breakdown</p>
+				<p class="title text-center">Price breakdown</p>
 				<div class="row">
 					<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
 					<span>{fees.amount} {fees.token}</span>
@@ -120,11 +120,19 @@
 			width: 100%;
 		}
 
+		.title {
+			font-weight: bold;
+		}
+
 		@media (max-width: 768px) {
 			.row {
 				flex-direction: column;
 				align-items: center;
 				padding-top: 1rem;
+			}
+
+			.title {
+				margin-bottom: 0;
 			}
 		}
 	}
