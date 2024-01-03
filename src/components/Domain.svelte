@@ -22,7 +22,7 @@
 		[...domain.records].map(([key, value]) => [key, value.toString()])
 	);
 
-	const ownerBrowserUrl = `${config.browserUrl}/accounts/${domain.owner}`;
+	const ownerBrowserUrl = `${config.browserUrl}/${isTld ? 'contracts' : 'accounts'}/${domain.owner}`;
 
 	let tabs = ['Details', 'Records'];
 	let tabActive = 'Details';
@@ -63,16 +63,18 @@
 							<a href={ownerBrowserUrl} target="_blank">{domain.owner}</a>
 						</Chip>
 					</div>
-					<div class="mt-1">
-						<Chip iconName="schedule" label="Created">
-							{formatDate(domain.createdAt)}
-						</Chip>
-					</div>
-					<div class="mt-1">
-						<Chip iconName="schedule" label="Expires">
-							{domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
-						</Chip>
-					</div>
+					{#if !isTld}
+						<div class="mt-1">
+							<Chip iconName="schedule" label="Created">
+								{formatDate(domain.createdAt)}
+							</Chip>
+						</div>
+						<div class="mt-1">
+							<Chip iconName="schedule" label="Expires">
+								{domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+							</Chip>
+						</div>
+					{/if}
 				</Content>
 			</Paper>
 		{:else if tabActive === 'Records'}

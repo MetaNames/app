@@ -8,6 +8,7 @@
 
   const domainData: IDomain = {
     name: "meta",
+    createdAt: new Date(),
     tld: '',
     owner: contractAddress,
     tokenId: NaN,
