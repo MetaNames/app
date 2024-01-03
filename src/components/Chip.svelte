@@ -3,7 +3,7 @@
 
 	export let iconName: string;
 	export let label: string;
-	let className: string;
+	let className: string | undefined;
 
 	export { className as class }
 </script>
