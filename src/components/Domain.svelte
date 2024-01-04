@@ -24,7 +24,9 @@
 
 	const ownerBrowserUrl = `${config.browserUrl}/${isTld ? 'contracts' : 'accounts'}/${domain.owner}`;
 
-	let tabs = ['Details', 'Records'];
+	let tabs = ['Details'];
+	if (!isTld) tabs.push('Records');
+
 	let tabActive = 'Details';
 </script>
 
