@@ -8,3 +8,4 @@ export const walletConnected = derived(
 	($walletAddress) => $walletAddress !== undefined
 );
 export const alertMessage = writable<string | undefined>();
+export const alertTransaction = writable<string | undefined>();

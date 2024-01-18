@@ -15,11 +15,14 @@
 
 	import '../styles/app.scss';
 	import Footer from './Footer.svelte';
-	import { alertMessage } from '$lib/stores';
+	import { alertMessage, alertTransaction } from '$lib/stores';
 
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
-	let snackbarWithClose: Snackbar;
+
+	let alertsSnackbar: Snackbar;
+	let transactionSnackbar: Snackbar;
+	let snackbarTransactionMessage: string;
 	let snackbarMessage: string;
 
 	let theme: 'light' | 'dark';
@@ -28,14 +31,21 @@
 	inject({ mode: dev ? 'development' : 'production' });
 	injectSpeedInsights();
 
+	// Snackbars
+	alertTransaction.subscribe((transaction) => {
+		if (!transaction) return;
+
+		snackbarTransactionMessage = transaction;
+		transactionSnackbar.open();
+	});
 	alertMessage.subscribe((message) => {
 		if (!message) return;
 
 		snackbarMessage = message;
-		snackbarWithClose.open();
+		alertsSnackbar.open();
 
 		setTimeout(() => {
-			snackbarWithClose.close();
+			alertsSnackbar.close();
 			alertMessage.set(undefined);
 		}, 5000);
 	});
@@ -78,7 +88,13 @@
 	</TopAppBar>
 	<slot />
 
-	<Snackbar bind:this={snackbarWithClose}>
+	<Snackbar bind:this={transactionSnackbar}>
+		<Label>{snackbarTransactionMessage}</Label>
+		<Actions>
+			<IconButton class="material-icons" title="Dismiss">close</IconButton>
+		</Actions>
+	</Snackbar>
+	<Snackbar bind:this={alertsSnackbar}>
 		<Label>{snackbarMessage}</Label>
 		<Actions>
 			<IconButton class="material-icons" title="Dismiss">close</IconButton>
