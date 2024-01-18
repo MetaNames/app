@@ -1,5 +1,6 @@
-import { MetaNamesSdk, Enviroment, RecordClassEnum } from '@metanames/sdk';
+import { MetaNamesSdk, Enviroment, RecordClassEnum, type ITransactionIntent } from '@metanames/sdk';
 import config from './config';
+import { alertTransaction } from './stores';
 
 const environment = config.environment === 'test' ? Enviroment.testnet : Enviroment.mainnet;
 
@@ -15,3 +16,14 @@ export const formatDate = (date: Date) => {
 
 	return `${day} ${month}, ${year}`;
 };
+
+// TODO: Extract other URLs into separate file
+export const explorerTransactionUrl = (transactionId: string) =>
+	`${config.browserUrl}/transactions/${transactionId}`;
+
+
+export const alertTransactionAndFetchResult = async (intent: ITransactionIntent) => {
+	alertTransaction.set(intent.transactionHash);
+
+	return await intent.fetchResult;
+}

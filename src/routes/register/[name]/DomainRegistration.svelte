@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
+	import { alertTransaction, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
 	import Card, { Content } from '@smui/card';
 	import IconButton from '@smui/icon-button';
 
@@ -8,6 +8,7 @@
 	import { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
 	import ConnectionRequired from './ConnectionRequired.svelte';
+	import { alertTransactionAndFetchResult } from '$lib';
 
 	export let domainName: string;
 	export let tld: string;
@@ -33,11 +34,12 @@
 	async function approveFees() {
 		if (!$walletConnected) return;
 
-		const { hasError, trxHash: approveTrx } = await $metaNamesSdk.domainRepository.approveMintFees(
+		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
 			domainName,
 			years
 		);
-		if (hasError) throw new Error(`Failed to approve mint fees. Transaction: ${approveTrx}`);
+		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
+		if (hasError) throw new Error('Failed to approve mint fees.');
 		else feesApproved = true;
 	}
 
@@ -47,12 +49,13 @@
 
 		if (!feesApproved) throw new Error('Fees not approved');
 
-		const { hasError: registerHasError, trxHash: registerTrx } =
-			await $metaNamesSdk.domainRepository.register({
-				domain: domainName,
-				to: address
-			});
-		if (registerHasError) throw new Error(`Failed to register domain. Transaction: ${registerTrx}`);
+		const transactionIntent = await $metaNamesSdk.domainRepository.register({
+			domain: domainName,
+			to: address
+		});
+
+		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
+		if (hasError) throw new Error('Failed to register domain.');
 
 		goto(`/domain/${domainName}`);
 	}

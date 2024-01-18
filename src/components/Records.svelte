@@ -1,14 +1,14 @@
 <script lang="ts">
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
-	import { walletAddress } from '$lib/stores';
+	import { alertMessage, walletAddress } from '$lib/stores';
 
 	import Button from '@smui/button/src/Button.svelte';
 	import Select, { Option } from '@smui/select';
 
 	import RecordComponent from './Record.svelte';
 	import Textfield from '@smui/textfield';
-	import { getRecordClassFrom } from '$lib';
+	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
 
 	export let ownerAddress: string;
 	export let records: Record<string, string>;
@@ -35,8 +35,9 @@
 		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) return;
 
 		const recordClass = getRecordClassFrom(selectedRecordClass);
-		const res = await repository.create({ class: recordClass, data: newRecordValue });
-		if (res.hasError) console.error(res.errorMessage);
+		const transactionIntent = await repository.create({ class: recordClass, data: newRecordValue });
+		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
+		if (hasError) alertMessage.set('Failed to create record.');
 		else {
 			records[selectedRecordClass] = newRecordValue;
 			selectedRecordClass = undefined;

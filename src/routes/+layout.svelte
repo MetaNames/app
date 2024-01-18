@@ -16,6 +16,8 @@
 	import '../styles/app.scss';
 	import Footer from './Footer.svelte';
 	import { alertMessage, alertTransaction } from '$lib/stores';
+	import Button from '@smui/button';
+	import { explorerTransactionUrl } from '$lib';
 
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
@@ -35,7 +37,7 @@
 	alertTransaction.subscribe((transaction) => {
 		if (!transaction) return;
 
-		snackbarTransactionMessage = transaction;
+		snackbarTransactionMessage = `New Transaction submitted`;
 		transactionSnackbar.open();
 	});
 	alertMessage.subscribe((message) => {
@@ -88,9 +90,10 @@
 	</TopAppBar>
 	<slot />
 
-	<Snackbar bind:this={transactionSnackbar}>
+	<Snackbar bind:this={transactionSnackbar} timeoutMs={-1}>
 		<Label>{snackbarTransactionMessage}</Label>
 		<Actions>
+			<Button on:click={() => $alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}>View</Button>
 			<IconButton class="material-icons" title="Dismiss">close</IconButton>
 		</Actions>
 	</Snackbar>

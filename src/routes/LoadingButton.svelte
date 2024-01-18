@@ -8,7 +8,7 @@
 	export let onClick: () => Promise<void>;
 	export let onError: (exception: any) => Promise<void> = async (error) => {
 		let message;
-		if (error instanceof Error) message = error.message;
+		if (error && error instanceof Error) message = error.message;
 		else message = 'Something went wrong';
 
 		console.error(error);
