@@ -9,8 +9,7 @@
 	import TabBar from '@smui/tab-bar';
 	import { toSvg } from 'jdenticon';
 	import Chip from './Chip.svelte';
-	import config from '$lib/config';
-	import { formatDate } from '$lib';
+	import { config, formatDate } from '$lib';
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 250);
 	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
@@ -22,7 +21,9 @@
 		[...domain.records].map(([key, value]) => [key, value.toString()])
 	);
 
-	const ownerBrowserUrl = `${config.browserUrl}/${isTld ? 'contracts' : 'accounts'}/${domain.owner}`;
+	const ownerBrowserUrl = `${config.browserUrl}/${isTld ? 'contracts' : 'accounts'}/${
+		domain.owner
+	}`;
 
 	let tabs = ['Details'];
 	if (!isTld) tabs.push('Records');

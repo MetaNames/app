@@ -1,4 +1,4 @@
-import { websiteUrl } from '$lib';
+import { config } from '$lib';
 
 export async function GET() {
 	return new Response(
@@ -6,7 +6,7 @@ export async function GET() {
      User-agent: *
      Allow: /
 
-     Sitemap: ${websiteUrl}sitemap.xml
+     Sitemap: ${config.websiteUrl}sitemap.xml
 		`
 			.split('\n')
 			.map((line) => line.trim())

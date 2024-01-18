@@ -37,7 +37,7 @@
 	alertTransaction.subscribe((transaction) => {
 		if (!transaction) return;
 
-		snackbarTransactionMessage = `New Transaction submitted`;
+		snackbarTransactionMessage = 'New Transaction submitted';
 		transactionSnackbar.open();
 	});
 	alertMessage.subscribe((message) => {
