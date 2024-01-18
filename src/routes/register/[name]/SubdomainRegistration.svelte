@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Domain as DomainModel } from '@metanames/sdk';
 
-	import { metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
+	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
 	import Card, { Content } from '@smui/card';
 	import { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
@@ -10,6 +10,7 @@
 	import LoadingButton from '../../LoadingButton.svelte';
 	import ConnectionRequired from './ConnectionRequired.svelte';
 	import Chip from '../../../components/Chip.svelte';
+	import { alertTransactionAndFetchResult } from '$lib';
 
 	export let domainName: string;
 	export let parentDomainName: string;
@@ -29,13 +30,15 @@
 		const address = $walletAddress;
 		if (!address) return;
 
-		const { hasError: registerHasError, trxHash: registerTrx } =
-			await $metaNamesSdk.domainRepository.register({
-				domain: domainName,
-				parentDomain: parentDomainName,
-				to: address
-			});
-		if (registerHasError) throw new Error(`Failed to register domain. Transaction: ${registerTrx}`);
+		const transactionIntent = await $metaNamesSdk.domainRepository.register({
+			domain: domainName,
+			parentDomain: parentDomainName,
+			to: address
+		});
+		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
+
+		if (hasError) throw new Error('Failed to register domain.');
+		else alertMessage.set('Domain registered successfully!');
 
 		goto(`/domain/${domainName}`);
 	}

@@ -5,8 +5,8 @@
 	import Textfield from '@smui/textfield';
 
 	import type { RecordRepository } from '@metanames/sdk';
-	import { walletConnected } from '$lib/stores';
-	import { getRecordClassFrom } from '$lib';
+	import { alertMessage, walletConnected } from '$lib/stores';
+	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
 
 	export let klass: string;
 	export let value: string;
@@ -27,15 +27,17 @@
 
 	async function save() {
 		const recordClass = getRecordClassFrom(klass);
-		const res = await repository.update({ class: recordClass, data: recordValue });
-		if (res.hasError) console.error(res.errorMessage);
+		const transactionIntent = await repository.update({ class: recordClass, data: recordValue });
+		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
+		if (hasError) alertMessage.set('Failed to update record.');
 		else toggleEdit();
 	}
 
 	async function destroy() {
 		const recordClass = getRecordClassFrom(klass);
-		const res = await repository.delete(recordClass);
-		if (res.hasError) console.error(res.errorMessage);
+		const transactionIntent = await repository.delete(recordClass);
+		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
+		if (hasError) alertMessage.set('Failed to delete record.');
 		else location.reload();
 	}
 </script>

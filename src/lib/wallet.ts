@@ -1,5 +1,5 @@
 import PartisiaSdk from 'partisia-sdk';
-import config from './config';
+import { config } from './config';
 import type { MetaMaskSdk } from '@metanames/sdk';
 
 export type OptionalWalletClient = PartisiaSdk | MetaMaskSdk | undefined | null;

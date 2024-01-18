@@ -1,4 +1,4 @@
-import { websiteUrl } from '$lib';
+import { config } from '$lib';
 
 export async function GET() {
 	return new Response(
@@ -13,7 +13,7 @@ export async function GET() {
 			xmlns:video="https://www.google.com/schemas/sitemap-video/1.1"
 		>
       <url>
-        <loc>${websiteUrl}</loc>
+        <loc>${config.websiteUrl}</loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
       </url>

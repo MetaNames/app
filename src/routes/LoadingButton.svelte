@@ -1,17 +1,26 @@
 <script lang="ts">
+	import { alertMessage } from '$lib/stores';
 	import Button, { Icon, Label } from '@smui/button';
 	import CircularProgress from '@smui/circular-progress';
 
 	let className = '';
 	export { className as class };
 	export let onClick: () => Promise<void>;
+	export let onError: (exception: any) => Promise<void> = async (error) => {
+		let message;
+		if (error && error instanceof Error) message = error.message;
+		else message = 'Something went wrong';
+
+		console.error(error);
+		alertMessage.set(message)
+	};
 	export let disabled = false;
 	export let variant: 'text' | 'raised' | 'unelevated' | 'outlined' = 'raised';
 
 	$: isDisabled = disabled || loading;
 
 	let loading: boolean | undefined;
-	let error = false;
+	let hasError = false;
 
 	async function handleClick() {
 		if (loading) return;
@@ -21,7 +30,8 @@
 		try {
 			await onClick();
 		} catch (error) {
-			error = true;
+			hasError = true;
+			await onError(error);
 		}
 
 		loading = false;
@@ -34,7 +44,7 @@
 		<div class="loading">
 			<CircularProgress style="height: 20px; width: 20px;" indeterminate />
 		</div>
-	{:else if error}
+	{:else if hasError}
 		<Icon class="material-icons" aria-label="error">error</Icon>
 	{:else if loading === false}
 		<Icon class="material-icons" aria-label="done">done</Icon>

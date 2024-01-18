@@ -15,11 +15,16 @@
 
 	import '../styles/app.scss';
 	import Footer from './Footer.svelte';
-	import { alertMessage } from '$lib/stores';
+	import { alertMessage, alertTransaction } from '$lib/stores';
+	import Button from '@smui/button';
+	import { explorerTransactionUrl } from '$lib';
 
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
-	let snackbarWithClose: Snackbar;
+
+	let alertsSnackbar: Snackbar;
+	let transactionSnackbar: Snackbar;
+	let snackbarTransactionMessage: string;
 	let snackbarMessage: string;
 
 	let theme: 'light' | 'dark';
@@ -28,14 +33,21 @@
 	inject({ mode: dev ? 'development' : 'production' });
 	injectSpeedInsights();
 
+	// Snackbars
+	alertTransaction.subscribe((transaction) => {
+		if (!transaction) return;
+
+		snackbarTransactionMessage = 'New Transaction submitted';
+		transactionSnackbar.open();
+	});
 	alertMessage.subscribe((message) => {
 		if (!message) return;
 
 		snackbarMessage = message;
-		snackbarWithClose.open();
+		alertsSnackbar.open();
 
 		setTimeout(() => {
-			snackbarWithClose.close();
+			alertsSnackbar.close();
 			alertMessage.set(undefined);
 		}, 5000);
 	});
@@ -78,7 +90,14 @@
 	</TopAppBar>
 	<slot />
 
-	<Snackbar bind:this={snackbarWithClose}>
+	<Snackbar bind:this={transactionSnackbar} timeoutMs={-1}>
+		<Label>{snackbarTransactionMessage}</Label>
+		<Actions>
+			<Button on:click={() => $alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}>View</Button>
+			<IconButton class="material-icons" title="Dismiss">close</IconButton>
+		</Actions>
+	</Snackbar>
+	<Snackbar bind:this={alertsSnackbar}>
 		<Label>{snackbarMessage}</Label>
 		<Actions>
 			<IconButton class="material-icons" title="Dismiss">close</IconButton>
