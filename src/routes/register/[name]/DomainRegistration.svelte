@@ -67,11 +67,11 @@
 			<h4>{domainName}</h4>
 
 			<div class="years">
-				<IconButton class="material-icons" on:click={() => addYears(-1)} disabled={years == 1}
+				<IconButton class="material-icons" on:click={() => addYears(-1)} disabled={years === 1 || feesApproved}
 					>remove</IconButton
 				>
 				<span>{years} {yearsLabel}</span>
-				<IconButton class="material-icons" on:click={() => addYears(1)}>add</IconButton>
+				<IconButton class="material-icons" on:click={() => addYears(1)} disabled={feesApproved}>add</IconButton>
 			</div>
 
 			<div class="fees">
