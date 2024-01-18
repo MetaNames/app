@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Domain as DomainModel } from '@metanames/sdk';
 
-	import { metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
+	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
 	import Card, { Content } from '@smui/card';
 	import { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
@@ -38,6 +38,7 @@
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 
 		if (hasError) throw new Error('Failed to register domain.');
+		else alertMessage.set('Domain registered successfully!');
 
 		goto(`/domain/${domainName}`);
 	}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { alertTransaction, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
+	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
 	import Card, { Content } from '@smui/card';
 	import IconButton from '@smui/icon-button';
 
@@ -56,6 +56,7 @@
 
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) throw new Error('Failed to register domain.');
+		else alertMessage.set('Domain registered successfully!');
 
 		goto(`/domain/${domainName}`);
 	}
