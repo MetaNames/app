@@ -1,14 +1,16 @@
 <script lang="ts">
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
-	import { alertMessage, walletAddress } from '$lib/stores';
+	import { walletAddress } from '$lib/stores';
 
-	import Button from '@smui/button/src/Button.svelte';
+	import Button, { Label } from '@smui/button';
 	import Select, { Option } from '@smui/select';
 
 	import RecordComponent from './Record.svelte';
 	import Textfield from '@smui/textfield';
 	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
+	import LoadingButton from './LoadingButton.svelte';
+	import ConnectionRequired from './ConnectionRequired.svelte';
 
 	export let ownerAddress: string;
 	export let records: Record<string, string>;
@@ -32,12 +34,13 @@
 		if (selectedRecordClass === undefined) selectedRecordClass = '';
 		newRecordSubmitted = true;
 
-		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) return;
+		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass)
+			throw new Error('Invalid fields. Please check the form.');
 
 		const recordClass = getRecordClassFrom(selectedRecordClass);
 		const transactionIntent = await repository.create({ class: recordClass, data: newRecordValue });
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
-		if (hasError) alertMessage.set('Failed to create record.');
+		if (hasError) throw new Error('Failed to create record.');
 		else {
 			records[selectedRecordClass] = newRecordValue;
 			selectedRecordClass = undefined;
@@ -49,11 +52,15 @@
 
 <div class="records">
 	<div>
-		{#each Object.keys(records) as key}
-			<div class="mt-1">
-				<RecordComponent {repository} klass={key} value={records[key]} {editMode} />
-			</div>
-		{/each}
+		{#if !records || Object.keys(records).length === 0}
+			<p class="no-records">No records found</p>
+		{:else}
+			{#each Object.keys(records) as key}
+				<div class="mt-1">
+					<RecordComponent {repository} klass={key} value={records[key]} {editMode} />
+				</div>
+			{/each}
+		{/if}
 	</div>
 	{#if canEdit}
 		<br />
@@ -79,9 +86,13 @@
 					invalid={recordValueInvalid}
 					variant="outlined"
 				/>
-				<Button class="mobile--mt-1" variant="raised" on:click={createRecord}>Add record</Button>
+				<LoadingButton class="mobile--mt-1" onClick={createRecord} variant="raised">
+					<Label>Add record</Label>
+				</LoadingButton>
 			</div>
 		{/if}
+	{:else}
+		<ConnectionRequired />
 	{/if}
 </div>
 
@@ -103,6 +114,13 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
+		}
+
+		& .no-records {
+			margin: 2rem 0;
+			text-align: center;
+			font-size: large;
+			color: gray;
 		}
 	}
 

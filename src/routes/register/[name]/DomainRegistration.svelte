@@ -3,11 +3,11 @@
 	import Card, { Content } from '@smui/card';
 	import IconButton from '@smui/icon-button';
 
-	import LoadingButton from '../../LoadingButton.svelte';
+	import LoadingButton from '../../../components/LoadingButton.svelte';
 
 	import { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
-	import ConnectionRequired from './ConnectionRequired.svelte';
+	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
 	import { alertTransactionAndFetchResult } from '$lib';
 
 	export let domainName: string;
