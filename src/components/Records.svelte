@@ -3,12 +3,13 @@
 	import { RecordClassEnum } from '@metanames/sdk';
 	import { alertMessage, walletAddress } from '$lib/stores';
 
-	import Button from '@smui/button/src/Button.svelte';
+	import Button, { Label} from '@smui/button';
 	import Select, { Option } from '@smui/select';
 
 	import RecordComponent from './Record.svelte';
 	import Textfield from '@smui/textfield';
 	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
+	import LoadingButton from './LoadingButton.svelte';
 
 	export let ownerAddress: string;
 	export let records: Record<string, string>;
@@ -79,7 +80,9 @@
 					invalid={recordValueInvalid}
 					variant="outlined"
 				/>
-				<Button class="mobile--mt-1" variant="raised" on:click={createRecord}>Add record</Button>
+				<LoadingButton class="mobile--mt-1" onClick={createRecord} variant="raised">
+					<Label>Add record</Label>
+				</LoadingButton>
 			</div>
 		{/if}
 	{/if}
