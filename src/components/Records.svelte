@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
-	import { alertMessage, walletAddress } from '$lib/stores';
+	import { walletAddress } from '$lib/stores';
 
 	import Button, { Label} from '@smui/button';
 	import Select, { Option } from '@smui/select';
@@ -10,6 +10,7 @@
 	import Textfield from '@smui/textfield';
 	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
 	import LoadingButton from './LoadingButton.svelte';
+	import ConnectionRequired from './ConnectionRequired.svelte';
 
 	export let ownerAddress: string;
 	export let records: Record<string, string>;
@@ -85,6 +86,8 @@
 				</LoadingButton>
 			</div>
 		{/if}
+		{:else}
+			<ConnectionRequired />
 	{/if}
 </div>
 
