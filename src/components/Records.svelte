@@ -3,7 +3,7 @@
 	import { RecordClassEnum } from '@metanames/sdk';
 	import { walletAddress } from '$lib/stores';
 
-	import Button, { Label} from '@smui/button';
+	import Button, { Label } from '@smui/button';
 	import Select, { Option } from '@smui/select';
 
 	import RecordComponent from './Record.svelte';
@@ -34,7 +34,8 @@
 		if (selectedRecordClass === undefined) selectedRecordClass = '';
 		newRecordSubmitted = true;
 
-		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) throw new Error('Invalid fields. Please check the form.');
+		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass)
+			throw new Error('Invalid fields. Please check the form.');
 
 		const recordClass = getRecordClassFrom(selectedRecordClass);
 		const transactionIntent = await repository.create({ class: recordClass, data: newRecordValue });
@@ -51,11 +52,15 @@
 
 <div class="records">
 	<div>
-		{#each Object.keys(records) as key}
-			<div class="mt-1">
-				<RecordComponent {repository} klass={key} value={records[key]} {editMode} />
-			</div>
-		{/each}
+		{#if !records || Object.keys(records).length === 0}
+			<p class="no-records">No records found</p>
+		{:else}
+			{#each Object.keys(records) as key}
+				<div class="mt-1">
+					<RecordComponent {repository} klass={key} value={records[key]} {editMode} />
+				</div>
+			{/each}
+		{/if}
 	</div>
 	{#if canEdit}
 		<br />
@@ -86,8 +91,8 @@
 				</LoadingButton>
 			</div>
 		{/if}
-		{:else}
-			<ConnectionRequired />
+	{:else}
+		<ConnectionRequired />
 	{/if}
 </div>
 
@@ -109,6 +114,13 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
+		}
+
+		& .no-records {
+			margin: 2rem 0;
+			text-align: center;
+			font-size: large;
+			color: gray;
 		}
 	}
 
