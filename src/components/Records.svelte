@@ -33,12 +33,12 @@
 		if (selectedRecordClass === undefined) selectedRecordClass = '';
 		newRecordSubmitted = true;
 
-		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) return;
+		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) throw new Error('Invalid fields. Please check the form.');
 
 		const recordClass = getRecordClassFrom(selectedRecordClass);
 		const transactionIntent = await repository.create({ class: recordClass, data: newRecordValue });
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
-		if (hasError) alertMessage.set('Failed to create record.');
+		if (hasError) throw new Error('Failed to create record.');
 		else {
 			records[selectedRecordClass] = newRecordValue;
 			selectedRecordClass = undefined;
