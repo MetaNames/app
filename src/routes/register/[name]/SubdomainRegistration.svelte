@@ -7,7 +7,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	import LoadingButton from '../../LoadingButton.svelte';
+	import LoadingButton from '../../../components/LoadingButton.svelte';
 	import ConnectionRequired from './ConnectionRequired.svelte';
 	import Chip from '../../../components/Chip.svelte';
 	import { alertTransactionAndFetchResult } from '$lib';
