@@ -9,13 +9,19 @@
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
 	import GoBackButton from '../../../components/GoBackButton.svelte';
+	import { goto } from '$app/navigation';
 
 	let domain: DomainModel | null;
 
 	$: pageName = domain ? domain.name + ' | ' : '';
 
 	onMount(async () => {
-		domain = await $metaNamesSdk.domainRepository.find($page.params.name);
+		const domainName = $page.params.name;
+		const loweredDomainName = domainName.toLocaleLowerCase();
+		if (loweredDomainName !== domainName)
+			goto(`/domain/${loweredDomainName}`, { replaceState: true });
+		else
+			domain = await $metaNamesSdk.domainRepository.find(domainName);
 	});
 </script>
 
