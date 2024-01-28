@@ -35,7 +35,7 @@
 			return goto(url);
 		}
 
-		nameSearched = domainName;
+		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
 		domain = await $metaNamesSdk.domainRepository.find(domainName);
