@@ -4,6 +4,7 @@ import type { PermissionTypes } from 'partisia-sdk/dist/sdk-listeners';
 type Config = {
 	browserUrl: string;
 	chainId: string;
+	contractDisabled: boolean;
 	dAppName: string;
 	environment: 'test' | 'prod';
 	sdkEnvironment: Enviroment;
@@ -17,10 +18,12 @@ const chainId = `Partisia Blockchain${environment === 'test' ? ' Testnet' : ''}`
 
 const sdkEnvironment = environment === 'test' ? Enviroment.testnet : Enviroment.mainnet;
 const websiteUrl = `${import.meta.env.VITE_WEBSITE_URL}`;
+const contractDisabled = `${import.meta.env.VITE_CONTRACT_DISABLED}` == 'true';
 
 export const config: Config = {
 	browserUrl,
 	chainId,
+	contractDisabled,
 	environment,
 	dAppName: 'Meta Names',
 	sdkEnvironment,
