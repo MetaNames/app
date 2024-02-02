@@ -745,10 +745,9 @@
     "@material/theme" "^14.0.0"
     tslib "^2.1.0"
 
-"@metanames/sdk@3.0.0":
+"@metanames/sdk@github:metanames/sdk#add-byoc":
   version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-3.0.0.tgz#d51fcc168329e6dd4a0d38adf7e559f649774c2a"
-  integrity sha512-HiMPi/Tk3q+t+Jy6H7IUW32NKrEERRaTZKG6SP2l+2hEwx8GarApwNn8SgClgyard2FFeSaS14wVDaVgRxtQ1w==
+  resolved "https://codeload.github.com/metanames/sdk/tar.gz/6f9e0327ba36b5155fbcc41ac8af0ede8e4e55f5"
   dependencies:
     "@partisiablockchain/abi-client" "^3.30.0"
     "@secata-public/bitmanipulation-ts" "^3.0.6"
