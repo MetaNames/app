@@ -4,6 +4,7 @@
 	import { inject } from '@vercel/analytics';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
+	import Banner, { Icon } from '@smui/banner';
 	import IconButton from '@smui/icon-button';
 	import Section from '@smui/top-app-bar/src/Section.svelte';
 	import Snackbar, { Actions, Label } from '@smui/snackbar';
@@ -17,7 +18,7 @@
 	import Footer from './Footer.svelte';
 	import { alertMessage, alertTransaction } from '$lib/stores';
 	import Button from '@smui/button';
-	import { explorerTransactionUrl } from '$lib';
+	import { config, explorerTransactionUrl } from '$lib';
 
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
@@ -28,6 +29,8 @@
 	let snackbarMessage: string;
 
 	let theme: 'light' | 'dark';
+
+	$: contractDisabled = config.contractDisabled;
 
 	// Analytics
 	inject({ mode: dev ? 'development' : 'production' });
@@ -88,12 +91,25 @@
 			</Row>
 		</div>
 	</TopAppBar>
+	{#if contractDisabled}
+		<Banner open={true} centered={true} mobileStacked={true}>
+			<Icon slot="icon" class="material-icons">update</Icon>
+			<Label slot="label">Contract is temporarily disabled for updates</Label>
+			<svelte:fragment slot="actions">
+				<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
+			</svelte:fragment>
+		</Banner>
+	{/if}
 	<slot />
 
 	<Snackbar bind:this={transactionSnackbar} timeoutMs={-1}>
 		<Label>{snackbarTransactionMessage}</Label>
 		<Actions>
-			<Button on:click={() => $alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}>View</Button>
+			<Button
+				on:click={() =>
+					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+				>View</Button
+			>
 			<IconButton class="material-icons" title="Dismiss">close</IconButton>
 		</Actions>
 	</Snackbar>

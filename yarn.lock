@@ -247,6 +247,24 @@
   dependencies:
     tslib "^2.1.0"
 
+"@material/banner@^14.0.0":
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/@material/banner/-/banner-14.0.0.tgz#f22163f7df433f8a6239007c98910150a7ec931e"
+  integrity sha512-z0WPBVQxbQVcV1km4hFD40xBEeVWYtCzl2jrkHd8xXexP/fMvXkFU1UfwSWvY3jlWx//j4/Xd7VpnRdEXS4RLQ==
+  dependencies:
+    "@material/base" "^14.0.0"
+    "@material/button" "^14.0.0"
+    "@material/dom" "^14.0.0"
+    "@material/elevation" "^14.0.0"
+    "@material/feature-targeting" "^14.0.0"
+    "@material/ripple" "^14.0.0"
+    "@material/rtl" "^14.0.0"
+    "@material/shape" "^14.0.0"
+    "@material/theme" "^14.0.0"
+    "@material/tokens" "^14.0.0"
+    "@material/typography" "^14.0.0"
+    tslib "^2.1.0"
+
 "@material/base@^14.0.0":
   version "14.0.0"
   resolved "https://registry.yarnpkg.com/@material/base/-/base-14.0.0.tgz#022debef6762764dbe1056eb1bcffca6b354883c"
@@ -828,6 +846,15 @@
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
   integrity sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==
 
+"@smui/banner@^7.0.0-beta.16":
+  version "7.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@smui/banner/-/banner-7.0.0-beta.16.tgz#daed67f6cc6b89d03b30835aa826978d9f4fd758"
+  integrity sha512-XLffRvb6bS0GqdBVPYTCQpzbiAPzFeUUvKaj0zVdVarpsH79p23upoGGJi2wkiA1fuv8i3no2neDwW0Zh8x6ew==
+  dependencies:
+    "@material/banner" "^14.0.0"
+    "@smui/common" "^7.0.0-beta.16"
+    svelte2tsx "^0.6.27"
+
 "@smui/button@^7.0.0-beta.14", "@smui/button@^7.0.0-beta.15":
   version "7.0.0-beta.15"
   resolved "https://registry.yarnpkg.com/@smui/button/-/button-7.0.0-beta.15.tgz#7581a930198e9689f77e2ea98f01e4ccf0cc809b"
@@ -881,6 +908,14 @@
   dependencies:
     "@material/dom" "^14.0.0"
     svelte2tsx "^0.6.21"
+
+"@smui/common@^7.0.0-beta.16":
+  version "7.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@smui/common/-/common-7.0.0-beta.16.tgz#9ed3b24b905342df7dc38c092a8e9b7667854973"
+  integrity sha512-PpqhIAWtE6ZZ6XyIkzHGXdMk+iE4QLFdzYXf20cG13O/0bFjOV5ySk2g+Vq2ZWRJawIjMaPcekbCkkowna4vgg==
+  dependencies:
+    "@material/dom" "^14.0.0"
+    svelte2tsx "^0.6.27"
 
 "@smui/data-table@^7.0.0-beta.15":
   version "7.0.0-beta.15"
@@ -4038,6 +4073,14 @@ svelte2tsx@^0.6.21:
   version "0.6.21"
   resolved "https://registry.yarnpkg.com/svelte2tsx/-/svelte2tsx-0.6.21.tgz#c2ce9857c3d066b818ef47683f4d997d63f9aa28"
   integrity sha512-v+vvbiy6WDmEQdIkJpvHYxJYG/obALfH0P6CTreYO350q/9+QmFTNCOJvx0O1o59Zpzx1Bqe+qlDxP/KtJSZEA==
+  dependencies:
+    dedent-js "^1.0.1"
+    pascal-case "^3.1.1"
+
+svelte2tsx@^0.6.27:
+  version "0.6.27"
+  resolved "https://registry.yarnpkg.com/svelte2tsx/-/svelte2tsx-0.6.27.tgz#5b2c21f38608be51cd32de177722f123e57919e5"
+  integrity sha512-E1uPW1o6VsbRz+nUk3fznZ2lSmCITAJoNu8AYefWSvIwE2pSB01i5sId4RMbWNzfcwCQl1DcgGShCPcldl4rvg==
   dependencies:
     dedent-js "^1.0.1"
     pascal-case "^3.1.1"
