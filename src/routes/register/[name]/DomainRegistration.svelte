@@ -2,10 +2,11 @@
 	import { goto } from '$app/navigation';
 	import { alertTransactionAndFetchResult } from '$lib';
 	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
+	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
 	import LoadingButton from '../../../components/LoadingButton.svelte';
 
-	import type { BYOCSymbol } from '@metanames/sdk';
+	import type { BYOC, BYOCSymbol } from '@metanames/sdk';
 	import { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
@@ -16,15 +17,22 @@
 
 	let years = 1;
 	let feesApproved = false;
-	let selectedCoin: BYOCSymbol = 'TEST_COIN';
-	let loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, selectedCoin);
+	let selectedCoin: BYOCSymbol = $metaNamesSdk.config.byoc[0].symbol;
+	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
 
 	$: nameWithoutTLD = domainName.endsWith(`.${tld}`)
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
+	$: loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, selectedCoin);
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
+
+	const totalFeesLabel = (label: number, years: number) => {
+		const total = label * years;
+
+		return Math.ceil(total * 1000) / 1000;
+	};
 
 	function addYears(amount: number) {
 		if (years + amount < 1) return;
@@ -83,6 +91,16 @@
 				>
 			</div>
 
+			<div class="coin">
+				<p class="title text-center">Payment token</p>
+				<div class="row centered">
+					<Select bind:value={selectedCoin} label="Select Token" variant="outlined">
+						{#each availableCoins as coin}
+							<Option value={coin.symbol}>{coin.symbol}</Option>
+						{/each}
+					</Select>
+				</div>
+			</div>
 			<div class="fees">
 				<p class="title text-center">Price breakdown</p>
 				{#await loadFees}
@@ -94,7 +112,7 @@
 					</div>
 					<div class="row">
 						<span>Total (excluding network fees)</span>
-						<span><b>{fees.feesLabel * years}</b> {fees.symbol}</span>
+						<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
 					</div>
 				{/await}
 			</div>
@@ -121,13 +139,18 @@
 		text-align: center;
 	}
 
-	.fees {
+	.fees,
+	.coin {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 
 		margin-top: 1rem;
 		padding: 0 5rem;
+
+		.title {
+			font-weight: bold;
+		}
 
 		.row {
 			display: flex;
@@ -136,8 +159,9 @@
 			width: 100%;
 		}
 
-		.title {
-			font-weight: bold;
+		.centered {
+			flex-direction: column;
+			align-items: center;
 		}
 
 		@media (max-width: 768px) {
