@@ -17,7 +17,6 @@
 
 	let parentDomain: DomainModel | null;
 
-	$: fees = $metaNamesSdk.domainRepository.calculateMintFees(domainName);
 	$: parentLink = `/domain/${parentDomainName}`;
 
 	onMount(async () => {
@@ -33,7 +32,8 @@
 		const transactionIntent = await $metaNamesSdk.domainRepository.register({
 			domain: domainName,
 			parentDomain: parentDomainName,
-			to: address
+			to: address,
+			byocSymbol: 'TEST_COIN'
 		});
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 
@@ -59,7 +59,7 @@
 				<p class="title text-center">Price breakdown</p>
 				<div class="row">
 					<span>Total (excluding network fees)</span>
-					<span><b>0</b> {fees.token}</span>
+					<span><b>FREE</b></span>
 				</div>
 			</div>
 

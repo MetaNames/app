@@ -1,28 +1,29 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { alertTransactionAndFetchResult } from '$lib';
 	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
-	import Card, { Content } from '@smui/card';
-	import IconButton from '@smui/icon-button';
-
+	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
 	import LoadingButton from '../../../components/LoadingButton.svelte';
 
+	import type { BYOCSymbol } from '@metanames/sdk';
 	import { Label } from '@smui/button';
-	import { goto } from '$app/navigation';
-	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
-	import { alertTransactionAndFetchResult } from '$lib';
+	import Card, { Content } from '@smui/card';
+	import CircularProgress from '@smui/circular-progress';
+	import IconButton from '@smui/icon-button';
 
 	export let domainName: string;
 	export let tld: string;
 
 	let years = 1;
 	let feesApproved = false;
+	let selectedCoin: BYOCSymbol = 'TEST_COIN';
+	let loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, selectedCoin);
 
 	$: nameWithoutTLD = domainName.endsWith(`.${tld}`)
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: fees = $metaNamesSdk.domainRepository.calculateMintFees(domainName);
-	$: nameLength = nameWithoutTLD.length > 5 ? '5+' : nameWithoutTLD.length;
-	$: totalFeesAmount = fees.amount * years;
+	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
 	function addYears(amount: number) {
@@ -36,6 +37,7 @@
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
 			domainName,
+			selectedCoin,
 			years
 		);
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
@@ -51,7 +53,9 @@
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.register({
 			domain: domainName,
-			to: address
+			to: address,
+			subscriptionYears: years,
+			byocSymbol: selectedCoin
 		});
 
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
@@ -68,23 +72,31 @@
 			<h4>{domainName}</h4>
 
 			<div class="years">
-				<IconButton class="material-icons" on:click={() => addYears(-1)} disabled={years === 1 || feesApproved}
-					>remove</IconButton
+				<IconButton
+					class="material-icons"
+					on:click={() => addYears(-1)}
+					disabled={years === 1 || feesApproved}>remove</IconButton
 				>
 				<span>{years} {yearsLabel}</span>
-				<IconButton class="material-icons" on:click={() => addYears(1)} disabled={feesApproved}>add</IconButton>
+				<IconButton class="material-icons" on:click={() => addYears(1)} disabled={feesApproved}
+					>add</IconButton
+				>
 			</div>
 
 			<div class="fees">
 				<p class="title text-center">Price breakdown</p>
-				<div class="row">
-					<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
-					<span>{fees.amount} {fees.token}</span>
-				</div>
-				<div class="row">
-					<span>Total (excluding network fees)</span>
-					<span><b>{totalFeesAmount}</b> {fees.token}</span>
-				</div>
+				{#await loadFees}
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+				{:then fees}
+					<div class="row">
+						<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
+						<span>{fees.feesLabel} {fees.symbol}</span>
+					</div>
+					<div class="row">
+						<span>Total (excluding network fees)</span>
+						<span><b>{fees.feesLabel * years}</b> {fees.symbol}</span>
+					</div>
+				{/await}
 			</div>
 
 			<ConnectionRequired class="mt-1">
