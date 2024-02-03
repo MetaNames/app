@@ -31,7 +31,7 @@
 	const totalFeesLabel = (label: number, years: number) => {
 		const total = label * years;
 
-		return Math.ceil(total * 1000) / 1000;
+		return Math.ceil(total * 10000) / 10000;
 	};
 
 	function addYears(amount: number) {
