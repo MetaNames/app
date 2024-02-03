@@ -1,29 +1,38 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { alertTransactionAndFetchResult } from '$lib';
 	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
-	import Card, { Content } from '@smui/card';
-	import IconButton from '@smui/icon-button';
-
+	import Select, { Option } from '@smui/select';
+	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
 	import LoadingButton from '../../../components/LoadingButton.svelte';
 
+	import type { BYOC, BYOCSymbol } from '@metanames/sdk';
 	import { Label } from '@smui/button';
-	import { goto } from '$app/navigation';
-	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
-	import { alertTransactionAndFetchResult } from '$lib';
+	import Card, { Content } from '@smui/card';
+	import CircularProgress from '@smui/circular-progress';
+	import IconButton from '@smui/icon-button';
 
 	export let domainName: string;
 	export let tld: string;
 
 	let years = 1;
 	let feesApproved = false;
+	let selectedCoin: BYOCSymbol = $metaNamesSdk.config.byoc[0].symbol;
+	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
 
 	$: nameWithoutTLD = domainName.endsWith(`.${tld}`)
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: fees = $metaNamesSdk.domainRepository.calculateMintFees(domainName);
-	$: nameLength = nameWithoutTLD.length > 5 ? '5+' : nameWithoutTLD.length;
-	$: totalFeesAmount = fees.amount * years;
+	$: loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, selectedCoin);
+	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
+
+	const totalFeesLabel = (label: number, years: number) => {
+		const total = label * years;
+
+		return Math.ceil(total * 1000) / 1000;
+	};
 
 	function addYears(amount: number) {
 		if (years + amount < 1) return;
@@ -36,6 +45,7 @@
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
 			domainName,
+			selectedCoin,
 			years
 		);
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
@@ -51,7 +61,9 @@
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.register({
 			domain: domainName,
-			to: address
+			to: address,
+			subscriptionYears: years,
+			byocSymbol: selectedCoin
 		});
 
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
@@ -68,23 +80,41 @@
 			<h4>{domainName}</h4>
 
 			<div class="years">
-				<IconButton class="material-icons" on:click={() => addYears(-1)} disabled={years === 1 || feesApproved}
-					>remove</IconButton
+				<IconButton
+					class="material-icons"
+					on:click={() => addYears(-1)}
+					disabled={years === 1 || feesApproved}>remove</IconButton
 				>
 				<span>{years} {yearsLabel}</span>
-				<IconButton class="material-icons" on:click={() => addYears(1)} disabled={feesApproved}>add</IconButton>
+				<IconButton class="material-icons" on:click={() => addYears(1)} disabled={feesApproved}
+					>add</IconButton
+				>
 			</div>
 
+			<div class="coin">
+				<p class="title text-center">Payment token</p>
+				<div class="row centered">
+					<Select bind:value={selectedCoin} label="Select Token" variant="outlined">
+						{#each availableCoins as coin}
+							<Option value={coin.symbol}>{coin.symbol}</Option>
+						{/each}
+					</Select>
+				</div>
+			</div>
 			<div class="fees">
 				<p class="title text-center">Price breakdown</p>
-				<div class="row">
-					<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
-					<span>{fees.amount} {fees.token}</span>
-				</div>
-				<div class="row">
-					<span>Total (excluding network fees)</span>
-					<span><b>{totalFeesAmount}</b> {fees.token}</span>
-				</div>
+				{#await loadFees}
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+				{:then fees}
+					<div class="row">
+						<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
+						<span>{fees.feesLabel} {fees.symbol}</span>
+					</div>
+					<div class="row">
+						<span>Total (excluding network fees)</span>
+						<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
+					</div>
+				{/await}
 			</div>
 
 			<ConnectionRequired class="mt-1">
@@ -109,13 +139,18 @@
 		text-align: center;
 	}
 
-	.fees {
+	.fees,
+	.coin {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 
 		margin-top: 1rem;
 		padding: 0 5rem;
+
+		.title {
+			font-weight: bold;
+		}
 
 		.row {
 			display: flex;
@@ -124,8 +159,9 @@
 			width: 100%;
 		}
 
-		.title {
-			font-weight: bold;
+		.centered {
+			flex-direction: column;
+			align-items: center;
 		}
 
 		@media (max-width: 768px) {

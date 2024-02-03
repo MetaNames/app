@@ -31,6 +31,7 @@
 	let theme: 'light' | 'dark';
 
 	$: contractDisabled = config.contractDisabled;
+	$: isTestnet = config.environment === 'test';
 
 	// Analytics
 	inject({ mode: dev ? 'development' : 'production' });
@@ -81,6 +82,9 @@
 						<a class="link-logo" href="/">
 							<Logo />
 							<span>Meta Names</span>
+							{#if isTestnet}
+								<span class="testnet">TESTNET</span>
+							{/if}
 						</a>
 					</Title>
 				</Section>
@@ -123,6 +127,16 @@
 </main>
 
 <style>
+	.testnet {
+		background-color: var(--mdc-theme-background);
+		font-weight: bold;
+		font-size: x-small;
+		line-height: 1.5rem;
+		padding: 0.1rem 0.5rem;
+		border-radius: 0.25rem;
+		margin-left: 0.5rem;
+	}
+
 	.link-logo {
 		display: flex;
 		flex-direction: row;
