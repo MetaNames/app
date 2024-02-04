@@ -17,7 +17,6 @@
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
-	import { onMount } from 'svelte';
 
 	export let domainName: string;
 	export let tld: string;
@@ -33,10 +32,6 @@
 	$: loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, $selectedCoin);
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
-
-	onMount(() => {
-		if (!$selectedCoin) selectedCoin.set($metaNamesSdk.config.byoc[0].symbol);
-	});
 
 	const totalFeesLabel = (label: number, years: number) => {
 		const total = label * years;
