@@ -1,32 +1,42 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { alertTransactionAndFetchResult } from '$lib';
-	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
+	import {
+		alertMessage,
+		metaNamesSdk,
+		selectedCoin,
+		walletAddress,
+		walletConnected
+	} from '$lib/stores';
 	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
 	import LoadingButton from '../../../components/LoadingButton.svelte';
 
-	import type { BYOC, BYOCSymbol } from '@metanames/sdk';
+	import type { BYOC } from '@metanames/sdk';
 	import { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
+	import { onMount } from 'svelte';
 
 	export let domainName: string;
 	export let tld: string;
 
 	let years = 1;
 	let feesApproved = false;
-	let selectedCoin: BYOCSymbol = $metaNamesSdk.config.byoc[0].symbol;
 	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
 
 	$: nameWithoutTLD = domainName.endsWith(`.${tld}`)
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, selectedCoin);
+	$: loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, $selectedCoin);
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
+
+	onMount(() => {
+		if (!$selectedCoin) selectedCoin.set($metaNamesSdk.config.byoc[0].symbol);
+	});
 
 	const totalFeesLabel = (label: number, years: number) => {
 		const total = label * years;
@@ -45,7 +55,7 @@
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
 			domainName,
-			selectedCoin,
+			$selectedCoin,
 			years
 		);
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
@@ -63,7 +73,7 @@
 			domain: domainName,
 			to: address,
 			subscriptionYears: years,
-			byocSymbol: selectedCoin
+			byocSymbol: $selectedCoin
 		});
 
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
@@ -94,7 +104,7 @@
 			<div class="coin">
 				<p class="title text-center">Payment token</p>
 				<div class="row centered">
-					<Select bind:value={selectedCoin} label="Select Token" variant="outlined">
+					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
 						{#each availableCoins as coin}
 							<Option value={coin.symbol}>{coin.symbol}</Option>
 						{/each}
