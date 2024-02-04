@@ -1,4 +1,5 @@
 import { metaNamesSdkFactory } from '$lib';
+import type { BYOCSymbol } from '@metanames/sdk';
 import { derived, writable } from 'svelte/store';
 
 export const metaNamesSdk = writable(metaNamesSdkFactory());
@@ -9,3 +10,5 @@ export const walletConnected = derived(
 );
 export const alertMessage = writable<string | undefined>();
 export const alertTransaction = writable<string | undefined>();
+
+export const selectedCoin = writable<BYOCSymbol>();
