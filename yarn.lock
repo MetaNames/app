@@ -1925,10 +1925,10 @@
     "@material/theme" "^14.0.0"
     tslib "^2.1.0"
 
-"@metanames/sdk@^4.1.1":
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-4.1.1.tgz#95dcd5ce86b7c305f09de8a63e93a4529eaca836"
-  integrity sha512-FvllPtDh8gSk46GV7DxwR+AqUYtG2GTFsZO3N3E7ogn6SI5wVvc1q+RogCNT3MgYnHebXmiLAlr1RYT4SLOxwA==
+"@metanames/sdk@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-4.1.2.tgz#ca1ea4f1149128e3c84b9def891d405a1a653bea"
+  integrity sha512-y5HrPzjiLOzIb6RkMU4OajQ6AqwZFXv9vd6OEaotSuZFwMOOmxgjXXdVOTEmp4ob/5/a4zMyxER6JxXaAG+4Dw==
   dependencies:
     "@partisiablockchain/abi-client" "^3.30.0"
     "@secata-public/bitmanipulation-ts" "^3.0.6"
@@ -4551,11 +4551,6 @@ es-iterator-helpers@^1.0.12, es-iterator-helpers@^1.0.15:
     iterator.prototype "^1.1.2"
     safe-array-concat "^1.0.1"
 
-es-module-lexer@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/es-module-lexer/-/es-module-lexer-1.4.1.tgz#41ea21b43908fe6a287ffcbe4300f790555331f5"
-  integrity sha512-cXLGjP0c4T3flZJKQSuziYoq7MlT+rnvfZjfp7h+I7K9BNX54kP9nyWvdbwjQ4u1iWbOL4u96fgeZLToQlZC7w==
-
 es-set-tostringtag@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/es-set-tostringtag/-/es-set-tostringtag-2.0.2.tgz#11f7cc9f63376930a5f20be4915834f4bc74f9c9"
@@ -7112,13 +7107,6 @@ magic-string@^0.30.0, magic-string@^0.30.3, magic-string@^0.30.4:
   version "0.30.5"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.30.5.tgz#1994d980bd1c8835dc6e78db7cbd4ae4f24746f9"
   integrity sha512-7xlpfBaQaP/T6Vh8MO/EqXSW5En6INHEvEXQiuff7Gku0PWjU3uf6w/j9o7O+SpB5fOAkrI5HeoNgwjEO0pFsA==
-  dependencies:
-    "@jridgewell/sourcemap-codec" "^1.4.15"
-
-magic-string@^0.30.5:
-  version "0.30.6"
-  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.30.6.tgz#996e21b42f944e45591a68f0905d6a740a12506c"
-  integrity sha512-n62qCLbPjNjyo+owKtveQxZFZTBm+Ms6YoGD23Wew6Vw337PElFNifQpknPruVRQV57kVShPnLGo9vWxVhpPvA==
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.4.15"
 
@@ -9967,15 +9955,6 @@ vite-node@0.32.4:
     pathe "^1.1.1"
     picocolors "^1.0.0"
     vite "^3.0.0 || ^4.0.0"
-
-vite-plugin-chunk-split@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/vite-plugin-chunk-split/-/vite-plugin-chunk-split-0.5.0.tgz#b5da3382f88b50354887560760c8b6bf15295bf8"
-  integrity sha512-pasNKLhH+ICjoCF6HoKKvgmZ1LEPSCIKAa8Lz0ZpMyQC9bLmCLT7UxgKMULewsc9SUw89OX0udsGiIQCtr8wLA==
-  dependencies:
-    es-module-lexer "^1.4.1"
-    import-meta-resolve "^4.0.0"
-    magic-string "^0.30.5"
 
 vite-plugin-node-polyfills@^0.7.0:
   version "0.7.0"
