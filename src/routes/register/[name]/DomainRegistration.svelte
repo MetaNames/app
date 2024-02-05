@@ -18,6 +18,8 @@
 	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
 
+	import { track } from '@vercel/analytics';
+
 	export let domainName: string;
 	export let tld: string;
 
@@ -74,6 +76,12 @@
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) throw new Error('Failed to register domain.');
 		else alertMessage.set('Domain registered successfully!');
+
+		track('domain_registered', {
+			domain: domainName,
+			years,
+			byoc: $selectedCoin
+		});
 
 		goto(`/domain/${domainName}`);
 	}
