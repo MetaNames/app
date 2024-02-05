@@ -1,13 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { alertTransactionAndFetchResult } from '$lib';
-	import {
-		alertMessage,
-		metaNamesSdk,
-		selectedCoin,
-		walletAddress,
-		walletConnected
-	} from '$lib/stores';
+	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
+	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
 	import LoadingButton from '../../../components/LoadingButton.svelte';

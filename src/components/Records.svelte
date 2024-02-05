@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
-	import { walletAddress } from '$lib/stores';
+	import { walletAddress } from '$lib/stores/main';
 
 	import Button, { Label } from '@smui/button';
 	import Select, { Option } from '@smui/select';

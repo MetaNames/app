@@ -8,6 +8,7 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+/.vercel/
 
 /static/smui-dark.css
 /static/smui.css

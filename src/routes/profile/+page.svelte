@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk';
 
-	import { metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
+	import { walletAddress, walletConnected } from '$lib/stores/main';
+	import { metaNamesSdk } from '$lib/stores/sdk';
 
 	import Paper from '@smui/paper';
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue } from '@smui/data-table';

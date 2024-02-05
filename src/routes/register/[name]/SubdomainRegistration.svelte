@@ -1,16 +1,17 @@
 <script lang="ts">
 	import type { Domain as DomainModel } from '@metanames/sdk';
 
-	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
-	import Card, { Content } from '@smui/card';
-	import { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
+	import { alertMessage, walletAddress } from '$lib/stores/main';
+	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { Label } from '@smui/button';
+	import Card, { Content } from '@smui/card';
 	import { onMount } from 'svelte';
 
-	import LoadingButton from '../../../components/LoadingButton.svelte';
-	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
-	import Chip from '../../../components/Chip.svelte';
 	import { alertTransactionAndFetchResult } from '$lib';
+	import Chip from '../../../components/Chip.svelte';
+	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
+	import LoadingButton from '../../../components/LoadingButton.svelte';
 
 	export let domainName: string;
 	export let parentDomainName: string;

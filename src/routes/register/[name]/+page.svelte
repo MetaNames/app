@@ -3,7 +3,8 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
-	import { alertMessage, metaNamesSdk } from '$lib/stores';
+	import { alertMessage } from '$lib/stores/main';
+	import { metaNamesSdk } from '$lib/stores/sdk';
 
 	import type { Domain as DomainModel } from '@metanames/sdk';
 

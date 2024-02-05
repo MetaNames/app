@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { walletAddress } from '$lib/stores';
+	import { walletAddress } from '$lib/stores/main';
 	import { derived } from 'svelte/store';
 
 	import { Icon, Label } from '@smui/button';
