@@ -5,7 +5,7 @@
 	import Textfield from '@smui/textfield';
 
 	import type { RecordRepository } from '@metanames/sdk';
-	import { alertMessage, walletConnected } from '$lib/stores';
+	import { alertMessage, walletConnected } from '$lib/stores/main';
 	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
 
 	export let klass: string;

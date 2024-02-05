@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { alertMessage, metaNamesSdk, walletAddress, walletConnected } from '$lib/stores';
+	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
+	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { connectMetaMask, connectPartisia, getAddress } from '$lib/wallet';
 
 	import List, { Item, Text } from '@smui/list';

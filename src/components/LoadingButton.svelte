@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { alertMessage } from '$lib/stores';
+	import { alertMessage } from '$lib/stores/main';
 	import Button, { Icon, Label } from '@smui/button';
 	import CircularProgress from '@smui/circular-progress';
 

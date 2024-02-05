@@ -16,7 +16,7 @@
 
 	import '../styles/app.scss';
 	import Footer from './Footer.svelte';
-	import { alertMessage, alertTransaction } from '$lib/stores';
+	import { alertMessage, alertTransaction } from '$lib/stores/main';
 	import Button from '@smui/button';
 	import { config, explorerTransactionUrl } from '$lib';
 

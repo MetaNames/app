@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	import Domain from '../../../components/Domain.svelte';
-	import { metaNamesSdk } from '$lib/stores';
+	import { metaNamesSdk } from '$lib/stores/sdk';
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';

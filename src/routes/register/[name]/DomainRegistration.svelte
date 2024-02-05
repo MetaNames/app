@@ -1,13 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { alertTransactionAndFetchResult } from '$lib';
-	import {
-		alertMessage,
-		metaNamesSdk,
-		selectedCoin,
-		walletAddress,
-		walletConnected
-	} from '$lib/stores';
+	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
+	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
 	import LoadingButton from '../../../components/LoadingButton.svelte';
@@ -17,6 +12,8 @@
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
+
+	import { track } from '@vercel/analytics';
 
 	export let domainName: string;
 	export let tld: string;
@@ -74,6 +71,12 @@
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) throw new Error('Failed to register domain.');
 		else alertMessage.set('Domain registered successfully!');
+
+		track('domain_registered', {
+			domain: domainName,
+			years,
+			byoc: $selectedCoin
+		});
 
 		goto(`/domain/${domainName}`);
 	}

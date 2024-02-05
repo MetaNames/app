@@ -1,5 +1,5 @@
 import type { ITransactionIntent } from "@metanames/sdk";
-import { alertTransaction } from "./stores";
+import { alertTransaction } from "./stores/main";
 
 export const formatDate = (date: Date) => {
 	const day = date.getDate();

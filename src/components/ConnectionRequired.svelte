@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { walletConnected } from '$lib/stores';
+	import { walletConnected } from '$lib/stores/main';
 
 	import WalletConnectButton from '../routes/WalletConnectButton.svelte';
 
