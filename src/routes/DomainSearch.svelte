@@ -3,7 +3,7 @@
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from '@metanames/sdk/lib/models/domain';
+	import type { Domain as DomainModel } from '@metanames/sdk';
 	import IconButton from '@smui/icon-button/src/IconButton.svelte';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
