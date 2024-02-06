@@ -5,6 +5,7 @@
 	import type { PageData } from './$types';
 	import DomainSearch from './DomainSearch.svelte';
 	import { goto } from '$app/navigation';
+	import Carosel from '../components/Carosel.svelte';
 
 	export let data: PageData;
 
@@ -25,14 +26,16 @@
 		<div class="recent-domains">
 			<h5>Recently registered domains</h5>
 			<div class="content">
-				{#each data.stats.recentDomains as domain}
-					<Card class="domain">
-						<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-							<span class="domain-name">{domain.name}</span>
-							<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-						</PrimaryAction>
-					</Card>
-				{/each}
+				<Carosel autoplay={2000} controls={false} perPage={2}>
+					{#each data.stats.recentDomains as domain}
+						<Card class="domain">
+							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+								<span class="domain-name">{domain.name}</span>
+								<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+							</PrimaryAction>
+						</Card>
+					{/each}
+				</Carosel>
 			</div>
 		</div>
 	</div>
@@ -55,24 +58,20 @@
 
 	.recent-domains {
 		margin-top: 1rem;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
 
 		.content {
-			display: flex;
-			flex-direction: row;
-			justify-content: start;
-			max-width: 60vw;
-			overflow-x: scroll;
+			max-width: 70vw;
 
 			:global(.domain) {
 				margin-right: 1rem;
+				width: auto;
+				overflow-x: visible;
 			}
 
 			:global(.domain-name) {
 				font-weight: bold;
 				margin-bottom: 0.5rem;
+				overflow-x: visible;
 			}
 
 			:global(.domain-date) {
