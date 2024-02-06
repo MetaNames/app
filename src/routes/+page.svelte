@@ -1,5 +1,16 @@
 <script lang="ts">
+	import Card, { PrimaryAction } from '@smui/card';
+	import { formatDistanceToNow } from 'date-fns';
+
+	import type { PageData } from './$types';
 	import DomainSearch from './DomainSearch.svelte';
+	import { goto } from '$app/navigation';
+
+	export let data: PageData;
+
+	function formatCreatedAt(date: Date) {
+		return formatDistanceToNow(date, { addSuffix: true });
+	}
 </script>
 
 <svelte:head>
@@ -11,6 +22,19 @@
 	<p class="subtitle">Powered by Partisia</p>
 	<div class="search-container">
 		<DomainSearch />
+		<div class="recent-domains">
+			<h5>Recently registered domains</h5>
+			<div class="content">
+				{#each data.stats.recentDomains as domain}
+					<Card class="domain">
+						<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+							<span class="domain-name">{domain.name}</span>
+							<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+						</PrimaryAction>
+					</Card>
+				{/each}
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -27,5 +51,43 @@
 
 	.search-container {
 		display: inline-block;
+	}
+
+	.recent-domains {
+		margin-top: 1rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		.content {
+			display: flex;
+			flex-direction: row;
+			justify-content: start;
+			max-width: 60vw;
+			overflow-x: scroll;
+
+			:global(.domain) {
+				margin-right: 1rem;
+			}
+
+			:global(.domain-name) {
+				font-weight: bold;
+				margin-bottom: 0.5rem;
+			}
+
+			:global(.domain-date) {
+				font-size: 0.8rem;
+				color: var(--mdc-theme-text-hint-on-background);
+			}
+
+			@media screen and (max-width: 600px) {
+				flex-direction: column;
+
+				:global(.domain) {
+					margin-right: 0;
+					margin-bottom: 1rem;
+				}
+			}
+		}
 	}
 </style>
