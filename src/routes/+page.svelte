@@ -6,8 +6,21 @@
 	import DomainSearch from './DomainSearch.svelte';
 	import { goto } from '$app/navigation';
 	import Carosel from '../components/Carosel.svelte';
+	import { browser } from '$app/environment';
 
 	export let data: PageData;
+
+	let loaded: boolean = false;
+	let innerWidth: number = browser ? window.innerWidth : 0;
+
+	$: isDesktop = innerWidth > 768;
+	$: innerWidth > 0 && (loaded = true);
+
+	if (browser) {
+		window.addEventListener('resize', () => {
+			innerWidth = window.innerWidth;
+		});
+	}
 
 	function formatCreatedAt(date: Date) {
 		return formatDistanceToNow(date, { addSuffix: true });
@@ -26,16 +39,29 @@
 		<div class="recent-domains">
 			<h5>Recently registered domains</h5>
 			<div class="content">
-				<Carosel autoplay={2000} controls={false} perPage={2}>
-					{#each data.stats.recentDomains as domain}
-						<Card class="domain">
-							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-								<span class="domain-name">{domain.name}</span>
-								<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-							</PrimaryAction>
-						</Card>
-					{/each}
-				</Carosel>
+				{#if isDesktop}
+					<Carosel autoplay={2000} controls={false} perPage={3}>
+						{#each data.stats.recentDomains as domain}
+							<Card class="domain">
+								<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+									<span class="domain-name">{domain.name}</span>
+									<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+								</PrimaryAction>
+							</Card>
+						{/each}
+					</Carosel>
+				{:else if isDesktop === false}
+					<div class="mobile" class:loaded>
+						{#each data.stats.recentDomains as domain}
+							<Card class="domain">
+								<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+									<span class="domain-name">{domain.name}</span>
+									<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+								</PrimaryAction>
+							</Card>
+						{/each}
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -57,7 +83,11 @@
 	}
 
 	.recent-domains {
-		margin-top: 1rem;
+		margin-top: 4rem;
+
+		h5 {
+			margin-bottom: 1rem;
+		}
 
 		.content {
 			max-width: 70vw;
@@ -79,8 +109,15 @@
 				color: var(--mdc-theme-text-hint-on-background);
 			}
 
-			@media screen and (max-width: 600px) {
-				flex-direction: column;
+			.mobile {
+				opacity: 0;
+				max-height: 10vh;
+				transition: opacity 0.4s ease-in-out;
+
+				&.loaded {
+					opacity: 1;
+					max-height: max-content;
+				}
 
 				:global(.domain) {
 					margin-right: 0;

@@ -17,6 +17,7 @@
 	let siema: HTMLDivElement;
 	let controller: Siema;
 	let timer: NodeJS.Timeout;
+	let loaded: boolean = false;
 	const dispatch = createEventDispatcher();
 
 	onMount(() => {
@@ -31,7 +32,8 @@
 			multipleDrag,
 			threshold,
 			rtl,
-			onChange: handleChange
+			onChange: handleChange,
+			onInit: () => (loaded = true)
 		});
 
 		if (autoplay) timer = setInterval(right, autoplay);
@@ -89,7 +91,7 @@
 	}
 </script>
 
-<div class="carousel">
+<div class="carousel" class:loaded>
 	<div class="slides" bind:this={siema}>
 		<slot />
 	</div>
@@ -103,12 +105,19 @@
 	{/if}
 </div>
 
-<style>
+<style lang="scss">
 	.carousel {
 		position: relative;
 		width: 100%;
 		justify-content: center;
 		align-items: center;
+		overflow: hidden;
+		overflow-x: hidden;
+		opacity: 0;
+		transition: opacity 0.4s ease-in-out;
+	}
+	.carousel.loaded {
+		opacity: 1;
 	}
 
 	button {
