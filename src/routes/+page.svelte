@@ -34,6 +34,8 @@
 	<p class="subtitle">Powered by Partisia</p>
 	<div class="search-container">
 		<DomainSearch />
+	</div>
+	{#if data.stats.recentDomains}
 		<div class="recent-domains">
 			<h5>Recently registered domains</h5>
 			<div class="content">
@@ -57,7 +59,7 @@
 				</Carousel>
 			</div>
 		</div>
-	</div>
+	{/if}
 </div>
 
 <style lang="scss">
