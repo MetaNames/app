@@ -1925,10 +1925,10 @@
     "@material/theme" "^14.0.0"
     tslib "^2.1.0"
 
-"@metanames/sdk@^4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-4.1.2.tgz#ca1ea4f1149128e3c84b9def891d405a1a653bea"
-  integrity sha512-y5HrPzjiLOzIb6RkMU4OajQ6AqwZFXv9vd6OEaotSuZFwMOOmxgjXXdVOTEmp4ob/5/a4zMyxER6JxXaAG+4Dw==
+"@metanames/sdk@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-4.2.0.tgz#b6decef4d84b38196ad3367eaa162de924408990"
+  integrity sha512-y6dEZBK9ALMCIoEbLWuos3ryOFIXkoNlacrlysPksjfg5F1WVHTcOv+7PLzMEoQrPwQvh6qUVBz8Ej++YN4Cpg==
   dependencies:
     "@partisiablockchain/abi-client" "^3.30.0"
     "@secata-public/bitmanipulation-ts" "^3.0.6"
@@ -2663,6 +2663,11 @@
   version "7.5.0"
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.5.0.tgz#591c1ce3a702c45ee15f47a42ade72c2fd78978a"
   integrity sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==
+
+"@types/siema@^1.4.11":
+  version "1.4.11"
+  resolved "https://registry.yarnpkg.com/@types/siema/-/siema-1.4.11.tgz#d2839eb0c7e76c4d2b49d42d70568c8e43cee260"
+  integrity sha512-bPazsNVnMryrzZx2HiAeDXEpgaO98ToQk0cYJ/7yomLlVNHsn4IYPrLoQ50tQt11FGvkkNoepRyKcTNUhqjj+g==
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -4218,6 +4223,11 @@ data-urls@^1.1.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
+date-fns@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-3.3.1.tgz#7581daca0892d139736697717a168afbb908cfed"
+  integrity sha512-y8e109LYGgoQDveiEBD3DYXKba1jWf5BA8YU1FL5Tvm0BTdEfy54WLCwnuYWZNnzzvALy/QQ4Hov+Q9RVRv+Zw==
+
 debug@4, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
@@ -4412,6 +4422,15 @@ domexception@^1.0.1:
   integrity sha512-raigMkn7CJNNo6Ihro1fzG7wr3fHuYVytzquZKX5n0yizGsTcYgzdIUwj1X9pK0VvjeihV+XiclP+DjwbsSKug==
   dependencies:
     webidl-conversions "^4.0.2"
+
+easy-reactive@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/easy-reactive/-/easy-reactive-1.0.4.tgz#68933d77359e90addc6cf747499fcf4580bcb160"
+  integrity sha512-dFVouegPctMf6XT5si+sRByBWUQE30n99TW0Y45Y7mccmNsbSl4uXA2sBGI8zCDZqXjhb8ouA3wVVhSSGpXk5Q==
+  dependencies:
+    lodash.clonedeep "^4.5.0"
+    lodash.get "^4.4.2"
+    lodash.isequal "^4.5.0"
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -7006,10 +7025,25 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash.clonedeep@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
+  integrity sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==
+
 lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
+
+lodash.get@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+  integrity sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==
+
+lodash.isequal@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==
 
 lodash.memoize@4.x:
   version "4.1.2"
@@ -9268,6 +9302,12 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
+
+svelte-carousel@vadimkorr/svelte-carousel#pull/142/head:
+  version "1.0.25"
+  resolved "https://codeload.github.com/vadimkorr/svelte-carousel/tar.gz/a299747c626d559ad02dde0a1463243bb07935df"
+  dependencies:
+    easy-reactive "1.0.4"
 
 svelte-check@^3.4.3:
   version "3.6.2"
