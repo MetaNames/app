@@ -5,16 +5,14 @@
 	import type { PageData } from './$types';
 	import DomainSearch from './DomainSearch.svelte';
 	import { goto } from '$app/navigation';
-	import Carosel from '../components/Carosel.svelte';
+	import Carousel from 'svelte-carousel';
 	import { browser } from '$app/environment';
 
 	export let data: PageData;
 
-	let loaded: boolean = false;
 	let innerWidth: number = browser ? window.innerWidth : 0;
 
 	$: isDesktop = innerWidth > 768;
-	$: innerWidth > 0 && (loaded = true);
 
 	if (browser) {
 		window.addEventListener('resize', () => {
@@ -39,29 +37,24 @@
 		<div class="recent-domains">
 			<h5>Recently registered domains</h5>
 			<div class="content">
-				{#if isDesktop}
-					<Carosel autoplay={2000} controls={false} perPage={3}>
-						{#each data.stats.recentDomains as domain}
-							<Card class="domain">
-								<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-									<span class="domain-name">{domain.name}</span>
-									<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-								</PrimaryAction>
-							</Card>
-						{/each}
-					</Carosel>
-				{:else if isDesktop === false}
-					<div class="mobile" class:loaded>
-						{#each data.stats.recentDomains as domain}
-							<Card class="domain">
-								<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-									<span class="domain-name">{domain.name}</span>
-									<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-								</PrimaryAction>
-							</Card>
-						{/each}
-					</div>
-				{/if}
+				<Carousel
+					autoplayDuration={0}
+					particlesToShow={isDesktop ? 3 : 2}
+					duration={8000}
+					autoplay
+					timingFunction="linear"
+					dots={false}
+					arrows={false}
+				>
+					{#each data.stats.recentDomains as domain (domain.name)}
+						<Card class="domain">
+							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+								<span class="domain-name">{domain.name}</span>
+								<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+							</PrimaryAction>
+						</Card>
+					{/each}
+				</Carousel>
 			</div>
 		</div>
 	</div>
@@ -94,8 +87,7 @@
 
 			:global(.domain) {
 				margin-right: 1rem;
-				width: auto;
-				overflow-x: visible;
+				user-select: none;
 			}
 
 			:global(.domain-name) {
@@ -107,22 +99,6 @@
 			:global(.domain-date) {
 				font-size: 0.8rem;
 				color: var(--mdc-theme-text-hint-on-background);
-			}
-
-			.mobile {
-				opacity: 0;
-				max-height: 10vh;
-				transition: opacity 0.4s ease-in-out;
-
-				&.loaded {
-					opacity: 1;
-					max-height: max-content;
-				}
-
-				:global(.domain) {
-					margin-right: 0;
-					margin-bottom: 1rem;
-				}
 			}
 		}
 	}
