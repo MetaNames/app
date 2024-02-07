@@ -34,6 +34,8 @@
 	<p class="subtitle">Powered by Partisia</p>
 	<div class="search-container">
 		<DomainSearch />
+	</div>
+	{#if data.stats.recentDomains}
 		<div class="recent-domains">
 			<h5>Recently registered domains</h5>
 			<div class="content">
@@ -57,7 +59,7 @@
 				</Carousel>
 			</div>
 		</div>
-	</div>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -83,7 +85,11 @@
 		}
 
 		.content {
-			max-width: 70vw;
+			max-width: 80vw;
+
+			@media screen and (max-width: 768px) {
+				max-width: 90vw;
+			}
 
 			:global(.domain) {
 				margin-right: 1rem;
