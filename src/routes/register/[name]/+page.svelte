@@ -1,41 +1,32 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
 	import { alertMessage } from '$lib/stores/main';
-	import { metaNamesSdk } from '$lib/stores/sdk';
-
-	import type { Domain as DomainModel } from '@metanames/sdk';
 
 	import CircularProgress from '@smui/circular-progress';
 
 	import DomainRegistration from './DomainRegistration.svelte';
 	import SubdomainRegistration from './SubdomainRegistration.svelte';
+	import type { PageData } from './$types';
 
-	let domain: DomainModel | null;
-	let parentDomain: DomainModel | null;
+	export let data: PageData;
 
-	const nameParam = $page.params.name;
-	const analyzedDomain = $metaNamesSdk.domainRepository.analyze(nameParam);
+	let domainPresent: boolean | null = data.domainPresent;
+	let parentPresent: boolean | null = data.parentPresent;
 
-	$: domainName = analyzedDomain.name;
-	$: parentDomainName = analyzedDomain.parentId;
-	$: pageName = domain ? domain.name + ' | ' : '';
-	$: tld = analyzedDomain.tld;
+	$: domainName = data.domainName;
+	$: parentDomainName = data.parentDomainName;
+	$: pageName = domainName + ' | ';
+	$: tld = data.tld;
 
 	onMount(async () => {
-		domain = await $metaNamesSdk.domainRepository.find(domainName);
+		if (domainPresent) return goto(`/domain/${domainName}`, { replaceState: true });
 
-		if (domain) goto(`/domain/${domain.name}`, { replaceState: true });
-
-		if (parentDomainName && parentDomainName !== tld) {
-			parentDomain = await $metaNamesSdk.domainRepository.find(parentDomainName);
-			if (!parentDomain) {
-				alertMessage.set('Parent domain not found, please register it first.');
-				goto(`/register/${parentDomainName}`, { replaceState: true });
-			}
-		} else parentDomain = null;
+		if (parentDomainName && !parentPresent) {
+			alertMessage.set('Parent domain not found, please register it first.');
+			return goto(`/register/${parentDomainName}`, { replaceState: true });
+		}
 	});
 </script>
 
@@ -44,13 +35,13 @@
 </svelte:head>
 
 <div class="content container">
-	{#if domain === undefined || parentDomain === undefined}
+	{#if domainPresent === undefined || parentPresent === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}
 		<h2>Register</h2>
-		{#if parentDomain && parentDomainName}
+		{#if parentPresent && parentDomainName}
 			<SubdomainRegistration {domainName} {parentDomainName} />
-		{:else if parentDomainName && !parentDomain}
+		{:else if parentDomainName && !parentPresent}
 			<DomainRegistration domainName={parentDomainName} {tld} />
 		{:else}
 			<DomainRegistration {domainName} {tld} />
