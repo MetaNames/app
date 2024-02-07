@@ -65,7 +65,8 @@
 			domain: domainName,
 			to: address,
 			subscriptionYears: years,
-			byocSymbol: $selectedCoin
+			byocSymbol: $selectedCoin,
+			tokenUri: domainName
 		});
 
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
