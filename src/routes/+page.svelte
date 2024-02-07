@@ -83,7 +83,11 @@
 		}
 
 		.content {
-			max-width: 70vw;
+			max-width: 80vw;
+
+			@media screen and (max-width: 768px) {
+				max-width: 90vw;
+			}
 
 			:global(.domain) {
 				margin-right: 1rem;
