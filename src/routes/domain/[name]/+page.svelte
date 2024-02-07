@@ -1,15 +1,17 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
 
 	import Domain from '../../../components/Domain.svelte';
-	import { metaNamesSdk } from '$lib/stores/sdk';
+	import GoBackButton from '../../../components/GoBackButton.svelte';
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
-	import GoBackButton from '../../../components/GoBackButton.svelte';
-	import { goto } from '$app/navigation';
+
+	export let data: PageData;
 
 	let domain: DomainModel | null;
 
@@ -20,8 +22,7 @@
 		const loweredDomainName = domainName.toLocaleLowerCase();
 		if (loweredDomainName !== domainName)
 			goto(`/domain/${loweredDomainName}`, { replaceState: true });
-		else
-			domain = await $metaNamesSdk.domainRepository.find(domainName);
+		else domain = data.domain;
 	});
 </script>
 

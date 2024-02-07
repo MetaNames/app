@@ -35,7 +35,7 @@
 	<div class="search-container">
 		<DomainSearch />
 	</div>
-	{#if data.stats.recentDomains}
+	{#if data.recentDomains}
 		<div class="recent-domains">
 			<h5>Recently registered domains</h5>
 			<div class="content">
@@ -48,7 +48,7 @@
 					dots={false}
 					arrows={false}
 				>
-					{#each data.stats.recentDomains as domain (domain.name)}
+					{#each data.recentDomains as domain (domain.name)}
 						<Card class="domain">
 							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
 								<span class="domain-name">{domain.name}</span>
