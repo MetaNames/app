@@ -1,5 +1,5 @@
 <script>
-	import Logo from './Logo.svelte';
+	import Logo from 'src/routes/Logo.svelte';
 </script>
 
 <footer class="card-primary">

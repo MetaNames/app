@@ -1,7 +1,10 @@
 {
-  "exclude": ["test", "jest.config.ts"] /* Exclude files and folders from the program. */,
-  "extends": "./.svelte-kit/tsconfig.json",
-  "compilerOptions": {
+	"exclude": [
+		"test",
+		"jest.config.ts"
+	] /* Exclude files and folders from the program. */,
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,
 		"esModuleInterop": true,
@@ -9,6 +12,17 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
-		"strict": true
-	}
+		"strict": true,
+		"paths": {
+			"src/*": [
+				"./src/*"
+			],
+			"$lib": [
+				"./src/lib"
+			],
+			"$lib/*": [
+				"./src/lib/*"
+			]
+		},
+	},
 }

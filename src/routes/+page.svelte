@@ -3,7 +3,7 @@
 	import { formatDistanceToNow } from 'date-fns';
 
 	import type { PageData } from './$types';
-	import DomainSearch from './DomainSearch.svelte';
+	import DomainSearch from 'src/routes/DomainSearch.svelte';
 	import { goto } from '$app/navigation';
 	import Carousel from 'svelte-carousel';
 	import { browser } from '$app/environment';

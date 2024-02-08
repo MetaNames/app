@@ -4,6 +4,7 @@
 	import { inject } from '@vercel/analytics';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
+	import Button from '@smui/button';
 	import Banner, { Icon } from '@smui/banner';
 	import IconButton from '@smui/icon-button';
 	import Section from '@smui/top-app-bar/src/Section.svelte';
@@ -11,14 +12,16 @@
 	import TopAppBar, { Row, Title } from '@smui/top-app-bar';
 	import { Anchor } from '@smui/menu-surface';
 
-	import WalletConnect from './WalletConnectStatus.svelte';
-	import Logo from './Logo.svelte';
-
-	import '../styles/app.scss';
-	import Footer from './Footer.svelte';
-	import { alertMessage, alertTransaction } from '$lib/stores/main';
-	import Button from '@smui/button';
 	import { config, explorerTransactionUrl } from '$lib';
+	import { alertMessage, alertTransaction } from '$lib/stores/main';
+	import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
+	import Logo from 'src/routes/Logo.svelte';
+	import Footer from 'src/routes/Footer.svelte';
+
+	import 'src/styles/app.scss';
+	import 'src/styles/theme/smui-dark.css' // Import SMUI dark theme to avoid FOUC
+	import 'material-icons/iconfont/filled.css';
+
 
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};

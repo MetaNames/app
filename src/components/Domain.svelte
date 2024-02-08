@@ -1,14 +1,14 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk/lib/models/domain';
 
-	import Records from './Records.svelte';
+	import Records from 'src/components/Records.svelte';
+	import Chip from 'src/components/Chip.svelte';
 
 	import Card, { Content as CardContent } from '@smui/card';
 	import Paper, { Content } from '@smui/paper';
 	import Tab, { Label } from '@smui/tab';
 	import TabBar from '@smui/tab-bar';
 	import { toSvg } from 'jdenticon';
-	import Chip from './Chip.svelte';
 	import { config, formatDate } from '$lib';
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 250);

@@ -4,8 +4,8 @@
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import Select, { Option } from '@smui/select';
-	import ConnectionRequired from '../../../components/ConnectionRequired.svelte';
-	import LoadingButton from '../../../components/LoadingButton.svelte';
+	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
+	import LoadingButton from 'src/components/LoadingButton.svelte';
 
 	import type { BYOC } from '@metanames/sdk';
 	import { Label } from '@smui/button';
