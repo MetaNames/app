@@ -19,7 +19,6 @@
 	import Footer from 'src/routes/Footer.svelte';
 
 	import 'src/styles/app.scss';
-	import 'src/styles/theme/smui-dark.css' // Import SMUI dark theme to avoid FOUC
 	import 'material-icons/iconfont/filled.css';
 
 
