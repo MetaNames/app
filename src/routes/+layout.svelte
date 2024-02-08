@@ -11,11 +11,11 @@
 	import TopAppBar, { Row, Title } from '@smui/top-app-bar';
 	import { Anchor } from '@smui/menu-surface';
 
-	import WalletConnect from './WalletConnectStatus.svelte';
-	import Logo from './Logo.svelte';
+	import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
+	import Logo from 'src/routes/Logo.svelte';
 
-	import '../styles/app.scss';
-	import Footer from './Footer.svelte';
+	import 'src/styles/app.scss';
+	import Footer from 'src/routes/Footer.svelte';
 	import { alertMessage, alertTransaction } from '$lib/stores/main';
 	import Button from '@smui/button';
 	import { config, explorerTransactionUrl } from '$lib';

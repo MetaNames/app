@@ -3,10 +3,9 @@
 	import { page } from '$app/stores';
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
-	import type { PageData } from './$types';
 
-	import Domain from '../../../components/Domain.svelte';
-	import GoBackButton from '../../../components/GoBackButton.svelte';
+	import Domain from 'src/components/Domain.svelte';
+	import GoBackButton from 'src/components/GoBackButton.svelte';
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';

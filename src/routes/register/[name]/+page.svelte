@@ -3,12 +3,12 @@
 	import { onMount } from 'svelte';
 
 	import { alertMessage } from '$lib/stores/main';
+	import type { PageData } from './$types';
 
 	import CircularProgress from '@smui/circular-progress';
 
-	import DomainRegistration from './DomainRegistration.svelte';
-	import SubdomainRegistration from './SubdomainRegistration.svelte';
-	import type { PageData } from './$types';
+	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
+	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
 
 	export let data: PageData;
 

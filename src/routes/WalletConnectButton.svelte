@@ -6,7 +6,7 @@
 	import List, { Item, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
-	import '../styles/wallet-connect.scss';
+	import 'src/styles/wallet-connect.scss';
 	import Button from '@smui/button';
 
 	let menu: Menu;

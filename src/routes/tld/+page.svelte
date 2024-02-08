@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Domain from '../../components/Domain.svelte';
+	import Domain from 'src/components/Domain.svelte';
 
 	import { metaNamesSdk } from "$lib/stores/sdk";
 	import { Domain as DomainModel, type IDomain } from "@metanames/sdk";
