@@ -9,9 +9,6 @@
 	import { onMount } from 'svelte';
 	import { recentDomains, type DomainProjection } from 'src/lib/stores/main';
 
-	let innerWidth: number = browser ? window.innerWidth : 0;
-
-	$: isDesktop = innerWidth > 768;
 	$: loaded = $recentDomains.length > 1;
 
 	if (browser) {
