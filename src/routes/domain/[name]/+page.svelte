@@ -10,8 +10,7 @@
 
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
-
-	export let data: PageData;
+	import { metaNamesSdk } from '$lib/stores/sdk';
 
 	let domain: DomainModel | null;
 
@@ -22,7 +21,7 @@
 		const loweredDomainName = domainName.toLocaleLowerCase();
 		if (loweredDomainName !== domainName)
 			goto(`/domain/${loweredDomainName}`, { replaceState: true });
-		else domain = data.domain;
+		else domain = await $metaNamesSdk.domainRepository.find(domainName);
 	});
 </script>
 
