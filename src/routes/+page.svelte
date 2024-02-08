@@ -81,10 +81,6 @@
 		margin-bottom: 0.5rem;
 	}
 
-	.search-container {
-		display: inline-block;
-	}
-
 	.recent-domains {
 		margin-top: 4rem;
 		opacity: 0;
