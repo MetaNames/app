@@ -52,6 +52,7 @@
 		"prettier-plugin-svelte": "^2.10.1",
 		"smui-theme": "^7.0.0-beta.14",
 		"svelte": "^4.0.5",
+		"svelte-carousel": "vadimkorr/svelte-carousel#pull/142/head",
 		"svelte-check": "^3.4.3",
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
@@ -67,7 +68,6 @@
 		"date-fns": "^3.3.1",
 		"jdenticon": "^3.2.0",
 		"partisia-sdk": "^0.1.1",
-		"svelte-carousel": "vadimkorr/svelte-carousel#pull/142/head",
 		"timed-cache": "^2.0.0"
 	}
 }

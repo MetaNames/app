@@ -7,34 +7,39 @@
 	import type { RecordRepository } from '@metanames/sdk';
 	import { alertMessage, walletConnected } from '$lib/stores/main';
 	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
+	import HelperText from '@smui/textfield/helper-text';
 
 	export let klass: string;
 	export let value: string;
 	export let repository: RecordRepository;
 	export let editMode = false;
 
+	const validator = repository.recordValidator;
+
 	let recordValue = String(value);
 	let dialogOpen = false;
 
 	$: label = klass.toString();
+	$: recordClass = getRecordClassFrom(klass);
+	$: invalid = !validator.validate({ data: recordValue, class: recordClass }, { raiseError: false });
+	$: errors = invalid ? validator.errors : [];
 	$: disabled = !edit;
 
 	let edit = false;
 
-	function toggleEdit() {
+	function toggleEdit(restore = true) {
 		edit = !edit;
+		if (restore) recordValue = value;
 	}
 
 	async function save() {
-		const recordClass = getRecordClassFrom(klass);
 		const transactionIntent = await repository.update({ class: recordClass, data: recordValue });
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) alertMessage.set('Failed to update record.');
-		else toggleEdit();
+		else toggleEdit(false);
 	}
 
 	async function destroy() {
-		const recordClass = getRecordClassFrom(klass);
 		const transactionIntent = await repository.delete(recordClass);
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) alertMessage.set('Failed to delete record.');
@@ -60,7 +65,22 @@
 		</Actions>
 	</Dialog>
 	<label for={label}>{label}</label>
-	<Textfield for={label} bind:value={recordValue} variant="outlined" textarea {disabled} />
+	<div class="value">
+		<Textfield
+			for={label}
+			bind:value={recordValue}
+			bind:invalid
+			variant="outlined"
+			textarea
+			{disabled}
+		>
+			<svelte:fragment slot="helper">
+				{#if errors.length > 0}
+					<HelperText slot="helper">{errors.join(', ')}</HelperText>
+				{/if}
+			</svelte:fragment>
+		</Textfield>
+	</div>
 	{#if edit}
 		<div class="actions">
 			<IconButton class="material-icons" on:click={save}>save</IconButton>
@@ -90,6 +110,12 @@
 		&.edit {
 			display: grid;
 			grid-template-columns: 1fr 2fr 1fr;
+		}
+
+		.value {
+			:global(> *) {
+				width: 100%;
+			}
 		}
 
 		:global(textarea:disabled) {
