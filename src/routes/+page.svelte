@@ -4,7 +4,7 @@
 
 	import DomainSearch from 'src/routes/DomainSearch.svelte';
 	import { goto } from '$app/navigation';
-	import Carousel from 'svelte-carousel';
+	import Marqueeck from '@arisbh/marqueeck';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { recentDomains, type DomainProjection } from 'src/lib/stores/main';
@@ -46,26 +46,16 @@
 	<div class="recent-domains" class:loaded>
 		<h5>Recently registered domains</h5>
 		<div class="content">
-			{#if $recentDomains.length > 0}
-				<Carousel
-					autoplayDuration={0}
-					particlesToShow={isDesktop ? 3 : 2}
-					duration={8000}
-					autoplay
-					timingFunction="linear"
-					dots={false}
-					arrows={false}
-				>
-					{#each $recentDomains as domain (domain.name)}
-						<Card class="domain">
-							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-								<span class="domain-name">{domain.name}</span>
-								<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-							</PrimaryAction>
-						</Card>
-					{/each}
-				</Carousel>
-			{/if}
+			<Marqueeck>
+				{#each $recentDomains as domain (domain.name)}
+					<Card class="domain">
+						<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+							<span class="domain-name">{domain.name}</span>
+							<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+						</PrimaryAction>
+					</Card>
+				{/each}
+			</Marqueeck>
 		</div>
 	</div>
 </div>
