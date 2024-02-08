@@ -1,17 +1,14 @@
 <script lang="ts">
 	import Card, { PrimaryAction } from '@smui/card';
-	import { formatDistanceToNow } from 'date-fns';
-
 	import DomainSearch from 'src/routes/DomainSearch.svelte';
-	import { goto } from '$app/navigation';
-	import Carousel from 'svelte-carousel';
+
 	import { browser } from '$app/environment';
-	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import Marqueeck from '@arisbh/marqueeck';
+	import { formatDistanceToNow } from 'date-fns';
 	import { recentDomains, type DomainProjection } from 'src/lib/stores/main';
+	import { onMount } from 'svelte';
 
-	let innerWidth: number = browser ? window.innerWidth : 0;
-
-	$: isDesktop = innerWidth > 768;
 	$: loaded = $recentDomains.length > 1;
 
 	if (browser) {
@@ -46,15 +43,7 @@
 	<div class="recent-domains" class:loaded>
 		<h5>Recently registered domains</h5>
 		<div class="content">
-			<Carousel
-				autoplayDuration={0}
-				particlesToShow={isDesktop ? 3 : 2}
-				duration={8000}
-				autoplay
-				timingFunction="linear"
-				dots={false}
-				arrows={false}
-			>
+			<Marqueeck>
 				{#each $recentDomains as domain (domain.name)}
 					<Card class="domain">
 						<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
@@ -63,7 +52,7 @@
 						</PrimaryAction>
 					</Card>
 				{/each}
-			</Carousel>
+			</Marqueeck>
 		</div>
 	</div>
 </div>
@@ -79,14 +68,14 @@
 		margin-bottom: 0.5rem;
 	}
 
-	.search-container {
-		display: inline-block;
-	}
-
 	.recent-domains {
 		margin-top: 4rem;
 		opacity: 0;
 		transition: opacity 0.5s ease-in-out;
+
+		@media screen and (max-width: 768px) {
+			margin-top: 1rem;
+		}
 
 		&.loaded {
 			opacity: 1;
@@ -98,6 +87,7 @@
 
 		.content {
 			max-width: 80vw;
+			height: 66pt;
 
 			@media screen and (max-width: 768px) {
 				max-width: 90vw;

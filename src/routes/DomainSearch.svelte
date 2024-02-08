@@ -113,13 +113,13 @@
 	@use '../theme/colors.scss';
 
 	form {
-		> div {
-			margin: 0.5rem 0;
-		}
-
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+
+		> div {
+			margin: 0.5rem 0;
+		}
 	}
 
 	.card-content {
@@ -144,14 +144,6 @@
 		&.registered {
 			background-color: color.scale(colors.$primary, $whiteness: 60%);
 			color: color.scale(colors.$primary, $whiteness: -20%);
-		}
-	}
-
-	:global(.domain-input) {
-		width: 60vw;
-
-		@media screen and (max-width: 600px) {
-			width: 80vw;
 		}
 	}
 
