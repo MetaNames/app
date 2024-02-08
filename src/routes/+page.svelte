@@ -46,24 +46,26 @@
 	<div class="recent-domains" class:loaded>
 		<h5>Recently registered domains</h5>
 		<div class="content">
-			<Carousel
-				autoplayDuration={0}
-				particlesToShow={isDesktop ? 3 : 2}
-				duration={8000}
-				autoplay
-				timingFunction="linear"
-				dots={false}
-				arrows={false}
-			>
-				{#each $recentDomains as domain (domain.name)}
-					<Card class="domain">
-						<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-							<span class="domain-name">{domain.name}</span>
-							<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-						</PrimaryAction>
-					</Card>
-				{/each}
-			</Carousel>
+			{#if $recentDomains.length > 0}
+				<Carousel
+					autoplayDuration={0}
+					particlesToShow={isDesktop ? 3 : 2}
+					duration={8000}
+					autoplay
+					timingFunction="linear"
+					dots={false}
+					arrows={false}
+				>
+					{#each $recentDomains as domain (domain.name)}
+						<Card class="domain">
+							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+								<span class="domain-name">{domain.name}</span>
+								<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+							</PrimaryAction>
+						</Card>
+					{/each}
+				</Carousel>
+			{/if}
 		</div>
 	</div>
 </div>
@@ -88,6 +90,10 @@
 		opacity: 0;
 		transition: opacity 0.5s ease-in-out;
 
+		@media screen and (max-width: 768px) {
+			margin-top: 1rem;
+		}
+
 		&.loaded {
 			opacity: 1;
 		}
@@ -98,6 +104,7 @@
 
 		.content {
 			max-width: 80vw;
+			height: 66pt;
 
 			@media screen and (max-width: 768px) {
 				max-width: 90vw;
