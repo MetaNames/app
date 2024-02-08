@@ -25,8 +25,8 @@
 
 	onMount(async () => {
 		type CheckResponse = { domainPresent: boolean; parentPresent: boolean };
-		const check: CheckResponse = await fetch(`/api/domains/${domainName}/check`).then((res) =>
-			res.json()
+		const check: CheckResponse = await fetch(`/api/domains/${domainName}/check`).then(
+			async (res) => await res.json()
 		);
 		isDomainPresent.set(check.domainPresent);
 		if ($isDomainPresent) return goto(`/domain/${domainName}`, { replaceState: true });
