@@ -68,6 +68,6 @@
 		"@vercel/speed-insights": "^1.0.2",
 		"date-fns": "^3.3.1",
 		"jdenticon": "^3.2.0",
-		"partisia-sdk": "^0.1.1",
+		"partisia-sdk": "^0.1.1"
 	}
 }
