@@ -3,27 +3,36 @@
 	import { onMount } from 'svelte';
 
 	import { alertMessage } from '$lib/stores/main';
-	import type { PageData } from './$types';
 
 	import CircularProgress from '@smui/circular-progress';
 
 	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
 	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
+	import { page } from '$app/stores';
+	import { metaNamesSdk } from 'src/lib/stores/sdk';
+	import { writable } from 'svelte/store';
 
-	export let data: PageData;
+	const isDomainPresent = writable<boolean>();
+	const isParentPresent = writable<boolean>();
 
-	let domainPresent: boolean | null = data.domainPresent;
-	let parentPresent: boolean | null = data.parentPresent;
+	const paramName = $page.params.name;
+	const analyzed = $metaNamesSdk.domainRepository.analyze(paramName);
 
-	$: domainName = data.domainName;
-	$: parentDomainName = data.parentDomainName;
+	$: domainName = analyzed.name;
+	$: parentDomainName = analyzed.parentId;
 	$: pageName = domainName + ' | ';
-	$: tld = data.tld;
+	$: tld = analyzed.tld;
 
 	onMount(async () => {
-		if (domainPresent) return goto(`/domain/${domainName}`, { replaceState: true });
+		type CheckResponse = { domainPresent: boolean; parentPresent: boolean };
+		const check: CheckResponse = await fetch(`/api/domains/${domainName}/check`).then((res) =>
+			res.json()
+		);
+		isDomainPresent.set(check.domainPresent);
+		if ($isDomainPresent) return goto(`/domain/${domainName}`, { replaceState: true });
 
-		if (parentDomainName && !parentPresent) {
+		isParentPresent.set(check.parentPresent);
+		if (parentDomainName && !$isParentPresent) {
 			alertMessage.set('Parent domain not found, please register it first.');
 			return goto(`/register/${parentDomainName}`, { replaceState: true });
 		}
@@ -35,13 +44,13 @@
 </svelte:head>
 
 <div class="content container">
-	{#if domainPresent === undefined || parentPresent === undefined}
+	{#if !$isDomainPresent}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}
 		<h2>Register</h2>
-		{#if parentPresent && parentDomainName}
+		{#if $isParentPresent && parentDomainName}
 			<SubdomainRegistration {domainName} {parentDomainName} />
-		{:else if parentDomainName && !parentPresent}
+		{:else if parentDomainName && !$isParentPresent}
 			<DomainRegistration domainName={parentDomainName} {tld} />
 		{:else}
 			<DomainRegistration {domainName} {tld} />

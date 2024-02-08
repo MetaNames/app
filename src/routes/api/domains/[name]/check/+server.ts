@@ -1,6 +1,7 @@
 import { metaNamesSdkFactory } from "$lib";
+import { json } from "@sveltejs/kit";
 
-export async function load({ params: { name } }) {
+export async function GET({ params: { name } }) {
   const metaNamesSdk = metaNamesSdkFactory();
 
   const analyzedDomain = metaNamesSdk.domainRepository.analyze(name);
@@ -14,11 +15,8 @@ export async function load({ params: { name } }) {
 
   const data = {
     domainPresent: !!domain,
-    parentPresent: !!parentDomain,
-    domainName: analyzedDomain.name,
-    parentDomainName,
-    tld,
-  }
+    parentPresent: !!parentDomain
+  };
 
-  return data
+  return json(data);
 }
