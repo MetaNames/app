@@ -2,17 +2,17 @@
 	import Card, { PrimaryAction } from '@smui/card';
 	import { formatDistanceToNow } from 'date-fns';
 
-	import type { PageData } from './$types';
 	import DomainSearch from 'src/routes/DomainSearch.svelte';
 	import { goto } from '$app/navigation';
 	import Carousel from 'svelte-carousel';
 	import { browser } from '$app/environment';
-
-	export let data: PageData;
+	import { onMount } from 'svelte';
+	import { recentDomains, type DomainProjection } from 'src/lib/stores/main';
 
 	let innerWidth: number = browser ? window.innerWidth : 0;
 
 	$: isDesktop = innerWidth > 768;
+	$: loaded = $recentDomains.length > 1;
 
 	if (browser) {
 		window.addEventListener('resize', () => {
@@ -20,9 +20,17 @@
 		});
 	}
 
-	function formatCreatedAt(date: Date) {
-		return formatDistanceToNow(date, { addSuffix: true });
+	function formatCreatedAt(date: string) {
+		const parsed = new Date(date);
+		return formatDistanceToNow(parsed, { addSuffix: true });
 	}
+
+	onMount(async () => {
+		const domains: DomainProjection[] = await fetch('/api/domains/recent').then(
+			async (res) => await res.json()
+		);
+		recentDomains.set(domains);
+	});
 </script>
 
 <svelte:head>
@@ -35,31 +43,29 @@
 	<div class="search-container">
 		<DomainSearch />
 	</div>
-	{#if data.recentDomains}
-		<div class="recent-domains">
-			<h5>Recently registered domains</h5>
-			<div class="content">
-				<Carousel
-					autoplayDuration={0}
-					particlesToShow={isDesktop ? 3 : 2}
-					duration={8000}
-					autoplay
-					timingFunction="linear"
-					dots={false}
-					arrows={false}
-				>
-					{#each data.recentDomains as domain (domain.name)}
-						<Card class="domain">
-							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-								<span class="domain-name">{domain.name}</span>
-								<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-							</PrimaryAction>
-						</Card>
-					{/each}
-				</Carousel>
-			</div>
+	<div class="recent-domains" class:loaded>
+		<h5>Recently registered domains</h5>
+		<div class="content">
+			<Carousel
+				autoplayDuration={0}
+				particlesToShow={isDesktop ? 3 : 2}
+				duration={8000}
+				autoplay
+				timingFunction="linear"
+				dots={false}
+				arrows={false}
+			>
+				{#each $recentDomains as domain (domain.name)}
+					<Card class="domain">
+						<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+							<span class="domain-name">{domain.name}</span>
+							<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+						</PrimaryAction>
+					</Card>
+				{/each}
+			</Carousel>
 		</div>
-	{/if}
+	</div>
 </div>
 
 <style lang="scss">
@@ -79,6 +85,12 @@
 
 	.recent-domains {
 		margin-top: 4rem;
+		opacity: 0;
+		transition: opacity 0.5s ease-in-out;
+
+		&.loaded {
+			opacity: 1;
+		}
 
 		h5 {
 			margin-bottom: 1rem;
