@@ -1,41 +1,51 @@
 <script lang="ts">
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
+
+	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
 	import { walletAddress } from '$lib/stores/main';
 
 	import Button, { Label } from '@smui/button';
 	import Select, { Option } from '@smui/select';
-
-	import RecordComponent from './Record.svelte';
 	import Textfield from '@smui/textfield';
-	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
-	import LoadingButton from './LoadingButton.svelte';
 	import ConnectionRequired from './ConnectionRequired.svelte';
+	import LoadingButton from './LoadingButton.svelte';
+	import RecordComponent from './Record.svelte';
 
 	export let ownerAddress: string;
 	export let records: Record<string, string>;
 	export let repository: RecordRepository;
 
-	$: canEdit = $walletAddress === ownerAddress;
-	$: existingRecordClasses = Object.keys(records);
-	$: unusedRecordsClasses = Object.values(RecordClassEnum).filter(
-		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
-	);
-	$: selectRecordInvalid = newRecordSubmitted && selectedRecordClass === '';
-	$: recordValueInvalid = newRecordSubmitted && newRecordValue === '';
-	$: editLabel = records && Object.keys(records).length > 0 ? 'Edit records' : 'Add record';
-
+	const validator = repository.recordValidator;
 	let editMode = false;
 	let selectedRecordClass: string | undefined;
 	let newRecordValue: string = '';
 	let newRecordSubmitted = false;
 
+	$: canEdit = $walletAddress === ownerAddress;
+	$: newRecordClass = selectedRecordClass && getRecordClassFrom(selectedRecordClass);
+	$: existingRecordClasses = Object.keys(records);
+	$: unusedRecordsClasses = Object.values(RecordClassEnum).filter(
+		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
+	);
+	$: selectRecordInvalid = newRecordSubmitted && selectedRecordClass === '';
+	$: editLabel = records && Object.keys(records).length > 0 ? 'Edit records' : 'Add record';
+	$: recordValueInvalid =
+		newRecordSubmitted &&
+		!!newRecordClass &&
+		!validator.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false });
+
 	async function createRecord() {
 		if (selectedRecordClass === undefined) selectedRecordClass = '';
 		newRecordSubmitted = true;
 
-		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass)
-			throw new Error('Invalid fields. Please check the form.');
+		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) {
+			const message =
+				validator.errors.length > 0
+					? validator.errors.join(', ')
+					: 'Invalid fields. Please check the form.';
+			throw new Error(message);
+		}
 
 		const recordClass = getRecordClassFrom(selectedRecordClass);
 		const transactionIntent = await repository.create({ class: recordClass, data: newRecordValue });
