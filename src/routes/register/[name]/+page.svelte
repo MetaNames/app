@@ -25,9 +25,10 @@
 
 	onMount(async () => {
 		type CheckResponse = { domainPresent: boolean; parentPresent: boolean };
-		const check: CheckResponse = await fetch(`/api/domains/${domainName}/check`).then(
-			async (res) => await res.json()
+		const check: CheckResponse = await fetch(`/api/domains/${domainName}/check`).then((res) =>
+			res.json()
 		);
+
 		isDomainPresent.set(check.domainPresent);
 		if ($isDomainPresent) return goto(`/domain/${domainName}`, { replaceState: true });
 
@@ -44,7 +45,7 @@
 </svelte:head>
 
 <div class="content container">
-	{#if !$isDomainPresent}
+	{#if $isDomainPresent === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}
 		<h2>Register</h2>
