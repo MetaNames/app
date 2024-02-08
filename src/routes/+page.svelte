@@ -1,13 +1,13 @@
 <script lang="ts">
 	import Card, { PrimaryAction } from '@smui/card';
-	import { formatDistanceToNow } from 'date-fns';
-
 	import DomainSearch from 'src/routes/DomainSearch.svelte';
+
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import Marqueeck from '@arisbh/marqueeck';
-	import { browser } from '$app/environment';
-	import { onMount } from 'svelte';
+	import { formatDistanceToNow } from 'date-fns';
 	import { recentDomains, type DomainProjection } from 'src/lib/stores/main';
+	import { onMount } from 'svelte';
 
 	$: loaded = $recentDomains.length > 1;
 
