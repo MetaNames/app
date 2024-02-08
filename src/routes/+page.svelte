@@ -82,12 +82,13 @@
 		}
 
 		h5 {
-			margin-bottom: 1rem;
+			margin-bottom: 2rem;
 		}
 
 		.content {
 			max-width: 80vw;
 			height: 66pt;
+			overflow-x: hidden;
 
 			@media screen and (max-width: 768px) {
 				max-width: 90vw;
@@ -98,13 +99,13 @@
 				user-select: none;
 			}
 
-			:global(.domain-name) {
+			.domain-name {
 				font-weight: bold;
 				margin-bottom: 0.5rem;
 				overflow-x: visible;
 			}
 
-			:global(.domain-date) {
+			.domain-date {
 				font-size: 0.8rem;
 				color: var(--mdc-theme-text-hint-on-background);
 			}
