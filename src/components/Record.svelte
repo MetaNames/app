@@ -27,15 +27,16 @@
 
 	let edit = false;
 
-	function toggleEdit() {
+	function toggleEdit(restore = true) {
 		edit = !edit;
+		if (restore) recordValue = value;
 	}
 
 	async function save() {
 		const transactionIntent = await repository.update({ class: recordClass, data: recordValue });
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) alertMessage.set('Failed to update record.');
-		else toggleEdit();
+		else toggleEdit(false);
 	}
 
 	async function destroy() {
