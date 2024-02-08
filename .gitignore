@@ -12,3 +12,5 @@ vite.config.ts.timestamp-*
 
 /static/smui-dark.css
 /static/smui.css
+
+/src/styles/theme/*

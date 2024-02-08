@@ -15,6 +15,7 @@
 	import Logo from 'src/routes/Logo.svelte';
 
 	import 'src/styles/app.scss';
+	import 'src/styles/theme/smui-dark.css' // Import SMUI dark theme to avoid FOUC
 	import Footer from 'src/routes/Footer.svelte';
 	import { alertMessage, alertTransaction } from '$lib/stores/main';
 	import Button from '@smui/button';
