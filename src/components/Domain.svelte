@@ -105,5 +105,6 @@
 		margin-bottom: 1rem;
 		font-size: 2rem;
 		font-weight: 800;
+		word-wrap: break-word;
 	}
 </style>
