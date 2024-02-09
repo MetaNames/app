@@ -21,7 +21,6 @@
 	import 'src/styles/app.scss';
 	import 'material-icons/iconfont/filled.css';
 
-
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
 
@@ -59,44 +58,45 @@
 	});
 </script>
 
-<main data-theme={theme}>
-	<TopAppBar variant="static">
-		<div
-			class={Object.keys(anchorClasses).join(' ')}
-			use:Anchor={{
-				addClass: (className) => {
-					if (!anchorClasses[className]) {
-						anchorClasses[className] = true;
-					}
-				},
-				removeClass: (className) => {
-					if (anchorClasses[className]) {
-						delete anchorClasses[className];
-						anchorClasses = anchorClasses;
-					}
+<TopAppBar variant="static">
+	<div
+		class={Object.keys(anchorClasses).join(' ')}
+		use:Anchor={{
+			addClass: (className) => {
+				if (!anchorClasses[className]) {
+					anchorClasses[className] = true;
 				}
-			}}
-			bind:this={anchor}
-		>
-			<Row>
-				<Section>
-					<Title>
-						<a class="link-logo" href="/">
-							<Logo />
-							<span>Meta Names</span>
-							{#if isTestnet}
-								<span class="testnet">TESTNET</span>
-							{/if}
-						</a>
-					</Title>
-				</Section>
+			},
+			removeClass: (className) => {
+				if (anchorClasses[className]) {
+					delete anchorClasses[className];
+					anchorClasses = anchorClasses;
+				}
+			}
+		}}
+		bind:this={anchor}
+	>
+		<Row>
+			<Section>
+				<Title>
+					<a class="link-logo" href="/">
+						<Logo />
+						<span>Meta Names</span>
+						{#if isTestnet}
+							<span class="testnet">TESTNET</span>
+						{/if}
+					</a>
+				</Title>
+			</Section>
 
-				<Section align="end" toolbar>
-					<WalletConnect {anchor} />
-				</Section>
-			</Row>
-		</div>
-	</TopAppBar>
+			<Section align="end" toolbar>
+				<WalletConnect {anchor} />
+			</Section>
+		</Row>
+	</div>
+</TopAppBar>
+
+<main>
 	{#if contractDisabled}
 		<Banner open={true} centered={true} mobileStacked={true}>
 			<Icon slot="icon" class="material-icons">update</Icon>
@@ -107,28 +107,58 @@
 		</Banner>
 	{/if}
 	<slot />
-
-	<Snackbar bind:this={transactionSnackbar} timeoutMs={-1}>
-		<Label>{snackbarTransactionMessage}</Label>
-		<Actions>
-			<Button
-				on:click={() =>
-					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
-				>View</Button
-			>
-			<IconButton class="material-icons" title="Dismiss">close</IconButton>
-		</Actions>
-	</Snackbar>
-	<Snackbar bind:this={alertsSnackbar}>
-		<Label>{snackbarMessage}</Label>
-		<Actions>
-			<IconButton class="material-icons" title="Dismiss">close</IconButton>
-		</Actions>
-	</Snackbar>
-	<Footer />
 </main>
 
+<Snackbar bind:this={transactionSnackbar} timeoutMs={-1}>
+	<Label>{snackbarTransactionMessage}</Label>
+	<Actions>
+		<Button
+			on:click={() =>
+				$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+			>View</Button
+		>
+		<IconButton class="material-icons" title="Dismiss">close</IconButton>
+	</Actions>
+</Snackbar>
+<Snackbar bind:this={alertsSnackbar}>
+	<Label>{snackbarMessage}</Label>
+	<Actions>
+		<IconButton class="material-icons" title="Dismiss">close</IconButton>
+	</Actions>
+</Snackbar>
+<Footer />
+
 <style>
+	main {
+		display: flex;
+		flex-direction: column;
+		height: calc(100% - 144px);
+		background-color: var(--mdc-theme-background);
+	}
+
+	:global(footer) {
+		height: 80px;
+	}
+
+	:global(header) {
+		height: 64px;
+	}
+
+	@media only screen and (max-width: 768px) {
+		:global(header) {
+			height: 56px;
+		}
+		main {
+			display: flex;
+			flex-direction: column;
+			height: calc(100% - 144px);
+			background-color: var(--mdc-theme-background);
+		}
+
+		:global(footer) {
+			height: 88px;
+		}
+	}
 	.testnet {
 		background-color: var(--mdc-theme-background);
 		font-weight: bold;
@@ -153,22 +183,6 @@
 		height: 1.5rem;
 		background-color: var(--mdc-theme-on-primary);
 		margin: 0 1rem;
-	}
-
-	svg {
-		width: 1.5rem;
-		height: 1.5rem;
-	}
-
-	main {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-
-		gap: 1rem;
-
-		min-height: 100vh;
-		background-color: var(--mdc-theme-background);
 	}
 
 	.logo {
