@@ -38,7 +38,11 @@
 	text-align: center;
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
+	.domain-input {
+		width: 80vw;
+	}
+
 	.content.container {
 		min-width: 90vw;
 	}
