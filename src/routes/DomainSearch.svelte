@@ -49,29 +49,27 @@
 </script>
 
 <form class="lookup-form" on:submit|preventDefault={submit}>
-	<div>
-		<Textfield
-			class="domain-input"
-			variant="outlined"
-			bind:value={domainName}
-			on:keyup={() => debounce()}
-			bind:invalid
-			label="Domain name"
-			withTrailingIcon
-			autofocus
-		>
-			<svelte:fragment slot="trailingIcon">
-				<div class="submit">
-					<IconButton class="material-icons">search</IconButton>
-				</div>
-			</svelte:fragment>
-			<svelte:fragment slot="helper">
-				{#if errors.length > 0}
-					<HelperText slot="helper">{errors.join(', ')}</HelperText>
-				{/if}
-			</svelte:fragment>
-		</Textfield>
-	</div>
+	<Textfield
+		class="domain-input"
+		variant="outlined"
+		bind:value={domainName}
+		on:keyup={() => debounce()}
+		bind:invalid
+		label="Domain name"
+		withTrailingIcon
+		autofocus
+	>
+		<svelte:fragment slot="trailingIcon">
+			<div class="submit">
+				<IconButton class="material-icons">search</IconButton>
+			</div>
+		</svelte:fragment>
+		<svelte:fragment slot="helper">
+			{#if errors.length > 0}
+				<HelperText slot="helper">{errors.join(', ')}</HelperText>
+			{/if}
+		</svelte:fragment>
+	</Textfield>
 </form>
 {#if domain}
 	<a class="domain-link" href={`/domain/${domain.name}`}>

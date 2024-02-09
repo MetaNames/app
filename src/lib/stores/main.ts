@@ -7,6 +7,3 @@ export const walletConnected = derived(
 );
 export const alertMessage = writable<string | undefined>();
 export const alertTransaction = writable<string | undefined>();
-
-export type DomainProjection = { name: string, createdAt: string }
-export const recentDomains = writable<DomainProjection[]>([])

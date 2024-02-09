@@ -2,6 +2,14 @@
 @import './mixins.scss';
 @import './theme/smui-dark.css';
 
+body,
+html {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
 .content {
 	align-self: center;
 	flex-grow: 1;
@@ -11,10 +19,7 @@
 	align-items: center;
 	justify-content: center;
 	text-align: center;
-
-	&.container {
-		min-width: 60vw;
-	}
+	max-width: 100vw;
 }
 
 .domain-container {
@@ -38,7 +43,11 @@
 	text-align: center;
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
+	.domain-input {
+		width: 80vw;
+	}
+
 	.content.container {
 		min-width: 90vw;
 	}

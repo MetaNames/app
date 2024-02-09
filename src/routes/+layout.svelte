@@ -21,7 +21,6 @@
 	import 'src/styles/app.scss';
 	import 'material-icons/iconfont/filled.css';
 
-
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
 
@@ -59,7 +58,7 @@
 	});
 </script>
 
-<main data-theme={theme}>
+<div class="container">
 	<TopAppBar variant="static">
 		<div
 			class={Object.keys(anchorClasses).join(' ')}
@@ -97,16 +96,19 @@
 			</Row>
 		</div>
 	</TopAppBar>
-	{#if contractDisabled}
-		<Banner open={true} centered={true} mobileStacked={true}>
-			<Icon slot="icon" class="material-icons">update</Icon>
-			<Label slot="label">Contract is temporarily disabled for updates</Label>
-			<svelte:fragment slot="actions">
-				<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
-			</svelte:fragment>
-		</Banner>
-	{/if}
-	<slot />
+
+	<main>
+		{#if contractDisabled}
+			<Banner open={true} centered={true} mobileStacked={true}>
+				<Icon slot="icon" class="material-icons">update</Icon>
+				<Label slot="label">Contract is temporarily disabled for updates</Label>
+				<svelte:fragment slot="actions">
+					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
+				</svelte:fragment>
+			</Banner>
+		{/if}
+		<slot />
+	</main>
 
 	<Snackbar bind:this={transactionSnackbar} timeoutMs={-1}>
 		<Label>{snackbarTransactionMessage}</Label>
@@ -126,9 +128,45 @@
 		</Actions>
 	</Snackbar>
 	<Footer />
-</main>
+</div>
 
 <style>
+	.container {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+
+	main {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background-color: var(--mdc-theme-background);
+		flex-grow: 1;
+	}
+
+	:global(footer) {
+		height: 80px;
+	}
+
+	:global(header) {
+		height: 64px;
+	}
+
+	@media only screen and (max-width: 768px) {
+		:global(header) {
+			height: 56px;
+		}
+		main {
+			display: flex;
+			flex-direction: column;
+			background-color: var(--mdc-theme-background);
+		}
+
+		:global(footer) {
+			height: 88px;
+		}
+	}
 	.testnet {
 		background-color: var(--mdc-theme-background);
 		font-weight: bold;
@@ -153,22 +191,6 @@
 		height: 1.5rem;
 		background-color: var(--mdc-theme-on-primary);
 		margin: 0 1rem;
-	}
-
-	svg {
-		width: 1.5rem;
-		height: 1.5rem;
-	}
-
-	main {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-
-		gap: 1rem;
-
-		min-height: 100vh;
-		background-color: var(--mdc-theme-background);
 	}
 
 	.logo {

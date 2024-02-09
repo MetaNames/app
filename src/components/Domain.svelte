@@ -11,7 +11,7 @@
 	import { toSvg } from 'jdenticon';
 	import { config, formatDate } from '$lib';
 
-	$: domainAvatar = domain.name && toSvg(domain.name, 250);
+	$: domainAvatar = domain.name && toSvg(domain.name, 200);
 	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
 
 	export let domain: Domain;
@@ -92,8 +92,6 @@
 
 <style lang="scss">
 	.avatar {
-		height: 100%;
-		width: 100%;
 		overflow: hidden;
 
 		& .svg {
@@ -105,7 +103,8 @@
 	.domain {
 		margin-top: 0rem;
 		margin-bottom: 1rem;
-		font-size: 2rem;
+		font-size: 1.8rem;
 		font-weight: 800;
+		word-wrap: break-word;
 	}
 </style>

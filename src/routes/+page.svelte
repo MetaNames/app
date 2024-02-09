@@ -2,83 +2,84 @@
 	import Card, { PrimaryAction } from '@smui/card';
 	import DomainSearch from 'src/routes/DomainSearch.svelte';
 
-	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import Marqueeck from '@arisbh/marqueeck';
 	import { formatDistanceToNow } from 'date-fns';
-	import { recentDomains, type DomainProjection } from 'src/lib/stores/main';
-	import { onMount } from 'svelte';
-
-	$: loaded = $recentDomains.length > 1;
-
-	if (browser) {
-		window.addEventListener('resize', () => {
-			innerWidth = window.innerWidth;
-		});
-	}
+	import { fade } from 'svelte/transition';
 
 	function formatCreatedAt(date: string) {
 		const parsed = new Date(date);
 		return formatDistanceToNow(parsed, { addSuffix: true });
 	}
 
-	onMount(async () => {
-		const domains: DomainProjection[] = await fetch('/api/domains/recent').then(
-			async (res) => await res.json()
-		);
-		recentDomains.set(domains);
-	});
+	type DomainProjection = { name: string; createdAt: string };
+	async function loadRecentDomains(): Promise<DomainProjection[]> {
+		return fetch('/api/domains/recent').then(async (res) => await res.json());
+	}
 </script>
 
 <svelte:head>
 	<title>App | Meta Names</title>
 </svelte:head>
 
-<div class="content">
-	<h3>Find your Meta Name</h3>
-	<p class="subtitle">Powered by Partisia</p>
+<div class="container">
+	<div class="header">
+		<h3>Find your Meta Name</h3>
+		<p class="subtitle">Powered by Partisia</p>
+	</div>
 	<div class="search-container">
 		<DomainSearch />
 	</div>
-	<div class="recent-domains" class:loaded>
-		<h5>Recently registered domains</h5>
-		<div class="content">
-			<Marqueeck>
-				{#each $recentDomains as domain (domain.name)}
-					<Card class="domain">
-						<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-							<span class="domain-name">{domain.name}</span>
-							<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-						</PrimaryAction>
-					</Card>
-				{/each}
-			</Marqueeck>
+	{#await loadRecentDomains() then recentDomains}
+		<div class="recent-domains" in:fade={{ duration: 500 }}>
+			<h5>Recently registered domains</h5>
+			<div class="content">
+				<Marqueeck>
+					{#each recentDomains as domain (domain.name)}
+						<Card class="domain">
+							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+								<span class="domain-name">{domain.name}</span>
+								<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+							</PrimaryAction>
+						</Card>
+					{/each}
+				</Marqueeck>
+			</div>
 		</div>
-	</div>
+	{/await}
 </div>
 
 <style lang="scss">
+	.container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		flex-grow: 1;
+	}
+
+	.header {
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+		margin-top: 10rem;
+	}
 	.subtitle {
 		text-transform: uppercase;
 		font-size: x-small;
 		color: var(--mdc-theme-text-hint-on-background);
 	}
 	h3 {
-		margin-top: 0;
+		margin-top: auto;
 		margin-bottom: 0.5rem;
 	}
 
 	.recent-domains {
 		margin-top: 4rem;
-		opacity: 0;
-		transition: opacity 0.5s ease-in-out;
+		margin-bottom: 2rem;
 
 		@media screen and (max-width: 768px) {
 			margin-top: 1rem;
-		}
-
-		&.loaded {
-			opacity: 1;
 		}
 
 		h5 {

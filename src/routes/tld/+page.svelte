@@ -22,6 +22,6 @@
 	<title>Meta | Meta Names</title>
 </svelte:head>
 
-<div class="content container">
+<div class="content">
   <Domain {domain} isTld={true} />
 </div>

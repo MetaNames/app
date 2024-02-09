@@ -2,7 +2,7 @@
 	import Logo from 'src/routes/Logo.svelte';
 </script>
 
-<footer class="card-primary">
+<footer>
 	<div class="logo">
 		<Logo color="dark" />
 		<span>Meta Names</span>
@@ -45,7 +45,6 @@
 		flex-direction: row;
 		justify-content: space-evenly;
 		align-items: center;
-		padding: 1rem 0;
 
 		@media only screen and (max-width: 600px) {
 			flex-direction: column;
