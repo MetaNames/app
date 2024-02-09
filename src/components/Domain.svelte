@@ -92,8 +92,6 @@
 
 <style lang="scss">
 	.avatar {
-		height: 100%;
-		width: 100%;
 		overflow: hidden;
 
 		& .svg {

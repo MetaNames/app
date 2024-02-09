@@ -28,7 +28,7 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content container">
+<div class="content container domain">
 	{#if domain}
 		<Domain {domain} />
 		<br class="my-1" />
@@ -42,3 +42,10 @@
 		</Paper>
 	{/if}
 </div>
+
+<style lang="scss">
+	.container,
+	.domain {
+		padding: 2rem 0;
+	}
+</style>
