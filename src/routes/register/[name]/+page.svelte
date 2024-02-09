@@ -44,7 +44,7 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content container register">
+<div class="content">
 	{#if $isDomainPresent === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}
