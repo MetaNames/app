@@ -3,7 +3,7 @@
 
 	export let iconName: string;
 	export let label: string;
-	let className: string | undefined;
+	let className: string | undefined = undefined;
 
 	export { className as class }
 </script>
@@ -42,7 +42,7 @@
 		.content {
       display: flex;
       align-items: start;
-			padding: 0.5rem;
+			padding: 0.4rem;
 			margin-left: 0.5rem;
 
 			@media (max-width: 768px) {
