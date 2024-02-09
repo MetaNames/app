@@ -58,82 +58,91 @@
 	});
 </script>
 
-<TopAppBar variant="static">
-	<div
-		class={Object.keys(anchorClasses).join(' ')}
-		use:Anchor={{
-			addClass: (className) => {
-				if (!anchorClasses[className]) {
-					anchorClasses[className] = true;
+<div class="container">
+	<TopAppBar variant="static">
+		<div
+			class={Object.keys(anchorClasses).join(' ')}
+			use:Anchor={{
+				addClass: (className) => {
+					if (!anchorClasses[className]) {
+						anchorClasses[className] = true;
+					}
+				},
+				removeClass: (className) => {
+					if (anchorClasses[className]) {
+						delete anchorClasses[className];
+						anchorClasses = anchorClasses;
+					}
 				}
-			},
-			removeClass: (className) => {
-				if (anchorClasses[className]) {
-					delete anchorClasses[className];
-					anchorClasses = anchorClasses;
-				}
-			}
-		}}
-		bind:this={anchor}
-	>
-		<Row>
-			<Section>
-				<Title>
-					<a class="link-logo" href="/">
-						<Logo />
-						<span>Meta Names</span>
-						{#if isTestnet}
-							<span class="testnet">TESTNET</span>
-						{/if}
-					</a>
-				</Title>
-			</Section>
-
-			<Section align="end" toolbar>
-				<WalletConnect {anchor} />
-			</Section>
-		</Row>
-	</div>
-</TopAppBar>
-
-<main>
-	{#if contractDisabled}
-		<Banner open={true} centered={true} mobileStacked={true}>
-			<Icon slot="icon" class="material-icons">update</Icon>
-			<Label slot="label">Contract is temporarily disabled for updates</Label>
-			<svelte:fragment slot="actions">
-				<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
-			</svelte:fragment>
-		</Banner>
-	{/if}
-	<slot />
-</main>
-
-<Snackbar bind:this={transactionSnackbar} timeoutMs={-1}>
-	<Label>{snackbarTransactionMessage}</Label>
-	<Actions>
-		<Button
-			on:click={() =>
-				$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
-			>View</Button
+			}}
+			bind:this={anchor}
 		>
-		<IconButton class="material-icons" title="Dismiss">close</IconButton>
-	</Actions>
-</Snackbar>
-<Snackbar bind:this={alertsSnackbar}>
-	<Label>{snackbarMessage}</Label>
-	<Actions>
-		<IconButton class="material-icons" title="Dismiss">close</IconButton>
-	</Actions>
-</Snackbar>
-<Footer />
+			<Row>
+				<Section>
+					<Title>
+						<a class="link-logo" href="/">
+							<Logo />
+							<span>Meta Names</span>
+							{#if isTestnet}
+								<span class="testnet">TESTNET</span>
+							{/if}
+						</a>
+					</Title>
+				</Section>
+
+				<Section align="end" toolbar>
+					<WalletConnect {anchor} />
+				</Section>
+			</Row>
+		</div>
+	</TopAppBar>
+
+	<main>
+		{#if contractDisabled}
+			<Banner open={true} centered={true} mobileStacked={true}>
+				<Icon slot="icon" class="material-icons">update</Icon>
+				<Label slot="label">Contract is temporarily disabled for updates</Label>
+				<svelte:fragment slot="actions">
+					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
+				</svelte:fragment>
+			</Banner>
+		{/if}
+		<slot />
+	</main>
+
+	<Snackbar bind:this={transactionSnackbar} timeoutMs={-1}>
+		<Label>{snackbarTransactionMessage}</Label>
+		<Actions>
+			<Button
+				on:click={() =>
+					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+				>View</Button
+			>
+			<IconButton class="material-icons" title="Dismiss">close</IconButton>
+		</Actions>
+	</Snackbar>
+	<Snackbar bind:this={alertsSnackbar}>
+		<Label>{snackbarMessage}</Label>
+		<Actions>
+			<IconButton class="material-icons" title="Dismiss">close</IconButton>
+		</Actions>
+	</Snackbar>
+	<Footer />
+</div>
 
 <style>
+	.container {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+
 	main {
 		display: flex;
 		flex-direction: column;
-		height: calc(100% - 144px);
+		align-items: center;
 		background-color: var(--mdc-theme-background);
+		flex-grow: 1;
 	}
 
 	:global(footer) {
@@ -151,7 +160,6 @@
 		main {
 			display: flex;
 			flex-direction: column;
-			height: calc(100% - 144px);
 			background-color: var(--mdc-theme-background);
 		}
 
