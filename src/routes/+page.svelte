@@ -27,9 +27,7 @@
 		<h3>Find your Meta Name</h3>
 		<p class="subtitle">Powered by Partisia</p>
 	</div>
-	<div class="search-container">
-		<DomainSearch />
-	</div>
+	<DomainSearch />
 	{#await loadRecentDomains() then recentDomains}
 		<div class="recent-domains" in:fade={{ duration: 500 }}>
 			<h5>Recently registered domains</h5>
