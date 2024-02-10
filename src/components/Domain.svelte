@@ -91,6 +91,10 @@
 </Card>
 
 <style lang="scss">
+	:global(.domain-container) {
+		width: 100%;
+	}
+
 	.avatar {
 		overflow: hidden;
 

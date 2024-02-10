@@ -45,6 +45,14 @@
 
 <style lang="scss">
 	.domain {
-		padding: 2rem 0;
+		width: 100%;
+		max-width: 48rem;
+		margin: 2rem 1rem;
+	}
+
+	@media screen and (max-width: 768px) {
+		.domain {
+			width: initial;
+		}
 	}
 </style>
