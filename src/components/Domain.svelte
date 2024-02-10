@@ -8,11 +8,13 @@
 	import TabBar from '@smui/tab-bar';
 
 	import { config, formatDate, profileRecords, socialRecords } from '$lib';
+	import { DomainTab } from 'src/lib/types';
 	import Chip from 'src/components/Chip.svelte';
 	import Records from 'src/components/Records.svelte';
 
 	export let domain: Domain;
 	export let isTld: boolean = false;
+	export let activeTab: DomainTab = DomainTab.details;
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 200);
 	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
@@ -27,10 +29,8 @@
 		domain.owner
 	}`;
 
-	let tabs: Array<'Details' | 'Records'> = ['Details'];
-	if (!isTld) tabs.push('Records');
-
-	let tabActive = 'Details';
+	let tabs: Array<DomainTab> = [DomainTab.details];
+	if (!isTld) tabs.push(DomainTab.records);
 </script>
 
 <Card class="domain-container">
@@ -41,13 +41,13 @@
 			</div>
 		</div>
 		<h5 class="domain">{domainName}</h5>
-		<TabBar {tabs} let:tab bind:active={tabActive}>
+		<TabBar {tabs} let:tab bind:active={activeTab}>
 			<Tab {tab}>
 				<Label>{tab}</Label>
 			</Tab>
 		</TabBar>
 
-		{#if tabActive === 'Details'}
+		{#if activeTab === DomainTab.details}
 			<Paper variant="unelevated">
 				<Content>
 					<div class="container">
@@ -115,7 +115,7 @@
 					</div>
 				</Content>
 			</Paper>
-		{:else if tabActive === 'Records'}
+		{:else if activeTab === DomainTab.records}
 			<Paper variant="unelevated">
 				<Content>
 					<Records ownerAddress={domain.owner} {records} repository={domain.recordRepository} />

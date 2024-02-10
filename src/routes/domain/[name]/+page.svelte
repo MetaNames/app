@@ -1,19 +1,29 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { DomainTab } from '$lib/types';
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
-	import Domain from 'src/components/Domain.svelte';
-	import GoBackButton from 'src/components/GoBackButton.svelte';
-
 	import CircularProgress from '@smui/circular-progress';
 	import Paper from '@smui/paper';
-	import { metaNamesSdk } from '$lib/stores/sdk';
-
-	let domain: DomainModel | null;
+	import Domain from 'src/components/Domain.svelte';
+	import GoBackButton from 'src/components/GoBackButton.svelte';
+	import { browser } from '$app/environment';
 
 	$: pageName = domain ? domain.name + ' | ' : '';
+	$: {
+		if (browser && activeDomainTab) {
+			$page.url.searchParams.set('tab', activeDomainTab.toString());
+			goto(`?${$page.url.searchParams.toString()}`);
+		}
+	}
+
+	let domain: DomainModel | null;
+	const queryTab = $page.url.searchParams.get('tab');
+	const queryDomainTab = queryTab && DomainTab[queryTab as keyof typeof DomainTab];
+	let activeDomainTab = queryDomainTab || DomainTab.details;
 
 	onMount(async () => {
 		const domainName = $page.params.name;
@@ -30,7 +40,7 @@
 
 <div class="content domain">
 	{#if domain}
-		<Domain {domain} />
+		<Domain {domain} bind:activeTab={activeDomainTab} />
 		<br class="my-1" />
 		<GoBackButton />
 	{:else if domain === undefined}
