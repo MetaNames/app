@@ -40,7 +40,7 @@
 		const transactionIntent = await repository.update({ class: recordClass, data: recordValue });
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) alertMessage.set('Failed to update record.');
-		else toggleEdit(false);
+		else location.reload();
 	}
 
 	async function destroy() {
