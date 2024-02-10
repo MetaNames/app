@@ -46,6 +46,7 @@
 		flex-direction: row;
 		justify-content: space-evenly;
 		align-items: center;
+		padding: 1rem 0;
 
 		@media only screen and (max-width: 600px) {
 			flex-direction: column;
