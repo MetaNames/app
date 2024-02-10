@@ -9,6 +9,7 @@ type Config = {
 	environment: 'test' | 'prod';
 	sdkEnvironment: Enviroment;
 	permissions: PermissionTypes[];
+	landingUrl: string;
 	websiteUrl: string;
 };
 
@@ -17,6 +18,7 @@ const browserUrl = `https://browser${environment === 'test' ? '.testnet' : ''}.p
 const chainId = `Partisia Blockchain${environment === 'test' ? ' Testnet' : ''}`;
 
 const sdkEnvironment = environment === 'test' ? Enviroment.testnet : Enviroment.mainnet;
+const landingUrl = `${import.meta.env.VITE_LANDING_URL}`;
 const websiteUrl = `${import.meta.env.VITE_WEBSITE_URL}`;
 const contractDisabled = `${import.meta.env.VITE_CONTRACT_DISABLED}` == 'true';
 
@@ -28,5 +30,6 @@ export const config: Config = {
 	dAppName: 'Meta Names',
 	sdkEnvironment,
 	permissions: ['sign'] as PermissionTypes[],
+	landingUrl,
 	websiteUrl,
 };
