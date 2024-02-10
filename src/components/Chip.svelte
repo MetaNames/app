@@ -54,6 +54,7 @@
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
+				text-transform: none;
 
 				&.ellipsis {
 					display: inline-block;
