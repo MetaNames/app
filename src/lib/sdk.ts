@@ -7,7 +7,7 @@ export const metaNamesSdkFactory = () => new MetaNamesSdk(config.sdkEnvironment)
 
 export const MAX_RECORD_LENGTH = new RecordValidator().rules.maxLength
 
-export const socialRecords = [RecordClassEnum.Twitter, RecordClassEnum.Discord, RecordClassEnum.Uri].map(
+export const socialRecords = [RecordClassEnum.Twitter, RecordClassEnum.Discord].map(
 	(v) => RecordClassEnum[v]
 );
 export const profileRecords = [RecordClassEnum.Bio, RecordClassEnum.Uri].map(
