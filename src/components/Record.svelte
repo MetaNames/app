@@ -90,11 +90,11 @@
 	{#if edit}
 		<div class="actions">
 			<IconButton class="material-icons" on:click={save}>save</IconButton>
-			<IconButton class="material-icons" on:click={toggleEdit}>cancel</IconButton>
+			<IconButton class="material-icons" on:click={() => toggleEdit()}>cancel</IconButton>
 		</div>
 	{:else if editMode}
 		<div class="actions">
-			<IconButton class="material-icons" on:click={toggleEdit} disabled={!$walletConnected}
+			<IconButton class="material-icons" on:click={() => toggleEdit()} disabled={!$walletConnected}
 				>edit</IconButton
 			>
 			<IconButton
