@@ -11,6 +11,8 @@
 	import { DomainTab } from 'src/lib/types';
 	import Chip from 'src/components/Chip.svelte';
 	import Records from 'src/components/Records.svelte';
+	import { walletAddress } from 'src/lib/stores/main';
+	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
 
 	export let domain: Domain;
 	export let isTld: boolean = false;
@@ -20,6 +22,7 @@
 	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
 	$: hasSocialRecords = Array.from(domain.records.keys()).some((v) => socialRecords.includes(v));
 	$: hasProfileRecords = Array.from(domain.records.keys()).some((v) => profileRecords.includes(v));
+	$: ownerConnected = $walletAddress === domain.owner;
 
 	const records = Object.fromEntries(
 		[...domain.records].map(([key, value]) => [key, value.toString()])
@@ -41,11 +44,14 @@
 			</div>
 		</div>
 		<h5 class="domain">{domainName}</h5>
-		<TabBar {tabs} let:tab bind:active={activeTab}>
-			<Tab {tab}>
-				<Label>{tab}</Label>
-			</Tab>
-		</TabBar>
+
+		{#if ownerConnected}
+			<TabBar {tabs} let:tab bind:active={activeTab}>
+				<Tab {tab}>
+					<Label>{tab}</Label>
+				</Tab>
+			</TabBar>
+		{/if}
 
 		{#if activeTab === DomainTab.details}
 			<Paper variant="unelevated">
