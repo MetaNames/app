@@ -48,7 +48,9 @@
 	alertMessage.subscribe((message) => {
 		if (!message) return;
 
-		snackbarMessage = message;
+		if (typeof message === 'string') snackbarMessage = message;
+		else snackbarMessage = message.message;
+
 		alertsSnackbar.open();
 
 		setTimeout(() => {
@@ -124,6 +126,9 @@
 	<Snackbar bind:this={alertsSnackbar}>
 		<Label>{snackbarMessage}</Label>
 		<Actions>
+			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
+				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
+			{/if}
 			<IconButton class="material-icons" title="Dismiss">close</IconButton>
 		</Actions>
 	</Snackbar>
