@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { alertTransactionAndFetchResult, getAccountBalance } from '$lib';
+	import { alertTransactionAndFetchResult, bridgeUrl, getAccountBalance } from '$lib';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
+	import { InsufficientBalanceError } from 'src/lib/error';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
@@ -46,6 +47,22 @@
 		years += amount;
 	}
 
+	async function handleApproveError(error: Error) {
+		let message;
+		if (error instanceof InsufficientBalanceError)
+			message = {
+				message: `Insufficient balance for ${error.coin}`,
+				action: {
+					label: 'Add funds',
+					callback: () => window.open(bridgeUrl, '_blank')
+				}
+			};
+		else if (error && error instanceof Error) message = error.message;
+		else message = 'Something went wrong';
+
+		alertMessage.set(message);
+	}
+
 	async function approveFees() {
 		if (!$walletConnected) return;
 
@@ -53,7 +70,7 @@
 		const accountBalance = await getAccountBalance(address);
 		const accountCoin = accountBalance.coins.find((coin) => coin.symbol === $selectedCoin);
 		if (!accountCoin || Number(accountCoin.balance) < $totalFees)
-			throw new Error(`Insufficient balance. Please deposit more ${$selectedCoin}.`);
+			throw new InsufficientBalanceError($selectedCoin);
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
 			domainName,
@@ -138,7 +155,12 @@
 
 			<ConnectionRequired class="mt-1">
 				<div class="submit">
-					<LoadingButton disabled={feesApproved} onClick={approveFees} variant="raised">
+					<LoadingButton
+						disabled={feesApproved}
+						onClick={approveFees}
+						onError={handleApproveError}
+						variant="raised"
+					>
 						<Label>Approve fees</Label>
 					</LoadingButton>
 				</div>
