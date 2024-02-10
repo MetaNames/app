@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { RecordClassEnum, type Domain } from '@metanames/sdk';
-
-	import Records from 'src/components/Records.svelte';
+	import type { Domain } from '@metanames/sdk';
+	import { toSvg } from 'jdenticon';
 
 	import Card, { Content as CardContent } from '@smui/card';
 	import Paper, { Content } from '@smui/paper';
 	import Tab, { Label } from '@smui/tab';
 	import TabBar from '@smui/tab-bar';
-	import { toSvg } from 'jdenticon';
-	import { config, formatDate } from '$lib';
+
+	import { config, formatDate, profileRecords, socialRecords } from '$lib';
 	import Chip from 'src/components/Chip.svelte';
+	import Records from 'src/components/Records.svelte';
 
 	export let domain: Domain;
 	export let isTld: boolean = false;
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 200);
 	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
-	$: hasSocialRecords = Array.from(domain.records.keys()).some(v => socialRecords.includes(v));
+	$: hasSocialRecords = Array.from(domain.records.keys()).some((v) => socialRecords.includes(v));
+	$: hasProfileRecords = Array.from(domain.records.keys()).some((v) => profileRecords.includes(v));
 
-	const socialRecords = [RecordClassEnum.Twitter, RecordClassEnum.Discord, RecordClassEnum.Uri].map(v => RecordClassEnum[v]);
 	const records = Object.fromEntries(
 		[...domain.records].map(([key, value]) => [key, value.toString()])
 	);
@@ -51,34 +51,66 @@
 			<Paper variant="unelevated">
 				<Content>
 					<div class="container">
-						<div class="row">
+						{#if hasProfileRecords}
+							<div class="section">
+								<h5>Profile</h5>
+								<div class="chips">
+									{#each profileRecords as klass}
+										{#if domain.records.get(klass)}
+											<Chip
+												class="mt-1 mr-1"
+												label={klass}
+												value={domain.records.get(klass)?.toString() ?? ''}
+											/>
+										{/if}
+									{/each}
+								</div>
+							</div>
+						{/if}
+						<div class={`section ${hasProfileRecords ? 'mt-3' : ''}`}>
 							<h5>Whois</h5>
-							{#if !isTld}
-								{#if domain.parentId}
+							<div class="chips">
+								{#if !isTld}
+									{#if domain.parentId}
+										<Chip
+											class="mt-1 mr-1"
+											label="Parent"
+											value={domain.parentId}
+											href={`/domain/${domain.parentId}`}
+										/>
+									{:else}
+										<Chip class="mt-1 mr-1" label="Parent" value={domain.tld} href="/tld" />
+									{/if}
 									<Chip
-										label="Parent"
-										value={domain.parentId}
-										href={`/domain/${domain.parentId}`}
+										class="mt-1 mr-1"
+										label="Expires"
+										value={domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
 									/>
-								{:else}
-									<Chip label="Parent" value={domain.tld} href="/tld" />
 								{/if}
 								<Chip
-									label="Expires"
-									value={domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+									class="mt-1 mr-1"
+									label="Owner"
+									value={domain.owner}
+									href={ownerBrowserUrl}
+									ellipsis
 								/>
-							{/if}
-							<Chip label="Owner" value={domain.owner} href={ownerBrowserUrl} ellipsis />
+							</div>
 						</div>
 						{#if hasSocialRecords}
-						<div class="row mt-3">
-							<h5>Social</h5>
-							{#each socialRecords as klass}
-								{#if domain.records.get(klass)}
-									<Chip label={klass} value={domain.records.get(klass)?.toString() ?? ''} />
-								{/if}
-							{/each}
-						</div>
+							<div class="section mt-3">
+								<h5>Social</h5>
+								<div class="chips">
+									{#each socialRecords as klass}
+										{#if domain.records.get(klass)}
+											<Chip
+												class="mt-1 mr-1"
+												label={klass}
+												value={domain.records.get(klass)?.toString() ?? ''}
+											/>
+										{/if}
+									{/each}
+								</div>
+							</div>
 						{/if}
 					</div>
 				</Content>
@@ -102,9 +134,15 @@
 			flex-direction: column;
 			align-items: start;
 
+			.chips {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				justify-content: start;
+			}
+
 			h5 {
-				margin-top: 0;
-				margin-bottom: 1rem;
+				margin: 0;
 				text-align: start;
 				font-weight: 800;
 				word-wrap: break-word;
