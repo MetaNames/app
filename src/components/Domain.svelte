@@ -1,8 +1,7 @@
 <script lang="ts">
-	import type { Domain } from '@metanames/sdk/lib/models/domain';
+	import type { Domain } from '@metanames/sdk';
 
 	import Records from 'src/components/Records.svelte';
-	import Chip from 'src/components/Chip.svelte';
 
 	import Card, { Content as CardContent } from '@smui/card';
 	import Paper, { Content } from '@smui/paper';
@@ -10,6 +9,7 @@
 	import TabBar from '@smui/tab-bar';
 	import { toSvg } from 'jdenticon';
 	import { config, formatDate } from '$lib';
+	import Chip from 'src/components/Chip.svelte';
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 200);
 	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
@@ -48,36 +48,27 @@
 		{#if tabActive === 'Profile'}
 			<Paper variant="unelevated">
 				<Content>
-					<div class="mt-1">
-						{#if !isTld}
-							<Chip iconName="supervisor_account" label="Parent">
+					<div class="container">
+						<div class="row mt-1">
+							<h5>Whois</h5>
+							{#if !isTld}
 								{#if domain.parentId}
-									<a href={`/domain/${domain.parentId}`} target="_blank">
-										{domain.parentId}
-									</a>
+									<Chip
+										label="Parent"
+										value={domain.parentId}
+										href={`/domain/${domain.parentId}`}
+									/>
 								{:else}
-									<a href="/tld" target="_blank">meta</a>
+									<Chip label="Parent" value={domain.tld} href="/tld" />
 								{/if}
-							</Chip>
-						{/if}
-					</div>
-					<div class="mt-1">
-						<Chip iconName="person" label="Owner">
-							<a href={ownerBrowserUrl} target="_blank">{domain.owner}</a>
-						</Chip>
-					</div>
-					{#if !isTld}
-						<div class="mt-1">
-							<Chip iconName="schedule" label="Created">
-								{formatDate(domain.createdAt)}
-							</Chip>
+								<Chip
+									label="Expires"
+									value={domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+								/>
+							{/if}
+							<Chip label="Owner" value={domain.owner} href={ownerBrowserUrl} ellipsis />
 						</div>
-						<div class="mt-1">
-							<Chip iconName="schedule" label="Expires">
-								{domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
-							</Chip>
-						</div>
-					{/if}
+					</div>
 				</Content>
 			</Paper>
 		{:else if tabActive === 'Records'}
@@ -93,6 +84,20 @@
 <style lang="scss">
 	:global(.domain-container) {
 		width: 100%;
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: start;
+
+			h5 {
+				margin-top: 0;
+				margin-bottom: 1rem;
+				text-align: start;
+				font-weight: 800;
+				word-wrap: break-word;
+			}
+		}
 	}
 
 	.avatar {
