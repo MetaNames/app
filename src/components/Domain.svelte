@@ -27,10 +27,10 @@
 		domain.owner
 	}`;
 
-	let tabs: Array<'Profile' | 'Records'> = ['Profile'];
+	let tabs = ['Details'];
 	if (!isTld) tabs.push('Records');
 
-	let tabActive = tabs[0];
+	let tabActive = 'Details';
 </script>
 
 <Card class="domain-container">
@@ -47,7 +47,7 @@
 			</Tab>
 		</TabBar>
 
-		{#if tabActive === 'Profile'}
+		{#if tabActive === 'Details'}
 			<Paper variant="unelevated">
 				<Content>
 					<div class="container">
