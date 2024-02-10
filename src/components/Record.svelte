@@ -9,7 +9,6 @@
 	import { alertMessage, walletConnected } from '$lib/stores/main';
 	import { MAX_RECORD_LENGTH, alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
 	import HelperText from '@smui/textfield/helper-text';
-	import Chip from './Chip.svelte';
 
 	export let klass: string;
 	export let value: string;
@@ -52,92 +51,80 @@
 	}
 </script>
 
-<Dialog
-	bind:open={dialogOpen}
-	aria-labelledby="confirmation-title"
-	aria-describedby="confirmation-content"
->
-	<Title id="simple-title">Confirm action</Title>
-	<Content id="simple-content">Do you really want to remove the record?</Content>
-	<Actions>
-		<Button>
-			<Label>No</Label>
-		</Button>
-		<Button on:click={destroy}>
-			<Label>Yes</Label>
-		</Button>
-	</Actions>
-</Dialog>
-<Chip {label} class="record-container">
-	<div class="value-container" class:editMode>
-		<div class="value">
-			{#if !editMode}
-				<span>{recordValue}</span>
-			{:else}
-				<Textfield
-					for={label}
-					input$maxlength={MAX_RECORD_LENGTH}
-					bind:value={recordValue}
-					bind:invalid
-					variant="outlined"
-					textarea
-					{disabled}
-				>
-					<svelte:fragment slot="helper">
-						{#if errors.length > 0}
-							<HelperText slot="helper">{errors.join(', ')}</HelperText>
-						{/if}
-					</svelte:fragment>
-					<CharacterCounter slot="internalCounter">0 / {MAX_RECORD_LENGTH}</CharacterCounter>
-				</Textfield>
-			{/if}
-		</div>
-		{#if edit}
-			<div class="actions">
-				<IconButton class="material-icons" on:click={save}>save</IconButton>
-				<IconButton class="material-icons" on:click={() => toggleEdit()}>cancel</IconButton>
-			</div>
-		{:else if editMode}
-			<div class="actions">
-				<IconButton
-					class="material-icons"
-					on:click={() => toggleEdit()}
-					disabled={!$walletConnected}>edit</IconButton
-				>
-				<IconButton
-					class="material-icons"
-					on:click={() => (dialogOpen = true)}
-					disabled={!$walletConnected}>delete</IconButton
-				>
-			</div>
+<div class="record-container {editMode ? 'edit' : ''}">
+	<Dialog
+		bind:open={dialogOpen}
+		aria-labelledby="confirmation-title"
+		aria-describedby="confirmation-content"
+	>
+		<Title id="simple-title">Confirm action</Title>
+		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Actions>
+			<Button>
+				<Label>No</Label>
+			</Button>
+			<Button on:click={destroy}>
+				<Label>Yes</Label>
+			</Button>
+		</Actions>
+	</Dialog>
+	<label for={label}>{label}</label>
+	<div class="value">
+		{#if !edit}
+			<span>{recordValue}</span>
+		{:else}
+			<Textfield
+				for={label}
+				input$maxlength={MAX_RECORD_LENGTH}
+				bind:value={recordValue}
+				bind:invalid
+				variant="outlined"
+				textarea
+				{disabled}
+			>
+				<svelte:fragment slot="helper">
+					{#if errors.length > 0}
+						<HelperText slot="helper">{errors.join(', ')}</HelperText>
+					{/if}
+				</svelte:fragment>
+				<CharacterCounter slot="internalCounter">0 / {MAX_RECORD_LENGTH}</CharacterCounter>
+			</Textfield>
 		{/if}
 	</div>
-</Chip>
+	{#if edit}
+		<div class="actions">
+			<IconButton class="material-icons" on:click={save}>save</IconButton>
+			<IconButton class="material-icons" on:click={() => toggleEdit()}>cancel</IconButton>
+		</div>
+	{:else if editMode}
+		<div class="actions">
+			<IconButton class="material-icons" on:click={() => toggleEdit()} disabled={!$walletConnected}
+				>edit</IconButton
+			>
+			<IconButton
+				class="material-icons"
+				on:click={() => (dialogOpen = true)}
+				disabled={!$walletConnected}>delete</IconButton
+			>
+		</div>
+	{/if}
+</div>
 
 <style lang="scss">
-	:global(.record-container) {
+	.record-container {
 		width: 100%;
 		display: grid;
 		grid-template-columns: 1fr 2fr;
 		align-items: center;
 		justify-content: space-between;
-
-		.editMode {
+		&.edit {
 			display: grid;
-			grid-template-columns: 4fr 1fr;
+			grid-template-columns: 1fr 2fr 1fr;
 		}
 
 		.value {
 			span {
-				display: flex;
-				align-items: start;
-				padding: 0.4rem;
-				margin-left: 0.5rem;
-
-				@media (max-width: 768px) {
-					max-width: 200px;
-					overflow-wrap: anywhere;
-				}
+				word-wrap: break-word;
 			}
 			:global(> *) {
 				width: 100%;
@@ -151,6 +138,6 @@
 
 	.actions {
 		display: flex;
-		align-items: center;
+		justify-content: flex-end;
 	}
 </style>
