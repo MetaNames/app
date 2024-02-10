@@ -51,12 +51,7 @@
 		const transactionIntent = await repository.create({ class: recordClass, data: newRecordValue });
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) throw new Error('Failed to create record.');
-		else {
-			records[selectedRecordClass] = newRecordValue;
-			selectedRecordClass = undefined;
-			newRecordValue = '';
-			newRecordSubmitted = false;
-		}
+		else location.reload();
 	}
 </script>
 

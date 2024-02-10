@@ -1,12 +1,13 @@
 <script lang="ts">
 	import Button, { Label } from '@smui/button';
 	import Dialog, { Title, Content, Actions } from '@smui/dialog';
-	import IconButton from '@smui/icon-button/src/IconButton.svelte';
+	import IconButton from '@smui/icon-button';
+	import CharacterCounter from '@smui/textfield/character-counter';
 	import Textfield from '@smui/textfield';
 
 	import type { RecordRepository } from '@metanames/sdk';
 	import { alertMessage, walletConnected } from '$lib/stores/main';
-	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
+	import { MAX_RECORD_LENGTH, alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
 	import HelperText from '@smui/textfield/helper-text';
 
 	export let klass: string;
@@ -21,7 +22,10 @@
 
 	$: label = klass.toString();
 	$: recordClass = getRecordClassFrom(klass);
-	$: invalid = !validator.validate({ data: recordValue, class: recordClass }, { raiseError: false });
+	$: invalid = !validator.validate(
+		{ data: recordValue, class: recordClass },
+		{ raiseError: false }
+	);
 	$: errors = invalid ? validator.errors : [];
 	$: disabled = !edit;
 
@@ -36,7 +40,7 @@
 		const transactionIntent = await repository.update({ class: recordClass, data: recordValue });
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) alertMessage.set('Failed to update record.');
-		else toggleEdit(false);
+		else location.reload();
 	}
 
 	async function destroy() {
@@ -68,6 +72,7 @@
 	<div class="value">
 		<Textfield
 			for={label}
+			input$maxlength={MAX_RECORD_LENGTH}
 			bind:value={recordValue}
 			bind:invalid
 			variant="outlined"
@@ -79,16 +84,17 @@
 					<HelperText slot="helper">{errors.join(', ')}</HelperText>
 				{/if}
 			</svelte:fragment>
+			<CharacterCounter slot="internalCounter">0 / {MAX_RECORD_LENGTH}</CharacterCounter>
 		</Textfield>
 	</div>
 	{#if edit}
 		<div class="actions">
 			<IconButton class="material-icons" on:click={save}>save</IconButton>
-			<IconButton class="material-icons" on:click={toggleEdit}>cancel</IconButton>
+			<IconButton class="material-icons" on:click={() => toggleEdit()}>cancel</IconButton>
 		</div>
 	{:else if editMode}
 		<div class="actions">
-			<IconButton class="material-icons" on:click={toggleEdit} disabled={!$walletConnected}
+			<IconButton class="material-icons" on:click={() => toggleEdit()} disabled={!$walletConnected}
 				>edit</IconButton
 			>
 			<IconButton
@@ -113,6 +119,9 @@
 		}
 
 		.value {
+			span {
+				word-wrap: break-word;
+			}
 			:global(> *) {
 				width: 100%;
 			}
