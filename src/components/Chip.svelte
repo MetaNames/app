@@ -2,6 +2,7 @@
 	import { Icon } from '@smui/icon-button';
 	import Button, { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
+	import { writable } from 'svelte/store';
 
 	export let label: string;
 	export let value: string;
@@ -11,12 +12,17 @@
 	export let openInNewTab: boolean = true;
 	export let className: string | undefined = undefined;
 
-	let icon = type === 'url' ? 'open_in_new' : 'content_copy';
+	let icon = writable(type === 'url' ? 'open_in_new' : 'content_copy');
+
 	const action = () => {
 		if (type === 'url') {
 			if (openInNewTab) window.open(href, '_blank');
 			else goto(value);
-		} else navigator.clipboard.writeText(value);
+		} else {
+			navigator.clipboard.writeText(value);
+			icon.set('done');
+			setTimeout(() => icon.set('content_copy'), 1000);
+		}
 	};
 
 	export { className as class };
@@ -29,7 +35,7 @@
 			<span class="value" class:ellipsis>{value}</span>
 		</div>
 	</Label>
-	<Icon class="material-icons">{icon}</Icon>
+	<Icon class="material-icons">{$icon}</Icon>
 </Button>
 
 <style lang="scss">
