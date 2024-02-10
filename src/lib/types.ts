@@ -1,4 +1,4 @@
 export enum DomainTab {
   details = 'details',
-  records = 'records'
+  settings = 'settings'
 }

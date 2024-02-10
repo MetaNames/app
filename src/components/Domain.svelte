@@ -30,7 +30,7 @@
 	}`;
 
 	let tabs: Array<DomainTab> = [DomainTab.details];
-	if (!isTld) tabs.push(DomainTab.records);
+	if (!isTld) tabs.push(DomainTab.settings);
 </script>
 
 <Card class="domain-container">
@@ -115,7 +115,7 @@
 					</div>
 				</Content>
 			</Paper>
-		{:else if activeTab === DomainTab.records}
+		{:else if activeTab === DomainTab.settings}
 			<Paper variant="unelevated">
 				<Content>
 					<Records ownerAddress={domain.owner} {records} repository={domain.recordRepository} />
