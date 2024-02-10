@@ -1,18 +1,20 @@
 <script lang="ts">
 	import { Icon } from '@smui/icon-button';
 
-	export let iconName: string;
+	export let iconName: string | undefined = undefined;
 	export let label: string;
 	let className: string | undefined = undefined;
 
-	export { className as class }
+	export { className as class };
 </script>
 
 <div class="chip {className}">
 	<span class="header">
-		<div class="icon">
-			<Icon class="material-icons" aria-label={iconName}>{iconName}</Icon>
-		</div>
+		{#if iconName}
+			<div class="icon">
+				<Icon class="material-icons" aria-label={iconName}>{iconName}</Icon>
+			</div>
+		{/if}
 		<span>{label}</span>
 	</span>
 	<div class="content">
@@ -23,7 +25,7 @@
 <style lang="scss">
 	.chip {
 		display: grid;
-    grid-template-columns: 1fr 2fr;
+		grid-template-columns: 1fr 2fr;
 
 		.header {
 			display: flex;
@@ -40,8 +42,8 @@
 		}
 
 		.content {
-      display: flex;
-      align-items: start;
+			display: flex;
+			align-items: start;
 			padding: 0.4rem;
 			margin-left: 0.5rem;
 
