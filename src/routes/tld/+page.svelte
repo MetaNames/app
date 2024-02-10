@@ -1,27 +1,42 @@
 <script lang="ts">
 	import Domain from 'src/components/Domain.svelte';
 
-	import { metaNamesSdk } from "$lib/stores/sdk";
-	import { Domain as DomainModel, type IDomain } from "@metanames/sdk";
+	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { Domain as DomainModel, type IDomain } from '@metanames/sdk';
 
-  const contractAddress = $metaNamesSdk.config.contractAddress;
+	const contractAddress = $metaNamesSdk.config.contractAddress;
 
-  const domainData: IDomain = {
-    name: "meta",
-    createdAt: new Date(),
-    tld: '',
-    owner: contractAddress,
-    tokenId: NaN,
-    records: new Map(),
-  }
+	const domainData: IDomain = {
+		name: 'meta',
+		createdAt: new Date(),
+		tld: '',
+		owner: contractAddress,
+		tokenId: NaN,
+		records: new Map()
+	};
 
-  const domain = new DomainModel(domainData, $metaNamesSdk.contract);
+	const domain = new DomainModel(domainData, $metaNamesSdk.contract);
 </script>
 
 <svelte:head>
 	<title>Meta | Meta Names</title>
 </svelte:head>
 
-<div class="content">
-  <Domain {domain} isTld={true} />
+<div class="content domain">
+	<Domain {domain} isTld={true} />
 </div>
+
+<style lang="scss">
+	.domain {
+		width: 100%;
+		max-width: 48rem;
+		margin: 2rem 1rem;
+	}
+
+	@media screen and (max-width: 768px) {
+		.domain {
+			width: initial;
+			max-width: 90vw;
+		}
+	}
+</style>
