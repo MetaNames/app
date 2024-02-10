@@ -1988,10 +1988,10 @@
     focus-trap "^7.5.2"
     nanoid "^4.0.2"
 
-"@metanames/sdk@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-4.2.0.tgz#b6decef4d84b38196ad3367eaa162de924408990"
-  integrity sha512-y6dEZBK9ALMCIoEbLWuos3ryOFIXkoNlacrlysPksjfg5F1WVHTcOv+7PLzMEoQrPwQvh6qUVBz8Ej++YN4Cpg==
+"@metanames/sdk@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-4.3.0.tgz#e3d27c184b1c2710e66ff06991b672a0a67af37e"
+  integrity sha512-6WDh7dT3++LwdMrd8VkbaxCKaNb8n4dG6ln1jxhTpKyjH2Vlu/ecMPdOgWh+LPoKPUuO7S0eVtZmFCWIWLdDgw==
   dependencies:
     "@partisiablockchain/abi-client" "^3.30.0"
     "@secata-public/bitmanipulation-ts" "^3.0.6"
