@@ -27,7 +27,7 @@
 		domain.owner
 	}`;
 
-	let tabs = ['Details'];
+	let tabs: Array<'Details' | 'Records'> = ['Details'];
 	if (!isTld) tabs.push('Records');
 
 	let tabActive = 'Details';
