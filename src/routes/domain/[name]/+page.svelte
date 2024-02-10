@@ -53,6 +53,7 @@
 	@media screen and (max-width: 768px) {
 		.domain {
 			width: initial;
+			max-width: 90vw;
 		}
 	}
 </style>
