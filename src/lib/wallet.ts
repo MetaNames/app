@@ -1,6 +1,8 @@
 import PartisiaSdk from 'partisia-sdk';
 import { config } from './config';
 import type { MetaMaskSdk } from '@metanames/sdk';
+import { PartisiaAccount } from 'partisia-blockchain-applications-rpc'
+import { metaNamesSdkConfig } from './sdk';
 
 export type OptionalWalletClient = PartisiaSdk | MetaMaskSdk | undefined | null;
 
@@ -18,6 +20,12 @@ export const connectPartisia = async () => {
 	if (sdk.connection) return sdk;
 	else throw new Error('Connection failed');
 };
+
+export const getAccountBalance = async (address: string) => {
+	const rpc = PartisiaAccount(metaNamesSdkConfig.rpcConfig);
+
+	return rpc.fetchAccountInfo(address);
+}
 
 export const connectMetaMask = async () => {
 	if (!('ethereum' in window)) {
