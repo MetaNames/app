@@ -70,35 +70,31 @@
 	</Dialog>
 	<label for={label}>{label}</label>
 	<div class="value">
-		{#if !edit}
-			<span>{recordValue}</span>
-		{:else}
-			<Textfield
-				for={label}
-				input$maxlength={MAX_RECORD_LENGTH}
-				bind:value={recordValue}
-				bind:invalid
-				variant="outlined"
-				textarea
-				{disabled}
-			>
-				<svelte:fragment slot="helper">
-					{#if errors.length > 0}
-						<HelperText slot="helper">{errors.join(', ')}</HelperText>
-					{/if}
-				</svelte:fragment>
-				<CharacterCounter slot="internalCounter">0 / {MAX_RECORD_LENGTH}</CharacterCounter>
-			</Textfield>
-		{/if}
+		<Textfield
+			for={label}
+			input$maxlength={MAX_RECORD_LENGTH}
+			bind:value={recordValue}
+			bind:invalid
+			variant="outlined"
+			textarea
+			{disabled}
+		>
+			<svelte:fragment slot="helper">
+				{#if errors.length > 0}
+					<HelperText slot="helper">{errors.join(', ')}</HelperText>
+				{/if}
+			</svelte:fragment>
+			<CharacterCounter slot="internalCounter">0 / {MAX_RECORD_LENGTH}</CharacterCounter>
+		</Textfield>
 	</div>
 	{#if edit}
 		<div class="actions">
 			<IconButton class="material-icons" on:click={save}>save</IconButton>
-			<IconButton class="material-icons" on:click={() => toggleEdit()}>cancel</IconButton>
+			<IconButton class="material-icons" on:click={toggleEdit}>cancel</IconButton>
 		</div>
 	{:else if editMode}
 		<div class="actions">
-			<IconButton class="material-icons" on:click={() => toggleEdit()} disabled={!$walletConnected}
+			<IconButton class="material-icons" on:click={toggleEdit} disabled={!$walletConnected}
 				>edit</IconButton
 			>
 			<IconButton
