@@ -14,7 +14,7 @@
 
 	$: pageName = domain ? domain.name + ' | ' : '';
 	$: {
-		if (browser && activeDomainTab) {
+		if (browser && activeDomainTab === DomainTab.settings) {
 			$page.url.searchParams.set('tab', activeDomainTab.toString());
 			goto(`?${$page.url.searchParams.toString()}`);
 		}
