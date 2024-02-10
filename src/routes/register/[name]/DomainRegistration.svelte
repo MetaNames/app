@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { alertTransactionAndFetchResult } from '$lib';
+	import { alertTransactionAndFetchResult, getAccountBalance } from '$lib';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import Select, { Option } from '@smui/select';
@@ -14,6 +14,7 @@
 	import IconButton from '@smui/icon-button';
 
 	import { track } from '@vercel/analytics';
+	import { writable } from 'svelte/store';
 
 	export let domainName: string;
 	export let tld: string;
@@ -30,8 +31,11 @@
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
+	const totalFees = writable(0);
+
 	const totalFeesLabel = (label: number, years: number) => {
 		const total = label * years;
+		totalFees.set(total);
 
 		return Math.ceil(total * 10000) / 10000;
 	};
@@ -44,6 +48,12 @@
 
 	async function approveFees() {
 		if (!$walletConnected) return;
+
+		const address = $walletAddress as string;
+		const accountBalance = await getAccountBalance(address);
+		const accountCoin = accountBalance.coins.find((coin) => coin.symbol === $selectedCoin);
+		if (!accountCoin || Number(accountCoin.balance) < $totalFees)
+			throw new Error(`Insufficient balance. Please deposit more ${$selectedCoin}.`);
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
 			domainName,
