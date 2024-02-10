@@ -39,11 +39,7 @@
 </Button>
 
 <style lang="scss">
-	@use '@material/button/mixins' as mdc-button;
-
 	:global(.chip) {
-		@include mdc-button.shape-radius(100%);
-
 		.container {
 			display: flex;
 			justify-content: center;
