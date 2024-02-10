@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Domain } from '@metanames/sdk';
+	import { RecordClassEnum, type Domain } from '@metanames/sdk';
 
 	import Records from 'src/components/Records.svelte';
 
@@ -11,12 +11,14 @@
 	import { config, formatDate } from '$lib';
 	import Chip from 'src/components/Chip.svelte';
 
-	$: domainAvatar = domain.name && toSvg(domain.name, 200);
-	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
-
 	export let domain: Domain;
 	export let isTld: boolean = false;
 
+	$: domainAvatar = domain.name && toSvg(domain.name, 200);
+	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
+	$: hasSocialRecords = Array.from(domain.records.keys()).some(v => socialRecords.includes(v));
+
+	const socialRecords = [RecordClassEnum.Twitter, RecordClassEnum.Discord, RecordClassEnum.Uri].map(v => RecordClassEnum[v]);
 	const records = Object.fromEntries(
 		[...domain.records].map(([key, value]) => [key, value.toString()])
 	);
@@ -49,7 +51,7 @@
 			<Paper variant="unelevated">
 				<Content>
 					<div class="container">
-						<div class="row mt-1">
+						<div class="row">
 							<h5>Whois</h5>
 							{#if !isTld}
 								{#if domain.parentId}
@@ -68,6 +70,16 @@
 							{/if}
 							<Chip label="Owner" value={domain.owner} href={ownerBrowserUrl} ellipsis />
 						</div>
+						{#if hasSocialRecords}
+						<div class="row mt-3">
+							<h5>Social</h5>
+							{#each socialRecords as klass}
+								{#if domain.records.get(klass)}
+									<Chip label={klass} value={domain.records.get(klass)?.toString() ?? ''} />
+								{/if}
+							{/each}
+						</div>
+						{/if}
 					</div>
 				</Content>
 			</Paper>
