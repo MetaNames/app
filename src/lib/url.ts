@@ -4,3 +4,5 @@ export const explorerTransactionUrl = (transactionId: string) =>
   `${config.browserUrl}/transactions/${transactionId}`;
 
 export const bridgeUrl = `${config.browserUrl}/bridge`;
+
+export const backendBrowserUrl = `https://backend.browser${config.environment === 'test' ? '.testnet' : ''}.partisiablockchain.com/graphql/query`
