@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { DomainTab } from '$lib/types';
-	import { Domain as DomainModel } from '@metanames/sdk';
+	import { Domain as DomainModel, type IDomain } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
 	import CircularProgress from '@smui/circular-progress';
@@ -11,9 +10,6 @@
 	import Domain from 'src/components/Domain.svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
 	import { browser } from '$app/environment';
-	import type { PageData } from './$types';
-
-	export let data: PageData;
 
 	let domain: DomainModel | null;
 	const queryTab = $page.url.searchParams.get('tab');
@@ -33,7 +29,14 @@
 		const loweredDomainName = domainName.toLocaleLowerCase();
 		if (loweredDomainName !== domainName)
 			goto(`/domain/${loweredDomainName}`, { replaceState: true });
-		else if (data.domain) domain = new DomainModel(data.domain);
+		else {
+			type DomainResponse = { domain?: IDomain };
+			const domainResponse: DomainResponse = await fetch(`/api/domains/${domainName}`).then((res) =>
+				res.json()
+			);
+			console.log(domainResponse.domain)
+			if (domainResponse.domain) domain = new DomainModel(domainResponse.domain);
+		}
 	});
 </script>
 

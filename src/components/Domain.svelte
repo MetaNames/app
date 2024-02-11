@@ -20,12 +20,12 @@
 
 	$: domainAvatar = domain.name && toSvg(domain.name, 200);
 	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
-	$: hasSocialRecords = Array.from(domain.records.keys()).some((v) => socialRecords.includes(v));
-	$: hasProfileRecords = Array.from(domain.records.keys()).some((v) => profileRecords.includes(v));
+	$: hasSocialRecords = Object.keys(domain.records).some((v) => socialRecords.includes(v));
+	$: hasProfileRecords = Object.keys(domain.records).some((v) => profileRecords.includes(v));
 	$: ownerConnected = $walletAddress === domain.owner;
 
 	const records = Object.fromEntries(
-		[...domain.records].map(([key, value]) => [key, value.toString()])
+		Object.entries(domain.records).map(([key, value]) => [key, String(value)])
 	);
 
 	const ownerBrowserUrl = `${config.browserUrl}/${isTld ? 'contracts' : 'accounts'}/${
@@ -62,11 +62,11 @@
 								<h5>Profile</h5>
 								<div class="chips">
 									{#each profileRecords as klass}
-										{#if domain.records.get(klass)}
+										{#if domain.records[klass]}
 											<Chip
 												class="mt-1 mr-1"
 												label={klass}
-												value={domain.records.get(klass)?.toString() ?? ''}
+												value={domain.records[klass]?.toString() ?? ''}
 											/>
 										{/if}
 									{/each}
@@ -107,11 +107,11 @@
 								<h5>Social</h5>
 								<div class="chips">
 									{#each socialRecords as klass}
-										{#if domain.records.get(klass)}
+										{#if domain.records[klass]}
 											<Chip
 												class="mt-1 mr-1"
 												label={klass}
-												value={domain.records.get(klass)?.toString() ?? ''}
+												value={domain.records[klass]?.toString() ?? ''}
 											/>
 										{/if}
 									{/each}
@@ -124,7 +124,11 @@
 		{:else if activeTab === DomainTab.settings}
 			<Paper variant="unelevated">
 				<Content>
-					<Records ownerAddress={domain.owner} {records} repository={domain.getRecordRepository($metaNamesSdk)} />
+					<Records
+						ownerAddress={domain.owner}
+						{records}
+						repository={domain.getRecordRepository($metaNamesSdk)}
+					/>
 				</Content>
 			</Paper>
 		{/if}

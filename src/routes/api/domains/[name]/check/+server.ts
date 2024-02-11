@@ -1,9 +1,7 @@
-import { metaNamesSdkFactory } from "$lib";
+import { metaNamesSdk } from "$lib/server";
 import { json } from "@sveltejs/kit";
 
 export async function GET({ params: { name } }) {
-  const metaNamesSdk = metaNamesSdkFactory();
-
   const analyzedDomain = metaNamesSdk.domainRepository.analyze(name);
   const domain = await metaNamesSdk.domainRepository.find(name);
   const parentDomainName = analyzedDomain.parentId;
