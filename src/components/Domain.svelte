@@ -12,7 +12,6 @@
 	import Chip from 'src/components/Chip.svelte';
 	import Records from 'src/components/Records.svelte';
 	import { walletAddress } from 'src/lib/stores/main';
-	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 
 	export let domain: Domain;
