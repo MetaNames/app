@@ -13,6 +13,7 @@
 	import Records from 'src/components/Records.svelte';
 	import { walletAddress } from 'src/lib/stores/main';
 	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
+	import { metaNamesSdk } from 'src/lib/stores/sdk';
 
 	export let domain: Domain;
 	export let isTld: boolean = false;
@@ -124,7 +125,7 @@
 		{:else if activeTab === DomainTab.settings}
 			<Paper variant="unelevated">
 				<Content>
-					<Records ownerAddress={domain.owner} {records} repository={domain.recordRepository} />
+					<Records ownerAddress={domain.owner} {records} repository={domain.getRecordRepository($metaNamesSdk)} />
 				</Content>
 			</Paper>
 		{/if}
