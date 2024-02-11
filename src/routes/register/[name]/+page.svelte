@@ -68,6 +68,11 @@
 	.content {
 		max-width: 48rem;
 		width: 100%;
-		margin: 1rem 0;
+		margin: 1rem;
+
+		@media screen and (max-width: 768px){
+			max-width: 90vw;
+			width: initial;
+		}
 	}
 </style>
