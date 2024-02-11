@@ -7,9 +7,6 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig({
 	plugins: [sveltekit(), nodePolyfills(), tsconfigPaths()],
-	optimizeDeps: {
-		include: ['lodash.get', 'lodash.isequal', 'lodash.clonedeep']
-	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}
