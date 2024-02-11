@@ -55,7 +55,6 @@
 
 		setTimeout(() => {
 			alertsSnackbar.close();
-			alertMessage.set(undefined);
 		}, 5000);
 	});
 </script>
