@@ -5,26 +5,34 @@
 	import { onMount } from 'svelte';
 
 	import CircularProgress from '@smui/circular-progress';
-	import Paper from '@smui/paper';
 	import Domain from 'src/components/Domain.svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
+	import { writable } from 'svelte/store';
+	import { alertMessage } from 'src/lib/stores/main';
 
-	let domain: DomainModel | null;
+	let domain = writable<DomainModel>();
+	const domainName = $page.params.name;
 
-	$: pageName = domain ? domain.name + ' | ' : '';
+	$: pageName = $domain ? $domain.name + ' | ' : '';
+
+	async function loadDomain() {
+		type DomainResponse = { domain?: IDomain };
+		const domainResponse: DomainResponse = await fetch(`/api/domains/${domainName}`).then((res) =>
+			res.json()
+		);
+		if (domainResponse.domain) domain.set(new DomainModel(domainResponse.domain));
+		else {
+			alertMessage.set('Domain not found. Register it now!');
+			goto(`/register/${domainName}`, { replaceState: true });
+		}
+
+		return $domain;
+	}
 
 	onMount(async () => {
-		const domainName = $page.params.name;
 		const loweredDomainName = domainName.toLocaleLowerCase();
 		if (loweredDomainName !== domainName)
 			goto(`/domain/${loweredDomainName}`, { replaceState: true });
-		else {
-			type DomainResponse = { domain?: IDomain };
-			const domainResponse: DomainResponse = await fetch(`/api/domains/${domainName}`).then((res) =>
-				res.json()
-			);
-			if (domainResponse.domain) domain = new DomainModel(domainResponse.domain);
-		}
 	});
 </script>
 
@@ -33,18 +41,13 @@
 </svelte:head>
 
 <div class="content domain">
-	{#if domain}
+	{#await loadDomain()}
+		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+	{:then domain}
 		<Domain {domain} />
 		<br class="my-1" />
 		<GoBackButton />
-	{:else if domain === undefined}
-		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-	{:else if domain === null}
-		<Paper class="w-100 text-center" variant="raised">
-			<h3>Domain not found</h3>
-			<GoBackButton />
-		</Paper>
-	{/if}
+	{/await}
 </div>
 
 <style lang="scss">
