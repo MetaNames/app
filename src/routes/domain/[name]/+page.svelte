@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { DomainTab } from '$lib/types';
 	import { Domain as DomainModel, type IDomain } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
@@ -9,20 +8,10 @@
 	import Paper from '@smui/paper';
 	import Domain from 'src/components/Domain.svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
-	import { browser } from '$app/environment';
 
 	let domain: DomainModel | null;
-	const queryTab = $page.url.searchParams.get('tab');
-	const queryDomainTab = queryTab && DomainTab[queryTab as keyof typeof DomainTab];
-	let activeDomainTab = queryDomainTab || DomainTab.details;
 
 	$: pageName = domain ? domain.name + ' | ' : '';
-	$: {
-		if (browser && activeDomainTab === DomainTab.settings) {
-			$page.url.searchParams.set('tab', activeDomainTab.toString());
-			goto(`?${$page.url.searchParams.toString()}`);
-		}
-	}
 
 	onMount(async () => {
 		const domainName = $page.params.name;
@@ -46,7 +35,7 @@
 
 <div class="content domain">
 	{#if domain}
-		<Domain {domain} bind:activeTab={activeDomainTab} />
+		<Domain {domain} />
 		<br class="my-1" />
 		<GoBackButton />
 	{:else if domain === undefined}
