@@ -23,7 +23,6 @@
 			const domainResponse: DomainResponse = await fetch(`/api/domains/${domainName}`).then((res) =>
 				res.json()
 			);
-			console.log(domainResponse.domain)
 			if (domainResponse.domain) domain = new DomainModel(domainResponse.domain);
 		}
 	});
