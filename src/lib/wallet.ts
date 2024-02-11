@@ -1,8 +1,8 @@
 import PartisiaSdk from 'partisia-sdk';
 import { config } from './config';
 import type { MetaMaskSdk } from '@metanames/sdk';
-import { PartisiaAccount } from 'partisia-blockchain-applications-rpc'
-import { metaNamesSdkConfig } from './sdk';
+import type { AccountData } from './types';
+import { backendBrowserUrl } from './url';
 
 export type OptionalWalletClient = PartisiaSdk | MetaMaskSdk | undefined | null;
 
@@ -22,9 +22,16 @@ export const connectPartisia = async () => {
 };
 
 export const getAccountBalance = async (address: string) => {
-	const rpc = PartisiaAccount(metaNamesSdkConfig.rpcConfig);
+	const body = {
+		"query": "query AccountSingleQuery(\n		$address: BLOCKCHAIN_ADDRESS!\n	) {\n		account(address: $address) {\n			...Coins_Account\n		}\n	}\n\n	fragment Byoc_Account on Account {\n		displayCoins {\n			symbol\n			balance\n			conversionRate\n			balanceAsGas\n		}\n		id\n	}\n\n	fragment Coins_Account on Account {\n		...Byoc_Account\n		...NonBridgeableCoins_Account\n	}\n\n	fragment NonBridgeableCoins_Account on Account {\n		mpc20Balances {\n			contract\n			symbol\n			balance\n		}\n	}",
+		variables: { address }
+	};
 
-	return rpc.fetchAccountInfo(address);
+	const headers = { 'Content-Type': 'application/json' };
+	const response = await fetch(backendBrowserUrl, { method: 'POST', body: JSON.stringify(body), headers });
+
+	const data = await response.json();
+	return data.data as AccountData
 }
 
 export const connectMetaMask = async () => {

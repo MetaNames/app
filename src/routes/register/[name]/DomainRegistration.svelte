@@ -67,8 +67,8 @@
 		if (!$walletConnected) return;
 
 		const address = $walletAddress as string;
-		const accountBalance = await getAccountBalance(address);
-		const accountCoin = accountBalance.coins.find((coin) => coin.symbol === $selectedCoin);
+		const account = await getAccountBalance(address);
+		const accountCoin = account.account.displayCoins.find((coin) => coin.symbol === $selectedCoin);
 		if (!accountCoin || Number(accountCoin.balance) < $totalFees)
 			throw new InsufficientBalanceError($selectedCoin);
 

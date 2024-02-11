@@ -10,3 +10,15 @@ export interface AlertMessage {
     callback: () => void;
   }
 }
+
+export interface AccountData {
+  id: string
+  account: {
+    displayCoins: {
+      symbol: string
+      balance: string
+      balanceAsGas: string
+      conversionRate: string
+    }[]
+  }
+}
