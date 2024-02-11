@@ -1,7 +1,6 @@
-import { metaNamesSdkFactory } from 'src/lib/sdk.js'
+import { metaNamesSdk } from 'src/lib/server'
 
 export async function load({ params: { name } }) {
-  const metaNamesSdk = metaNamesSdkFactory()
   const domain = await metaNamesSdk.domainRepository.find(name)
 
   return { domain: domain?.toJSON() }
