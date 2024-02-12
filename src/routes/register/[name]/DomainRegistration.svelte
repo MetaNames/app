@@ -8,7 +8,7 @@
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
 
-	import type { BYOC } from '@metanames/sdk';
+	import type { BYOC, BYOCSymbol } from '@metanames/sdk';
 	import { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
@@ -16,6 +16,7 @@
 
 	import { track } from '@vercel/analytics';
 	import { writable } from 'svelte/store';
+	import type { Fees } from 'src/lib/types';
 
 	export let domainName: string;
 	export let tld: string;
@@ -28,7 +29,7 @@
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, $selectedCoin);
+	$: loadFees = fetchFees(domainName, $selectedCoin)
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
@@ -45,6 +46,13 @@
 		if (years + amount < 1) return;
 
 		years += amount;
+	}
+
+	async function fetchFees(domainName: string, coin: BYOCSymbol) {
+		const response = await fetch(`/api/domains/${domainName}/fees/${coin}`).then(r => r.json())
+
+		if (response.error) alertMessage.set(response.error.message)
+		else return response as Fees
 	}
 
 	async function handleApproveError(error: Error) {
