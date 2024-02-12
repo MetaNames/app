@@ -2,21 +2,20 @@
 	import { goto } from '$app/navigation';
 	import { alertTransactionAndFetchResult, bridgeUrl, getAccountBalance } from '$lib';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
-	import { InsufficientBalanceError } from 'src/lib/error';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
-	import Select, { Option } from '@smui/select';
-	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
-	import LoadingButton from 'src/components/LoadingButton.svelte';
-
 	import type { BYOC, BYOCSymbol } from '@metanames/sdk';
+	import { track } from '@vercel/analytics';
+	import { InsufficientBalanceError } from 'src/lib/error';
+	import type { Fees } from 'src/lib/types';
+	import { writable } from 'svelte/store';
+
 	import { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
-
-	import { track } from '@vercel/analytics';
-	import { writable } from 'svelte/store';
-	import type { Fees } from 'src/lib/types';
+	import Select, { Option } from '@smui/select';
+	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
+	import LoadingButton from 'src/components/LoadingButton.svelte';
 
 	export let domainName: string;
 	export let tld: string;
