@@ -149,26 +149,11 @@
 		flex-grow: 1;
 	}
 
-	:global(footer) {
-		height: 80px;
-	}
-
-	:global(header) {
-		height: 64px;
-	}
-
 	@media only screen and (max-width: 768px) {
-		:global(header) {
-			height: 56px;
-		}
 		main {
 			display: flex;
 			flex-direction: column;
 			background-color: var(--mdc-theme-background);
-		}
-
-		:global(footer) {
-			height: 88px;
 		}
 	}
 	.testnet {
