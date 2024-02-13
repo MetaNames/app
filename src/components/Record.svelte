@@ -119,9 +119,6 @@
 		}
 
 		.value {
-			span {
-				word-wrap: break-word;
-			}
 			:global(> *) {
 				width: 100%;
 			}
