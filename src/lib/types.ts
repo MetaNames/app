@@ -22,10 +22,3 @@ export interface AccountData {
     }[]
   }
 }
-
-export interface Fees {
-  fees: number
-  symbol: string
-  address: string
-  feesLabel: number
-}

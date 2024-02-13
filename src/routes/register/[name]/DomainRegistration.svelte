@@ -3,10 +3,9 @@
 	import { alertTransactionAndFetchResult, bridgeUrl, getAccountBalance } from '$lib';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
-	import type { BYOC, BYOCSymbol } from '@metanames/sdk';
+	import type { BYOC } from '@metanames/sdk';
 	import { track } from '@vercel/analytics';
 	import { InsufficientBalanceError } from 'src/lib/error';
-	import type { Fees } from 'src/lib/types';
 	import { writable } from 'svelte/store';
 
 	import { Label } from '@smui/button';
@@ -28,7 +27,7 @@
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = fetchFees(domainName, $selectedCoin)
+	$: loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, $selectedCoin);
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
@@ -45,13 +44,6 @@
 		if (years + amount < 1) return;
 
 		years += amount;
-	}
-
-	async function fetchFees(domainName: string, coin: BYOCSymbol) {
-		const response = await fetch(`/api/domains/${domainName}/fees/${coin}`).then(r => r.json())
-
-		if (response.error) alertMessage.set(response.error.message)
-		else return response as Fees
 	}
 
 	async function handleApproveError(error: Error) {
