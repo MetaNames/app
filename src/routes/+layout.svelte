@@ -29,8 +29,6 @@
 	let snackbarTransactionMessage: string;
 	let snackbarMessage: string;
 
-	let theme: 'light' | 'dark';
-
 	$: contractDisabled = config.contractDisabled;
 	$: isTestnet = config.environment === 'test';
 
