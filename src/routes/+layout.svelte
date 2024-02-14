@@ -2,7 +2,6 @@
 	import { dev } from '$app/environment';
 
 	import { inject } from '@vercel/analytics';
-	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 	import Button from '@smui/button';
 	import Banner, { Icon } from '@smui/banner';
@@ -36,7 +35,6 @@
 
 	// Analytics
 	inject({ mode: dev ? 'development' : 'production' });
-	injectSpeedInsights();
 
 	// Snackbars
 	alertTransaction.subscribe((transaction) => {
