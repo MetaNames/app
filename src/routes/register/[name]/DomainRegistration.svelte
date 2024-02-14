@@ -179,11 +179,6 @@
 		text-align: center;
 	}
 
-	.coin .centered {
-		flex-direction: column;
-		align-items: center;
-	}
-
 	.fees,
 	.coin {
 		display: flex;
@@ -202,6 +197,11 @@
 			flex-direction: row;
 			justify-content: space-between;
 			width: 100%;
+		}
+
+		.centered {
+			flex-direction: column;
+			align-items: center;
 		}
 
 		@media (max-width: 768px) {
