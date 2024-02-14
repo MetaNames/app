@@ -18,6 +18,8 @@
 	import Logo from 'src/routes/Logo.svelte';
 	import Footer from 'src/routes/Footer.svelte';
 
+	import favicon from '$lib/assets/images/favicon.png';
+
 	import 'src/styles/app.scss';
 	import 'material-icons/iconfont/filled.css';
 
@@ -56,6 +58,10 @@
 		}, 5000);
 	});
 </script>
+
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
 
 <div class="container">
 	<TopAppBar variant="static">
