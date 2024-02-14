@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { Domain as DomainModel, type IDomain } from '@metanames/sdk';
+	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
 	import CircularProgress from '@smui/circular-progress';
@@ -9,6 +9,7 @@
 	import GoBackButton from 'src/components/GoBackButton.svelte';
 	import { writable } from 'svelte/store';
 	import { alertMessage } from 'src/lib/stores/main';
+	import { metaNamesSdk } from 'src/lib/stores/sdk';
 
 	let domain = writable<DomainModel>();
 	const domainName = $page.params.name;
@@ -16,11 +17,8 @@
 	$: pageName = $domain ? $domain.name + ' | ' : '';
 
 	async function loadDomain() {
-		type DomainResponse = { domain?: IDomain };
-		const domainResponse: DomainResponse = await fetch(`/api/domains/${domainName}`).then((res) =>
-			res.json()
-		);
-		if (domainResponse.domain) domain.set(new DomainModel(domainResponse.domain));
+		const domainResponse = await $metaNamesSdk.domainRepository.find(domainName);
+		if (domainResponse) domain.set(domainResponse);
 		else {
 			alertMessage.set('Domain not found. Register it now!');
 			goto(`/register/${domainName}`, { replaceState: true });
