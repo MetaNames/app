@@ -30,7 +30,10 @@
 		);
 
 		isDomainPresent.set(check.domainPresent);
-		if ($isDomainPresent) return goto(`/domain/${domainName}`, { replaceState: true });
+		if ($isDomainPresent) {
+			alertMessage.set('Domain already registered.');
+			return goto(`/domain/${domainName}`, { replaceState: true });
+		}
 
 		isParentPresent.set(check.parentPresent);
 		if (parentDomainName && !$isParentPresent) {
