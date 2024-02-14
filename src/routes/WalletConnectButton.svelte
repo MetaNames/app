@@ -6,8 +6,8 @@
 	import List, { Item, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
-	import metamaskLogo from '$lib/assets/images/metamask.svg'
-	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.svg'
+	import metamaskLogo from '$lib/assets/images/metamask.png'
+	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.png'
 
 	import 'src/styles/wallet-connect.scss';
 	import Button from '@smui/button';
