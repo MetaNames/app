@@ -6,6 +6,7 @@
 	import Marqueeck from '@arisbh/marqueeck';
 	import { formatDistanceToNow } from 'date-fns';
 	import { fade } from 'svelte/transition';
+	import { fetchApiJson } from 'src/lib/api';
 
 	function formatCreatedAt(date: string) {
 		const parsed = new Date(date);
@@ -13,8 +14,16 @@
 	}
 
 	type DomainProjection = { name: string; createdAt: string };
-	async function loadRecentDomains(): Promise<DomainProjection[]> {
-		return fetch('/api/domains/recent').then(async (res) => await res.json());
+	async function loadRecentDomains() {
+		const response = await fetchApiJson<DomainProjection[]>('/api/domains/recent');
+
+		if ('error' in response) {
+			console.error(response.error);
+
+			return [];
+		}
+
+		return response;
 	}
 </script>
 
@@ -29,21 +38,23 @@
 	</div>
 	<DomainSearch />
 	{#await loadRecentDomains() then recentDomains}
-		<div class="recent-domains" in:fade={{ duration: 500 }}>
-			<h5>Recently registered domains</h5>
-			<div class="content">
-				<Marqueeck>
-					{#each recentDomains as domain (domain.name)}
-						<Card class="domain">
-							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-								<span class="domain-name">{domain.name}</span>
-								<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-							</PrimaryAction>
-						</Card>
-					{/each}
-				</Marqueeck>
+		{#if recentDomains.length > 0}
+			<div class="recent-domains" in:fade={{ duration: 500 }}>
+				<h5>Recently registered domains</h5>
+				<div class="content">
+					<Marqueeck>
+						{#each recentDomains as domain (domain.name)}
+							<Card class="domain">
+								<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+									<span class="domain-name">{domain.name}</span>
+									<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
+								</PrimaryAction>
+							</Card>
+						{/each}
+					</Marqueeck>
+				</div>
 			</div>
-		</div>
+		{/if}
 	{/await}
 </div>
 

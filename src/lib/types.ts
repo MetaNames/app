@@ -22,3 +22,12 @@ export interface AccountData {
     }[]
   }
 }
+
+export interface ApiError {
+  error: string
+}
+
+export interface DomainCheckResponse {
+  domainPresent: boolean
+  parentPresent: boolean
+}

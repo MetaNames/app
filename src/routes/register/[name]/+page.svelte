@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-
 	import { alertMessage } from '$lib/stores/main';
-
-	import CircularProgress from '@smui/circular-progress';
-
-	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
-	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
 	import { page } from '$app/stores';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import { writable } from 'svelte/store';
+	import { fetchApiJson } from 'src/lib/api';
+	import type { DomainCheckResponse } from 'src/lib/types';
+
+	import CircularProgress from '@smui/circular-progress';
+	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
+	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
 
 	const isDomainPresent = writable<boolean>();
 	const isParentPresent = writable<boolean>();
@@ -24,10 +24,12 @@
 	$: tld = analyzed.tld;
 
 	onMount(async () => {
-		type CheckResponse = { domainPresent: boolean; parentPresent: boolean };
-		const check: CheckResponse = await fetch(`/api/domains/${domainName}/check`).then((res) =>
-			res.json()
-		);
+		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${domainName}/check`)
+
+		if ('error' in check) {
+			alertMessage.set(check.error);
+			return goto(`/`, { replaceState: true });
+		}
 
 		isDomainPresent.set(check.domainPresent);
 		if ($isDomainPresent) {
@@ -73,7 +75,7 @@
 		width: 100%;
 		margin: 1rem;
 
-		@media screen and (max-width: 768px){
+		@media screen and (max-width: 768px) {
 			max-width: 90vw;
 			width: initial;
 		}
