@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
-	import { alertMessage } from '$lib/stores/main';
 	import { page } from '$app/stores';
-	import { metaNamesSdk } from 'src/lib/stores/sdk';
-	import { writable } from 'svelte/store';
+	import { alertMessage } from '$lib/stores/main';
 	import { fetchApiJson } from 'src/lib/api';
+	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import type { DomainCheckResponse } from 'src/lib/types';
+	import { writable } from 'svelte/store';
 
+	import type { IDomainAnalyzed } from '@metanames/sdk';
 	import CircularProgress from '@smui/circular-progress';
 	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
 	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
@@ -16,15 +16,28 @@
 	const isParentPresent = writable<boolean>();
 
 	const paramName = $page.params.name;
-	const analyzed = $metaNamesSdk.domainRepository.analyze(paramName);
+	const analyzed = writable<IDomainAnalyzed>();
 
-	$: domainName = analyzed.name;
-	$: parentDomainName = analyzed.parentId;
+	$: domainName = $analyzed?.name;
+	$: parentDomainName = $analyzed?.parentId;
 	$: pageName = domainName + ' | ';
-	$: tld = analyzed.tld;
+	$: tld = $analyzed?.tld;
 
-	onMount(async () => {
-		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${domainName}/check`)
+	async function domainCheck() {
+		try {
+			const domain = $metaNamesSdk.domainRepository.analyze(paramName);
+			analyzed.set(domain);
+		} catch (e) {
+			console.error(e);
+
+			let message = 'Domain not valid'
+			if (e instanceof Error) message = e.message
+			alertMessage.set(message);
+
+			goto(`/`, { replaceState: true });
+		}
+
+		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${domainName}/check`);
 
 		if ('error' in check) {
 			alertMessage.set(check.error);
@@ -42,7 +55,7 @@
 			alertMessage.set('Parent domain not found, please register it first.');
 			return goto(`/register/${parentDomainName}`, { replaceState: true });
 		}
-	});
+	}
 </script>
 
 <svelte:head>
@@ -50,10 +63,10 @@
 </svelte:head>
 
 <div class="content">
-	{#if $isDomainPresent === undefined}
+	<h2>Register</h2>
+	{#await domainCheck()}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-	{:else}
-		<h2>Register</h2>
+	{:then _res}
 		{#if $isParentPresent && parentDomainName}
 			<SubdomainRegistration {domainName} {parentDomainName} />
 		{:else if parentDomainName && !$isParentPresent}
@@ -61,7 +74,7 @@
 		{:else}
 			<DomainRegistration {domainName} {tld} />
 		{/if}
-	{/if}
+	{/await}
 </div>
 
 <style lang="scss">
