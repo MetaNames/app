@@ -41,7 +41,7 @@
 		if (!transaction) return;
 
 		snackbarTransactionMessage = 'New Transaction submitted';
-		transactionSnackbar.open();
+		transactionSnackbar?.open();
 	});
 	alertMessage.subscribe((message) => {
 		if (!message) return;
@@ -49,10 +49,10 @@
 		if (typeof message === 'string') snackbarMessage = message;
 		else snackbarMessage = message.message;
 
-		alertsSnackbar.open();
+		alertsSnackbar?.open();
 
 		setTimeout(() => {
-			alertsSnackbar.close();
+			alertsSnackbar?.close();
 		}, 5000);
 	});
 </script>
