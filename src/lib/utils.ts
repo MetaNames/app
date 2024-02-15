@@ -1,4 +1,4 @@
-import type { ITransactionIntent } from "@metanames/sdk";
+import type { ITransactionIntent, ITransactionResult } from "@metanames/sdk";
 import { alertMessage, alertTransaction } from "./stores/main";
 
 export const formatDate = (date: string | Date) => {
@@ -11,15 +11,17 @@ export const formatDate = (date: string | Date) => {
 	return `${day} ${month}, ${year}`;
 };
 
-export const alertTransactionAndFetchResult = async (intent: ITransactionIntent) => {
-	alertTransaction.set(intent.transactionHash);
+export const alertTransactionAndFetchResult = async (intent: ITransactionIntent): Promise<ITransactionResult> => {
+	const transactionHash = intent.transactionHash;
+	alertTransaction.set(transactionHash);
 
 	return await intent.fetchResult.catch((error) => {
-		let message;
+		let message = 'Something went wrong';
 		if (error && error instanceof Error) message = error.message;
-		else message = 'Something went wrong';
 
 		console.error(error);
 		alertMessage.set(message);
+
+		return { transactionHash, hasError: true, errorMessage: message, eventTrace: [] };
 	})
 }
