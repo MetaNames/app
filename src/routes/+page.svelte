@@ -7,7 +7,8 @@
 	import { formatDistanceToNow } from 'date-fns';
 	import { fade } from 'svelte/transition';
 	import { fetchApiJson } from 'src/lib/api';
-	import { captureException } from '@sentry/sveltekit';
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	function formatCreatedAt(date: string) {
 		const parsed = new Date(date);
@@ -15,17 +16,15 @@
 	}
 
 	type DomainProjection = { name: string; createdAt: string };
-	async function loadRecentDomains() {
+	const recentDomains = writable<DomainProjection[]>();
+
+	onMount(async () => {
 		const response = await fetchApiJson<DomainProjection[]>('/api/domains/recent');
 
 		if ('error' in response) {
 			console.error(response.error);
-
-			return [];
-		}
-
-		return response;
-	}
+		} else recentDomains.set(response);
+	});
 </script>
 
 <svelte:head>
@@ -38,13 +37,12 @@
 		<p class="subtitle">Powered by Partisia</p>
 	</div>
 	<DomainSearch />
-	{#await loadRecentDomains() then recentDomains}
-		{#if recentDomains.length > 0}
+		{#if $recentDomains }
 			<div class="recent-domains" in:fade={{ duration: 500 }}>
 				<h5>Recently registered domains</h5>
 				<div class="content">
 					<Marqueeck>
-						{#each recentDomains as domain (domain.name)}
+						{#each $recentDomains as domain (domain.name)}
 							<Card class="domain">
 								<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
 									<span class="domain-name">{domain.name}</span>
@@ -56,7 +54,6 @@
 				</div>
 			</div>
 		{/if}
-	{/await}
 </div>
 
 <style lang="scss">
