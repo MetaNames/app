@@ -1,3 +1,5 @@
+import type { BYOCSymbol } from "@metanames/sdk";
+
 export enum DomainTab {
   details = 'details',
   settings = 'settings'
@@ -30,4 +32,11 @@ export interface ApiError {
 export interface DomainCheckResponse {
   domainPresent: boolean
   parentPresent: boolean
+}
+
+export interface DomainPaymentParams {
+  domainName: string
+  byocSymbol: BYOCSymbol
+  years: number
+  address: string
 }
