@@ -11,6 +11,7 @@
 	import CircularProgress from '@smui/circular-progress';
 	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
 	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
+	import { onMount } from 'svelte';
 
 	const isDomainPresent = writable<boolean>();
 	const isParentPresent = writable<boolean>();
@@ -23,21 +24,21 @@
 	$: pageName = domainName + ' | ';
 	$: tld = $analyzed?.tld;
 
-	async function domainCheck() {
+	onMount(async () => {
 		try {
 			const domain = $metaNamesSdk.domainRepository.analyze(paramName);
 			analyzed.set(domain);
 		} catch (e) {
 			console.error(e);
 
-			let message = 'Domain not valid'
-			if (e instanceof Error) message = e.message
+			let message = 'Domain not valid';
+			if (e instanceof Error) message = e.message;
 			alertMessage.set(message);
 
 			goto(`/`, { replaceState: true });
 		}
 
-		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${domainName}/check`);
+		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${paramName}/check`);
 
 		if ('error' in check) {
 			alertMessage.set(check.error);
@@ -55,7 +56,7 @@
 			alertMessage.set('Parent domain not found, please register it first.');
 			return goto(`/register/${parentDomainName}`, { replaceState: true });
 		}
-	}
+	});
 </script>
 
 <svelte:head>
@@ -63,10 +64,10 @@
 </svelte:head>
 
 <div class="content">
-	<h2>Register</h2>
-	{#await domainCheck()}
+	{#if $isDomainPresent === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-	{:then _res}
+	{:else}
+		<h2>Register</h2>
 		{#if $isParentPresent && parentDomainName}
 			<SubdomainRegistration {domainName} {parentDomainName} />
 		{:else if parentDomainName && !$isParentPresent}
@@ -74,7 +75,7 @@
 		{:else}
 			<DomainRegistration {domainName} {tld} />
 		{/if}
-	{/await}
+	{/if}
 </div>
 
 <style lang="scss">
