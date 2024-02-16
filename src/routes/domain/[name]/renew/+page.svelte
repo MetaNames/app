@@ -6,8 +6,9 @@
 	import type { DomainPaymentParams } from 'src/lib/types';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import { alertTransactionAndFetchResult } from 'src/lib';
-	import { track } from '@vercel/analytics/*';
+	import { track } from '@vercel/analytics';
 	import { onMount } from 'svelte';
+	import GoBackButton from 'src/components/GoBackButton.svelte';
 
 	export let data: PageData;
 
@@ -53,5 +54,7 @@
 			paymentLabel="Renew domain"
 			{payment}
 		/>
+		<br />
+		<GoBackButton />
 	{/if}
 </div>
