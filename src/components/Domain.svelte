@@ -68,7 +68,7 @@
 						<div class="section">
 							<h5>Profile</h5>
 							<div class="chips">
-								<Chip class="mt-1 mr-1" label="link" value={shortLinkUrl(domain.name)} />
+								<Chip class="mt-1 mr-1" label="link" value={shortLinkUrl(domain.nameWithoutTLD)} />
 								{#if hasProfileRecords}
 									{#each profileRecords as klass}
 										{#if domain.records[klass]}
