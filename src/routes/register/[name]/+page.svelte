@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
 	import { alertMessage } from '$lib/stores/main';
 	import { fetchApiJson } from 'src/lib/api';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
@@ -13,18 +12,19 @@
 	import { onMount } from 'svelte';
 	import DomainPayment from 'src/components/DomainPayment.svelte';
 	import { alertTransactionAndFetchResult } from 'src/lib';
-	import { track } from '@vercel/analytics/*';
+	import { track } from '@vercel/analytics';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	const isDomainPresent = writable<boolean>();
 	const isParentPresent = writable<boolean>();
-
-	const paramName = $page.params.name;
 	const analyzed = writable<IDomainAnalyzed>();
 
 	$: domainName = $analyzed?.name;
 	$: parentDomainName = $analyzed?.parentId;
 	$: pageName = domainName + ' | ';
-	$: tld = $analyzed.tld;
+	$: tld = $analyzed?.tld;
 
 	async function payment(params: DomainPaymentParams) {
 		const transactionIntent = await $metaNamesSdk.domainRepository.register({
@@ -45,24 +45,18 @@
 			byoc: params.byocSymbol
 		});
 
-		goto(`/domain/${domainName}`);
+		return goto(`/domain/${domainName}`);
 	}
 
 	onMount(async () => {
-		try {
-			const domain = $metaNamesSdk.domainRepository.analyze(paramName);
-			analyzed.set(domain);
-		} catch (e) {
-			console.error(e);
-
-			let message = 'Domain not valid';
-			if (e instanceof Error) message = e.message;
-			alertMessage.set(message);
-
-			goto(`/`, { replaceState: true });
+		if ('error' in data) {
+			alertMessage.set(data.error);
+			return goto('/', { replaceState: true });
+		} else {
+			analyzed.set(data.analyzed);
 		}
 
-		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${paramName}/check`);
+		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${$analyzed.name}/check`);
 
 		if ('error' in check) {
 			alertMessage.set(check.error);
@@ -95,12 +89,7 @@
 		{#if $isParentPresent && parentDomainName}
 			<SubdomainRegistration {domainName} {parentDomainName} />
 		{:else}
-			<DomainPayment
-				{domainName}
-				{tld}
-				paymentLabel="Register domain"
-				{payment}
-				/>
+			<DomainPayment {domainName} {tld} paymentLabel="Register domain" {payment} />
 		{/if}
 	{/if}
 </div>
