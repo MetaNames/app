@@ -7,7 +7,7 @@
 	import Tab, { Label } from '@smui/tab';
 	import TabBar from '@smui/tab-bar';
 
-	import { config, formatDate, profileRecords, socialRecords } from '$lib';
+	import { config, formatDate, isValidURL, profileRecords, socialRecords } from '$lib';
 	import { DomainTab } from 'src/lib/types';
 	import Chip from 'src/components/Chip.svelte';
 	import Records from 'src/components/Records.svelte';
@@ -63,11 +63,20 @@
 								<div class="chips">
 									{#each profileRecords as klass}
 										{#if domain.records[klass]}
-											<Chip
-												class="mt-1 mr-1"
-												label={klass}
-												value={domain.records[klass]?.toString() ?? ''}
-											/>
+											{#if klass === 'Uri' && isValidURL(domain.records[klass].toString())}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString() ?? ''}
+													href={domain.records[klass].toString()}
+												/>
+											{:else}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString() ?? ''}
+												/>
+											{/if}
 										{/if}
 									{/each}
 								</div>

@@ -27,3 +27,12 @@ export const alertTransactionAndFetchResult = async (intent: ITransactionIntent)
 		return { transactionHash, hasError: true, errorMessage: message, eventTrace: [] };
 	})
 }
+
+export const isValidURL = (url: string) => {
+	try {
+		new URL(url);
+		return true;
+	} catch {
+		return false;
+	}
+}
