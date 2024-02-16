@@ -43,7 +43,7 @@
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:then domain}
 		<Domain {domain} />
-		<br class="my-1" />
+		<br />
 		<GoBackButton />
 	{/await}
 </div>
