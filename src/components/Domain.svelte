@@ -7,7 +7,14 @@
 	import Tab, { Label } from '@smui/tab';
 	import TabBar from '@smui/tab-bar';
 
-	import { config, formatDate, isValidURL, profileRecords, socialRecords } from '$lib';
+	import {
+		config,
+		formatDate,
+		isValidURL,
+		profileRecords,
+		shortLinkUrl,
+		socialRecords
+	} from '$lib';
 	import { DomainTab } from 'src/lib/types';
 	import Chip from 'src/components/Chip.svelte';
 	import Records from 'src/components/Records.svelte';
@@ -58,10 +65,11 @@
 			<Paper variant="unelevated">
 				<Content>
 					<div class="container">
-						{#if hasProfileRecords}
-							<div class="section">
-								<h5>Profile</h5>
-								<div class="chips">
+						<div class="section">
+							<h5>Profile</h5>
+							<div class="chips">
+								<Chip class="mt-1 mr-1" label="link" value={shortLinkUrl(domain.name)} />
+								{#if hasProfileRecords}
 									{#each profileRecords as klass}
 										{#if domain.records[klass]}
 											{#if klass === 'Uri' && isValidURL(domain.records[klass].toString())}
@@ -80,9 +88,9 @@
 											{/if}
 										{/if}
 									{/each}
-								</div>
+								{/if}
 							</div>
-						{/if}
+						</div>
 						<div class={`section ${hasProfileRecords ? 'mt-3' : ''}`}>
 							<h5>Whois</h5>
 							<div class="chips">
@@ -165,6 +173,7 @@
 
 			h5 {
 				margin: 0;
+				margin-top: 1rem;
 				text-align: start;
 				font-weight: 800;
 				word-wrap: break-word;
