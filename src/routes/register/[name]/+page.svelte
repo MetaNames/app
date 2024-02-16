@@ -4,14 +4,16 @@
 	import { alertMessage } from '$lib/stores/main';
 	import { fetchApiJson } from 'src/lib/api';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
-	import type { DomainCheckResponse } from 'src/lib/types';
+	import type { DomainCheckResponse, DomainPaymentParams } from 'src/lib/types';
 	import { writable } from 'svelte/store';
 
 	import type { IDomainAnalyzed } from '@metanames/sdk';
 	import CircularProgress from '@smui/circular-progress';
-	import DomainRegistration from 'src/routes/register/[name]/DomainRegistration.svelte';
 	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
 	import { onMount } from 'svelte';
+	import DomainPayment from 'src/components/DomainPayment.svelte';
+	import { alertTransactionAndFetchResult } from 'src/lib';
+	import { track } from '@vercel/analytics/*';
 
 	const isDomainPresent = writable<boolean>();
 	const isParentPresent = writable<boolean>();
@@ -22,7 +24,29 @@
 	$: domainName = $analyzed?.name;
 	$: parentDomainName = $analyzed?.parentId;
 	$: pageName = domainName + ' | ';
-	$: tld = $analyzed?.tld;
+	$: tld = $analyzed.tld;
+
+	async function payment(params: DomainPaymentParams) {
+		const transactionIntent = await $metaNamesSdk.domainRepository.register({
+			domain: params.domainName,
+			to: params.address,
+			subscriptionYears: params.years,
+			byocSymbol: params.byocSymbol,
+			tokenUri: params.domainName
+		});
+
+		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
+		if (hasError) throw new Error('Failed to register domain.');
+		else alertMessage.set('Domain registered successfully!');
+
+		track('domain_registered', {
+			domain: domainName,
+			years: params.years,
+			byoc: params.byocSymbol
+		});
+
+		goto(`/domain/${domainName}`);
+	}
 
 	onMount(async () => {
 		try {
@@ -63,35 +87,20 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content">
+<div class="content checkout">
 	{#if $isDomainPresent === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}
-		<h2>Register</h2>
+		<h2 class="mt-0">Register</h2>
 		{#if $isParentPresent && parentDomainName}
 			<SubdomainRegistration {domainName} {parentDomainName} />
-		{:else if parentDomainName && !$isParentPresent}
-			<DomainRegistration domainName={parentDomainName} {tld} />
 		{:else}
-			<DomainRegistration {domainName} {tld} />
+			<DomainPayment
+				{domainName}
+				{tld}
+				paymentLabel="Register domain"
+				{payment}
+				/>
 		{/if}
 	{/if}
 </div>
-
-<style lang="scss">
-	h2 {
-		margin-top: 0;
-		text-align: center;
-	}
-
-	.content {
-		max-width: 48rem;
-		width: 100%;
-		margin: 1rem;
-
-		@media screen and (max-width: 768px) {
-			max-width: 90vw;
-			width: initial;
-		}
-	}
-</style>
