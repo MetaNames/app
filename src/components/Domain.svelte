@@ -13,6 +13,7 @@
 	import Records from 'src/components/Records.svelte';
 	import { walletAddress } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
+	import Button from '@smui/button/src/Button.svelte';
 
 	export let domain: Domain;
 	export let isTld: boolean = false;
@@ -138,6 +139,8 @@
 						{records}
 						repository={domain.getRecordRepository($metaNamesSdk)}
 					/>
+					<br />
+					<Button href={`/domain/${domain.name}/renew`} variant="raised">Renew domain</Button>
 				</Content>
 			</Paper>
 		{/if}
