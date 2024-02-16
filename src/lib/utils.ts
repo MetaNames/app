@@ -1,5 +1,6 @@
 import type { ITransactionIntent, ITransactionResult } from "@metanames/sdk";
 import { alertMessage, alertTransaction } from "./stores/main";
+import { captureException } from "@sentry/sveltekit";
 
 export const formatDate = (date: string | Date) => {
 	if (typeof date === 'string') date = new Date(date);
@@ -19,6 +20,7 @@ export const alertTransactionAndFetchResult = async (intent: ITransactionIntent)
 		let message = 'Something went wrong';
 		if (error && error instanceof Error) message = error.message;
 
+		captureException(error);
 		console.error(error);
 		alertMessage.set(message);
 

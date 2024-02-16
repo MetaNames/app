@@ -1,3 +1,4 @@
+import { captureException } from "@sentry/sveltekit";
 import type { ApiError } from "./types";
 
 export async function fetchApiJson<T>(url: string, options: RequestInit = {}): Promise<T | ApiError> {
@@ -10,12 +11,16 @@ export async function fetchApiJson<T>(url: string, options: RequestInit = {}): P
       let message = 'Something went wrong'
       if (json && json.error) message = json.error;
 
+      captureException(json, { extra: { url, options, response } });
+
       return { error: message }
     }
 
     return json
   } catch (error) {
     console.error(error)
+
+    captureException(error, { extra: { url, options, response } });
 
     return { error: 'Something went wrong' }
   }

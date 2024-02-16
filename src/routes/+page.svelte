@@ -7,6 +7,7 @@
 	import { formatDistanceToNow } from 'date-fns';
 	import { fade } from 'svelte/transition';
 	import { fetchApiJson } from 'src/lib/api';
+	import { captureException } from '@sentry/sveltekit';
 
 	function formatCreatedAt(date: string) {
 		const parsed = new Date(date);

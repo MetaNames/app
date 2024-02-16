@@ -1,18 +1,20 @@
 <script lang="ts">
 	import { alertMessage } from '$lib/stores/main';
+	import { captureException } from '@sentry/sveltekit';
 	import Button, { Icon, Label } from '@smui/button';
 	import CircularProgress from '@smui/circular-progress';
 
 	let className = '';
 	export { className as class };
 	export let onClick: () => Promise<void>;
-	export let onError: (exception: any) => Promise<void> = async (error) => {
+	export let onError: (error: any) => Promise<void> = async (error) => {
 		let message;
 		if (error && error instanceof Error) message = error.message;
 		else message = 'Something went wrong';
 
+		captureException(error);
 		console.error(error);
-		alertMessage.set(message)
+		alertMessage.set(message);
 	};
 	export let disabled = false;
 	export let variant: 'text' | 'raised' | 'unelevated' | 'outlined' = 'raised';
