@@ -7,13 +7,9 @@
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import { alertTransactionAndFetchResult } from 'src/lib';
 	import { track } from '@vercel/analytics/*';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
-
-	if ('error' in data) {
-		alertMessage.set(data.error);
-		goto('/', { replaceState: true });
-	}
 
 	async function payment(params: DomainPaymentParams) {
 		const transactionIntent = await $metaNamesSdk.domainRepository.renew({
@@ -23,18 +19,25 @@
 			subscriptionYears: params.years
 		});
 
-    const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
-    if (hasError) throw new Error('Failed to renew domain.');
-    else alertMessage.set('Domain renewed successfully!');
+		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
+		if (hasError) throw new Error('Failed to renew domain.');
+		else alertMessage.set('Domain renewed successfully!');
 
-    track('domain_renewed', {
-      domain: params.domainName,
-      years: params.years,
-      byoc: params.byocSymbol
-    });
+		track('domain_renewed', {
+			domain: params.domainName,
+			years: params.years,
+			byoc: params.byocSymbol
+		});
 
-    goto(`/domain/${params.domainName}`)
+		return goto(`/domain/${params.domainName}`);
 	}
+
+	onMount(async () => {
+		if ('error' in data) {
+			alertMessage.set(data.error);
+			return goto('/', { replaceState: true });
+		}
+	});
 </script>
 
 <svelte:head>
