@@ -151,7 +151,7 @@
 					<br />
 					<h5 class="mt-0 mb-1">Actions</h5>
 					<Button class="mt-1 mr-1 mobile--mr-0" href={`/domain/${domain.name}/renew`} variant="raised">Renew</Button>
-					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised">Trasfer</Button>
+					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised">Transfer</Button>
 				</Content>
 			</Paper>
 		{/if}
