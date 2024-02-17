@@ -51,9 +51,7 @@
 			<h4 class="domain-title">{domainName}</h4>
 
 			<div class="content">
-				<Chip class="flex" iconName="supervisor_account" label="Parent">
-					<a href={parentLink}>{parentDomainName}</a>
-				</Chip>
+				<Chip class="flex mt-2" label="Parent" value={parentDomainName} href={parentLink} />
 			</div>
 
 			<div class="fees">
