@@ -10,6 +10,13 @@ html {
 	box-sizing: border-box;
 }
 
+.flex-content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
 .content {
 	align-self: center;
 	flex-grow: 1;
