@@ -19,7 +19,7 @@
 			if (openInNewTab) window.open(href, '_blank');
 			else goto(value);
 		} else {
-			navigator.clipboard.writeText(value);
+			navigator.clipboard.writeText(href ?? value);
 			icon.set('done');
 			setTimeout(() => icon.set('content_copy'), 1000);
 		}
