@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { track } from '@vercel/analytics';
-	import { alertTransactionAndFetchResult } from 'src/lib';
+	import { alertTransactionAndFetchResult, validAddress } from 'src/lib';
 	import { alertMessage, walletAddress } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import { onMount } from 'svelte';
@@ -25,7 +25,7 @@
 	$: if (address) {
 		errors = [];
 		if (!address) errors.push('Address is required');
-		if (address.length !== 42) errors.push('Address is invalid');
+		if (!validAddress(address)) errors.push('Address is invalid');
 	}
 
 	async function transfer() {

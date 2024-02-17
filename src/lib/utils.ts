@@ -36,3 +36,9 @@ export const isValidURL = (url: string) => {
 		return false;
 	}
 }
+
+export const validAddress = (address: string) => {
+	// Check that address contains only alphanumeric characters and is 42 characters long
+	const alphanumeric = /^[a-z0-9]+$/i;
+	return address.length === 42 && alphanumeric.test(address);
+}
