@@ -1,13 +1,14 @@
 
 import { metaNamesSdk } from "$lib/server";
 import { json } from "@sveltejs/kit";
-import { proposalsWalletPrivateKey, tldMigrationProposalContractAddress } from "src/lib/server/config";
+import { config } from "src/lib";
+import { proposalsWalletPrivateKey } from "src/lib/server/config";
 import { actionAddVotersPayload } from "src/lib/server/proposal";
 
 export async function GET() {
   metaNamesSdk.setSigningStrategy('privateKey', proposalsWalletPrivateKey)
 
-  const votingContractState = await metaNamesSdk.contractRepository.getState({ contractAddress: tldMigrationProposalContractAddress })
+  const votingContractState = await metaNamesSdk.contractRepository.getState({ contractAddress: config.tldMigrationProposalContractAddress })
   const fields = votingContractState.fieldsMap
 
   const deadline = fields.get('deadline_utc_millis')?.asBN().toNumber()
@@ -16,13 +17,13 @@ export async function GET() {
   const owners = await metaNamesSdk.domainRepository.getOwners()
   const voters = fields.get('voters')?.setValue().values.map((voter) => voter.addressValue().value.toString('hex')) ?? []
 
-  const newVoters = owners.filter((owner) => !voters.includes(owner))
+  const newVoters = owners.filter((owner) => !voters.includes(owner)).slice(0, 100)
   if (newVoters.length === 0) return json({ newVoters }, { status: 200 })
 
-  const votingContract = await metaNamesSdk.contractRepository.getContract({ contractAddress: tldMigrationProposalContractAddress })
+  const votingContract = await metaNamesSdk.contractRepository.getContract({ contractAddress: config.tldMigrationProposalContractAddress })
   const payload = actionAddVotersPayload(votingContract.abi, newVoters)
 
-  const { transactionHash, fetchResult } = await metaNamesSdk.contractRepository.createTransaction({ contractAddress: tldMigrationProposalContractAddress, payload, gasCost: 'low' })
+  const { transactionHash, fetchResult } = await metaNamesSdk.contractRepository.createTransaction({ contractAddress: config.tldMigrationProposalContractAddress, payload, gasCost: 'low' })
 
   metaNamesSdk.resetSigningStrategy()
 
