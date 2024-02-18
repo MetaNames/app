@@ -11,6 +11,16 @@ export const actionAddVotersPayload = (contractAbi: ContractAbi, voters: string[
   return builderToBytesBe(rpc)
 }
 
+export const actionRemoveVotersPayload = (contractAbi: ContractAbi, voters: string[]): Buffer => {
+  if (!contractAbi.getFunctionByName('remove_voters')) throw new Error('Function add_voters not found in contract abi')
+
+  const rpc = new FnRpcBuilder('remove_voters', contractAbi)
+  const addresses = rpc.addVec()
+  voters.map(voter => addresses.addAddress(Buffer.from(voter, 'hex')))
+
+  return builderToBytesBe(rpc)
+}
+
 const builderToBytesBe = (rpc: FnRpcBuilder) => {
   const bitOutput = new BigEndianByteOutput()
   const abiOutputBits = new AbiOutputBytes(bitOutput)

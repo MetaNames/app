@@ -3,6 +3,10 @@
     {
       "path": "/api/proposals/voters/add",
       "schedule": "5 * * * *"
+    },
+    {
+      "path": "/api/proposals/voters/remove",
+      "schedule": "5 * * * *"
     }
   ]
 }
