@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/proposals/voters/add",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/proposals/voters/remove",
+      "schedule": "*/10 * * * *"
+    }
+  ]
+}
