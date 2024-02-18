@@ -23,12 +23,9 @@ export async function GET() {
   const votingContract = await metaNamesSdk.contractRepository.getContract({ contractAddress: config.tldMigrationProposalContractAddress })
   const payload = actionAddVotersPayload(votingContract.abi, newVoters)
 
-  const { transactionHash, fetchResult } = await metaNamesSdk.contractRepository.createTransaction({ contractAddress: config.tldMigrationProposalContractAddress, payload, gasCost: 'low' })
+  const { transactionHash } = await metaNamesSdk.contractRepository.createTransaction({ contractAddress: config.tldMigrationProposalContractAddress, payload, gasCost: 'medium' })
 
   metaNamesSdk.resetSigningStrategy()
 
-  const result = await fetchResult
-
-
-  return json({ newVoters, transactionHash, result })
+  return json({ newVoters, transactionHash  })
 }
