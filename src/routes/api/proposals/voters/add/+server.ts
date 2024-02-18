@@ -17,7 +17,7 @@ export async function GET() {
   const owners = await metaNamesSdk.domainRepository.getOwners()
   const voters = fields.get('voters')?.setValue().values.map((voter) => voter.addressValue().value.toString('hex')) ?? []
 
-  const newVoters = owners.filter((owner) => !voters.includes(owner)).slice(0, 100)
+  const newVoters = owners.filter((owner) => !voters.includes(owner)).slice(0, 50)
   if (newVoters.length === 0) return json({ newVoters }, { status: 200 })
 
   const votingContract = await metaNamesSdk.contractRepository.getContract({ contractAddress: config.tldMigrationProposalContractAddress })
