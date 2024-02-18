@@ -3,7 +3,7 @@ import { metaNamesSdk } from "$lib/server";
 import { json } from "@sveltejs/kit";
 import { config } from "src/lib";
 import { proposalsWalletPrivateKey } from "src/lib/server/config";
-import { actionAddVotersPayload } from "src/lib/server/proposal";
+import { actionAddVotersPayload } from "src/lib/proposal";
 
 export async function GET() {
   metaNamesSdk.setSigningStrategy('privateKey', proposalsWalletPrivateKey)
