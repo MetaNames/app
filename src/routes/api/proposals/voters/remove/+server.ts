@@ -16,18 +16,15 @@ export async function GET() {
   const owners = await metaNamesSdk.domainRepository.getOwners()
   const voters = fields.get('voters')?.setValue().values.map((voter) => voter.addressValue().value.toString('hex')) ?? []
 
-  const votersToRemove = voters.filter((voter) => !owners.includes(voter))
+  const votersToRemove = voters.filter((voter) => !owners.includes(voter)).slice(0, 50)
   if (votersToRemove.length === 0) return json({ newVoters: votersToRemove }, { status: 200 })
 
   const votingContract = await metaNamesSdk.contractRepository.getContract({ contractAddress: tldMigrationProposalContractAddress })
   const payload = actionRemoveVotersPayload(votingContract.abi, votersToRemove)
 
-  const { transactionHash, fetchResult } = await metaNamesSdk.contractRepository.createTransaction({ contractAddress: tldMigrationProposalContractAddress, payload, gasCost: 'low' })
+  const { transactionHash } = await metaNamesSdk.contractRepository.createTransaction({ contractAddress: tldMigrationProposalContractAddress, payload, gasCost: 'low' })
 
   metaNamesSdk.resetSigningStrategy()
-
-  const result = await fetchResult
-
 
   return json({ newVoters: votersToRemove, transactionHash, result })
 }
