@@ -1,4 +1,4 @@
-import { FnRpcBuilder, type ContractAbi, AbiOutputBytes } from "@partisiablockchain/abi-client"
+import { FnRpcBuilder, type ContractAbi, AbiOutputBytes, ScValueStruct } from "@partisiablockchain/abi-client"
 import { BigEndianByteOutput } from "@secata-public/bitmanipulation-ts"
 
 export const actionAddVotersPayload = (contractAbi: ContractAbi, voters: string[]): Buffer => {
@@ -28,6 +28,13 @@ export const actionVotePayload = (contractAbi: ContractAbi, vote: boolean): Buff
   rpc.addBool(vote)
 
   return builderToBytesBe(rpc)
+}
+
+export const getDeadline = (contractState: ScValueStruct) => {
+  const deadline = contractState.fieldsMap.get('deadline_utc_millis')?.asBN().toNumber()
+  if (!deadline) throw new Error('Deadline not found in contract state')
+
+  return deadline
 }
 
 const builderToBytesBe = (rpc: FnRpcBuilder) => {

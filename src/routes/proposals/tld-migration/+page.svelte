@@ -9,9 +9,20 @@
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import { alertTransactionAndFetchResult, config } from 'src/lib';
 	import { alertMessage } from 'src/lib/stores/main';
+	import type { PageData } from './$types';
+	import Timer from './Timer.svelte';
+
+	export let data: PageData;
 
 	let options = ['Yes', 'No'];
 	let selected = options[0];
+	let voteEnabled = true;
+
+	$: countFrom = data.deadlineInSeconds - Math.ceil(Date.now() / 1000);
+
+	function timesUp() {
+		voteEnabled = false;
+	}
 
 	async function vote() {
 		const contract = await $metaNamesSdk.contractRepository.getContract({
@@ -33,21 +44,22 @@
 </svelte:head>
 
 <div class="content checkout">
-	<h2 class="mt-0">Migration Proposal</h2>
 	<Card class="w-100 flex-content">
 		<Content>
-			<h4>Migrate from .META to .MPC</h4>
+			<h3>TLD Migration Proposal</h3>
 			<p>
-				Learn about the proposal to migrate Top Level Domains from .META to .MPC in the
+				The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to <code>.MPC</code>. learn more in the
 				<a href="https://docs.metanames.app" target="_blank"> <b>documentation</b></a>
 			</p>
 			<p>
 				<b>Ownership of a domain is required to vote</b>
 			</p>
-			<p>
+			<p class="subtitle">
 				Please allow a minimum of 10 minutes after purchasing a domain before casting your vote.
 			</p>
-			<p class="question">Do you want to migrate the TLD from .META to .MPC?</p>
+			<h4>Proposal countdown</h4>
+			<Timer class="timer" {countFrom} on:timesup={timesUp} />
+			<p class="question">Do you want to migrate the TLD from <code>.META</code> to <code>.MPC</code>?</p>
 			<div class="options">
 				{#each options as option}
 					<FormField>
@@ -57,7 +69,7 @@
 				{/each}
 			</div>
 			<ConnectionRequired class="mt-1">
-				<LoadingButton onClick={vote} variant="raised">Vote</LoadingButton>
+				<LoadingButton disabled={!voteEnabled} onClick={vote} variant="raised">Vote</LoadingButton>
 			</ConnectionRequired>
 		</Content>
 	</Card>
@@ -66,8 +78,20 @@
 </div>
 
 <style>
-	h4 {
+	h3, h4 {
 		margin: 1.5rem 0;
+	}
+
+	:global(.timer) {
+		font-family: monospace;
+		font-weight: bold;
+		padding: 0 0.3em;
+		border-radius: 0.3em;
+		font-size: larger;
+	}
+
+	.subtitle {
+		font-size: smaller;
 	}
 
 	.question {
