@@ -2171,7 +2171,7 @@
     bn.js "^5.2.0"
     prettier "^2.6.2"
 
-"@secata-public/bitmanipulation-ts@^3.0.6":
+"@secata-public/bitmanipulation-ts@^3.0.6", "@secata-public/bitmanipulation-ts@^3.0.7":
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@secata-public/bitmanipulation-ts/-/bitmanipulation-ts-3.0.7.tgz#890a793e5aa91659398c36cf81784b1d45d60e12"
   integrity sha512-49cjY4WX7rWn9ArCY4aAfuNLr8LhjOnfREPkmekcHzZYgR4LTk/Ve1G7ah9joiWzizBGs+oa1kRaQjbJ0rrnQg==
