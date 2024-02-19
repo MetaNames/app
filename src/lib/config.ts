@@ -24,7 +24,7 @@ const websiteUrl = `${import.meta.env.VITE_WEBSITE_URL}`;
 const contractDisabled = `${import.meta.env.VITE_CONTRACT_DISABLED}` == 'true';
 
 const tldMigrationProposal = {
-  'mainnet': '02bdce8a432de1de5e8d0d413517c2e10ebb0d3e80',
+  'mainnet': '02a061575414522a248c90f1dd59d676142e73d349',
   'testnet': '021e68773e9bd5fc28381802c4b24899499f039ea9'
 };
 const tldMigrationProposalContractAddress = environment === 'prod' ? tldMigrationProposal.mainnet : tldMigrationProposal.testnet;
