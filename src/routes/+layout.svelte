@@ -3,6 +3,8 @@
 
 	import { inject } from '@vercel/analytics';
 
+	import { page } from '$app/stores';
+
 	import Button from '@smui/button';
 	import Banner, { Icon } from '@smui/banner';
 	import IconButton from '@smui/icon-button';
@@ -32,6 +34,8 @@
 
 	$: contractDisabled = config.contractDisabled;
 	$: isTestnet = config.environment === 'test';
+
+	$: currentPath = $page.url.pathname;
 
 	// Analytics
 	inject({ mode: dev ? 'development' : 'production' });
@@ -107,6 +111,18 @@
 				<Label slot="label">Contract is temporarily disabled for updates</Label>
 				<svelte:fragment slot="actions">
 					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
+				</svelte:fragment>
+			</Banner>
+		{/if}
+		{#if currentPath !== '/proposals/tld-migration'}
+			<Banner open={true} centered={true} mobileStacked={true}>
+				<Icon slot="icon" class="material-icons">help</Icon>
+				<Label slot="label"
+					>Official proposal to migrate the Top Level Domain (TLD) from <code>.meta</code> to
+					<code>.mpc</code></Label
+				>
+				<svelte:fragment slot="actions">
+					<Button href="/proposals/tld-migration" target="_blank">Vote now</Button>
 				</svelte:fragment>
 			</Banner>
 		{/if}
