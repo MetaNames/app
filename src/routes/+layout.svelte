@@ -110,6 +110,13 @@
 				</svelte:fragment>
 			</Banner>
 		{/if}
+			<Banner open={true} centered={true} mobileStacked={true}>
+				<Icon slot="icon" class="material-icons">help</Icon>
+				<Label slot="label">Official proposal to migrate the Top Level Domain (TLD) from <code>.meta</code> to <code>.mpc</code></Label>
+				<svelte:fragment slot="actions">
+					<Button href="/proposals/tld-migration" target="_blank">Vote now</Button>
+				</svelte:fragment>
+			</Banner>
 		<slot />
 	</main>
 
