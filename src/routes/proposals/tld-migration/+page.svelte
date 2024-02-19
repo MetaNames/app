@@ -48,7 +48,9 @@
 		<Content>
 			<h3>TLD Migration Proposal</h3>
 			<p>
-				The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to <code>.MPC</code>. learn more in the
+				The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to <code>.MPC</code>.
+				<br />
+				Learn more in the
 				<a href="https://docs.metanames.app/proposals/transition-from-.meta-to-.mpc" target="_blank"> <b>documentation</b></a>
 			</p>
 			<p>
