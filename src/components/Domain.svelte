@@ -67,7 +67,7 @@
 				<Content>
 					<div class="container">
 						<div class="section">
-							<h5>Profile</h5>
+							<h5 class="mt-0">Profile</h5>
 							<div class="chips">
 								<Chip class="mt-1 mr-1" type="text" label="link" value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))} href={shortLinkUrl(domain.nameWithoutTLD)} ellipsis />
 								{#if hasProfileRecords}
