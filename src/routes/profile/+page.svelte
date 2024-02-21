@@ -14,9 +14,7 @@
 	let search = '';
 
 	$: if (search !== '') {
-		domainsFiltered = domains.filter((domain) =>
-			domain.name.toLowerCase().startsWith(search.toLowerCase())
-		);
+		domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
 	}
 
 	walletAddress.subscribe(async (address) => {
@@ -31,6 +29,15 @@
 	function cleanSearch() {
 		search = '';
 		domainsFiltered = domains;
+	}
+
+	function isFuzzyMatch(domain: string, search: string, threshold = 2) {
+		const trimmedDomain = domain.trim().toLowerCase();
+		const trimmedSearch = search.trim().toLowerCase();
+
+		return (
+			trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch) || false
+		);
 	}
 </script>
 
