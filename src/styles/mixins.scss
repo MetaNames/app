@@ -18,12 +18,14 @@ $types: (top, bottom, left, right);
 @each $size in $amounts {
 	.mx-#{$size} {
 		margin-left: #{$size * 0.8}em !important;
+		margin-right: #{$size * 0.8}em !important;
 	}
 }
 
 @each $size in $amounts {
 	.my-#{$size} {
 		margin-top: #{$size * 0.8}em !important;
+		margin-bottom: #{$size * 0.8}em !important;
 	}
 }
 
@@ -37,6 +39,20 @@ $types: (top, bottom, left, right);
 
 .my-auto {
 	margin-top: auto !important;
+}
+
+@each $size in $amounts {
+	.px-#{$size} {
+		padding-left: #{$size * 0.8}em !important;
+		padding-right: #{$size * 0.8}em !important;
+	}
+}
+
+@each $size in $amounts {
+	.py-#{$size} {
+		padding-top: #{$size * 0.8}em !important;
+		padding-bottom: #{$size * 0.8}em !important;
+	}
 }
 
 $percentages: (20%, 40%, 60%, 80%);
