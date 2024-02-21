@@ -65,7 +65,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@metanames/sdk": "^5.6.1",
+		"@metanames/sdk": "^5.7.0",
 		"@partisiablockchain/abi-client": "^3.30.0",
 		"@secata-public/bitmanipulation-ts": "^3.0.7",
 		"@sentry/profiling-node": "^7.101.0",
