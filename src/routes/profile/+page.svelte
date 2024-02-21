@@ -5,18 +5,33 @@
 
 	import Paper from '@smui/paper';
 	import DomainsTable from './DomainsTable.svelte';
+	import Textfield from '@smui/textfield';
+	import IconButton from '@smui/icon-button';
 
-	let domains: Domain[] = []
+	let domains: Domain[] = [];
+	let domainsFiltered: Domain[] = [];
 	let loaded = false;
+	let search = '';
+
+	$: if (search !== '') {
+		domainsFiltered = domains.filter((domain) =>
+			domain.name.toLowerCase().includes(search.toLowerCase())
+		);
+	}
 
 	walletAddress.subscribe(async (address) => {
 		if (!address) return;
 
 		loaded = false;
 		domains = await $metaNamesSdk.domainRepository.findByOwner(address);
-		console.log(domains)
+		domainsFiltered = domains;
 		loaded = true;
 	});
+
+	function cleanSearch() {
+		search = '';
+		domainsFiltered = domains;
+	}
 </script>
 
 <div class="profile content">
@@ -24,7 +39,20 @@
 		<div class="paper-content">
 			<h3>My Domains</h3>
 			{#if $walletConnected}
-			<DomainsTable {domains} {loaded} />
+				<Textfield
+					class="my-1"
+					label="Search"
+					bind:value={search}
+					variant="outlined"
+					withTrailingIcon
+				>
+					<svelte:fragment slot="trailingIcon">
+						<div class="close-icon">
+							<IconButton class="material-icons" on:click={cleanSearch}>cancel</IconButton>
+						</div>
+					</svelte:fragment>
+				</Textfield>
+				<DomainsTable domains={domainsFiltered} {loaded} />
 			{:else}
 				<p>Connect your wallet to see your domains</p>
 			{/if}
@@ -33,6 +61,10 @@
 </div>
 
 <style lang="scss">
+	.close-icon {
+		align-self: center;
+	}
+
 	.profile {
 		width: 70vw;
 		margin: 2rem auto;
