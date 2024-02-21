@@ -31,7 +31,7 @@
 		domainsFiltered = domains;
 	}
 
-	function isFuzzyMatch(domain: string, search: string, threshold = 2) {
+	function isFuzzyMatch(domain: string, search: string) {
 		const trimmedDomain = domain.trim().toLowerCase();
 		const trimmedSearch = search.trim().toLowerCase();
 
