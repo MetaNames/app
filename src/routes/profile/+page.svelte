@@ -35,9 +35,9 @@
 		const trimmedDomain = domain.trim().toLowerCase();
 		const trimmedSearch = search.trim().toLowerCase();
 
-		return (
-			trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch) || false
-		);
+		if (trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch))
+			return true;
+		else false;
 	}
 </script>
 
