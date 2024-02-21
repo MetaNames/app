@@ -15,7 +15,7 @@
 
 	$: if (search !== '') {
 		domainsFiltered = domains.filter((domain) =>
-			domain.name.toLowerCase().includes(search.toLowerCase())
+			domain.name.toLowerCase().startsWith(search.toLowerCase())
 		);
 	}
 
