@@ -16,21 +16,17 @@
 
 	$: pageName = $domain ? $domain.name + ' | ' : '';
 
-	async function loadDomain() {
+	onMount(async () => {
+		const loweredDomainName = domainName.toLocaleLowerCase();
+		if (loweredDomainName !== domainName)
+			goto(`/domain/${loweredDomainName}`, { replaceState: true });
+
 		const domainResponse = await $metaNamesSdk.domainRepository.find(domainName);
 		if (domainResponse) domain.set(domainResponse);
 		else {
 			alertMessage.set('Domain not found. Register it now!');
 			goto(`/register/${domainName}`, { replaceState: true });
 		}
-
-		return $domain;
-	}
-
-	onMount(async () => {
-		const loweredDomainName = domainName.toLocaleLowerCase();
-		if (loweredDomainName !== domainName)
-			goto(`/domain/${loweredDomainName}`, { replaceState: true });
 	});
 </script>
 
@@ -39,13 +35,13 @@
 </svelte:head>
 
 <div class="content domain">
-	{#await loadDomain()}
+	{#if !$domain}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-	{:then domain}
-		<Domain {domain} />
+	{:else if $domain}
+		<Domain domain={$domain} />
 		<br />
 		<GoBackButton />
-	{/await}
+	{/if}
 </div>
 
 <style lang="scss">
