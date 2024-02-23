@@ -19,6 +19,7 @@
 	let voteEnabled = true;
 
 	$: countFrom = data.deadlineInSeconds - Math.ceil(Date.now() / 1000);
+	$: proposalPassed = data.result.approved > data.result.rejected;
 
 	function timesUp() {
 		voteEnabled = false;
@@ -48,31 +49,60 @@
 		<Content>
 			<h3>TLD Migration Proposal</h3>
 			<p>
-				The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to <code>.MPC</code>.
+				The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to
+				<code>.MPC</code>.
 				<br />
 				Learn more in the
-				<a href="https://docs.metanames.app/proposals/transition-from-.meta-to-.mpc" target="_blank"> <b>documentation</b></a>
+				<a
+					href="https://docs.metanames.app/proposals/transition-from-.meta-to-.mpc"
+					target="_blank"
+				>
+					<b>documentation</b></a
+				>
 			</p>
-			<p>
-				<b>Ownership of a domain is required to vote</b>
-			</p>
-			<p class="subtitle">
-				Please allow a minimum of 10 minutes after purchasing a domain before casting your vote.
-			</p>
-			<h4>Proposal countdown</h4>
-			<Timer class="timer" {countFrom} on:timesup={timesUp} />
-			<p class="question">Do you want to migrate the TLD from <code>.META</code> to <code>.MPC</code>?</p>
-			<div class="options">
-				{#each options as option}
-					<FormField>
-						<Radio bind:group={selected} value={option} />
-						<span slot="label">{option}</span>
-					</FormField>
-				{/each}
-			</div>
-			<ConnectionRequired class="mt-1">
-				<LoadingButton disabled={!voteEnabled} onClick={vote} variant="raised">Vote</LoadingButton>
-			</ConnectionRequired>
+			{#if voteEnabled}
+				<p>
+					<b>Ownership of a domain is required to vote</b>
+				</p>
+				<p class="subtitle">
+					Please allow a minimum of 10 minutes after purchasing a domain before casting your vote.
+				</p>
+				<h4>Proposal countdown</h4>
+				<Timer class="timer" {countFrom} on:timesup={timesUp} />
+				<p class="question">
+					Do you want to migrate the TLD from <code>.META</code> to <code>.MPC</code>?
+				</p>
+				<div class="options">
+					{#each options as option}
+						<FormField>
+							<Radio bind:group={selected} value={option} />
+							<span slot="label">{option}</span>
+						</FormField>
+					{/each}
+				</div>
+				<ConnectionRequired class="mt-1">
+					<LoadingButton disabled={!voteEnabled} onClick={vote} variant="raised">Vote</LoadingButton
+					>
+				</ConnectionRequired>
+			{:else}
+				<h4 class="mb-1">Voting has ended</h4>
+				<h5 class="mt-0 mb-0">Results</h5>
+				<p>
+					<em>Yes</em>: {data.result.approved}
+				</p>
+				<p>
+					<em>No</em>: {data.result.rejected}
+				</p>
+				<p class="title">
+					<b>
+						{#if proposalPassed}
+							The proposal has passed
+						{:else}
+							The proposal has not passed
+						{/if}
+					</b>
+				</p>
+			{/if}
 		</Content>
 	</Card>
 	<br />
@@ -80,7 +110,8 @@
 </div>
 
 <style>
-	h3, h4 {
+	h3,
+	h4 {
 		margin: 1.5rem 0;
 	}
 
@@ -103,5 +134,9 @@
 
 	.options > :global(*) {
 		margin: 0 1rem;
+	}
+
+	.title {
+		font-size: larger;
 	}
 </style>

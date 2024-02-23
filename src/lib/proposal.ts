@@ -37,6 +37,23 @@ export const getDeadline = (contractState: ScValueStruct) => {
   return deadline
 }
 
+export const getVotesResult = (contractState: ScValueStruct) => {
+  const votes = contractState.fieldsMap.get('votes')?.avlTreeMapValue()
+  if (!votes) throw new Error('Results not found in contract state')
+  const votesMap = votes.map
+  if (!votesMap) throw new Error('Results map not found in contract state')
+
+  const result = { approved: 0, rejected: 0 }
+  votesMap.forEach((vote) => {
+    const approved = vote.boolValue()
+
+    if (approved) result.approved++
+    else result.rejected++
+  })
+
+  return result
+}
+
 const builderToBytesBe = (rpc: FnRpcBuilder) => {
   const bitOutput = new BigEndianByteOutput()
   const abiOutputBits = new AbiOutputBytes(bitOutput)
