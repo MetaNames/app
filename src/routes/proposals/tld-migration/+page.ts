@@ -6,6 +6,7 @@ export async function load() {
   const state = await metaNamesSdkFactory().contractRepository.getState({ contractAddress: config.tldMigrationProposalContractAddress });
 
   const deadlineInSeconds = getDeadline(state) / 1000;
-  const result = getVotesResult(state)
+  const result = getVotesResult(state);
+
   return { deadlineInSeconds, result };
 }

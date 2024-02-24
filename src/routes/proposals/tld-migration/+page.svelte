@@ -8,6 +8,10 @@
 	import { actionVotePayload } from 'src/lib/proposal';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import { alertTransactionAndFetchResult, config } from 'src/lib';
+
+	import { Doughnut } from 'svelte-chartjs';
+	import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from 'chart.js'
+
 	import { alertMessage } from 'src/lib/stores/main';
 	import type { PageData } from './$types';
 	import Timer from './Timer.svelte';
@@ -17,9 +21,31 @@
 	let options = ['Yes', 'No'];
 	let selected = options[0];
 	let voteEnabled = true;
+	let votesResult = Object.entries(data.result);
+
+	ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
+
+	let chartOptions = {
+		resposive: true,
+		plugins: {
+			legend: {
+				position: 'bottom' as 'bottom'
+			}
+		}
+	};
+	let votesChartData = {
+		labels: votesResult.map((row) => row[0]),
+		datasets: [
+			{
+				label: 'Proposal results',
+				data: votesResult.map((row) => row[1]),
+				backgroundColor: ['#6849fe', '#676778']
+			}
+		],
+	};
 
 	$: countFrom = data.deadlineInSeconds - Math.ceil(Date.now() / 1000);
-	$: proposalPassed = data.result.approved > data.result.rejected;
+	$: proposalPassed = data.result;
 
 	function timesUp() {
 		voteEnabled = false;
@@ -85,15 +111,15 @@
 					>
 				</ConnectionRequired>
 			{:else}
-				<h4 class="mb-1">Voting has ended</h4>
-				<h5 class="mt-0 mb-0">Results</h5>
-				<p>
-					<em>Yes</em>: {data.result.approved}
-				</p>
-				<p>
-					<em>No</em>: {data.result.rejected}
-				</p>
-				<p class="title">
+				<h4 class="mb-1">Voting Results</h4>
+				<div class="chart">
+					<Doughnut
+					class="doughnut"
+					data={votesChartData}
+					options={chartOptions}
+					/>
+				</div>
+				<p class="title mt-3">
 					<b>
 						{#if proposalPassed}
 							The proposal has passed
@@ -109,7 +135,7 @@
 	<GoBackButton />
 </div>
 
-<style>
+<style lang="scss">
 	h3,
 	h4 {
 		margin: 1.5rem 0;
@@ -121,6 +147,17 @@
 		padding: 0 0.3em;
 		border-radius: 0.3em;
 		font-size: larger;
+	}
+
+	.chart {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		:global(.doughnut) {
+			max-height: 18rem;
+			max-width: 18rem;
+		}
 	}
 
 	.subtitle {
