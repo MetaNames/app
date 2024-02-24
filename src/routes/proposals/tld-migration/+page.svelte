@@ -46,6 +46,7 @@
 
 	$: countFrom = data.deadlineInSeconds - Math.ceil(Date.now() / 1000);
 	$: proposalPassed = data.result;
+	$: if (countFrom <= 0) voteEnabled = false;
 
 	function timesUp() {
 		voteEnabled = false;
