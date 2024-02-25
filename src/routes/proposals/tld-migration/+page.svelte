@@ -10,7 +10,7 @@
 	import { alertTransactionAndFetchResult, config } from 'src/lib';
 
 	import { Doughnut } from 'svelte-chartjs';
-	import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from 'chart.js'
+	import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from 'chart.js';
 
 	import { alertMessage } from 'src/lib/stores/main';
 	import type { PageData } from './$types';
@@ -23,7 +23,7 @@
 	let voteEnabled = true;
 	let votesResult = Object.entries(data.result);
 
-	ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
+	ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 	let chartOptions = {
 		resposive: true,
@@ -41,7 +41,7 @@
 				data: votesResult.map((row) => row[1]),
 				backgroundColor: ['#6849fe', '#676778']
 			}
-		],
+		]
 	};
 
 	$: countFrom = data.deadlineInSeconds - Math.ceil(Date.now() / 1000);
@@ -114,18 +114,14 @@
 			{:else}
 				<h4 class="mb-1">Voting Results</h4>
 				<div class="chart">
-					<Doughnut
-					class="doughnut"
-					data={votesChartData}
-					options={chartOptions}
-					/>
+					<Doughnut class="doughnut" data={votesChartData} options={chartOptions} />
 				</div>
 				<p class="title mt-3">
 					<b>
 						{#if proposalPassed}
-							The proposal has passed
+							The proposal has been approved
 						{:else}
-							The proposal has not passed
+							The proposal was not approved
 						{/if}
 					</b>
 				</p>
