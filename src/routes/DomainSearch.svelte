@@ -18,7 +18,7 @@
 
 	$: errors = invalid ? validator.errors : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
-	$: nameSearchedLabel = nameSearched ? `${nameSearched}.meta` : null;
+	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
 
 	function debounce() {
 		clearTimeout(debounceTimer);
