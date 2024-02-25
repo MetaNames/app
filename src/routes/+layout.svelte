@@ -116,13 +116,13 @@
 		{/if}
 		{#if currentPath !== '/proposals/tld-migration'}
 			<Banner open={true} centered={true} mobileStacked={true}>
-				<Icon slot="icon" class="material-icons">help</Icon>
+				<Icon slot="icon" class="material-icons">grade</Icon>
 				<Label slot="label"
-					>Official proposal to migrate the Top Level Domain (TLD) from <code>.meta</code> to
-					<code>.mpc</code></Label
-				>
+					>Proposal to migrate the domain suffix from <code>.meta</code> to
+					<code>.mpc</code> has been approved
+				</Label>
 				<svelte:fragment slot="actions">
-					<Button href="/proposals/tld-migration" target="_blank">Vote now</Button>
+					<Button href="/proposals/tld-migration" target="_blank">View results</Button>
 				</svelte:fragment>
 			</Banner>
 		{/if}
