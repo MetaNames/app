@@ -10,7 +10,7 @@
 	import { alertTransactionAndFetchResult, config } from 'src/lib';
 
 	import { Doughnut } from 'svelte-chartjs';
-	import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from 'chart.js';
+	import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, type Color } from 'chart.js';
 
 	import { alertMessage } from 'src/lib/stores/main';
 	import type { PageData } from './$types';
@@ -29,7 +29,13 @@
 		resposive: true,
 		plugins: {
 			legend: {
-				position: 'bottom' as 'bottom'
+				position: 'bottom' as 'bottom',
+				labels: {
+					color: '#ffffff',
+					font: {
+						weight: 'bold'
+					}
+				}
 			}
 		}
 	};
@@ -39,7 +45,8 @@
 			{
 				label: 'Proposal results',
 				data: votesResult.map((row) => row[1]),
-				backgroundColor: ['#6849fe', '#676778']
+				backgroundColor: ['#6849fe', '#676778'],
+				// color: ['#ffffff', '#ffffff']
 			}
 		]
 	};
