@@ -72,6 +72,7 @@
 		"@sentry/sveltekit": "^7.101.0",
 		"@vercel/analytics": "^1.1.1",
 		"chart.js": "^4.4.1",
+		"@vercel/speed-insights": "^1.0.10",
 		"date-fns": "^3.3.1",
 		"jdenticon": "^3.2.0",
 		"partisia-sdk": "^0.1.1",
