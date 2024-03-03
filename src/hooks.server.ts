@@ -1,16 +1,12 @@
 import { sequence } from "@sveltejs/kit/hooks";
 import { handleErrorWithSentry, sentryHandle } from "@sentry/sveltekit";
 import * as Sentry from '@sentry/sveltekit';
-import { ProfilingIntegration } from "@sentry/profiling-node";
 
 Sentry.init({
   dsn: 'https://a3030e6b43e234337425afcedb4bc727@o4506739278544896.ingest.sentry.io/4506739280183296',
   tracesSampleRate: 1.0,
   profilesSampleRate: 1.0, // Profiling sample rate is relative to tracesSampleRate
-  integrations: [
-    // Add profiling integration to list of integrations
-    new ProfilingIntegration(),
-  ],
+  integrations: [],
 });
 
 // If you have custom handlers, make sure to place them after `sentryHandle()` in the `sequence` function.
