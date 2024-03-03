@@ -2022,13 +2022,14 @@
     focus-trap "^7.5.2"
     nanoid "^4.0.2"
 
-"@metanames/sdk@^5.8.0":
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-5.8.0.tgz#ce5ac65a1de70fb932f301bbeaa96838e23d0765"
-  integrity sha512-y+Ym24uEnztjlOb4Iyk5AFIGvk0OXTyzrvwZQ9Pza+q+CzqwaeRU0hgqD3oe2846oXs+T6V6LIdzt/1dBC7z9Q==
+"@metanames/sdk@^5.9.0":
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-5.9.0.tgz#28f1a7a49e4d30f1390e5ad997192a1108cc03bc"
+  integrity sha512-Qfjv8ESsLo/e1QwgGqolEfc303HI0fioI6qgo3Yr4htRBXJhiNqvVrQfk7QemxhyTMwPQp46pXSFPxkAkzM2YA==
   dependencies:
     "@partisiablockchain/abi-client" "^3.30.0"
     "@secata-public/bitmanipulation-ts" "^3.0.6"
+    axios "^1.6.7"
     partisia-blockchain-applications-crypto "^1.0.22"
     partisia-blockchain-applications-rpc "^1.0.12"
     partisia-blockchain-applications-sdk "^0.1.2"
@@ -3682,7 +3683,7 @@ axios@^0.21.1:
   dependencies:
     follow-redirects "^1.14.0"
 
-axios@^1.6.2:
+axios@^1.6.2, axios@^1.6.7:
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.7.tgz#7b48c2e27c96f9c68a2f8f31e2ab19f59b06b0a7"
   integrity sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==
