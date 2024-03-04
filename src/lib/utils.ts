@@ -1,6 +1,7 @@
 import type { ITransactionIntent, ITransactionResult } from "@metanames/sdk";
 import { alertMessage, alertTransaction } from "./stores/main";
 import { captureException } from "@sentry/sveltekit";
+import { formatDistanceToNow } from "date-fns";
 
 export const formatDate = (date: string | Date) => {
 	if (typeof date === 'string') date = new Date(date);
@@ -43,9 +44,16 @@ export const validAddress = (address: string) => {
 	return address.length === 42 && alphanumeric.test(address);
 }
 
-
 export const removeHTTPIfPresent = (url: string) => {
 	if (url.startsWith('https://')) return url.slice(8);
 	if (url.startsWith('http://')) return url.slice(7);
 	return url;
+}
+
+export function formatDateToRelativeDate(date: string | Date) {
+	let parsed: Date;
+	if (typeof date === 'string') parsed = new Date(date);
+	else parsed = date;
+
+	return formatDistanceToNow(parsed, { addSuffix: true });
 }

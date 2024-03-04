@@ -4,27 +4,11 @@
 
 	import { goto } from '$app/navigation';
 	import Marqueeck from '@arisbh/marqueeck';
-	import { formatDistanceToNow } from 'date-fns';
 	import { fade } from 'svelte/transition';
-	import { fetchApiJson } from 'src/lib/api';
-	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	import type { PageData } from './$types';
+	import { formatDateToRelativeDate } from 'src/lib';
 
-	function formatCreatedAt(date: string) {
-		const parsed = new Date(date);
-		return formatDistanceToNow(parsed, { addSuffix: true });
-	}
-
-	type DomainProjection = { name: string; createdAt: string };
-	const recentDomains = writable<DomainProjection[]>();
-
-	onMount(async () => {
-		const response = await fetchApiJson<DomainProjection[]>('/api/domains/recent');
-
-		if ('error' in response) {
-			console.error(response.error);
-		} else recentDomains.set(response);
-	});
+	export let data: PageData;
 </script>
 
 <svelte:head>
@@ -37,23 +21,23 @@
 		<p class="subtitle">Powered by Partisia</p>
 	</div>
 	<DomainSearch />
-		{#if $recentDomains }
-			<div class="recent-domains" in:fade={{ duration: 500 }}>
-				<h5>Recently registered domains</h5>
-				<div class="content">
-					<Marqueeck>
-						{#each $recentDomains as domain (domain.name)}
-							<Card class="domain">
-								<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
-									<span class="domain-name">{domain.name}</span>
-									<span class="domain-date">{formatCreatedAt(domain.createdAt)}</span>
-								</PrimaryAction>
-							</Card>
-						{/each}
-					</Marqueeck>
-				</div>
+	{#await data.domains.recent then domains}
+		<div class="recent-domains" in:fade={{ duration: 500 }}>
+			<h5>Recently registered domains</h5>
+			<div class="content">
+				<Marqueeck>
+					{#each domains as domain (domain.name)}
+						<Card class="domain">
+							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
+								<span class="domain-name">{domain.name}</span>
+								<span class="domain-date">{formatDateToRelativeDate(domain.createdAt)}</span>
+							</PrimaryAction>
+						</Card>
+					{/each}
+				</Marqueeck>
 			</div>
-		{/if}
+		</div>
+	{/await}
 </div>
 
 <style lang="scss">
