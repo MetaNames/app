@@ -2379,14 +2379,6 @@
     "@sentry/types" "7.100.1"
     "@sentry/utils" "7.100.1"
 
-"@sentry/profiling-node@^7.101.0":
-  version "7.101.0"
-  resolved "https://registry.yarnpkg.com/@sentry/profiling-node/-/profiling-node-7.101.0.tgz#dee36743923ba9c5250053dc406cb1018d105eaa"
-  integrity sha512-6LfHHdST0wtM0THbQtLMemYKfyOi6OZV0xXTAnEdrZ+fmtR5Hb/1QkBGhVMpjhfoVuIP+1g7NS0OiZHyTuxBPg==
-  dependencies:
-    detect-libc "^2.0.2"
-    node-abi "^3.52.0"
-
 "@sentry/replay@7.101.0":
   version "7.101.0"
   resolved "https://registry.yarnpkg.com/@sentry/replay/-/replay-7.101.0.tgz#66d199316be3f0fc2ed82a5294f519d58a2c2260"
@@ -4794,7 +4786,7 @@ detect-indent@^6.1.0:
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-6.1.0.tgz#592485ebbbf6b3b1ab2be175c8393d04ca0d57e6"
   integrity sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==
 
-detect-libc@^2.0.0, detect-libc@^2.0.2:
+detect-libc@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-2.0.2.tgz#8ccf2ba9315350e1241b88d0ac3b0e1fbd99605d"
   integrity sha512-UX6sGumvvqSaXgdKGUsgZWqcUyIXZ/vZTrlRT/iobiKhGL0zL4d3osHj3uqllWJK+i+sixDS/3COVEOFbupFyw==
@@ -7952,13 +7944,6 @@ noble-bls12-381@^0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/noble-bls12-381/-/noble-bls12-381-0.15.0.tgz#cfbdab7c06595c9541d270f375d4962ae34d224d"
   integrity sha512-A3XY3Zp+F9zmkZTZthwgm2oVW92t4izOIOZZ1ylBfqziIXV92IL2jXFvw45gt3iOuULkJgmZpAtXYifqir3fEw==
-
-node-abi@^3.52.0:
-  version "3.54.0"
-  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.54.0.tgz#f6386f7548817acac6434c6cba02999c9aebcc69"
-  integrity sha512-p7eGEiQil0YUV3ItH4/tBb781L5impVmmx2E9FRKF7d18XXzp4PGT2tdYMFY6wQqgxD0IwNZOiSJ0/K0fSi/OA==
-  dependencies:
-    semver "^7.3.5"
 
 node-fetch@^2.6.7, node-fetch@^2.7.0:
   version "2.7.0"
