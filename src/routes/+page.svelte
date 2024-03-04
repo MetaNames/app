@@ -5,10 +5,21 @@
 	import { goto } from '$app/navigation';
 	import Marqueeck from '@arisbh/marqueeck';
 	import { fade } from 'svelte/transition';
-	import type { PageData } from './$types';
 	import { formatDateToRelativeDate } from 'src/lib';
+	import { fetchApiJson } from 'src/lib/api';
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
-	export let data: PageData;
+	type DomainProjection = { name: string; createdAt: string };
+	const recentDomains = writable<DomainProjection[]>();
+
+	onMount(async () => {
+		const response = await fetchApiJson<DomainProjection[]>('/api/domains/recent');
+
+		if ('error' in response) {
+			console.error(response.error);
+		} else recentDomains.set(response);
+	});
 </script>
 
 <svelte:head>
@@ -21,12 +32,12 @@
 		<p class="subtitle">Powered by Partisia</p>
 	</div>
 	<DomainSearch />
-	{#await data.domains.recent then domains}
+	{#if $recentDomains?.length > 0}
 		<div class="recent-domains" in:fade={{ duration: 500 }}>
 			<h5>Recently registered domains</h5>
 			<div class="content">
 				<Marqueeck>
-					{#each domains as domain (domain.name)}
+					{#each $recentDomains as domain (domain.name)}
 						<Card class="domain">
 							<PrimaryAction on:click={() => goto(`/domain/${domain.name}`)} padded>
 								<span class="domain-name">{domain.name}</span>
@@ -37,7 +48,7 @@
 				</Marqueeck>
 			</div>
 		</div>
-	{/await}
+	{/if}
 </div>
 
 <style lang="scss">
