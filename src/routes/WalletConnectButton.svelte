@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
-	import { metaNamesSdk } from '$lib/stores/sdk';
-	import { connectMetaMask, connectPartisia, getAddress } from '$lib/wallet';
 
 	import List, { Item, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
-	import metamaskLogo from '$lib/assets/images/metamask.png'
-	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.png'
+	import metamaskLogo from '$lib/assets/images/metamask.png';
+	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.png';
 
 	import 'src/styles/wallet-connect.scss';
 	import Button from '@smui/button';
@@ -16,10 +14,15 @@
 	let toggleOpen = false;
 
 	async function connectWithMetaMaskWallet() {
+		const { metaNamesSdk } = await import('$lib/stores/sdk');
+		const { connectMetaMask, getAddress } = await import('$lib/wallet');
 		try {
 			const metamask = await connectMetaMask();
 
-			$metaNamesSdk.setSigningStrategy('MetaMask', metamask);
+			metaNamesSdk.update((sdk) => {
+				sdk.setSigningStrategy('MetaMask', metamask);
+				return sdk;
+			});
 
 			const address = await getAddress(metamask);
 			walletAddress.set(address);
@@ -30,11 +33,17 @@
 	}
 
 	async function connectWithPartisiaWallet() {
+		const { metaNamesSdk } = await import('$lib/stores/sdk');
+		const { connectPartisia, getAddress } = await import('$lib/wallet');
 		try {
 			const client = await connectPartisia();
 			if (!client.connection) throw new Error('Connection failed');
 
-			$metaNamesSdk.setSigningStrategy('partisiaSdk', client);
+			metaNamesSdk.update((sdk) => {
+				// @ts-ignore
+				sdk.setSigningStrategy('partisiaSdk', client);
+				return sdk;
+			});
 
 			const address = await getAddress(client);
 			walletAddress.set(address);
@@ -44,9 +53,14 @@
 		}
 	}
 
-	function disconnectWallet() {
+	async function disconnectWallet() {
+		const { metaNamesSdk } = await import('$lib/stores/sdk');
+
 		walletAddress.set(undefined);
-		$metaNamesSdk.resetSigningStrategy();
+		metaNamesSdk.update((sdk) => {
+			sdk.resetSigningStrategy();
+			return sdk;
+		});
 
 		return true;
 	}
@@ -74,7 +88,7 @@
 	<List>
 		{#if $walletConnected}
 			<slot name="connectedMenuIems" />
-			<Item on:SMUI:action={() => disconnectWallet() && toggleMenu()}>
+			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
 				<Text>Disconnect</Text>
 			</Item>
 		{:else}
