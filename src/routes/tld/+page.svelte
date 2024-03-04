@@ -12,10 +12,10 @@
 		tld: '',
 		owner: contractAddress,
 		tokenId: NaN,
-		records: new Map()
+		records: {}
 	};
 
-	const domain = new DomainModel(domainData, $metaNamesSdk.contract);
+	const domain = new DomainModel(domainData);
 </script>
 
 <svelte:head>
