@@ -10,8 +10,6 @@ export async function fetchApiJson<T>(url: string, options: RequestInit = {}): P
       let message = 'Something went wrong'
       if (json && json.error) message = json.error;
 
-      captureException(json, { extra: { url, options, response } });
-
       return { error: message }
     }
 
