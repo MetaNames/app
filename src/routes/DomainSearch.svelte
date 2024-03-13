@@ -72,7 +72,17 @@
 			</svelte:fragment>
 		</Textfield>
 	</form>
-	{#if domain}
+	{#if isLoading}
+		<Card class="domain-link">
+			<CardContent>
+				<div class="card-content">
+					<span>{nameSearchedLabel}</span>
+
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+				</div>
+			</CardContent>
+		</Card>
+	{:else if domain}
 		<a class="domain-link" href={`/domain/${domain.name}`}>
 			<Card>
 				<CardContent>
@@ -94,16 +104,6 @@
 				</CardContent>
 			</Card>
 		</a>
-	{:else if isLoading}
-		<Card class="domain-link">
-			<CardContent>
-				<div class="card-content">
-					<span>{nameSearchedLabel}</span>
-
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-				</div>
-			</CardContent>
-		</Card>
 	{/if}
 </div>
 
