@@ -65,7 +65,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@metanames/sdk": "^5.9.5",
+		"@metanames/sdk": "^5.9.6",
 		"@partisiablockchain/abi-client": "^3.30.0",
 		"@secata-public/bitmanipulation-ts": "^3.0.7",
 		"@vercel/analytics": "^1.1.1",
