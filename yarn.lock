@@ -2022,10 +2022,10 @@
     focus-trap "^7.5.2"
     nanoid "^4.0.2"
 
-"@metanames/sdk@^5.9.7":
-  version "5.9.7"
-  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-5.9.7.tgz#dcd0d71c423f6679d479fd869caad1eaede12b3d"
-  integrity sha512-RtgF8ekWsufNL1UVgBvftDGbwTaWYuiX0xtUXfGFhGLRnn4ykGJTonAF0wPpuiMzAsfgBm46udRxd7YelxKlqg==
+"@metanames/sdk@^5.9.8":
+  version "5.9.8"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-5.9.8.tgz#9599d8889f2eefcc8bc8ab37f6632b04cf513205"
+  integrity sha512-GWaEo35ww0uJ2tx0emHz32bvEpRXpa9lZsxG+GxCobZcP52aQehaXQsh8ZBTpdYfrnGXilvdTxeoPM+lB/FfsA==
   dependencies:
     "@partisiablockchain/abi-client" "^3.30.0"
     "@secata-public/bitmanipulation-ts" "^3.0.6"
