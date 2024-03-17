@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/domains/recent/refresh",
+      "path": "/api/domains/recent?refresh=1",
       "schedule": "*/10 * * * *"
     },
     {
