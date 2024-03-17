@@ -23,10 +23,12 @@ export const keyValueStore = () => {
     })
 }
 
-export type DomainProjection = { name: string, createdAt: Date }
+export interface DomainProjection {
+  name: string
+  createdAt: Date
+}
 
 export const getRecentDomains = async (count = 12): Promise<DomainProjection[]> => {
-  const metaNamesSdk = metaNamesSdkFactory()
   const recentDomains = await metaNamesSdk.domainRepository.getAll()
     .then((domains) => domains.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, count)
       .map((domain) => ({ name: domain.name, createdAt: domain.createdAt })))
@@ -36,4 +38,22 @@ export const getRecentDomains = async (count = 12): Promise<DomainProjection[]> 
     });
 
   return recentDomains
+}
+
+export interface DomainStats {
+  domainCount: number
+  ownerCount: number
+  recentDomains: DomainProjection[]
+}
+
+export const getStats = async (): Promise<DomainStats> => {
+  const domainCount = await metaNamesSdk.domainRepository.count()
+  const ownerCount = await metaNamesSdk.domainRepository.getOwners().then(owners => owners.length)
+  const recentDomains = await getRecentDomains()
+
+  return {
+    domainCount,
+    ownerCount,
+    recentDomains
+  }
 }
