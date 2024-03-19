@@ -1,3 +1,4 @@
+import { sentrySvelteKit } from "@sentry/sveltekit";
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -6,7 +7,12 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default defineConfig({
-    plugins: [sveltekit(), nodePolyfills(), tsconfigPaths()],
+    plugins: [sentrySvelteKit({
+        sourceMapsUploadOptions: {
+            org: "metanames",
+            project: "app"
+        }
+    }), sveltekit(), nodePolyfills(), tsconfigPaths()],
     build: {
         rollupOptions: {
             plugins: [
