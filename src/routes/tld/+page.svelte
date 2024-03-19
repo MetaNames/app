@@ -4,10 +4,11 @@
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { Domain as DomainModel, type IDomain } from '@metanames/sdk';
 
-	const contractAddress = $metaNamesSdk.config.contractAddress;
+	const metaNamesConfig = $metaNamesSdk.config;
+	const contractAddress = metaNamesConfig.contractAddress;
 
 	const domainData: IDomain = {
-		name: 'meta',
+		name: metaNamesConfig.tld,
 		createdAt: new Date(),
 		tld: '',
 		owner: contractAddress,
