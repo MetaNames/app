@@ -23,6 +23,7 @@ export async function GET() {
     byocSymbol: 'ETH',
     domain: domain.name,
     to: domain.owner,
+    tokenUri: domain,
     parentDomain: domain.parentId,
     subscriptionYears: 1
   }))
