@@ -10,7 +10,7 @@
     },
     {
       "path": "/api/domains/migrator",
-      "schedule": "*/3 * * * *"
+      "schedule": "*/2 * * * *"
     }
   ]
 }
