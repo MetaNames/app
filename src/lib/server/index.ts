@@ -63,7 +63,7 @@ export const getStats = async (): Promise<DomainStats> => {
 const majorBumpSdkOverride = {
   cache_ttl: 0,
   hasProxyContract: false,
-  contractAddress: '02e91dfbcd8732a879948553b7e0c3f5d159409c03'
+  contractAddress: '02a62c953d4d6ba7ebd0d4160545373da9d142e51b'
 }
 
 export const majorBumpSdk = new MetaNamesSdk(Enviroment.mainnet, majorBumpSdkOverride)
