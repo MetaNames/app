@@ -2,10 +2,11 @@ import { json } from "@sveltejs/kit";
 import { majorBumpSdk, metaNamesSdk } from "src/lib/server";
 import { ADMIN_WALLET_PRIVATE_KEY } from "$env/static/private";
 import type { IActionDomainMint } from "@metanames/sdk";
-import { config } from "src/lib";
+import { config as appConfig } from "src/lib";
 
+export const config = { runtime: 'nodejs20.x' };
 export async function GET() {
-  if (config.sdkEnvironment !== 'mainnet') return json({ error: 'This endpoint is only available on mainnet' }, { status: 400 });
+  if (appConfig.sdkEnvironment !== 'mainnet') return json({ error: 'This endpoint is only available on mainnet' }, { status: 400 });
 
   const [oldDomains, newDomains] = await Promise.all([
     metaNamesSdk.domainRepository.getAll(),
