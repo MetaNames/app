@@ -1,7 +1,9 @@
 import { KV_REST_API_TOKEN, KV_REST_API_URL } from '$env/static/private'
 import { metaNamesSdkFactory } from "$lib/sdk";
+import { Enviroment } from '@metanames/sdk';
 import { json } from "@sveltejs/kit";
 import { createClient } from '@vercel/kv';
+import { MetaNamesSdk } from 'meta-names-sdk-major';
 
 export const metaNamesSdk = metaNamesSdkFactory({ cache_ttl: 0 });
 
@@ -57,3 +59,11 @@ export const getStats = async (): Promise<DomainStats> => {
     recentDomains
   }
 }
+
+const majorBumpSdkOverride = {
+  cache_ttl: 0,
+  hasProxyContract: false,
+  contractAddress: '02e91dfbcd8732a879948553b7e0c3f5d159409c03'
+}
+
+export const majorBumpSdk = new MetaNamesSdk(Enviroment.mainnet, majorBumpSdkOverride)
