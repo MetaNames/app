@@ -7,6 +7,10 @@
     {
       "path": "/api/domains/stats?refresh=1",
       "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/domains/migrator",
+      "schedule": "*/3 * * * *"
     }
   ]
 }
