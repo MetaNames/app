@@ -1,8 +1,8 @@
-import { json } from "@sveltejs/kit";
-import { majorBumpSdk, metaNamesSdk } from "src/lib/server";
 import { ADMIN_WALLET_PRIVATE_KEY } from "$env/static/private";
-import type { IActionDomainMint } from "@metanames/sdk";
+import { json } from "@sveltejs/kit";
+import { RecordClassEnum, RecordRepository } from "meta-names-sdk-major";
 import { config as appConfig } from "src/lib";
+import { majorBumpSdk, metaNamesSdk } from "src/lib/server";
 
 export const config = { runtime: 'nodejs20.x' };
 export async function GET() {
@@ -13,27 +13,56 @@ export async function GET() {
     majorBumpSdk.domainRepository.getAll()
   ]);
 
-  const domainsToMigrate = oldDomains.filter((oldDomain) => !newDomains.some((newDomain) => newDomain.name === oldDomain.name));
+  const recordsToMigrate = oldDomains.flatMap((oldDomain) => {
+    const newDomain = newDomains.find((newDomain) => newDomain.nameWithoutTLD === oldDomain.nameWithoutTLD);
 
-  const slice = domainsToMigrate.slice(0, 50);
+    if (!newDomain) return
+
+    const res = Object.entries(oldDomain.records).filter(([key, value]) => {
+      const buffer = Buffer.from(value)
+      if (buffer.length > 63 || buffer.length === 0) return
+
+      return !Object.keys(newDomain.records).includes(key)
+    }).map(([key, value]) => {
+      return {
+        class: RecordClassEnum[key as keyof typeof RecordClassEnum],
+        domain: oldDomain.nameWithoutTLD,
+        data: value
+      }
+    }).filter((record) => record);
+
+    return res
+  }).filter((record) => record) as ({
+    class: RecordClassEnum;
+    domain: string;
+    data: string | Buffer;
+  })[]
 
   majorBumpSdk.setSigningStrategy('privateKey', ADMIN_WALLET_PRIVATE_KEY)
 
-  const params: IActionDomainMint[] = slice.map((domain) => ({
-    byocSymbol: 'ETH',
-    domain: domain.name,
-    to: domain.owner,
-    tokenUri: domain.name,
-    parentDomain: domain.parentId,
-    subscriptionYears: 1
-  }))
+  let index = 0
+  const chunk = 40
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  const { transactionHash, fetchResult } = await majorBumpSdk.domainRepository.registerBatch(params)
+  while (index < recordsToMigrate.length) {
+    const [start, end] = [index, index + chunk];
+
+    const slice = recordsToMigrate.slice(start, end);
+
+    const recordRepository = new RecordRepository(majorBumpSdk.contract, oldDomains[0]);
+
+    try {
+      const { transactionHash, fetchResult } = await recordRepository.createBatch(slice);
+      await fetchResult
+      console.log(`Minting records for hash ${transactionHash}`);
+    } catch (e) {
+      console.error(e)
+    }
+
+    index += chunk
+  }
 
   majorBumpSdk.resetSigningStrategy()
 
-  return json({
-    transactionHash,
-    slice
-  })
+  return json({})
 }
