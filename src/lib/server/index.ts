@@ -3,7 +3,6 @@ import { metaNamesSdkFactory } from "$lib/sdk";
 import { Enviroment } from '@metanames/sdk';
 import { json } from "@sveltejs/kit";
 import { createClient } from '@vercel/kv';
-import { MetaNamesSdk } from 'meta-names-sdk-major';
 
 export const metaNamesSdk = metaNamesSdkFactory({ cache_ttl: 0 });
 
@@ -59,11 +58,3 @@ export const getStats = async (): Promise<DomainStats> => {
     recentDomains
   }
 }
-
-const majorBumpSdkOverride = {
-  cache_ttl: 0,
-  hasProxyContract: false,
-  contractAddress: '025fa781d389d7c7caaf836e5e47abed6cefd2d928'
-}
-
-export const majorBumpSdk = new MetaNamesSdk(Enviroment.mainnet, majorBumpSdkOverride)

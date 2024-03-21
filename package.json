@@ -65,7 +65,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@metanames/sdk": "^5.9.8",
+		"@metanames/sdk": "^6.0.0",
 		"@partisiablockchain/abi-client": "^3.30.0",
 		"@secata-public/bitmanipulation-ts": "^3.0.7",
 		"@sentry/sveltekit": "^7.107.0",
@@ -75,7 +75,6 @@
 		"chart.js": "^4.4.1",
 		"date-fns": "^3.3.1",
 		"jdenticon": "^3.2.0",
-		"meta-names-sdk-major": "npm:@metanames/sdk@6.0.0",
 		"partisia-sdk": "^0.1.1",
 		"svelte-chartjs": "^3.1.5"
 	},
