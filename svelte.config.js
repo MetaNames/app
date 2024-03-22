@@ -9,7 +9,7 @@ const config = {
 
 	kit: {
 		adapter: adapter({
-			runtime: 'edge'
+			runtime: 'nodejs20.x'
 		}),
 		inlineStyleThreshold: 1024,
 		alias: {
