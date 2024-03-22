@@ -10,7 +10,7 @@ export const MAX_RECORD_LENGTH = new RecordValidator().rules.maxLength
 export const socialRecords = [RecordClassEnum.Twitter, RecordClassEnum.Discord].map(
 	(v) => RecordClassEnum[v]
 );
-export const profileRecords = [RecordClassEnum.Bio, RecordClassEnum.Uri, RecordClassEnum.Wallet].map(
+export const profileRecords = [RecordClassEnum.Bio, RecordClassEnum.Email, RecordClassEnum.Uri, RecordClassEnum.Wallet].map(
 	(v) => RecordClassEnum[v]
 );
 
