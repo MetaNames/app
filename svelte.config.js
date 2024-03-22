@@ -11,7 +11,7 @@ const config = {
 		adapter: adapter({
 			runtime: 'nodejs20.x'
 		}),
-		inlineStyleThreshold: 1024,
+		inlineStyleThreshold: 4096,
 		alias: {
 			"src/*": "./src/*",
 			"$lib": "./src/lib",
