@@ -4,7 +4,7 @@
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
 	import type { Domain as DomainModel } from '@metanames/sdk';
-	import IconButton from '@smui/icon-button/src/IconButton.svelte';
+	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
 

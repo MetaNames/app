@@ -21,7 +21,7 @@
 	import Records from 'src/components/Records.svelte';
 	import { walletAddress } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
-	import Button from '@smui/button/src/Button.svelte';
+	import Button from '@smui/button';
 
 	export let domain: Domain;
 	export let isTld: boolean = false;

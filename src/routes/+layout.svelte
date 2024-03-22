@@ -9,9 +9,8 @@
 	import Button from '@smui/button';
 	import Banner, { Icon } from '@smui/banner';
 	import IconButton from '@smui/icon-button';
-	import Section from '@smui/top-app-bar/src/Section.svelte';
 	import Snackbar, { Actions, Label } from '@smui/snackbar';
-	import TopAppBar, { Row, Title } from '@smui/top-app-bar';
+	import TopAppBar, { Row, Title, Section } from '@smui/top-app-bar';
 	import { Anchor } from '@smui/menu-surface';
 
 	import { config, explorerTransactionUrl } from '$lib';

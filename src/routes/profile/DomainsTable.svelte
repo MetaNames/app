@@ -4,7 +4,7 @@
 	import IconButton from '@smui/icon-button';
 	import LinearProgress from '@smui/linear-progress';
 	import Select, { Option } from '@smui/select';
-	import Button from '@smui/button/src/Button.svelte';
+	import Button from '@smui/button';
 
 	export let domains: Domain[] = [];
 	export let loaded = false;

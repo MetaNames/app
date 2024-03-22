@@ -7,8 +7,7 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
-	import { Content } from '@smui/card';
-	import Card from '@smui/card/src/Card.svelte';
+	import Card, { Content } from '@smui/card';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
