@@ -4,7 +4,9 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig({
-    plugins: [sveltekit(), nodePolyfills(), tsconfigPaths()],
+    plugins: [sveltekit(), nodePolyfills({
+        include: ['buffer', 'crypto', 'stream']
+    }), tsconfigPaths()],
     test: {
         include: ['src/**/*.{test,spec}.{js,ts}']
     }
