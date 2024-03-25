@@ -128,7 +128,7 @@
 						<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
 						<span>{fees.feesLabel} {fees.symbol}</span>
 					</div>
-					<div class="row">
+					<div class="row" data-testid="total-fees">
 						<span>Total (excluding network fees)</span>
 						<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
 					</div>
