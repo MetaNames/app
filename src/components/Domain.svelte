@@ -69,7 +69,14 @@
 						<div class="section">
 							<h5 class="mt-0">Profile</h5>
 							<div class="chips">
-								<Chip class="mt-1 mr-1" type="text" label="link" value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))} href={shortLinkUrl(domain.nameWithoutTLD)} ellipsis />
+								<Chip
+									class="mt-1 mr-1"
+									type="text"
+									label="link"
+									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
+									href={shortLinkUrl(domain.nameWithoutTLD)}
+									ellipsis
+								/>
 								{#if hasProfileRecords}
 									{#each profileRecords as klass}
 										{#if domain.records[klass]}
@@ -150,8 +157,14 @@
 					/>
 					<br />
 					<h5 class="mt-0 mb-1">Actions</h5>
-					<Button class="mt-1 mr-1 mobile--mr-0" href={`/domain/${domain.name}/renew`} variant="raised">Renew</Button>
-					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised">Transfer</Button>
+					<Button
+						class="mt-1 mr-1 mobile--mr-0"
+						href={`/domain/${domain.name}/renew`}
+						variant="raised">Renew</Button
+					>
+					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised"
+						>Transfer</Button
+					>
 				</Content>
 			</Paper>
 		{/if}

@@ -13,11 +13,11 @@ const config = {
 		}),
 		inlineStyleThreshold: 4096,
 		alias: {
-			"src/*": "./src/*",
-			"$lib": "./src/lib",
-			"$lib/*": "./src/lib/*"
-		},
-	},
+			'src/*': './src/*',
+			$lib: './src/lib',
+			'$lib/*': './src/lib/*'
+		}
+	}
 };
 
 export default config;

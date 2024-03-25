@@ -1,7 +1,7 @@
-import type { ITransactionIntent, ITransactionResult } from "@metanames/sdk";
-import { alertMessage, alertTransaction } from "./stores/main";
-import { captureException } from "@sentry/sveltekit";
-import { formatDistanceToNow } from "date-fns";
+import type { ITransactionIntent, ITransactionResult } from '@metanames/sdk';
+import { alertMessage, alertTransaction } from './stores/main';
+import { captureException } from '@sentry/sveltekit';
+import { formatDistanceToNow } from 'date-fns';
 
 export const formatDate = (date: string | Date) => {
 	if (typeof date === 'string') date = new Date(date);
@@ -13,7 +13,9 @@ export const formatDate = (date: string | Date) => {
 	return `${day} ${month}, ${year}`;
 };
 
-export const alertTransactionAndFetchResult = async (intent: ITransactionIntent): Promise<ITransactionResult> => {
+export const alertTransactionAndFetchResult = async (
+	intent: ITransactionIntent
+): Promise<ITransactionResult> => {
 	const transactionHash = intent.transactionHash;
 	alertTransaction.set(transactionHash);
 
@@ -26,8 +28,8 @@ export const alertTransactionAndFetchResult = async (intent: ITransactionIntent)
 		alertMessage.set(message);
 
 		return { transactionHash, hasError: true, errorMessage: message, eventTrace: [] };
-	})
-}
+	});
+};
 
 export const isValidURL = (url: string) => {
 	try {
@@ -36,19 +38,19 @@ export const isValidURL = (url: string) => {
 	} catch {
 		return false;
 	}
-}
+};
 
 export const validAddress = (address: string) => {
 	// Check that address contains only alphanumeric characters and is 42 characters long
 	const alphanumeric = /^[a-z0-9]+$/i;
 	return address.length === 42 && alphanumeric.test(address);
-}
+};
 
 export const removeHTTPIfPresent = (url: string) => {
 	if (url.startsWith('https://')) return url.slice(8);
 	if (url.startsWith('http://')) return url.slice(7);
 	return url;
-}
+};
 
 export function formatDateToRelativeDate(date: string | Date) {
 	let parsed: Date;

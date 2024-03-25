@@ -31,7 +31,7 @@
 			domain: params.domainName,
 			to: params.address,
 			subscriptionYears: params.years,
-			byocSymbol: params.byocSymbol,
+			byocSymbol: params.byocSymbol
 		});
 
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);

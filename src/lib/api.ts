@@ -1,25 +1,28 @@
-import { captureException } from "@sentry/sveltekit";
-import type { ApiError } from "./types";
+import { captureException } from '@sentry/sveltekit';
+import type { ApiError } from './types';
 
-export async function fetchApiJson<T>(url: string, options: RequestInit = {}): Promise<T | ApiError> {
-  let response
+export async function fetchApiJson<T>(
+	url: string,
+	options: RequestInit = {}
+): Promise<T | ApiError> {
+	let response;
 
-  try {
-    response = await fetch(url, options);
-    const json = await response.json();
-    if (!response.ok) {
-      let message = 'Something went wrong'
-      if (json && json.error) message = json.error;
+	try {
+		response = await fetch(url, options);
+		const json = await response.json();
+		if (!response.ok) {
+			let message = 'Something went wrong';
+			if (json && json.error) message = json.error;
 
-      return { error: message }
-    }
+			return { error: message };
+		}
 
-    return json
-  } catch (error) {
-    console.error(error)
+		return json;
+	} catch (error) {
+		console.error(error);
 
-    captureException(error, { extra: { url, options, response } });
+		captureException(error, { extra: { url, options, response } });
 
-    return { error: 'Something went wrong' }
-  }
+		return { error: 'Something went wrong' };
+	}
 }

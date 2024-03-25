@@ -24,10 +24,11 @@ const websiteUrl = `${import.meta.env.VITE_WEBSITE_URL}`;
 const contractDisabled = `${import.meta.env.VITE_CONTRACT_DISABLED}` == 'true';
 
 const tldMigrationProposal = {
-  'mainnet': '02fba7fc0463c34c55a68b05550f24755629cdccd0',
-  'testnet': '021e68773e9bd5fc28381802c4b24899499f039ea9'
+	mainnet: '02fba7fc0463c34c55a68b05550f24755629cdccd0',
+	testnet: '021e68773e9bd5fc28381802c4b24899499f039ea9'
 };
-const tldMigrationProposalContractAddress = environment === 'prod' ? tldMigrationProposal.mainnet : tldMigrationProposal.testnet;
+const tldMigrationProposalContractAddress =
+	environment === 'prod' ? tldMigrationProposal.mainnet : tldMigrationProposal.testnet;
 
 export const config: Config = {
 	browserUrl,
@@ -39,5 +40,5 @@ export const config: Config = {
 	permissions: ['sign'] as PermissionTypes[],
 	landingUrl,
 	tldMigrationProposalContractAddress,
-	websiteUrl,
+	websiteUrl
 };

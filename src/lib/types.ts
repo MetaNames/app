@@ -1,42 +1,42 @@
-import type { BYOCSymbol } from "@metanames/sdk";
+import type { BYOCSymbol } from '@metanames/sdk';
 
 export enum DomainTab {
-  details = 'details',
-  settings = 'settings'
+	details = 'details',
+	settings = 'settings'
 }
 
 export interface AlertMessage {
-  message: string;
-  action?: {
-    label: string;
-    callback: () => void;
-  }
+	message: string;
+	action?: {
+		label: string;
+		callback: () => void;
+	};
 }
 
 export interface AccountData {
-  id: string
-  account: {
-    displayCoins: {
-      symbol: string
-      balance: string
-      balanceAsGas: string
-      conversionRate: string
-    }[]
-  }
+	id: string;
+	account: {
+		displayCoins: {
+			symbol: string;
+			balance: string;
+			balanceAsGas: string;
+			conversionRate: string;
+		}[];
+	};
 }
 
 export interface ApiError {
-  error: string
+	error: string;
 }
 
 export interface DomainCheckResponse {
-  domainPresent: boolean
-  parentPresent: boolean
+	domainPresent: boolean;
+	parentPresent: boolean;
 }
 
 export interface DomainPaymentParams {
-  domainName: string
-  byocSymbol: BYOCSymbol
-  years: number
-  address: string
+	domainName: string;
+	byocSymbol: BYOCSymbol;
+	years: number;
+	address: string;
 }
