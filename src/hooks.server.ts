@@ -7,7 +7,7 @@ Sentry.init({
   tracesSampleRate: 1.0,
 
   // uncomment the line below to enable Spotlight (https://spotlightjs.com)
-  // spotlight: import.meta.env.DEV,  
+  // spotlight: import.meta.env.DEV,
 });
 
 // If you have custom handlers, make sure to place them after `sentryHandle()` in the `sequence` function.

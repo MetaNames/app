@@ -1,6 +1,6 @@
 import { KV_REST_API_TOKEN, KV_REST_API_URL } from '$env/static/private'
 import { metaNamesSdkFactory } from "$lib/sdk";
-import { Enviroment } from '@metanames/sdk';
+import { captureException } from "@sentry/sveltekit";
 import { json } from "@sveltejs/kit";
 import { createClient } from '@vercel/kv';
 
@@ -8,6 +8,7 @@ export const metaNamesSdk = metaNamesSdkFactory({ cache_ttl: 0 });
 
 export const handleError = (fn: () => Promise<Response>) => fn().catch((error) => {
   console.error(error);
+  captureException(error);
 
   let message = 'Cannot handle your request at the moment. Please try again later.';
   if (error instanceof Error) message = error.message;
