@@ -26,5 +26,5 @@ export async function GET() {
 
   metaNamesSdk.resetSigningStrategy()
 
-  return json({ newVoters: votersToRemove, transactionHash, result })
+  return json({ newVoters: votersToRemove, transactionHash })
 }

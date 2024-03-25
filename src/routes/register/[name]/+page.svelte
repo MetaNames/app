@@ -32,7 +32,6 @@
 			to: params.address,
 			subscriptionYears: params.years,
 			byocSymbol: params.byocSymbol,
-			tokenUri: params.domainName
 		});
 
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);

@@ -33,7 +33,7 @@
 				labels: {
 					color: '#ffffff',
 					font: {
-						weight: 'bold'
+						weight: 'bold' as 'bold'
 					}
 				}
 			}
