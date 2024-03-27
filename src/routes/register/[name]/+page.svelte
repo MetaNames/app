@@ -13,13 +13,13 @@
 	import DomainPayment from 'src/components/DomainPayment.svelte';
 	import { alertTransactionAndFetchResult } from 'src/lib';
 	import { track } from '@vercel/analytics';
-	import type { PageData } from './$types';
-
-	export let data: PageData;
+	import { page } from '$app/stores';
 
 	const isDomainPresent = writable<boolean>();
 	const isParentPresent = writable<boolean>();
 	const analyzed = writable<IDomainAnalyzed>();
+
+	const nameParam = $page.params.name;
 
 	$: domainName = $analyzed?.name;
 	$: parentDomainName = $analyzed?.parentId;
@@ -52,11 +52,15 @@
 	}
 
 	onMount(async () => {
-		if ('error' in data) {
-			alertMessage.set(data.error);
+		try {
+			const domainAnalysis = $metaNamesSdk.domainRepository.analyze(nameParam);
+			analyzed.set(domainAnalysis);
+		} catch (error) {
+			let errorMessage = 'Failed to analyze domain.';
+			if (error instanceof Error) errorMessage = error.message;
+			alertMessage.set(errorMessage);
+
 			return goto('/', { replaceState: true });
-		} else {
-			analyzed.set(data.analyzed);
 		}
 
 		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${$analyzed.name}/check`);
