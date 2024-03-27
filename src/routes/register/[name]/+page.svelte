@@ -36,7 +36,11 @@
 
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) throw new Error('Failed to register domain.');
-		else alertMessage.set('Domain registered successfully!');
+		else
+			alertMessage.set({
+				message: 'Domain registered successfully!',
+				action: { label: 'Go to profile', callback: () => goto('/profile') }
+			});
 
 		track('domain_registered', {
 			domain: domainName,
