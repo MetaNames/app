@@ -13,7 +13,8 @@
 	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
-	import type { DomainPaymentParams } from 'src/lib/types';
+	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
+	import { fetchApiJson } from 'src/lib/api';
 
 	export let domainName: string;
 	export let tld: string;
@@ -28,7 +29,9 @@
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = $metaNamesSdk.domainRepository.calculateMintFees(domainName, $selectedCoin);
+	$: loadFees = fetchApiJson<DomainFeesResponse>(
+		`/api/register/${domainName}/fees/${$selectedCoin}`
+	);
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
@@ -124,14 +127,16 @@
 				{#await loadFees}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 				{:then fees}
-					<div class="row">
-						<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
-						<span>{fees.feesLabel} {fees.symbol}</span>
-					</div>
-					<div class="row" data-testid="total-fees">
-						<span>Total (excluding network fees)</span>
-						<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
-					</div>
+					{#if 'symbol' in fees}
+						<div class="row">
+							<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
+							<span>{fees.feesLabel} {fees.symbol}</span>
+						</div>
+						<div class="row" data-testid="total-fees">
+							<span>Total (excluding network fees)</span>
+							<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
+						</div>
+					{/if}
 				{/await}
 			</div>
 

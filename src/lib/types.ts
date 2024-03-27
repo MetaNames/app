@@ -40,3 +40,10 @@ export interface DomainPaymentParams {
 	years: number;
 	address: string;
 }
+
+export interface DomainFeesResponse {
+	feesLabel: number
+	fees: string
+	symbol: string
+	address: string
+}
