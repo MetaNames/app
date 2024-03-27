@@ -118,7 +118,7 @@
 		<slot />
 	</main>
 
-	<Snackbar bind:this={transactionSnackbar} timeoutMs={-1}>
+	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
 		<Label>{snackbarTransactionMessage}</Label>
 		<Actions>
 			<Button
