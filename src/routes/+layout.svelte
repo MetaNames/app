@@ -35,8 +35,6 @@
 	$: contractDisabled = config.contractDisabled;
 	$: isTestnet = config.environment === 'test';
 
-	$: currentPath = $page.url.pathname;
-
 	// Analytics
 	inject({ mode: dev ? 'development' : 'production' });
 	injectSpeedInsights();
