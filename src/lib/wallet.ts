@@ -1,19 +1,19 @@
-import PartisiaSdk from 'partisia-sdk';
 import { config } from './config';
 import type { MetaMaskSdk } from '@metanames/sdk';
 import type { AccountData } from './types';
 import { backendBrowserUrl } from './url';
 
-export type OptionalWalletClient = PartisiaSdk | MetaMaskSdk | undefined | null;
+export type OptionalWalletClient = any | undefined | null;
 
 const metaMaskSnapId = 'npm:@partisiablockchain/snap';
 
 export const connectPartisia = async () => {
+	const { default: PartisiaSdk } = await import('partisia-blockchain-applications-sdk');
 	const sdk = new PartisiaSdk();
 
 	await sdk.connect({
 		chainId: config.chainId,
-		permissions: config.permissions,
+		permissions: config.permissions as any,
 		dappName: config.dAppName
 	});
 

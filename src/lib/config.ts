@@ -1,5 +1,6 @@
 import { Enviroment } from '@metanames/sdk';
-import type { PermissionTypes } from 'partisia-sdk/dist/sdk-listeners';
+
+type PermissionType = 'sign' | 'private_key';
 
 type Config = {
 	browserUrl: string;
@@ -8,7 +9,7 @@ type Config = {
 	dAppName: string;
 	environment: 'test' | 'prod';
 	sdkEnvironment: Enviroment;
-	permissions: PermissionTypes[];
+	permissions: PermissionType[];
 	landingUrl: string;
 	tldMigrationProposalContractAddress: string;
 	websiteUrl: string;
@@ -37,7 +38,7 @@ export const config: Config = {
 	environment,
 	dAppName: 'Meta Names',
 	sdkEnvironment,
-	permissions: ['sign'] as PermissionTypes[],
+	permissions: ['sign'] as PermissionType[],
 	landingUrl,
 	tldMigrationProposalContractAddress,
 	websiteUrl
