@@ -49,14 +49,14 @@
 	<Head>
 		<Row>
 			<Cell numeric columnId="tokenId">
-				<IconButton>
+				<IconButton aria-label="sort-by-token">
 					<Icon icon="arrow-upward" />
 				</IconButton>
 				<Label>Token ID</Label>
 			</Cell>
 			<Cell class="w-80" columnId="name">
 				<Label>Domain Name</Label>
-				<IconButton>
+				<IconButton aria-label="sort-by-name">
 					<Icon icon="arrow-upward" />
 				</IconButton>
 			</Cell>
@@ -113,6 +113,7 @@
 			title="First page"
 			on:click={() => (currentPage = 0)}
 			disabled={currentPage === 0}
+			aria-label="first page"
 		>
 			<Icon icon="first-page" />
 		</IconButton>
@@ -121,6 +122,7 @@
 			title="Prev page"
 			on:click={() => currentPage--}
 			disabled={currentPage === 0}
+			aria-label="previous page"
 		>
 			<Icon icon="chevron-left" />
 		</IconButton>
@@ -129,6 +131,7 @@
 			title="Next page"
 			on:click={() => currentPage++}
 			disabled={currentPage === lastPage}
+			aria-label="next page"
 		>
 			<Icon icon="chevron-right" />
 		</IconButton>
@@ -137,6 +140,7 @@
 			title="Last page"
 			on:click={() => (currentPage = lastPage)}
 			disabled={currentPage === lastPage}
+			aria-label="last page"
 		>
 			<Icon icon="last-page" />
 		</IconButton>

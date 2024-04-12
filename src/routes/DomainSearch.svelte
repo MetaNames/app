@@ -63,7 +63,7 @@
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
-					<IconButton>
+					<IconButton aria-label="search">
 						<Icon icon="search" />
 					</IconButton>
 				</div>

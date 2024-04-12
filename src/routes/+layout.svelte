@@ -124,7 +124,7 @@
 					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
 				>View</Button
 			>
-			<IconButton title="Dismiss">
+			<IconButton title="Dismiss" aria-label="close">
 				<Icon icon="close" />
 			</IconButton>
 		</Actions>
@@ -135,7 +135,7 @@
 			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
 				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
 			{/if}
-			<IconButton title="Dismiss">
+			<IconButton title="Dismiss" aria-label="close">
 				<Icon icon="close" />
 			</IconButton>
 		</Actions>

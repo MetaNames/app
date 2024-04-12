@@ -56,7 +56,7 @@
 				>
 					<svelte:fragment slot="trailingIcon">
 						<div class="close-icon">
-							<IconButton on:click={cleanSearch}>
+							<IconButton on:click={cleanSearch} aria-label="cancel">
 								<Icon icon="cancel" />
 							</IconButton>
 						</div>
