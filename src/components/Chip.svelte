@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Icon } from '@smui/icon-button';
+	import Icon from 'src/components/Icon.svelte';
 	import Button, { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
 	import { writable } from 'svelte/store';
@@ -12,7 +12,7 @@
 	export let openInNewTab: boolean = true;
 	export let className: string | undefined = undefined;
 
-	let icon = writable(type === 'url' ? 'open_in_new' : 'content_copy');
+	let icon = writable(type === 'url' ? 'open-in-new' : 'content-copy');
 
 	const action = () => {
 		if (type === 'url') {
@@ -21,7 +21,7 @@
 		} else {
 			navigator.clipboard.writeText(href ?? value);
 			icon.set('done');
-			setTimeout(() => icon.set('content_copy'), 1000);
+			setTimeout(() => icon.set('content-copy'), 1000);
 		}
 	};
 
@@ -35,7 +35,7 @@
 			<span class="value" class:ellipsis>{value}</span>
 		</div>
 	</Label>
-	<Icon class="material-icons">{$icon}</Icon>
+	<Icon icon="{$icon}" align="right" />
 </Button>
 
 <style lang="scss">

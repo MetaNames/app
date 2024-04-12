@@ -4,6 +4,7 @@
 	import IconButton from '@smui/icon-button';
 	import CharacterCounter from '@smui/textfield/character-counter';
 	import Textfield from '@smui/textfield';
+	import Icon from 'src/components/Icon.svelte';
 
 	import type { RecordRepository } from '@metanames/sdk';
 	import { alertMessage, walletConnected } from '$lib/stores/main';
@@ -89,19 +90,21 @@
 	</div>
 	{#if edit}
 		<div class="actions">
-			<IconButton class="material-icons" on:click={save}>save</IconButton>
-			<IconButton class="material-icons" on:click={() => toggleEdit()}>cancel</IconButton>
+			<IconButton on:click={save}>
+				<Icon icon="save" />
+			</IconButton>
+			<IconButton on:click={() => toggleEdit()}>
+				<Icon icon="cancel" />
+			</IconButton>
 		</div>
 	{:else if editMode}
 		<div class="actions">
-			<IconButton class="material-icons" on:click={() => toggleEdit()} disabled={!$walletConnected}
-				>edit</IconButton
-			>
-			<IconButton
-				class="material-icons"
-				on:click={() => (dialogOpen = true)}
-				disabled={!$walletConnected}>delete</IconButton
-			>
+			<IconButton on:click={() => toggleEdit()} disabled={!$walletConnected}>
+				<Icon icon="edit" />
+			</IconButton>
+			<IconButton on:click={() => (dialogOpen = true)} disabled={!$walletConnected}>
+				<Icon icon="delete" />
+			</IconButton>
 		</div>
 	{/if}
 </div>

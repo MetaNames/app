@@ -4,10 +4,9 @@
 	import { inject } from '@vercel/analytics';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
-	import { page } from '$app/stores';
-
 	import Button from '@smui/button';
-	import Banner, { Icon } from '@smui/banner';
+	import Banner from '@smui/banner';
+	import Icon from 'src/components/Icon.svelte';
 	import IconButton from '@smui/icon-button';
 	import Snackbar, { Actions, Label } from '@smui/snackbar';
 	import TopAppBar, { Row, Title, Section } from '@smui/top-app-bar';
@@ -22,7 +21,6 @@
 	import favicon from '$lib/assets/images/favicon.png';
 
 	import 'src/styles/app.scss';
-	import 'material-icons/iconfont/filled.css';
 
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
@@ -106,7 +104,9 @@
 	<main>
 		{#if contractDisabled}
 			<Banner open={true} centered={true} mobileStacked={true}>
-				<Icon slot="icon" class="material-icons">update</Icon>
+				<div class="icon-center" slot="icon">
+					<Icon icon="system-update" width="25px" height="25px" color="white" />
+				</div>
 				<Label slot="label">Contract is temporarily disabled for updates</Label>
 				<svelte:fragment slot="actions">
 					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
@@ -124,7 +124,9 @@
 					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
 				>View</Button
 			>
-			<IconButton class="material-icons" title="Dismiss">close</IconButton>
+			<IconButton title="Dismiss">
+				<Icon icon="close" />
+			</IconButton>
 		</Actions>
 	</Snackbar>
 	<Snackbar bind:this={alertsSnackbar}>
@@ -133,7 +135,9 @@
 			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
 				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
 			{/if}
-			<IconButton class="material-icons" title="Dismiss">close</IconButton>
+			<IconButton title="Dismiss">
+				<Icon icon="close" />
+			</IconButton>
 		</Actions>
 	</Snackbar>
 	<Footer />
@@ -190,4 +194,12 @@
 	.logo {
 		color: white;
 	}
+
+	.icon-center {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+	}
+
 </style>

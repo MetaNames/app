@@ -7,6 +7,7 @@
 	import DomainsTable from './DomainsTable.svelte';
 	import Textfield from '@smui/textfield';
 	import IconButton from '@smui/icon-button';
+	import Icon from 'src/components/Icon.svelte';
 
 	let domains: Domain[] = [];
 	let domainsFiltered: Domain[] = [];
@@ -55,7 +56,9 @@
 				>
 					<svelte:fragment slot="trailingIcon">
 						<div class="close-icon">
-							<IconButton class="material-icons" on:click={cleanSearch}>cancel</IconButton>
+							<IconButton on:click={cleanSearch}>
+								<Icon icon="cancel" />
+							</IconButton>
 						</div>
 					</svelte:fragment>
 				</Textfield>

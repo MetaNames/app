@@ -7,6 +7,7 @@
 	import { writable } from 'svelte/store';
 
 	import { Label } from '@smui/button';
+	import Icon from 'src/components/Icon.svelte';
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
@@ -101,18 +102,16 @@
 			<h4>{domainName}</h4>
 
 			<div class="years">
-				<IconButton
-					class="material-icons"
-					on:click={() => addYears(-1)}
-					disabled={years === 1 || feesApproved}>remove</IconButton
-				>
+				<IconButton on:click={() => addYears(-1)} disabled={years === 1 || feesApproved}>
+					<Icon icon="remove" />
+				</IconButton>
 				<span>{years} {yearsLabel}</span>
-				<IconButton class="material-icons" on:click={() => addYears(1)} disabled={feesApproved}
-					>add</IconButton
-				>
+				<IconButton on:click={() => addYears(1)} disabled={feesApproved}>
+					<Icon icon="add" />
+				</IconButton>
 			</div>
 
-			<div class="coin">
+	 		<div class="coin">
 				<p class="title text-center">Payment token</p>
 				<div class="row centered">
 					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">

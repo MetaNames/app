@@ -2,7 +2,8 @@
 	import { walletAddress } from '$lib/stores/main';
 	import { derived } from 'svelte/store';
 
-	import { Icon, Label } from '@smui/button';
+	import Icon from 'src/components/Icon.svelte';
+	import { Label } from '@smui/button';
 	import { Item, Text } from '@smui/list';
 
 	import 'src/styles/wallet-connect.scss';
@@ -20,7 +21,7 @@
 
 <WalletConnectButton connectButtonVariant="unelevated" {anchor}>
 	<div class="wallet-connect" slot="buttonLabel">
-		<Icon class="material-icons" aria-label="Wallet">wallet</Icon>
+		<Icon icon="wallet" align="left" />
 		<Label>{buttonLabel}</Label>
 	</div>
 	<div slot="connectedMenuIems">

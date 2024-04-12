@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { alertMessage } from '$lib/stores/main';
 	import { captureException } from '@sentry/sveltekit';
-	import Button, { Icon, Label } from '@smui/button';
+	import Button, { Label } from '@smui/button';
+	import Icon from 'src/components/Icon.svelte';
 	import CircularProgress from '@smui/circular-progress';
 
 	let className = '';
@@ -47,9 +48,9 @@
 			<CircularProgress style="height: 20px; width: 20px;" indeterminate />
 		</div>
 	{:else if hasError}
-		<Icon class="material-icons" aria-label="error">error</Icon>
+		<Icon icon="error" align="right" />
 	{:else if loading === false}
-		<Icon class="material-icons" aria-label="done">done</Icon>
+		<Icon icon="done" align="right"/>
 	{/if}
 </Button>
 

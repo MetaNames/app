@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk';
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue, Pagination } from '@smui/data-table';
-	import IconButton from '@smui/icon-button';
+	import Icon from 'src/components/Icon.svelte';
 	import LinearProgress from '@smui/linear-progress';
 	import Select, { Option } from '@smui/select';
 	import Button from '@smui/button';
+	import IconButton from '@smui/icon-button';
 
 	export let domains: Domain[] = [];
 	export let loaded = false;
@@ -48,12 +49,16 @@
 	<Head>
 		<Row>
 			<Cell numeric columnId="tokenId">
-				<IconButton class="material-icons">arrow_upward</IconButton>
+				<IconButton>
+					<Icon icon="arrow-upward" />
+				</IconButton>
 				<Label>Token ID</Label>
 			</Cell>
 			<Cell class="w-80" columnId="name">
 				<Label>Domain Name</Label>
-				<IconButton class="material-icons">arrow_upward</IconButton>
+				<IconButton>
+					<Icon icon="arrow-upward" />
+				</IconButton>
 			</Cell>
 			<Cell columnId="parentId" sortable={false}>
 				<Label>Parent Name</Label>
@@ -104,33 +109,37 @@
 		</svelte:fragment>
 
 		<IconButton
-			class="material-icons"
 			action="first-page"
 			title="First page"
 			on:click={() => (currentPage = 0)}
-			disabled={currentPage === 0}>first_page</IconButton
+			disabled={currentPage === 0}
 		>
+			<Icon icon="first-page" />
+		</IconButton>
 		<IconButton
-			class="material-icons"
 			action="prev-page"
 			title="Prev page"
 			on:click={() => currentPage--}
-			disabled={currentPage === 0}>chevron_left</IconButton
+			disabled={currentPage === 0}
 		>
+			<Icon icon="chevron-left" />
+		</IconButton>
 		<IconButton
-			class="material-icons"
 			action="next-page"
 			title="Next page"
 			on:click={() => currentPage++}
-			disabled={currentPage === lastPage}>chevron_right</IconButton
+			disabled={currentPage === lastPage}
 		>
+			<Icon icon="chevron-right" />
+		</IconButton>
 		<IconButton
-			class="material-icons"
 			action="last-page"
 			title="Last page"
 			on:click={() => (currentPage = lastPage)}
-			disabled={currentPage === lastPage}>last_page</IconButton
+			disabled={currentPage === lastPage}
 		>
+			<Icon icon="last-page" />
+		</IconButton>
 	</Pagination>
 	<LinearProgress
 		closed={loaded}

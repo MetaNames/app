@@ -7,6 +7,7 @@
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
+	import Icon from 'src/components/Icon.svelte';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
 
@@ -62,7 +63,9 @@
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
-					<IconButton class="material-icons">search</IconButton>
+					<IconButton>
+						<Icon icon="search" />
+					</IconButton>
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="helper">
