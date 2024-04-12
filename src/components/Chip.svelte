@@ -35,7 +35,13 @@
 			<span class="value" class:ellipsis>{value}</span>
 		</div>
 	</Label>
-	<Icon icon="{$icon}" align="right" />
+	{#if $icon === 'done'}
+		<Icon icon="done" align="right" />
+	{:else if $icon === 'open-in-new'}
+		<Icon icon="open-in-new" align="right" />
+	{:else if $icon === 'content-copy'}
+		<Icon icon="content-copy" align="right" />
+	{/if}
 </Button>
 
 <style lang="scss">
