@@ -8,7 +8,7 @@
 	import TabBar from '@smui/tab-bar';
 
 	import {
-		config,
+		explorerAddressUrl,
 		formatDate,
 		isValidURL,
 		profileRecords,
@@ -36,10 +36,7 @@
 	const records = Object.fromEntries(
 		Object.entries(domain.records).map(([key, value]) => [key, String(value)])
 	);
-
-	const ownerBrowserUrl = `${config.browserUrl}/${isTld ? 'contracts' : 'accounts'}/${
-		domain.owner
-	}`;
+	const ownerBrowserUrl = explorerAddressUrl(domain.owner);
 
 	let tabs: Array<DomainTab> = [DomainTab.details];
 	if (!isTld) tabs.push(DomainTab.settings);
