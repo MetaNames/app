@@ -1,8 +1,6 @@
-import { KV_REST_API_TOKEN, KV_REST_API_URL } from '$env/static/private';
 import { metaNamesSdkFactory } from '$lib/sdk';
 import { captureException } from '@sentry/sveltekit';
 import { json } from '@sveltejs/kit';
-import { createClient } from '@vercel/kv';
 
 export const metaNamesSdk = metaNamesSdkFactory({ cache_ttl: 0 });
 
@@ -16,14 +14,6 @@ export const handleError = (fn: () => Promise<Response>) =>
 
 		return json({ error: message }, { status: 400 });
 	});
-
-export const keyValueStore = () => {
-	if (KV_REST_API_TOKEN && KV_REST_API_URL)
-		return createClient({
-			url: KV_REST_API_URL,
-			token: KV_REST_API_TOKEN
-		});
-};
 
 export interface DomainProjection {
 	name: string;
