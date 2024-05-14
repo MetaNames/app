@@ -1,12 +1,3 @@
 {
-	"crons": [
-		{
-			"path": "/api/domains/recent?refresh=1",
-			"schedule": "*/10 * * * *"
-		},
-		{
-			"path": "/api/domains/stats?refresh=1",
-			"schedule": "*/10 * * * *"
-		}
-	]
+	"crons": []
 }
