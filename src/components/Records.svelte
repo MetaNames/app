@@ -2,7 +2,7 @@
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
 
-	import { alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
+	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
 	import { walletAddress } from '$lib/stores/main';
 
 	import { Label } from '@smui/button';
@@ -16,7 +16,6 @@
 	export let records: Record<string, string>;
 	export let repository: RecordRepository;
 
-	const validator = repository.recordValidator;
 	let selectedRecordClass: string | undefined;
 	let newRecordValue: string = '';
 	let newRecordSubmitted = false;
@@ -31,7 +30,8 @@
 	$: recordValueInvalid =
 		newRecordSubmitted &&
 		!!newRecordClass &&
-		!validator.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false });
+		!validator?.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false });
+	$: validator = selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined
 
 	async function createRecord() {
 		if (selectedRecordClass === undefined) selectedRecordClass = '';
@@ -39,8 +39,8 @@
 
 		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) {
 			const message =
-				validator.errors.length > 0
-					? validator.errors.join(', ')
+			validator && validator.getErrors()?.length > 0
+					? validator.getErrors().join(', ')
 					: 'Invalid fields. Please check the form.';
 			throw new Error(message);
 		}

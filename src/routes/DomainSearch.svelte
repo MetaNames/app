@@ -17,7 +17,7 @@
 	let isLoading: boolean = false;
 	let debounceTimer: NodeJS.Timeout;
 
-	$: errors = invalid ? validator.errors : [];
+	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
 

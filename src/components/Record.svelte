@@ -8,15 +8,13 @@
 
 	import type { RecordRepository } from '@metanames/sdk';
 	import { alertMessage, walletConnected } from '$lib/stores/main';
-	import { MAX_RECORD_LENGTH, alertTransactionAndFetchResult, getRecordClassFrom } from '$lib';
+	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
 	import HelperText from '@smui/textfield/helper-text';
 
 	export let klass: string;
 	export let value: string;
 	export let repository: RecordRepository;
 	export let editMode = false;
-
-	const validator = repository.recordValidator;
 
 	let recordValue = String(value);
 	let dialogOpen = false;
@@ -27,8 +25,10 @@
 		{ data: recordValue, class: recordClass },
 		{ raiseError: false }
 	);
-	$: errors = invalid ? validator.errors : [];
+	$: errors = invalid ? validator.getErrors() : [];
 	$: disabled = !edit;
+	$: validator = getValidator(klass);
+	$: maxLength = 'maxLength' in validator.rules ? validator.rules['maxLength'] as number : 64
 
 	let edit = false;
 
@@ -73,7 +73,7 @@
 	<div class="value">
 		<Textfield
 			for={label}
-			input$maxlength={MAX_RECORD_LENGTH}
+			input$maxlength={maxLength}
 			bind:value={recordValue}
 			bind:invalid
 			variant="outlined"
@@ -85,7 +85,7 @@
 					<HelperText slot="helper">{errors.join(', ')}</HelperText>
 				{/if}
 			</svelte:fragment>
-			<CharacterCounter slot="internalCounter">0 / {MAX_RECORD_LENGTH}</CharacterCounter>
+			<CharacterCounter slot="internalCounter">0 / {maxLength}</CharacterCounter>
 		</Textfield>
 	</div>
 	{#if edit}
