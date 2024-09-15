@@ -84,11 +84,17 @@
 													value={removeHTTPIfPresent(domain.records[klass]?.toString() ?? '')}
 													href={domain.records[klass].toString()}
 												/>
+											{:else if klass === 'Price' }
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString() + "$"}
+												/>
 											{:else}
 												<Chip
 													class="mt-1 mr-1"
 													label={klass}
-													value={domain.records[klass]?.toString() ?? ''}
+													value={domain.records[klass]?.toString()}
 												/>
 											{/if}
 										{/if}
