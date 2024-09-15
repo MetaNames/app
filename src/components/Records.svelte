@@ -129,6 +129,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: baseline;
+			min-height: 70pt;
 
 			& .value {
 				width: auto;
