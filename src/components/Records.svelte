@@ -11,6 +11,7 @@
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
 	import RecordComponent from 'src/components/Record.svelte';
+	import HelperText from '@smui/textfield/helper-text';
 
 	export let ownerAddress: string;
 	export let records: Record<string, string>;
@@ -28,22 +29,18 @@
 	);
 	$: selectRecordInvalid = newRecordSubmitted && selectedRecordClass === '';
 	$: recordValueInvalid =
-		newRecordSubmitted &&
 		!!newRecordClass &&
 		!validator?.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false });
-	$: validator = selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined
+	$: recordValueErrors = validator && recordValueInvalid ? validator.getErrors() : [];
+	$: validator = selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined;
+	$: newRecordValueMaxLength =
+		validator && 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
 
 	async function createRecord() {
 		if (selectedRecordClass === undefined) selectedRecordClass = '';
 		newRecordSubmitted = true;
 
-		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) {
-			const message =
-			validator && validator.getErrors()?.length > 0
-					? validator.getErrors().join(', ')
-					: 'Invalid fields. Please check the form.';
-			throw new Error(message);
-		}
+		if (selectRecordInvalid || recordValueInvalid || !selectedRecordClass) return;
 
 		const recordClass = getRecordClassFrom(selectedRecordClass);
 		const transactionIntent = await repository.create({ class: recordClass, data: newRecordValue });
@@ -84,14 +81,28 @@
 					<Option value={klass}>{klass}</Option>
 				{/each}
 			</Select>
-			<Textfield
-				class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
-				bind:value={newRecordValue}
-				label="Record value"
-				invalid={recordValueInvalid}
-				variant="outlined"
-			/>
-			<LoadingButton class="mobile--mt-1" onClick={createRecord} variant="raised">
+			<div class="value">
+				<Textfield
+					class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
+					bind:value={newRecordValue}
+					input$maxlength={newRecordValueMaxLength}
+					label="Record value"
+					bind:invalid={recordValueInvalid}
+					variant="outlined"
+				>
+					<svelte:fragment slot="helper">
+						{#if recordValueErrors.length > 0}
+							<HelperText class="error" slot="helper">{recordValueErrors?.join(', ')}</HelperText>
+						{/if}
+					</svelte:fragment>
+				</Textfield>
+			</div>
+			<LoadingButton
+				class="mobile--mt-1"
+				disabled={!newRecordClass || recordValueInvalid}
+				onClick={createRecord}
+				variant="raised"
+			>
 				<Label>Add record</Label>
 			</LoadingButton>
 		</div>
@@ -117,7 +128,11 @@
 		& .add-record {
 			display: flex;
 			justify-content: center;
-			align-items: center;
+			align-items: baseline;
+
+			& .value {
+				width: auto;
+			}
 		}
 
 		& .no-records {
@@ -137,6 +152,10 @@
 				width: 100%;
 				display: flex;
 				flex-direction: column;
+
+				& .value {
+					width: 100%;
+				}
 			}
 		}
 	}
