@@ -99,7 +99,7 @@
 			</div>
 			<LoadingButton
 				class="mobile--mt-1"
-				disabled={!newRecordClass || recordValueInvalid}
+				disabled={newRecordClass === undefined || recordValueInvalid}
 				onClick={createRecord}
 				variant="raised"
 			>
