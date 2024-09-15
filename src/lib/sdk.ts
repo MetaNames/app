@@ -19,7 +19,6 @@ export const profileRecords = [
 	RecordClassEnum.Email,
 	RecordClassEnum.Uri,
 	RecordClassEnum.Wallet,
-	RecordClassEnum.Main,
 	RecordClassEnum.Price
 ].map((v) => RecordClassEnum[v]);
 
