@@ -15,7 +15,8 @@
 		"lint": "prettier --plugin prettier-plugin-svelte --check . && eslint .",
 		"format": "prettier --plugin prettier-plugin-svelte --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"postinstall": "cd node_modules/@metanames/sdk && yarn install && yarn build"
 	},
 	"devDependencies": {
 		"@arisbh/marqueeck": "^0.5.0",
@@ -67,7 +68,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@metanames/sdk": "^6.2.1",
+		"@ledgerhq/hw-transport-webusb": "^6.27.2",
+		"@metanames/sdk": "github:MetaNames/sdk#support-ledger",
 		"@partisiablockchain/abi-client": "^3.30.0",
 		"@secata-public/bitmanipulation-ts": "^3.0.7",
 		"@sentry/sveltekit": "^7.109.0",
