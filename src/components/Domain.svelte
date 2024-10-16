@@ -183,9 +183,8 @@
 
 			.chips {
 				display: flex;
-				flex-wrap: wrap;
-				align-items: center;
-				justify-content: start;
+				flex-direction: column;
+				align-items: flex-start;
 			}
 
 			h5 {
