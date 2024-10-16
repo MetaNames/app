@@ -48,7 +48,6 @@
 
 			const client = new PartisiaLedgerClient(transport);
 			const address = await client.getAddress();
-			alert(address);
 			walletAddress.set(address);
 		} catch (e) {
 			alertMessage.set("Couldn't connect to Ledger wallet");
