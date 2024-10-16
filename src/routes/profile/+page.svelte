@@ -86,6 +86,7 @@
 
 	:global(.search-bar) {
 		height: 48px;
+		min-width: 50%;
 	}
 
 	.close-icon {
