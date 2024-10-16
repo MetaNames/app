@@ -8,6 +8,7 @@
 	import Textfield from '@smui/textfield';
 	import IconButton from '@smui/icon-button';
 	import Icon from 'src/components/Icon.svelte';
+	import Chip from 'src/components/Chip.svelte';
 
 	let domains: Domain[] = [];
 	let domainsFiltered: Domain[] = [];
@@ -45,8 +46,10 @@
 <div class="profile content">
 	<Paper class="w-100" variant="raised">
 		<div class="paper-content">
-			<h3>My Domains</h3>
+			<h3>Profile</h3>
 			{#if $walletConnected}
+				<Chip label="Address" value={$walletAddress || ''} />
+				<h4 class="domains">Domains</h4>
 				<Textfield
 					class="my-1"
 					label="Search"
@@ -71,6 +74,15 @@
 </div>
 
 <style lang="scss">
+
+	.domains {
+		margin-top: 1.5rem;
+		margin-bottom: 0;
+	}
+
+	h3 {
+		margin-bottom: 1rem;
+	}
 	.close-icon {
 		align-self: center;
 	}
