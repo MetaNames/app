@@ -51,7 +51,7 @@
 				<Chip label="Address" value={$walletAddress || ''} />
 				<h4 class="domains">Domains</h4>
 				<Textfield
-					class="my-1"
+					class="my-1 search-bar"
 					label="Search"
 					bind:value={search}
 					variant="outlined"
@@ -83,8 +83,14 @@
 	h3 {
 		margin-bottom: 1rem;
 	}
+
+	:global(.search-bar) {
+		height: 48px;
+	}
+
 	.close-icon {
 		align-self: center;
+		opacity: 0.7;
 	}
 
 	.profile {
