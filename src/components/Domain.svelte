@@ -113,8 +113,6 @@
 											value={domain.parentId}
 											href={`/domain/${domain.parentId}`}
 										/>
-									{:else}
-										<Chip class="mt-1 mr-1" label="Parent" value={domain.tld} href="/tld" />
 									{/if}
 									<Chip
 										class="mt-1 mr-1"
