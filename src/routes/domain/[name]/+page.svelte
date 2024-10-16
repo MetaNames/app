@@ -8,25 +8,37 @@
 	import Domain from 'src/components/Domain.svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
 	import { writable } from 'svelte/store';
-	import { alertMessage } from 'src/lib/stores/main';
+	import { alertMessage, refresh } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 
-	let domain = writable<DomainModel>();
+	let domain = writable<DomainModel | undefined>();
 	const domainName = $page.params.name;
 
 	$: pageName = $domain ? $domain.name + ' | ' : '';
 
-	onMount(async () => {
-		const loweredDomainName = domainName.toLocaleLowerCase();
-		if (loweredDomainName !== domainName)
-			goto(`/domain/${loweredDomainName}`, { replaceState: true });
+	refresh.subscribe((val) => {
+		if (val) {
+			domain.set(undefined);
+			loadDomain();
+			refresh.set(false);
+		}
+	});
 
+	async function loadDomain() {
 		const domainResponse = await $metaNamesSdk.domainRepository.find(domainName);
 		if (domainResponse) domain.set(domainResponse);
 		else {
 			alertMessage.set('Domain not found. Register it now!');
 			goto(`/register/${domainName}`, { replaceState: true });
 		}
+	}
+
+	onMount(async () => {
+		const loweredDomainName = domainName.toLocaleLowerCase();
+		if (loweredDomainName !== domainName)
+			goto(`/domain/${loweredDomainName}`, { replaceState: true });
+
+		await loadDomain();
 	});
 </script>
 
