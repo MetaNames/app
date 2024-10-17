@@ -1,10 +1,12 @@
 @use 'sass:color';
 
+$text-color: #d5ccff;
+
 @use '@material/theme/color-palette';
 @use '@material/theme/index' as theme with (
 	$primary: #6849fe,
-	$secondary: color.scale(#676778, $whiteness: -10%),
-	$surface: color.adjust(color-palette.$grey-900, $blue: +4),
+	$secondary: #D0C7FF,
+	$surface: #111113,
 	$background: #363535,
 	$error: color-palette.$red-700
 );
@@ -20,9 +22,9 @@ body {
 }
 
 a {
-	color: #b0a1fe;
+	color: color.scale($text-color, $lightness: +20%);
 }
 
 a:visited {
-	color: color.scale(#b0a1fe, $lightness: -15%);
+	color: color.scale($text-color, $lightness: +10%);
 }
