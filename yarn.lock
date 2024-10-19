@@ -2185,9 +2185,10 @@
     focus-trap "^7.5.2"
     nanoid "^4.0.2"
 
-"@metanames/sdk@github:MetaNames/sdk#support-ledger":
-  version "6.2.1"
-  resolved "https://codeload.github.com/MetaNames/sdk/tar.gz/05011b0e5f40348e6af81d030f4dd339450c800d"
+"@metanames/sdk@^6.3.0":
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/@metanames/sdk/-/sdk-6.3.0.tgz#825f867b6139eefe86f7fe7cd6a26066cac37fb1"
+  integrity sha512-xCdCXfgyp0DMg3QEJ19HNlXYDgE/NGEmqtPfEJgvuwZxC/gnCUzfzsarLWmzAbiYCgD6xKflA+A3yc+9LtNL1w==
   dependencies:
     "@ledgerhq/hw-transport" "^6.31.4"
     "@partisiablockchain/abi-client" "^5.48.0"
@@ -2236,18 +2237,6 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
-
-"@partisiablockchain/abi-client@^3.30.0":
-  version "3.30.0"
-  resolved "https://registry.yarnpkg.com/@partisiablockchain/abi-client/-/abi-client-3.30.0.tgz#2ae760c27c93e56cf1a102b7c4ae1eccc8693207"
-  integrity sha512-26On5MhI6ppNRvPqM6R44ybIKupPfEAfRC5uROiaS9H8cHeUbQTkQ/Nl51PVcGVsDJctpAuNnFBWw7EeOMEoSw==
-  dependencies:
-    "@secata-public/bitmanipulation-ts" "3.0.6"
-    "@types/bn.js" "^5.1.0"
-    "@types/elliptic" "^6.4.14"
-    bn.js "^5.2.0"
-    hash.js "^1.1.7"
-    prettier "^2.6.2"
 
 "@partisiablockchain/abi-client@^5.48.0":
   version "5.48.0"
@@ -2465,15 +2454,6 @@
     "@noble/hashes" "~1.3.2"
     "@scure/base" "~1.1.4"
 
-"@secata-public/bitmanipulation-ts@3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@secata-public/bitmanipulation-ts/-/bitmanipulation-ts-3.0.6.tgz#d8efb554beb23d061a74c15190c52a76ecee71cb"
-  integrity sha512-hg4sGiGjhvl1/XMw4P4lsyh5DuSnw8ISQGyub7QjGnzvaY32o52Q7ZVU32fGsKTyyefpFs6wc62CpzhVeHm+Qg==
-  dependencies:
-    "@types/bn.js" "^5.1.0"
-    bn.js "^5.2.0"
-    prettier "^2.6.2"
-
 "@secata-public/bitmanipulation-ts@3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@secata-public/bitmanipulation-ts/-/bitmanipulation-ts-3.1.0.tgz#41e6d1e0e59565dacb36d1c6b883e28ff0f89ed9"
@@ -2483,7 +2463,7 @@
     bn.js "^5.2.1"
     prettier "^3.2.5"
 
-"@secata-public/bitmanipulation-ts@^3.0.6", "@secata-public/bitmanipulation-ts@^3.0.7":
+"@secata-public/bitmanipulation-ts@^3.0.7":
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@secata-public/bitmanipulation-ts/-/bitmanipulation-ts-3.0.7.tgz#890a793e5aa91659398c36cf81784b1d45d60e12"
   integrity sha512-49cjY4WX7rWn9ArCY4aAfuNLr8LhjOnfREPkmekcHzZYgR4LTk/Ve1G7ah9joiWzizBGs+oa1kRaQjbJ0rrnQg==
@@ -3145,7 +3125,7 @@
   resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.6.0.tgz#eac397f28bf1d6ae0ae081363eca2f425bedf0d5"
   integrity sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==
 
-"@types/elliptic@^6.4.14", "@types/elliptic@^6.4.15", "@types/elliptic@^6.4.18":
+"@types/elliptic@^6.4.15", "@types/elliptic@^6.4.18":
   version "6.4.18"
   resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.18.tgz#bc96e26e1ccccbabe8b6f0e409c85898635482e1"
   integrity sha512-UseG6H5vjRiNpQvrhy4VF/JXdA3V/Fp5amvveaL+fs28BZ6xIKJBPnUPRlEaZpysD9MbpfaLi8lbl7PGUAkpWw==
@@ -8684,7 +8664,7 @@ parse5@5.1.0:
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-5.1.0.tgz#c59341c9723f414c452975564c7c00a68d58acd2"
   integrity sha512-fxNG2sQjHvlVAYmzBZS9YlDp6PTSSDwa98vkD4QgVDDCAo84z5X1t5XyJQ62ImdLXx5NdIIfihey6xpum9/gRQ==
 
-partisia-blockchain-applications-crypto@^1.0.20, partisia-blockchain-applications-crypto@^1.0.22:
+partisia-blockchain-applications-crypto@^1.0.20:
   version "1.0.22"
   resolved "https://registry.yarnpkg.com/partisia-blockchain-applications-crypto/-/partisia-blockchain-applications-crypto-1.0.22.tgz#a05ea2da0c4196345a8faebdef91bfcf0a9cb400"
   integrity sha512-VgGxZ1GWLy6JUx/QqeYIHV5H0KLhXZ4pNpeYbDRaXI7yoVK0DNpQLge9IIBCSMqfvfmw850d0sIEjokONDXwMw==
@@ -8713,7 +8693,7 @@ partisia-blockchain-applications-crypto@^1.0.23, partisia-blockchain-application
     merkletreejs "^0.3.11"
     zxcvbn "^4.4.2"
 
-partisia-blockchain-applications-rpc@^1.0.12, partisia-blockchain-applications-rpc@^1.0.13:
+partisia-blockchain-applications-rpc@^1.0.13:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/partisia-blockchain-applications-rpc/-/partisia-blockchain-applications-rpc-1.0.13.tgz#5d1ad46ef2d440769ba9d9f05a294b3d3f3500a6"
   integrity sha512-4W1RLkIzruhBMql4Ls7W2n2oIEiGhpbVy3g78QOw/Eb8BX6xIBHUmkf4q2ldBcTN7bs5UQROvhKyksfPKGbXng==
