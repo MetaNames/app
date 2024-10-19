@@ -9,7 +9,7 @@
 	import ledgerWalletLogo from '$lib/assets/images/ledger-wallet-white.png';
 
 	import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
-	import { PartisiaLedgerClient } from '@metanames/sdk/src/transactions/ledger';
+	import { PartisiaLedgerClient } from '@metanames/sdk/dist/transactions/ledger';
 
 	import 'src/styles/wallet-connect.scss';
 	import Button from '@smui/button';
