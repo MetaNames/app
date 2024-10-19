@@ -38,7 +38,7 @@
 		"@smui/radio": "^7.0.0-beta.18",
 		"@smui/select": "^7.0.0-beta.18",
 		"@smui/snackbar": "^7.0.0-beta.18",
-		"@smui/tab": "^7.0.0-beta.18",
+		"@smui/tab": "^8.0.0-alpha.0",
 		"@smui/tab-bar": "^7.0.0-beta.18",
 		"@smui/textfield": "^7.0.0-beta.18",
 		"@smui/top-app-bar": "^7.0.0-beta.18",

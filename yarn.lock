@@ -2693,6 +2693,14 @@
     "@material/dom" "^14.0.0"
     svelte2tsx "^0.6.27"
 
+"@smui/common@^8.0.0-alpha.0":
+  version "8.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@smui/common/-/common-8.0.0-alpha.0.tgz#00985bea4965160fba48b6538980b38928366866"
+  integrity sha512-lDCXomeOEG9bz0voqK7gRe68lYHzsV81ghGT50WTqDbEg139hSedVFqSiFbe5FH/9J0i4ySZXV4+L2i/aL6ggQ==
+  dependencies:
+    "@material/dom" "^14.0.0"
+    svelte2tsx "^0.7.8"
+
 "@smui/data-table@^7.0.0-beta.18":
   version "7.0.0-beta.18"
   resolved "https://registry.yarnpkg.com/@smui/data-table/-/data-table-7.0.0-beta.18.tgz#9ce68d0a0b3369d04a1c1841c44f0a23548a66ad"
@@ -2844,6 +2852,16 @@
     "@smui/common" "^7.0.0-beta.18"
     svelte2tsx "^0.6.27"
 
+"@smui/ripple@^8.0.0-alpha.0":
+  version "8.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@smui/ripple/-/ripple-8.0.0-alpha.0.tgz#f76e255b7b49d2cc2452eb543ae7bb9ba3ccf7e1"
+  integrity sha512-Xu47VaO+cWBDCvSjLYVMXRq/SApYjWzeLGehj5yX6e7cxAf56g9IFapHR4BI5rcK6RTg7vVJyl/BKsGiO5YRfg==
+  dependencies:
+    "@material/dom" "^14.0.0"
+    "@material/ripple" "^14.0.0"
+    "@smui/common" "^8.0.0-alpha.0"
+    svelte2tsx "^0.7.8"
+
 "@smui/select@^7.0.0-beta.18":
   version "7.0.0-beta.18"
   resolved "https://registry.yarnpkg.com/@smui/select/-/select-7.0.0-beta.18.tgz#823fd6088d6005ef233b7bdcca3ed03ef1644d17"
@@ -2898,6 +2916,15 @@
     "@smui/common" "^7.0.0-beta.18"
     svelte2tsx "^0.6.27"
 
+"@smui/tab-indicator@^8.0.0-alpha.0":
+  version "8.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@smui/tab-indicator/-/tab-indicator-8.0.0-alpha.0.tgz#7829bb4a1d706951b337d4618cd5d59301adfdb7"
+  integrity sha512-DAh+JZ5IEvqP49uY3HdKLdAeZsS1dV8GadXsPSkRmXRlFqEq1Rzxj0t35mvC/t9Tw0tijWfsE19kHX0xOLprjw==
+  dependencies:
+    "@material/tab-indicator" "^14.0.0"
+    "@smui/common" "^8.0.0-alpha.0"
+    svelte2tsx "^0.7.8"
+
 "@smui/tab-scroller@^7.0.0-beta.18":
   version "7.0.0-beta.18"
   resolved "https://registry.yarnpkg.com/@smui/tab-scroller/-/tab-scroller-7.0.0-beta.18.tgz#d4bf2f58bb26224468013c7c8c16401fd0c745f9"
@@ -2918,6 +2945,17 @@
     "@smui/ripple" "^7.0.0-beta.18"
     "@smui/tab-indicator" "^7.0.0-beta.18"
     svelte2tsx "^0.6.27"
+
+"@smui/tab@^8.0.0-alpha.0":
+  version "8.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@smui/tab/-/tab-8.0.0-alpha.0.tgz#27d7a0d81a2420d02e6a936c5a758faf22c72bfe"
+  integrity sha512-Zk43pGROen2F35P+XaO/0wLePheNmkVS78s1URgMj/m1ZnFIGf73aoeVLOYDhH8TT5rsW9qlONZ2WxQ96110Qg==
+  dependencies:
+    "@material/tab" "^14.0.0"
+    "@smui/common" "^8.0.0-alpha.0"
+    "@smui/ripple" "^8.0.0-alpha.0"
+    "@smui/tab-indicator" "^8.0.0-alpha.0"
+    svelte2tsx "^0.7.8"
 
 "@smui/textfield@^7.0.0-beta.18":
   version "7.0.0-beta.18"
@@ -10175,6 +10213,14 @@ svelte2tsx@^0.6.27:
   version "0.6.27"
   resolved "https://registry.yarnpkg.com/svelte2tsx/-/svelte2tsx-0.6.27.tgz#5b2c21f38608be51cd32de177722f123e57919e5"
   integrity sha512-E1uPW1o6VsbRz+nUk3fznZ2lSmCITAJoNu8AYefWSvIwE2pSB01i5sId4RMbWNzfcwCQl1DcgGShCPcldl4rvg==
+  dependencies:
+    dedent-js "^1.0.1"
+    pascal-case "^3.1.1"
+
+svelte2tsx@^0.7.8:
+  version "0.7.22"
+  resolved "https://registry.yarnpkg.com/svelte2tsx/-/svelte2tsx-0.7.22.tgz#2051d61d8581c538b39ce7c029ca9a4680113a83"
+  integrity sha512-hf55ujq17ufVpDQlJzaQfRr9EjlLIwGmFlpKq4uYrQAQFw/99q1OcVYyBT6568iJySgBUY9PdccURrORmfetmQ==
   dependencies:
     dedent-js "^1.0.1"
     pascal-case "^3.1.1"
