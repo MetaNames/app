@@ -7,7 +7,7 @@
 	import Icon from 'src/components/Icon.svelte';
 
 	import type { RecordRepository } from '@metanames/sdk';
-	import { alertMessage, walletConnected } from '$lib/stores/main';
+	import { alertMessage, refresh, walletConnected } from '$lib/stores/main';
 	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
 	import HelperText from '@smui/textfield/helper-text';
 
@@ -48,7 +48,7 @@
 		const transactionIntent = await repository.delete(recordClass);
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) alertMessage.set('Failed to delete record.');
-		else location.reload();
+		else refresh.set(true);
 	}
 </script>
 

@@ -1,9 +1,11 @@
+@use "sass:string";
+
 $amounts: (0, 1, 2, 3, 4);
 $types: (top, bottom, left, right);
 
 @each $type in $types {
 	@each $size in $amounts {
-		.m#{str-slice($type, 0, 1)}-#{$size} {
+		.m#{string.slice($type, 0, 1)}-#{$size} {
 			margin-#{$type}: #{$size * 0.8}em !important;
 		}
 	}
@@ -60,7 +62,7 @@ $axis: (width, height);
 
 @each $type in $axis {
 	@each $size in $percentages {
-		.#{str-slice($type, 0, 1)}-#{str-slice(#{$size}, 0, 2)} {
+		.#{string.slice($type, 0, 1)}-#{string.slice(#{$size}, 0, 2)} {
 			#{$type}: #{$size} !important;
 		}
 	}

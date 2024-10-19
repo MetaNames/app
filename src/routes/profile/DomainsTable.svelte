@@ -15,14 +15,15 @@
 	let rowsPerPage = 5;
 	let currentPage = 0;
 
+	$: domainsLength = domains.length;
 	$: start = currentPage * rowsPerPage;
-	$: end = Math.min(start + rowsPerPage, domains.length);
+	$: end = Math.min(start + rowsPerPage, domainsLength);
 	$: slice = domains.slice(start, end);
-	$: lastPage = Math.max(Math.ceil(domains.length / rowsPerPage) - 1, 0);
+	$: lastPage = Math.max(Math.ceil(domainsLength / rowsPerPage) - 1, 0);
 	$: if (currentPage > lastPage) {
 		currentPage = lastPage;
 	}
-	$: if (domains.length > 0) {
+	$: if (domainsLength > 0) {
 		handleSort();
 	}
 
@@ -66,7 +67,7 @@
 		</Row>
 	</Head>
 	{#if loaded}
-		{#if domains.length > 0}
+		{#if domainsLength > 0}
 			<Body>
 				{#each slice as domain (domain.tokenId)}
 					<Row>
@@ -82,7 +83,7 @@
 					</Row>
 				{/each}
 			</Body>
-		{:else if domains.length === 0}
+		{:else if domainsLength === 0}
 			<Body>
 				<Row>
 					<Cell colspan={3}>
@@ -102,10 +103,11 @@
 				<Option value={5}>5</Option>
 				<Option value={10}>10</Option>
 				<Option value={20}>20</Option>
+				<Option value={domainsLength}>Max</Option>
 			</Select>
 		</svelte:fragment>
 		<svelte:fragment slot="total">
-			{start + 1}-{end} of {domains.length}
+			{start + 1}-{end} of {domainsLength}
 		</svelte:fragment>
 
 		<IconButton

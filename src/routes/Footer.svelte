@@ -49,10 +49,10 @@
 		align-items: center;
 		padding: 1rem 0;
 
+		border-top: 1px solid var(--mdc-theme-secondary);
+
 		@media only screen and (max-width: 600px) {
 			flex-direction: column;
 		}
-
-		border-top: 1px solid var(--mdc-theme-secondary);
 	}
 </style>

@@ -84,11 +84,11 @@
 													value={removeHTTPIfPresent(domain.records[klass]?.toString() ?? '')}
 													href={domain.records[klass].toString()}
 												/>
-											{:else if klass === 'Price' }
+											{:else if klass === 'Price'}
 												<Chip
 													class="mt-1 mr-1"
 													label={klass}
-													value={domain.records[klass]?.toString() + "$"}
+													value={domain.records[klass]?.toString() + '$'}
 												/>
 											{:else}
 												<Chip
@@ -113,8 +113,6 @@
 											value={domain.parentId}
 											href={`/domain/${domain.parentId}`}
 										/>
-									{:else}
-										<Chip class="mt-1 mr-1" label="Parent" value={domain.tld} href="/tld" />
 									{/if}
 									<Chip
 										class="mt-1 mr-1"
@@ -185,9 +183,8 @@
 
 			.chips {
 				display: flex;
-				flex-wrap: wrap;
-				align-items: center;
-				justify-content: start;
+				flex-direction: column;
+				align-items: flex-start;
 			}
 
 			h5 {
@@ -196,6 +193,16 @@
 				text-align: start;
 				font-weight: 800;
 				word-wrap: break-word;
+			}
+
+			@media screen and (max-width: 768px) {
+				h5 {
+					text-align: center;
+				}
+
+				.chips {
+					justify-content: center;
+				}
 			}
 		}
 	}

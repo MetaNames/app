@@ -8,3 +8,4 @@ export const walletConnected = derived(
 );
 export const alertMessage = writable<string | AlertMessage | undefined>();
 export const alertTransaction = writable<string | undefined>();
+export const refresh = writable<boolean>(false);
