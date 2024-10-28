@@ -21,7 +21,7 @@
 		"@arisbh/marqueeck": "^0.5.0",
 		"@iconify/svelte": "^4.0.2",
 		"@material/typography": "^14.0.0",
-		"@playwright/test": "^1.48.1",
+		"@playwright/test": "^1.48.2",
 		"@smui/banner": "^7.0.0",
 		"@smui/button": "^7.0.0",
 		"@smui/card": "^7.0.0",
