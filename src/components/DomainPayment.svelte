@@ -102,16 +102,26 @@
 			<h4>{domainName}</h4>
 
 			<div class="years">
-				<IconButton on:click={() => addYears(-1)} disabled={years === 1 || feesApproved} aria-label="remove-year">
+				<IconButton
+					on:click={() => addYears(-1)}
+					disabled={years === 1 || feesApproved}
+					aria-label="Decrease registration duration"
+					title="Decrease registration duration"
+				>
 					<Icon icon="remove" />
 				</IconButton>
 				<span>{years} {yearsLabel}</span>
-				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+				<IconButton
+					on:click={() => addYears(1)}
+					disabled={feesApproved}
+					aria-label="Increase registration duration"
+					title="Increase registration duration"
+				>
 					<Icon icon="add" />
 				</IconButton>
 			</div>
 
-	 		<div class="coin">
+			<div class="coin">
 				<p class="title text-center">Payment token</p>
 				<div class="row centered">
 					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
@@ -121,7 +131,7 @@
 					</Select>
 				</div>
 			</div>
-			<div class="fees">
+			<div class="fees" aria-live="polite">
 				<p class="title text-center">Price breakdown</p>
 				{#await loadFees}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
