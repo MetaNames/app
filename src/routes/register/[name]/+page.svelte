@@ -19,7 +19,7 @@
 	const isParentPresent = writable<boolean>();
 	const analyzed = writable<IDomainAnalyzed>();
 
-	const nameParam = $page.params.name as string;
+	const nameParam = $page.params.name!;
 
 	$: domainName = $analyzed?.name;
 	$: parentDomainName = $analyzed?.parentId;

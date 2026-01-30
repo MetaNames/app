@@ -8,7 +8,7 @@ export const actionAddVotersPayload = (contractAbi: ContractAbi, voters: string[
 	if (!contractAbi.getFunctionByName('add_voters'))
 		throw new Error('Function add_voters not found in contract abi');
 
-	const rpc = new RpcContractBuilder(contractAbi, 'add_voters');
+	const rpc = new RpcContractBuilder(contractAbi as any, 'add_voters');
 	const addresses = rpc.addVec();
 	voters.map((voter) => addresses.addAddress(Buffer.from(voter, 'hex')));
 
@@ -19,7 +19,7 @@ export const actionRemoveVotersPayload = (contractAbi: ContractAbi, voters: stri
 	if (!contractAbi.getFunctionByName('remove_voters'))
 		throw new Error('Function add_voters not found in contract abi');
 
-	const rpc = new RpcContractBuilder(contractAbi, 'remove_voters');
+	const rpc = new RpcContractBuilder(contractAbi as any, 'remove_voters');
 	const addresses = rpc.addVec();
 	voters.map((voter) => addresses.addAddress(Buffer.from(voter, 'hex')));
 
@@ -30,7 +30,7 @@ export const actionVotePayload = (contractAbi: ContractAbi, vote: boolean): Buff
 	if (!contractAbi.getFunctionByName('vote'))
 		throw new Error('Function vote not found in contract abi');
 
-	const rpc = new RpcContractBuilder(contractAbi, 'vote');
+	const rpc = new RpcContractBuilder(contractAbi as any, 'vote');
 	rpc.addBool(vote);
 
 	return rpc.getBytes();

@@ -1,0 +1,3492 @@
+yarn run v1.22.22
+$ svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+Loading svelte-check in workspace: /app
+Getting Svelte diagnostics...
+
+[1mThe TypeScript option verbatimModuleSyntax is now required when using Svelte files with lang="ts". Please add it to your tsconfig.json.[0m
+/app/src/lib/proposal.ts:15:3
+Error: Argument of type 'import("/app/node_modules/@partisiablockchain/abi-client/target/main/model/Abi").TransactionKind' is not assignable to parameter of type 'ContractInvocationKind'.
+		Buffer.from('add_voters'),
+		TransactionKind.Action
+	);
+
+/app/src/lib/proposal.ts:30:3
+Error: Argument of type 'import("/app/node_modules/@partisiablockchain/abi-client/target/main/model/Abi").TransactionKind' is not assignable to parameter of type 'ContractInvocationKind'.
+		Buffer.from('remove_voters'),
+		TransactionKind.Action
+	);
+
+/app/src/lib/proposal.ts:42:71
+Error: Argument of type 'import("/app/node_modules/@partisiablockchain/abi-client/target/main/model/Abi").TransactionKind' is not assignable to parameter of type 'ContractInvocationKind'.
+
+	const rpc = new RpcContractBuilder(contractAbi, Buffer.from('vote'), TransactionKind.Action);
+	rpc.addBool(vote);
+
+/app/src/lib/server/config.ts:2:46
+Error: Cannot find module '$env/static/private' or its corresponding type declarations.
+import { config } from '../config';
+import { PROPOSALS_WALLET_PRIVATE_KEY } from '$env/static/private';
+
+/app/src/components/Icon.svelte:22:1
+Warn: 'Icon' is not defined (svelte)
+
+<Icon class={alignClass} {icon} {height} {width} {color} />
+
+/app/node_modules/@smui/common/src/internal/SvelteEventManager.ts:1:20
+Error: Cannot find module 'svelte/events' or its corresponding type declarations.
+import { on } from 'svelte/events';
+
+/app/node_modules/@smui/common/src/smui.types.ts:1:32
+Error: Module '"svelte"' has no exported member 'Component'.
+import type { SvelteComponent, Component } from 'svelte';
+import type {
+
+/app/node_modules/@smui/common/src/index.ts:3:8
+Error: Module '"/app/node_modules/@smui/common/src/CommonLabel.svelte"' has no default export.
+
+import Label from './CommonLabel.svelte';
+
+/app/node_modules/@smui/common/src/index.ts:5:8
+Error: Module '"/app/node_modules/@smui/common/src/CommonIcon.svelte"' has no default export.
+
+import Icon from './CommonIcon.svelte';
+
+/app/node_modules/@smui/common/src/index.ts:7:8
+Error: Module '"/app/node_modules/@smui/common/src/SmuiElement.svelte"' has no default export.
+
+import SmuiElement from './SmuiElement.svelte';
+import Svg from './Svg.svelte';
+
+/app/node_modules/@smui/common/src/index.ts:8:8
+Error: Module '"/app/node_modules/@smui/common/src/Svg.svelte"' has no default export.
+import SmuiElement from './SmuiElement.svelte';
+import Svg from './Svg.svelte';
+
+/app/node_modules/@smui/common/src/index.ts:10:8
+Error: Module '"/app/node_modules/@smui/common/src/ContextFragment.svelte"' has no default export.
+
+import ContextFragment from './ContextFragment.svelte';
+
+/app/src/components/Chip.svelte:31:1
+Warn: 'Button' is not defined (svelte)
+
+<Button on:click={action} variant="outlined" class={`chip ${className || ''}`}>
+	<Label>
+		<div class="container">
+			<span class="label">{label}</span>
+			<span class="value" class:ellipsis>{value}</span>
+		</div>
+	</Label>
+	{#if $icon === 'done'}
+		<Icon icon="done" align="right" />
+	{:else if $icon === 'open-in-new'}
+		<Icon icon="open-in-new" align="right" />
+	{:else if $icon === 'content-copy'}
+		<Icon icon="content-copy" align="right" />
+	{/if}
+</Button>
+
+/app/src/components/Chip.svelte:32:2
+Warn: 'Label' is not defined (svelte)
+<Button on:click={action} variant="outlined" class={`chip ${className || ''}`}>
+	<Label>
+		<div class="container">
+			<span class="label">{label}</span>
+			<span class="value" class:ellipsis>{value}</span>
+		</div>
+	</Label>
+	{#if $icon === 'done'}
+
+/app/src/components/Chip.svelte:39:3
+Warn: 'Icon' is not defined (svelte)
+	{#if $icon === 'done'}
+		<Icon icon="done" align="right" />
+	{:else if $icon === 'open-in-new'}
+
+/app/src/components/Chip.svelte:41:3
+Warn: 'Icon' is not defined (svelte)
+	{:else if $icon === 'open-in-new'}
+		<Icon icon="open-in-new" align="right" />
+	{:else if $icon === 'content-copy'}
+
+/app/src/components/Chip.svelte:43:3
+Warn: 'Icon' is not defined (svelte)
+	{:else if $icon === 'content-copy'}
+		<Icon icon="content-copy" align="right" />
+	{/if}
+
+/app/src/routes/WalletConnectButton.svelte:100:1
+Warn: 'Button' is not defined (svelte)
+
+<Button variant={connectButtonVariant} on:click={toggleMenu}>
+	<slot name="buttonLabel">Connect</slot>
+</Button>
+<Menu
+
+/app/src/routes/WalletConnectButton.svelte:103:1
+Warn: 'Menu' is not defined (svelte)
+</Button>
+<Menu
+	bind:this={menu}
+	on:SMUIMenuSurface:closed={() => (toggleOpen = false)}
+	class="menu-floating-right"
+	anchor={true}
+	bind:anchorElement={anchor}
+	anchorCorner="BOTTOM_LEFT"
+>
+	<List>
+		{#if $walletConnected}
+			<slot name="connectedMenuIems" />
+			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
+				<Text>Disconnect</Text>
+			</Item>
+		{:else}
+			<Item on:SMUI:action={connectWithMetaMaskWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
+						<span>Meta Mask Wallet</span>
+					</div>
+				</Text>
+			</Item>
+			<Item on:SMUI:action={connectWithPartisiaWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
+						<span>Partisia Wallet</span>
+					</div>
+				</Text>
+			</Item>
+			<Item on:SMUI:action={connectWithLedgerWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
+						<span>Ledger</span>
+					</div>
+				</Text>
+			</Item>
+		{/if}
+	</List>
+</Menu>
+
+/app/src/routes/WalletConnectButton.svelte:111:2
+Warn: 'List' is not defined (svelte)
+>
+	<List>
+		{#if $walletConnected}
+			<slot name="connectedMenuIems" />
+			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
+				<Text>Disconnect</Text>
+			</Item>
+		{:else}
+			<Item on:SMUI:action={connectWithMetaMaskWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
+						<span>Meta Mask Wallet</span>
+					</div>
+				</Text>
+			</Item>
+			<Item on:SMUI:action={connectWithPartisiaWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
+						<span>Partisia Wallet</span>
+					</div>
+				</Text>
+			</Item>
+			<Item on:SMUI:action={connectWithLedgerWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
+						<span>Ledger</span>
+					</div>
+				</Text>
+			</Item>
+		{/if}
+	</List>
+</Menu>
+
+/app/src/routes/WalletConnectButton.svelte:112:8
+Warn: 'walletConnected' is not defined (svelte)
+	<List>
+		{#if $walletConnected}
+			<slot name="connectedMenuIems" />
+
+/app/src/routes/WalletConnectButton.svelte:114:4
+Warn: 'Item' is not defined (svelte)
+			<slot name="connectedMenuIems" />
+			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
+				<Text>Disconnect</Text>
+			</Item>
+		{:else}
+
+/app/src/routes/WalletConnectButton.svelte:115:5
+Warn: 'Text' is not defined (svelte)
+			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
+				<Text>Disconnect</Text>
+			</Item>
+
+/app/src/routes/WalletConnectButton.svelte:118:4
+Warn: 'Item' is not defined (svelte)
+		{:else}
+			<Item on:SMUI:action={connectWithMetaMaskWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
+						<span>Meta Mask Wallet</span>
+					</div>
+				</Text>
+			</Item>
+			<Item on:SMUI:action={connectWithPartisiaWallet}>
+
+/app/src/routes/WalletConnectButton.svelte:119:5
+Warn: 'Text' is not defined (svelte)
+			<Item on:SMUI:action={connectWithMetaMaskWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
+						<span>Meta Mask Wallet</span>
+					</div>
+				</Text>
+			</Item>
+
+/app/src/routes/WalletConnectButton.svelte:121:30
+Warn: 'metamaskLogo' is not defined (svelte)
+					<div class="item">
+						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
+						<span>Meta Mask Wallet</span>
+
+/app/src/routes/WalletConnectButton.svelte:126:4
+Warn: 'Item' is not defined (svelte)
+			</Item>
+			<Item on:SMUI:action={connectWithPartisiaWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
+						<span>Partisia Wallet</span>
+					</div>
+				</Text>
+			</Item>
+			<Item on:SMUI:action={connectWithLedgerWallet}>
+
+/app/src/routes/WalletConnectButton.svelte:127:5
+Warn: 'Text' is not defined (svelte)
+			<Item on:SMUI:action={connectWithPartisiaWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
+						<span>Partisia Wallet</span>
+					</div>
+				</Text>
+			</Item>
+
+/app/src/routes/WalletConnectButton.svelte:129:30
+Warn: 'partisiaWalletLogo' is not defined (svelte)
+					<div class="item">
+						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
+						<span>Partisia Wallet</span>
+
+/app/src/routes/WalletConnectButton.svelte:134:4
+Warn: 'Item' is not defined (svelte)
+			</Item>
+			<Item on:SMUI:action={connectWithLedgerWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
+						<span>Ledger</span>
+					</div>
+				</Text>
+			</Item>
+		{/if}
+
+/app/src/routes/WalletConnectButton.svelte:135:5
+Warn: 'Text' is not defined (svelte)
+			<Item on:SMUI:action={connectWithLedgerWallet}>
+				<Text>
+					<div class="item">
+						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
+						<span>Ledger</span>
+					</div>
+				</Text>
+			</Item>
+
+/app/src/routes/WalletConnectButton.svelte:137:30
+Warn: 'ledgerWalletLogo' is not defined (svelte)
+					<div class="item">
+						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
+						<span>Ledger</span>
+
+/app/src/components/ConnectionRequired.svelte:13:7
+Warn: 'walletConnected' is not defined (svelte)
+<div class={className}>
+	{#if $walletConnected}
+		<slot />
+
+/app/src/components/ConnectionRequired.svelte:18:5
+Warn: 'WalletConnectButton' is not defined (svelte)
+			<div class="connect" bind:this={anchor}>
+				<WalletConnectButton {anchor} />
+			</div>
+
+/app/src/components/LoadingButton.svelte:44:1
+Warn: 'Button' is not defined (svelte)
+
+<Button class={className} disabled={isDisabled} on:click={handleClick} {variant}>
+	<Label><slot /></Label>
+	{#if loading}
+		<div class="loading">
+			<CircularProgress style="height: 20px; width: 20px;" indeterminate />
+		</div>
+	{:else if hasError}
+		<Icon icon="error" align="right" />
+	{:else if loading === false}
+		<Icon icon="done" align="right"/>
+	{/if}
+</Button>
+
+/app/src/components/LoadingButton.svelte:45:2
+Warn: 'Label' is not defined (svelte)
+<Button class={className} disabled={isDisabled} on:click={handleClick} {variant}>
+	<Label><slot /></Label>
+	{#if loading}
+
+/app/src/components/LoadingButton.svelte:48:4
+Warn: 'CircularProgress' is not defined (svelte)
+		<div class="loading">
+			<CircularProgress style="height: 20px; width: 20px;" indeterminate />
+		</div>
+
+/app/src/components/LoadingButton.svelte:51:3
+Warn: 'Icon' is not defined (svelte)
+	{:else if hasError}
+		<Icon icon="error" align="right" />
+	{:else if loading === false}
+
+/app/src/components/LoadingButton.svelte:53:3
+Warn: 'Icon' is not defined (svelte)
+	{:else if loading === false}
+		<Icon icon="done" align="right"/>
+	{/if}
+
+/app/src/components/Record.svelte:56:2
+Warn: 'Dialog' is not defined (svelte)
+<div class="record-container {editMode ? 'edit' : ''}">
+	<Dialog
+		bind:open={dialogOpen}
+		aria-labelledby="confirmation-title"
+		aria-describedby="confirmation-content"
+	>
+		<Title id="simple-title">Confirm action</Title>
+		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Actions>
+			<Button>
+				<Label>No</Label>
+			</Button>
+			<Button on:click={destroy}>
+				<Label>Yes</Label>
+			</Button>
+		</Actions>
+	</Dialog>
+	<label for={label}>{label}</label>
+
+/app/src/components/Record.svelte:61:3
+Warn: 'Title' is not defined (svelte)
+	>
+		<Title id="simple-title">Confirm action</Title>
+		<Content id="simple-content">Do you really want to remove the record?</Content>
+
+/app/src/components/Record.svelte:62:3
+Warn: 'Content' is not defined (svelte)
+		<Title id="simple-title">Confirm action</Title>
+		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Actions>
+
+/app/src/components/Record.svelte:63:3
+Warn: 'Actions' is not defined (svelte)
+		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Actions>
+			<Button>
+				<Label>No</Label>
+			</Button>
+			<Button on:click={destroy}>
+				<Label>Yes</Label>
+			</Button>
+		</Actions>
+	</Dialog>
+
+/app/src/components/Record.svelte:64:4
+Warn: 'Button' is not defined (svelte)
+		<Actions>
+			<Button>
+				<Label>No</Label>
+			</Button>
+			<Button on:click={destroy}>
+
+/app/src/components/Record.svelte:65:5
+Warn: 'Label' is not defined (svelte)
+			<Button>
+				<Label>No</Label>
+			</Button>
+
+/app/src/components/Record.svelte:67:4
+Warn: 'Button' is not defined (svelte)
+			</Button>
+			<Button on:click={destroy}>
+				<Label>Yes</Label>
+			</Button>
+		</Actions>
+
+/app/src/components/Record.svelte:68:5
+Warn: 'Label' is not defined (svelte)
+			<Button on:click={destroy}>
+				<Label>Yes</Label>
+			</Button>
+
+/app/src/components/Record.svelte:74:3
+Warn: 'Textfield' is not defined (svelte)
+	<div class="value">
+		<Textfield
+			for={label}
+			input$maxlength={maxLength}
+			bind:value={recordValue}
+			bind:invalid
+			variant="outlined"
+			textarea
+			{disabled}
+		>
+			<svelte:fragment slot="helper">
+				{#if errors.length > 0}
+					<HelperText slot="helper">{errors.join(', ')}</HelperText>
+				{/if}
+			</svelte:fragment>
+			<CharacterCounter slot="internalCounter">0 / {maxLength}</CharacterCounter>
+		</Textfield>
+	</div>
+
+/app/src/components/Record.svelte:88:4
+Warn: 'CharacterCounter' is not defined (svelte)
+			</svelte:fragment>
+			<CharacterCounter slot="internalCounter">0 / {maxLength}</CharacterCounter>
+		</Textfield>
+
+/app/src/components/Record.svelte:85:6
+Warn: 'HelperText' is not defined (svelte)
+				{#if errors.length > 0}
+					<HelperText slot="helper">{errors.join(', ')}</HelperText>
+				{/if}
+
+/app/src/components/Record.svelte:93:4
+Warn: 'IconButton' is not defined (svelte)
+		<div class="actions">
+			<IconButton on:click={save} aria-label="save-record">
+				<Icon icon="save" />
+			</IconButton>
+			<IconButton on:click={() => toggleEdit()} aria-label="cancel-edit">
+
+/app/src/components/Record.svelte:94:5
+Warn: 'Icon' is not defined (svelte)
+			<IconButton on:click={save} aria-label="save-record">
+				<Icon icon="save" />
+			</IconButton>
+
+/app/src/components/Record.svelte:96:4
+Warn: 'IconButton' is not defined (svelte)
+			</IconButton>
+			<IconButton on:click={() => toggleEdit()} aria-label="cancel-edit">
+				<Icon icon="cancel" />
+			</IconButton>
+		</div>
+
+/app/src/components/Record.svelte:97:5
+Warn: 'Icon' is not defined (svelte)
+			<IconButton on:click={() => toggleEdit()} aria-label="cancel-edit">
+				<Icon icon="cancel" />
+			</IconButton>
+
+/app/src/components/Record.svelte:102:4
+Warn: 'IconButton' is not defined (svelte)
+		<div class="actions">
+			<IconButton on:click={() => toggleEdit()} disabled={!$walletConnected} aria-label="edit-record">
+				<Icon icon="edit" />
+			</IconButton>
+			<IconButton on:click={() => (dialogOpen = true)} disabled={!$walletConnected} aria-label="delete-record">
+
+/app/src/components/Record.svelte:102:57
+Warn: 'walletConnected' is not defined (svelte)
+		<div class="actions">
+			<IconButton on:click={() => toggleEdit()} disabled={!$walletConnected} aria-label="edit-record">
+				<Icon icon="edit" />
+
+/app/src/components/Record.svelte:103:5
+Warn: 'Icon' is not defined (svelte)
+			<IconButton on:click={() => toggleEdit()} disabled={!$walletConnected} aria-label="edit-record">
+				<Icon icon="edit" />
+			</IconButton>
+
+/app/src/components/Record.svelte:105:4
+Warn: 'IconButton' is not defined (svelte)
+			</IconButton>
+			<IconButton on:click={() => (dialogOpen = true)} disabled={!$walletConnected} aria-label="delete-record">
+				<Icon icon="delete" />
+			</IconButton>
+		</div>
+
+/app/src/components/Record.svelte:105:64
+Warn: 'walletConnected' is not defined (svelte)
+			</IconButton>
+			<IconButton on:click={() => (dialogOpen = true)} disabled={!$walletConnected} aria-label="delete-record">
+				<Icon icon="delete" />
+
+/app/src/components/Record.svelte:106:5
+Warn: 'Icon' is not defined (svelte)
+			<IconButton on:click={() => (dialogOpen = true)} disabled={!$walletConnected} aria-label="delete-record">
+				<Icon icon="delete" />
+			</IconButton>
+
+/app/src/components/Records.svelte:65:6
+Warn: 'RecordComponent' is not defined (svelte)
+				<div class="mt-1">
+					<RecordComponent {repository} klass={key} value={records[key]} editMode={true} />
+				</div>
+
+/app/src/components/Records.svelte:73:4
+Warn: 'Select' is not defined (svelte)
+		<div class="add-record">
+			<Select
+				class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
+				bind:value={selectedRecordClass}
+				label="Select Type"
+				invalid={selectRecordInvalid}
+				variant="outlined"
+			>
+				{#each unusedRecordsClasses as klass}
+					<Option value={klass}>{klass}</Option>
+				{/each}
+			</Select>
+			<div class="value">
+
+/app/src/components/Records.svelte:81:6
+Warn: 'Option' is not defined (svelte)
+				{#each unusedRecordsClasses as klass}
+					<Option value={klass}>{klass}</Option>
+				{/each}
+
+/app/src/components/Records.svelte:85:5
+Warn: 'Textfield' is not defined (svelte)
+			<div class="value">
+				<Textfield
+					class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
+					bind:value={newRecordValue}
+					input$maxlength={newRecordValueMaxLength}
+					label="Record value"
+					bind:invalid={recordValueInvalid}
+					variant="outlined"
+				>
+					<svelte:fragment slot="helper">
+						{#if recordValueErrors.length > 0}
+							<HelperText class="error" slot="helper">{recordValueErrors?.join(', ')}</HelperText>
+						{/if}
+					</svelte:fragment>
+				</Textfield>
+			</div>
+
+/app/src/components/Records.svelte:95:8
+Warn: 'HelperText' is not defined (svelte)
+						{#if recordValueErrors.length > 0}
+							<HelperText class="error" slot="helper">{recordValueErrors?.join(', ')}</HelperText>
+						{/if}
+
+/app/src/components/Records.svelte:100:4
+Warn: 'LoadingButton' is not defined (svelte)
+			</div>
+			<LoadingButton
+				class="mobile--mt-1"
+				disabled={newRecordClass === undefined || recordValueInvalid}
+				onClick={createRecord}
+				variant="raised"
+			>
+				<Label>Add record</Label>
+			</LoadingButton>
+		</div>
+
+/app/src/components/Records.svelte:106:5
+Warn: 'Label' is not defined (svelte)
+			>
+				<Label>Add record</Label>
+			</LoadingButton>
+
+/app/src/components/Records.svelte:110:3
+Warn: 'ConnectionRequired' is not defined (svelte)
+	{:else}
+		<ConnectionRequired />
+	{/if}
+
+/app/src/components/Records.svelte:24:15
+Warn: 'walletAddress' is not defined (svelte)
+
+	$: canEdit = $walletAddress === ownerAddress;
+	$: newRecordClass = selectedRecordClass && getRecordClassFrom(selectedRecordClass);
+
+/app/src/components/Domain.svelte:45:1
+Warn: 'Card' is not defined (svelte)
+
+<Card class="domain-container">
+	<CardContent>
+		<div class="avatar">
+			<div class="svg">
+				{@html domainAvatar}
+			</div>
+		</div>
+		<h5 class="domain">{domainName}</h5>
+
+		{#if ownerConnected}
+			<TabBar {tabs} let:tab bind:active={activeTab}>
+				<Tab {tab}>
+					<Label>{tab}</Label>
+				</Tab>
+			</TabBar>
+		{/if}
+
+		{#if activeTab === DomainTab.details}
+			<Paper variant="unelevated">
+				<Content>
+					<div class="container">
+						<div class="section">
+							<h5 class="mt-0">Profile</h5>
+							<div class="chips">
+								<Chip
+									class="mt-1 mr-1"
+									type="text"
+									label="link"
+									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
+									href={shortLinkUrl(domain.nameWithoutTLD)}
+									ellipsis
+								/>
+								{#if hasProfileRecords}
+									{#each profileRecords as klass}
+										{#if domain.records[klass]}
+											{#if klass === 'Uri' && isValidURL(domain.records[klass].toString())}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={removeHTTPIfPresent(domain.records[klass]?.toString() ?? '')}
+													href={domain.records[klass].toString()}
+												/>
+											{:else if klass === 'Price'}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString() + '$'}
+												/>
+											{:else}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString()}
+												/>
+											{/if}
+										{/if}
+									{/each}
+								{/if}
+							</div>
+						</div>
+						<div class={`section ${hasProfileRecords ? 'mt-3' : ''}`}>
+							<h5>Whois</h5>
+							<div class="chips">
+								{#if !isTld}
+									{#if domain.parentId}
+										<Chip
+											class="mt-1 mr-1"
+											label="Parent"
+											value={domain.parentId}
+											href={`/domain/${domain.parentId}`}
+										/>
+									{/if}
+									<Chip
+										class="mt-1 mr-1"
+										label="Expires"
+										value={domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+									/>
+								{/if}
+								<Chip
+									class="mt-1 mr-1"
+									label="Owner"
+									value={domain.owner}
+									href={ownerBrowserUrl}
+									ellipsis
+								/>
+							</div>
+						</div>
+						{#if hasSocialRecords}
+							<div class="section mt-3">
+								<h5>Social</h5>
+								<div class="chips">
+									{#each socialRecords as klass}
+										{#if domain.records[klass]}
+											<Chip
+												class="mt-1 mr-1"
+												label={klass}
+												value={domain.records[klass]?.toString() ?? ''}
+											/>
+										{/if}
+									{/each}
+								</div>
+							</div>
+						{/if}
+					</div>
+				</Content>
+			</Paper>
+		{:else if activeTab === DomainTab.settings}
+			<Paper variant="unelevated">
+				<Content>
+					<Records
+						ownerAddress={domain.owner}
+						{records}
+						repository={domain.getRecordRepository($metaNamesSdk)}
+					/>
+					<br />
+					<h5 class="mt-0 mb-1">Actions</h5>
+					<Button
+						class="mt-1 mr-1 mobile--mr-0"
+						href={`/domain/${domain.name}/renew`}
+						variant="raised">Renew</Button
+					>
+					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised"
+						>Transfer</Button
+					>
+				</Content>
+			</Paper>
+		{/if}
+	</CardContent>
+</Card>
+
+/app/src/components/Domain.svelte:46:2
+Warn: 'CardContent' is not defined (svelte)
+<Card class="domain-container">
+	<CardContent>
+		<div class="avatar">
+			<div class="svg">
+				{@html domainAvatar}
+			</div>
+		</div>
+		<h5 class="domain">{domainName}</h5>
+
+		{#if ownerConnected}
+			<TabBar {tabs} let:tab bind:active={activeTab}>
+				<Tab {tab}>
+					<Label>{tab}</Label>
+				</Tab>
+			</TabBar>
+		{/if}
+
+		{#if activeTab === DomainTab.details}
+			<Paper variant="unelevated">
+				<Content>
+					<div class="container">
+						<div class="section">
+							<h5 class="mt-0">Profile</h5>
+							<div class="chips">
+								<Chip
+									class="mt-1 mr-1"
+									type="text"
+									label="link"
+									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
+									href={shortLinkUrl(domain.nameWithoutTLD)}
+									ellipsis
+								/>
+								{#if hasProfileRecords}
+									{#each profileRecords as klass}
+										{#if domain.records[klass]}
+											{#if klass === 'Uri' && isValidURL(domain.records[klass].toString())}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={removeHTTPIfPresent(domain.records[klass]?.toString() ?? '')}
+													href={domain.records[klass].toString()}
+												/>
+											{:else if klass === 'Price'}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString() + '$'}
+												/>
+											{:else}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString()}
+												/>
+											{/if}
+										{/if}
+									{/each}
+								{/if}
+							</div>
+						</div>
+						<div class={`section ${hasProfileRecords ? 'mt-3' : ''}`}>
+							<h5>Whois</h5>
+							<div class="chips">
+								{#if !isTld}
+									{#if domain.parentId}
+										<Chip
+											class="mt-1 mr-1"
+											label="Parent"
+											value={domain.parentId}
+											href={`/domain/${domain.parentId}`}
+										/>
+									{/if}
+									<Chip
+										class="mt-1 mr-1"
+										label="Expires"
+										value={domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+									/>
+								{/if}
+								<Chip
+									class="mt-1 mr-1"
+									label="Owner"
+									value={domain.owner}
+									href={ownerBrowserUrl}
+									ellipsis
+								/>
+							</div>
+						</div>
+						{#if hasSocialRecords}
+							<div class="section mt-3">
+								<h5>Social</h5>
+								<div class="chips">
+									{#each socialRecords as klass}
+										{#if domain.records[klass]}
+											<Chip
+												class="mt-1 mr-1"
+												label={klass}
+												value={domain.records[klass]?.toString() ?? ''}
+											/>
+										{/if}
+									{/each}
+								</div>
+							</div>
+						{/if}
+					</div>
+				</Content>
+			</Paper>
+		{:else if activeTab === DomainTab.settings}
+			<Paper variant="unelevated">
+				<Content>
+					<Records
+						ownerAddress={domain.owner}
+						{records}
+						repository={domain.getRecordRepository($metaNamesSdk)}
+					/>
+					<br />
+					<h5 class="mt-0 mb-1">Actions</h5>
+					<Button
+						class="mt-1 mr-1 mobile--mr-0"
+						href={`/domain/${domain.name}/renew`}
+						variant="raised">Renew</Button
+					>
+					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised"
+						>Transfer</Button
+					>
+				</Content>
+			</Paper>
+		{/if}
+	</CardContent>
+</Card>
+
+/app/src/components/Domain.svelte:55:4
+Warn: 'TabBar' is not defined (svelte)
+		{#if ownerConnected}
+			<TabBar {tabs} let:tab bind:active={activeTab}>
+				<Tab {tab}>
+					<Label>{tab}</Label>
+				</Tab>
+			</TabBar>
+		{/if}
+
+/app/src/components/Domain.svelte:56:5
+Warn: 'Tab' is not defined (svelte)
+			<TabBar {tabs} let:tab bind:active={activeTab}>
+				<Tab {tab}>
+					<Label>{tab}</Label>
+				</Tab>
+			</TabBar>
+
+/app/src/components/Domain.svelte:57:6
+Warn: 'Label' is not defined (svelte)
+				<Tab {tab}>
+					<Label>{tab}</Label>
+				</Tab>
+
+/app/src/components/Domain.svelte:63:4
+Warn: 'Paper' is not defined (svelte)
+		{#if activeTab === DomainTab.details}
+			<Paper variant="unelevated">
+				<Content>
+					<div class="container">
+						<div class="section">
+							<h5 class="mt-0">Profile</h5>
+							<div class="chips">
+								<Chip
+									class="mt-1 mr-1"
+									type="text"
+									label="link"
+									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
+									href={shortLinkUrl(domain.nameWithoutTLD)}
+									ellipsis
+								/>
+								{#if hasProfileRecords}
+									{#each profileRecords as klass}
+										{#if domain.records[klass]}
+											{#if klass === 'Uri' && isValidURL(domain.records[klass].toString())}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={removeHTTPIfPresent(domain.records[klass]?.toString() ?? '')}
+													href={domain.records[klass].toString()}
+												/>
+											{:else if klass === 'Price'}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString() + '$'}
+												/>
+											{:else}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString()}
+												/>
+											{/if}
+										{/if}
+									{/each}
+								{/if}
+							</div>
+						</div>
+						<div class={`section ${hasProfileRecords ? 'mt-3' : ''}`}>
+							<h5>Whois</h5>
+							<div class="chips">
+								{#if !isTld}
+									{#if domain.parentId}
+										<Chip
+											class="mt-1 mr-1"
+											label="Parent"
+											value={domain.parentId}
+											href={`/domain/${domain.parentId}`}
+										/>
+									{/if}
+									<Chip
+										class="mt-1 mr-1"
+										label="Expires"
+										value={domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+									/>
+								{/if}
+								<Chip
+									class="mt-1 mr-1"
+									label="Owner"
+									value={domain.owner}
+									href={ownerBrowserUrl}
+									ellipsis
+								/>
+							</div>
+						</div>
+						{#if hasSocialRecords}
+							<div class="section mt-3">
+								<h5>Social</h5>
+								<div class="chips">
+									{#each socialRecords as klass}
+										{#if domain.records[klass]}
+											<Chip
+												class="mt-1 mr-1"
+												label={klass}
+												value={domain.records[klass]?.toString() ?? ''}
+											/>
+										{/if}
+									{/each}
+								</div>
+							</div>
+						{/if}
+					</div>
+				</Content>
+			</Paper>
+		{:else if activeTab === DomainTab.settings}
+
+/app/src/components/Domain.svelte:64:5
+Warn: 'Content' is not defined (svelte)
+			<Paper variant="unelevated">
+				<Content>
+					<div class="container">
+						<div class="section">
+							<h5 class="mt-0">Profile</h5>
+							<div class="chips">
+								<Chip
+									class="mt-1 mr-1"
+									type="text"
+									label="link"
+									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
+									href={shortLinkUrl(domain.nameWithoutTLD)}
+									ellipsis
+								/>
+								{#if hasProfileRecords}
+									{#each profileRecords as klass}
+										{#if domain.records[klass]}
+											{#if klass === 'Uri' && isValidURL(domain.records[klass].toString())}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={removeHTTPIfPresent(domain.records[klass]?.toString() ?? '')}
+													href={domain.records[klass].toString()}
+												/>
+											{:else if klass === 'Price'}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString() + '$'}
+												/>
+											{:else}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString()}
+												/>
+											{/if}
+										{/if}
+									{/each}
+								{/if}
+							</div>
+						</div>
+						<div class={`section ${hasProfileRecords ? 'mt-3' : ''}`}>
+							<h5>Whois</h5>
+							<div class="chips">
+								{#if !isTld}
+									{#if domain.parentId}
+										<Chip
+											class="mt-1 mr-1"
+											label="Parent"
+											value={domain.parentId}
+											href={`/domain/${domain.parentId}`}
+										/>
+									{/if}
+									<Chip
+										class="mt-1 mr-1"
+										label="Expires"
+										value={domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+									/>
+								{/if}
+								<Chip
+									class="mt-1 mr-1"
+									label="Owner"
+									value={domain.owner}
+									href={ownerBrowserUrl}
+									ellipsis
+								/>
+							</div>
+						</div>
+						{#if hasSocialRecords}
+							<div class="section mt-3">
+								<h5>Social</h5>
+								<div class="chips">
+									{#each socialRecords as klass}
+										{#if domain.records[klass]}
+											<Chip
+												class="mt-1 mr-1"
+												label={klass}
+												value={domain.records[klass]?.toString() ?? ''}
+											/>
+										{/if}
+									{/each}
+								</div>
+							</div>
+						{/if}
+					</div>
+				</Content>
+			</Paper>
+
+/app/src/components/Domain.svelte:69:9
+Warn: 'Chip' is not defined (svelte)
+							<div class="chips">
+								<Chip
+									class="mt-1 mr-1"
+									type="text"
+									label="link"
+									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
+									href={shortLinkUrl(domain.nameWithoutTLD)}
+									ellipsis
+								/>
+								{#if hasProfileRecords}
+
+/app/src/components/Domain.svelte:73:17
+Warn: 'removeHTTPIfPresent' is not defined (svelte)
+									label="link"
+									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
+									href={shortLinkUrl(domain.nameWithoutTLD)}
+
+/app/src/components/Domain.svelte:73:37
+Warn: 'shortLinkUrl' is not defined (svelte)
+									label="link"
+									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
+									href={shortLinkUrl(domain.nameWithoutTLD)}
+
+/app/src/components/Domain.svelte:74:16
+Warn: 'shortLinkUrl' is not defined (svelte)
+									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
+									href={shortLinkUrl(domain.nameWithoutTLD)}
+									ellipsis
+
+/app/src/components/Domain.svelte:80:36
+Warn: 'isValidURL' is not defined (svelte)
+										{#if domain.records[klass]}
+											{#if klass === 'Uri' && isValidURL(domain.records[klass].toString())}
+												<Chip
+
+/app/src/components/Domain.svelte:81:13
+Warn: 'Chip' is not defined (svelte)
+											{#if klass === 'Uri' && isValidURL(domain.records[klass].toString())}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={removeHTTPIfPresent(domain.records[klass]?.toString() ?? '')}
+													href={domain.records[klass].toString()}
+												/>
+											{:else if klass === 'Price'}
+
+/app/src/components/Domain.svelte:84:21
+Warn: 'removeHTTPIfPresent' is not defined (svelte)
+													label={klass}
+													value={removeHTTPIfPresent(domain.records[klass]?.toString() ?? '')}
+													href={domain.records[klass].toString()}
+
+/app/src/components/Domain.svelte:88:13
+Warn: 'Chip' is not defined (svelte)
+											{:else if klass === 'Price'}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString() + '$'}
+												/>
+											{:else}
+
+/app/src/components/Domain.svelte:94:13
+Warn: 'Chip' is not defined (svelte)
+											{:else}
+												<Chip
+													class="mt-1 mr-1"
+													label={klass}
+													value={domain.records[klass]?.toString()}
+												/>
+											{/if}
+
+/app/src/components/Domain.svelte:110:11
+Warn: 'Chip' is not defined (svelte)
+									{#if domain.parentId}
+										<Chip
+											class="mt-1 mr-1"
+											label="Parent"
+											value={domain.parentId}
+											href={`/domain/${domain.parentId}`}
+										/>
+									{/if}
+
+/app/src/components/Domain.svelte:117:10
+Warn: 'Chip' is not defined (svelte)
+									{/if}
+									<Chip
+										class="mt-1 mr-1"
+										label="Expires"
+										value={domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+									/>
+								{/if}
+
+/app/src/components/Domain.svelte:120:37
+Warn: 'formatDate' is not defined (svelte)
+										label="Expires"
+										value={domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'}
+									/>
+
+/app/src/components/Domain.svelte:123:9
+Warn: 'Chip' is not defined (svelte)
+								{/if}
+								<Chip
+									class="mt-1 mr-1"
+									label="Owner"
+									value={domain.owner}
+									href={ownerBrowserUrl}
+									ellipsis
+								/>
+							</div>
+
+/app/src/components/Domain.svelte:138:12
+Warn: 'Chip' is not defined (svelte)
+										{#if domain.records[klass]}
+											<Chip
+												class="mt-1 mr-1"
+												label={klass}
+												value={domain.records[klass]?.toString() ?? ''}
+											/>
+										{/if}
+
+/app/src/components/Domain.svelte:152:4
+Warn: 'Paper' is not defined (svelte)
+		{:else if activeTab === DomainTab.settings}
+			<Paper variant="unelevated">
+				<Content>
+					<Records
+						ownerAddress={domain.owner}
+						{records}
+						repository={domain.getRecordRepository($metaNamesSdk)}
+					/>
+					<br />
+					<h5 class="mt-0 mb-1">Actions</h5>
+					<Button
+						class="mt-1 mr-1 mobile--mr-0"
+						href={`/domain/${domain.name}/renew`}
+						variant="raised">Renew</Button
+					>
+					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised"
+						>Transfer</Button
+					>
+				</Content>
+			</Paper>
+		{/if}
+
+/app/src/components/Domain.svelte:153:5
+Warn: 'Content' is not defined (svelte)
+			<Paper variant="unelevated">
+				<Content>
+					<Records
+						ownerAddress={domain.owner}
+						{records}
+						repository={domain.getRecordRepository($metaNamesSdk)}
+					/>
+					<br />
+					<h5 class="mt-0 mb-1">Actions</h5>
+					<Button
+						class="mt-1 mr-1 mobile--mr-0"
+						href={`/domain/${domain.name}/renew`}
+						variant="raised">Renew</Button
+					>
+					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised"
+						>Transfer</Button
+					>
+				</Content>
+			</Paper>
+
+/app/src/components/Domain.svelte:154:6
+Warn: 'Records' is not defined (svelte)
+				<Content>
+					<Records
+						ownerAddress={domain.owner}
+						{records}
+						repository={domain.getRecordRepository($metaNamesSdk)}
+					/>
+					<br />
+
+/app/src/components/Domain.svelte:157:46
+Warn: 'metaNamesSdk' is not defined (svelte)
+						{records}
+						repository={domain.getRecordRepository($metaNamesSdk)}
+					/>
+
+/app/src/components/Domain.svelte:161:6
+Warn: 'Button' is not defined (svelte)
+					<h5 class="mt-0 mb-1">Actions</h5>
+					<Button
+						class="mt-1 mr-1 mobile--mr-0"
+						href={`/domain/${domain.name}/renew`}
+						variant="raised">Renew</Button
+					>
+					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised"
+
+/app/src/components/Domain.svelte:166:6
+Warn: 'Button' is not defined (svelte)
+					>
+					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised"
+						>Transfer</Button
+					>
+				</Content>
+
+/app/src/components/Domain.svelte:34:22
+Warn: 'walletAddress' is not defined (svelte)
+	$: hasProfileRecords = Object.keys(domain.records).some((v) => profileRecords.includes(v));
+	$: ownerConnected = $walletAddress === domain.owner;
+
+/app/src/components/DomainPayment.svelte:99:1
+Warn: 'Card' is not defined (svelte)
+
+<Card class="domain-container">
+	<Content>
+		<div class="card-content">
+			<h4>{domainName}</h4>
+
+			<div class="years">
+				<IconButton on:click={() => addYears(-1)} disabled={years === 1 || feesApproved} aria-label="remove-year">
+					<Icon icon="remove" />
+				</IconButton>
+				<span>{years} {yearsLabel}</span>
+				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+					<Icon icon="add" />
+				</IconButton>
+			</div>
+
+			<div class="coin">
+				<p class="title text-center">Payment token</p>
+				<div class="row centered">
+					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
+						{#each availableCoins as coin}
+							<Option value={coin.symbol}>{coin.symbol}</Option>
+						{/each}
+					</Select>
+				</div>
+			</div>
+			<div class="fees">
+				<p class="title text-center">Price breakdown</p>
+				{#await loadFees}
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+				{:then fees}
+					{#if 'symbol' in fees}
+						<div class="row">
+							<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
+							<span>{fees.feesLabel} {fees.symbol}</span>
+						</div>
+						<div class="row" data-testid="total-fees">
+							<span>Total (excluding network fees)</span>
+							<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
+						</div>
+					{/if}
+				{/await}
+			</div>
+
+			<ConnectionRequired class="mt-1">
+				<div class="submit">
+					<LoadingButton
+						disabled={feesApproved}
+						onClick={approveFees}
+						onError={handleApproveError}
+						variant="raised"
+					>
+						<Label>Approve fees</Label>
+					</LoadingButton>
+				</div>
+				<div class="submit mt-1">
+					<LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
+						<Label>{paymentLabel}</Label>
+					</LoadingButton>
+				</div>
+			</ConnectionRequired>
+		</div>
+	</Content>
+</Card>
+
+/app/src/components/DomainPayment.svelte:100:2
+Warn: 'Content' is not defined (svelte)
+<Card class="domain-container">
+	<Content>
+		<div class="card-content">
+			<h4>{domainName}</h4>
+
+			<div class="years">
+				<IconButton on:click={() => addYears(-1)} disabled={years === 1 || feesApproved} aria-label="remove-year">
+					<Icon icon="remove" />
+				</IconButton>
+				<span>{years} {yearsLabel}</span>
+				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+					<Icon icon="add" />
+				</IconButton>
+			</div>
+
+			<div class="coin">
+				<p class="title text-center">Payment token</p>
+				<div class="row centered">
+					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
+						{#each availableCoins as coin}
+							<Option value={coin.symbol}>{coin.symbol}</Option>
+						{/each}
+					</Select>
+				</div>
+			</div>
+			<div class="fees">
+				<p class="title text-center">Price breakdown</p>
+				{#await loadFees}
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+				{:then fees}
+					{#if 'symbol' in fees}
+						<div class="row">
+							<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
+							<span>{fees.feesLabel} {fees.symbol}</span>
+						</div>
+						<div class="row" data-testid="total-fees">
+							<span>Total (excluding network fees)</span>
+							<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
+						</div>
+					{/if}
+				{/await}
+			</div>
+
+			<ConnectionRequired class="mt-1">
+				<div class="submit">
+					<LoadingButton
+						disabled={feesApproved}
+						onClick={approveFees}
+						onError={handleApproveError}
+						variant="raised"
+					>
+						<Label>Approve fees</Label>
+					</LoadingButton>
+				</div>
+				<div class="submit mt-1">
+					<LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
+						<Label>{paymentLabel}</Label>
+					</LoadingButton>
+				</div>
+			</ConnectionRequired>
+		</div>
+	</Content>
+</Card>
+
+/app/src/components/DomainPayment.svelte:105:5
+Warn: 'IconButton' is not defined (svelte)
+			<div class="years">
+				<IconButton on:click={() => addYears(-1)} disabled={years === 1 || feesApproved} aria-label="remove-year">
+					<Icon icon="remove" />
+				</IconButton>
+				<span>{years} {yearsLabel}</span>
+
+/app/src/components/DomainPayment.svelte:106:6
+Warn: 'Icon' is not defined (svelte)
+				<IconButton on:click={() => addYears(-1)} disabled={years === 1 || feesApproved} aria-label="remove-year">
+					<Icon icon="remove" />
+				</IconButton>
+
+/app/src/components/DomainPayment.svelte:109:5
+Warn: 'IconButton' is not defined (svelte)
+				<span>{years} {yearsLabel}</span>
+				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+					<Icon icon="add" />
+				</IconButton>
+			</div>
+
+/app/src/components/DomainPayment.svelte:110:6
+Warn: 'Icon' is not defined (svelte)
+				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+					<Icon icon="add" />
+				</IconButton>
+
+/app/src/components/DomainPayment.svelte:117:6
+Warn: 'Select' is not defined (svelte)
+				<div class="row centered">
+					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
+						{#each availableCoins as coin}
+							<Option value={coin.symbol}>{coin.symbol}</Option>
+						{/each}
+					</Select>
+				</div>
+
+/app/src/components/DomainPayment.svelte:117:26
+Warn: 'selectedCoin' is not defined (svelte)
+				<div class="row centered">
+					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
+						{#each availableCoins as coin}
+
+/app/src/components/DomainPayment.svelte:119:8
+Warn: 'Option' is not defined (svelte)
+						{#each availableCoins as coin}
+							<Option value={coin.symbol}>{coin.symbol}</Option>
+						{/each}
+
+/app/src/components/DomainPayment.svelte:127:6
+Warn: 'CircularProgress' is not defined (svelte)
+				{#await loadFees}
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+				{:then fees}
+
+/app/src/components/DomainPayment.svelte:142:4
+Warn: 'ConnectionRequired' is not defined (svelte)
+
+			<ConnectionRequired class="mt-1">
+				<div class="submit">
+					<LoadingButton
+						disabled={feesApproved}
+						onClick={approveFees}
+						onError={handleApproveError}
+						variant="raised"
+					>
+						<Label>Approve fees</Label>
+					</LoadingButton>
+				</div>
+				<div class="submit mt-1">
+					<LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
+						<Label>{paymentLabel}</Label>
+					</LoadingButton>
+				</div>
+			</ConnectionRequired>
+		</div>
+
+/app/src/components/DomainPayment.svelte:144:6
+Warn: 'LoadingButton' is not defined (svelte)
+				<div class="submit">
+					<LoadingButton
+						disabled={feesApproved}
+						onClick={approveFees}
+						onError={handleApproveError}
+						variant="raised"
+					>
+						<Label>Approve fees</Label>
+					</LoadingButton>
+				</div>
+
+/app/src/components/DomainPayment.svelte:150:7
+Warn: 'Label' is not defined (svelte)
+					>
+						<Label>Approve fees</Label>
+					</LoadingButton>
+
+/app/src/components/DomainPayment.svelte:154:6
+Warn: 'LoadingButton' is not defined (svelte)
+				<div class="submit mt-1">
+					<LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
+						<Label>{paymentLabel}</Label>
+					</LoadingButton>
+				</div>
+
+/app/src/components/DomainPayment.svelte:155:7
+Warn: 'Label' is not defined (svelte)
+					<LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
+						<Label>{paymentLabel}</Label>
+					</LoadingButton>
+
+/app/src/components/DomainPayment.svelte:27:31
+Warn: 'metaNamesSdk' is not defined (svelte)
+	let feesApproved = false;
+	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
+
+/app/src/components/DomainPayment.svelte:27:31
+Warn: 'metaNamesSdk' is not defined (svelte)
+	let feesApproved = false;
+	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
+
+/app/src/components/DomainPayment.svelte:27:31
+Warn: 'metaNamesSdk' is not defined (svelte)
+	let feesApproved = false;
+	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
+
+/app/src/components/DomainPayment.svelte:34:39
+Warn: 'selectedCoin' is not defined (svelte)
+	$: loadFees = fetchApiJson<DomainFeesResponse>(
+		`/api/register/${domainName}/fees/${$selectedCoin}`
+	);
+
+/app/src/components/DomainPayment.svelte:71:8
+Warn: 'walletConnected' is not defined (svelte)
+	async function approveFees() {
+		if (!$walletConnected) return;
+
+/app/src/components/DomainPayment.svelte:73:19
+Warn: 'walletAddress' is not defined (svelte)
+
+		const address = $walletAddress as string;
+		const account = await getAccountBalance(address);
+
+/app/src/components/DomainPayment.svelte:75:83
+Warn: 'selectedCoin' is not defined (svelte)
+		const account = await getAccountBalance(address);
+		const accountCoin = account.account.displayCoins.find((coin) => coin.symbol === $selectedCoin);
+		if (!accountCoin || Number(accountCoin.balance) < $totalFees)
+
+/app/src/components/DomainPayment.svelte:77:39
+Warn: 'selectedCoin' is not defined (svelte)
+		if (!accountCoin || Number(accountCoin.balance) < $totalFees)
+			throw new InsufficientBalanceError($selectedCoin);
+
+/app/src/components/DomainPayment.svelte:79:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
+			domainName,
+
+/app/src/components/DomainPayment.svelte:79:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
+			domainName,
+
+/app/src/components/DomainPayment.svelte:79:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
+			domainName,
+
+/app/src/components/DomainPayment.svelte:81:4
+Warn: 'selectedCoin' is not defined (svelte)
+			domainName,
+			$selectedCoin,
+			years
+
+/app/src/components/DomainPayment.svelte:90:19
+Warn: 'walletAddress' is not defined (svelte)
+	async function pay() {
+		const address = $walletAddress;
+		if (!address) return;
+
+/app/src/components/DomainPayment.svelte:95:52
+Warn: 'selectedCoin' is not defined (svelte)
+
+		await payment({ domainName, address, byocSymbol: $selectedCoin, years });
+	}
+
+/app/src/components/GoBackButton.svelte:9:1
+Warn: 'Button' is not defined (svelte)
+
+<Button variant="raised" on:click={goBackInHistory}>Go back</Button>
+
+/app/src/routes/WalletConnectStatus.svelte:22:1
+Warn: 'WalletConnectButton' is not defined (svelte)
+
+<WalletConnectButton connectButtonVariant="unelevated" {anchor}>
+	<div class="wallet-connect" slot="buttonLabel">
+		<Icon icon="wallet" align="left" />
+		<Label>{buttonLabel}</Label>
+	</div>
+	<div slot="connectedMenuIems">
+		<Item on:SMUI:action={() => goto('/profile')}>
+			<Text>Profile</Text>
+		</Item>
+	</div>
+</WalletConnectButton>
+
+/app/src/routes/WalletConnectStatus.svelte:28:3
+Warn: 'Item' is not defined (svelte)
+	<div slot="connectedMenuIems">
+		<Item on:SMUI:action={() => goto('/profile')}>
+			<Text>Profile</Text>
+		</Item>
+	</div>
+
+/app/src/routes/WalletConnectStatus.svelte:28:31
+Warn: 'goto' is not defined (svelte)
+	<div slot="connectedMenuIems">
+		<Item on:SMUI:action={() => goto('/profile')}>
+			<Text>Profile</Text>
+
+/app/src/routes/WalletConnectStatus.svelte:29:4
+Warn: 'Text' is not defined (svelte)
+		<Item on:SMUI:action={() => goto('/profile')}>
+			<Text>Profile</Text>
+		</Item>
+
+/app/src/routes/WalletConnectStatus.svelte:24:3
+Warn: 'Icon' is not defined (svelte)
+	<div class="wallet-connect" slot="buttonLabel">
+		<Icon icon="wallet" align="left" />
+		<Label>{buttonLabel}</Label>
+
+/app/src/routes/WalletConnectStatus.svelte:25:3
+Warn: 'Label' is not defined (svelte)
+		<Icon icon="wallet" align="left" />
+		<Label>{buttonLabel}</Label>
+	</div>
+
+/app/src/routes/+layout.svelte:62:25
+Warn: 'favicon' is not defined (svelte)
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
+
+/app/src/routes/+layout.svelte:66:2
+Warn: 'TopAppBar' is not defined (svelte)
+<div class="container">
+	<TopAppBar variant="static">
+		<div
+			class={Object.keys(anchorClasses).join(' ')}
+			use:Anchor={{
+				addClass: (className) => {
+					if (!anchorClasses[className]) {
+						anchorClasses[className] = true;
+					}
+				},
+				removeClass: (className) => {
+					if (anchorClasses[className]) {
+						delete anchorClasses[className];
+						anchorClasses = anchorClasses;
+					}
+				}
+			}}
+			bind:this={anchor}
+		>
+			<Row>
+				<Section>
+					<Title>
+						<a class="link-logo" href="/">
+							<Logo />
+							<span>Meta Names</span>
+							{#if isTestnet}
+								<span class="testnet">TESTNET</span>
+							{/if}
+						</a>
+					</Title>
+				</Section>
+
+				<Section align="end" toolbar>
+					<WalletConnect {anchor} />
+				</Section>
+			</Row>
+		</div>
+	</TopAppBar>
+
+/app/src/routes/+layout.svelte:69:4
+Warn: 'Anchor' is not defined (svelte)
+			class={Object.keys(anchorClasses).join(' ')}
+			use:Anchor={{
+				addClass: (className) => {
+					if (!anchorClasses[className]) {
+						anchorClasses[className] = true;
+					}
+				},
+				removeClass: (className) => {
+					if (anchorClasses[className]) {
+						delete anchorClasses[className];
+						anchorClasses = anchorClasses;
+					}
+				}
+			}}
+			bind:this={anchor}
+
+/app/src/routes/+layout.svelte:84:4
+Warn: 'Row' is not defined (svelte)
+		>
+			<Row>
+				<Section>
+					<Title>
+						<a class="link-logo" href="/">
+							<Logo />
+							<span>Meta Names</span>
+							{#if isTestnet}
+								<span class="testnet">TESTNET</span>
+							{/if}
+						</a>
+					</Title>
+				</Section>
+
+				<Section align="end" toolbar>
+					<WalletConnect {anchor} />
+				</Section>
+			</Row>
+		</div>
+
+/app/src/routes/+layout.svelte:85:5
+Warn: 'Section' is not defined (svelte)
+			<Row>
+				<Section>
+					<Title>
+						<a class="link-logo" href="/">
+							<Logo />
+							<span>Meta Names</span>
+							{#if isTestnet}
+								<span class="testnet">TESTNET</span>
+							{/if}
+						</a>
+					</Title>
+				</Section>
+
+/app/src/routes/+layout.svelte:86:6
+Warn: 'Title' is not defined (svelte)
+				<Section>
+					<Title>
+						<a class="link-logo" href="/">
+							<Logo />
+							<span>Meta Names</span>
+							{#if isTestnet}
+								<span class="testnet">TESTNET</span>
+							{/if}
+						</a>
+					</Title>
+				</Section>
+
+/app/src/routes/+layout.svelte:88:8
+Warn: 'Logo' is not defined (svelte)
+						<a class="link-logo" href="/">
+							<Logo />
+							<span>Meta Names</span>
+
+/app/src/routes/+layout.svelte:97:5
+Warn: 'Section' is not defined (svelte)
+
+				<Section align="end" toolbar>
+					<WalletConnect {anchor} />
+				</Section>
+			</Row>
+
+/app/src/routes/+layout.svelte:98:6
+Warn: 'WalletConnect' is not defined (svelte)
+				<Section align="end" toolbar>
+					<WalletConnect {anchor} />
+				</Section>
+
+/app/src/routes/+layout.svelte:106:4
+Warn: 'Banner' is not defined (svelte)
+		{#if contractDisabled}
+			<Banner open={true} centered={true} mobileStacked={true}>
+				<div class="icon-center" slot="icon">
+					<Icon icon="system-update" width="25px" height="25px" color="white" />
+				</div>
+				<Label slot="label">Contract is temporarily disabled for updates</Label>
+				<svelte:fragment slot="actions">
+					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
+				</svelte:fragment>
+			</Banner>
+		{/if}
+
+/app/src/routes/+layout.svelte:112:6
+Warn: 'Button' is not defined (svelte)
+				<svelte:fragment slot="actions">
+					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
+				</svelte:fragment>
+
+/app/src/routes/+layout.svelte:110:5
+Warn: 'Label' is not defined (svelte)
+				</div>
+				<Label slot="label">Contract is temporarily disabled for updates</Label>
+				<svelte:fragment slot="actions">
+
+/app/src/routes/+layout.svelte:108:6
+Warn: 'Icon' is not defined (svelte)
+				<div class="icon-center" slot="icon">
+					<Icon icon="system-update" width="25px" height="25px" color="white" />
+				</div>
+
+/app/src/routes/+layout.svelte:119:2
+Warn: 'Snackbar' is not defined (svelte)
+
+	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
+		<Label>{snackbarTransactionMessage}</Label>
+		<Actions>
+			<Button
+				on:click={() =>
+					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+				>View</Button
+			>
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+		</Actions>
+	</Snackbar>
+	<Snackbar bind:this={alertsSnackbar}>
+
+/app/src/routes/+layout.svelte:120:3
+Warn: 'Label' is not defined (svelte)
+	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
+		<Label>{snackbarTransactionMessage}</Label>
+		<Actions>
+
+/app/src/routes/+layout.svelte:121:3
+Warn: 'Actions' is not defined (svelte)
+		<Label>{snackbarTransactionMessage}</Label>
+		<Actions>
+			<Button
+				on:click={() =>
+					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+				>View</Button
+			>
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+		</Actions>
+	</Snackbar>
+
+/app/src/routes/+layout.svelte:122:4
+Warn: 'Button' is not defined (svelte)
+		<Actions>
+			<Button
+				on:click={() =>
+					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+				>View</Button
+			>
+			<IconButton title="Dismiss" aria-label="close">
+
+/app/src/routes/+layout.svelte:124:39
+Warn: 'explorerTransactionUrl' is not defined (svelte)
+				on:click={() =>
+					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+				>View</Button
+
+/app/src/routes/+layout.svelte:127:4
+Warn: 'IconButton' is not defined (svelte)
+			>
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+		</Actions>
+
+/app/src/routes/+layout.svelte:128:5
+Warn: 'Icon' is not defined (svelte)
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+
+/app/src/routes/+layout.svelte:132:2
+Warn: 'Snackbar' is not defined (svelte)
+	</Snackbar>
+	<Snackbar bind:this={alertsSnackbar}>
+		<Label>{snackbarMessage}</Label>
+		<Actions>
+			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
+				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
+			{/if}
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+		</Actions>
+	</Snackbar>
+	<Footer />
+
+/app/src/routes/+layout.svelte:133:3
+Warn: 'Label' is not defined (svelte)
+	<Snackbar bind:this={alertsSnackbar}>
+		<Label>{snackbarMessage}</Label>
+		<Actions>
+
+/app/src/routes/+layout.svelte:134:3
+Warn: 'Actions' is not defined (svelte)
+		<Label>{snackbarMessage}</Label>
+		<Actions>
+			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
+				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
+			{/if}
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+		</Actions>
+	</Snackbar>
+
+/app/src/routes/+layout.svelte:136:5
+Warn: 'Button' is not defined (svelte)
+			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
+				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
+			{/if}
+
+/app/src/routes/+layout.svelte:138:4
+Warn: 'IconButton' is not defined (svelte)
+			{/if}
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+		</Actions>
+
+/app/src/routes/+layout.svelte:139:5
+Warn: 'Icon' is not defined (svelte)
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+
+/app/src/routes/+layout.svelte:143:2
+Warn: 'Footer' is not defined (svelte)
+	</Snackbar>
+	<Footer />
+</div>
+
+/app/src/routes/DomainSearch.svelte:54:3
+Warn: 'Textfield' is not defined (svelte)
+	<form on:submit|preventDefault={submit}>
+		<Textfield
+			class="domain-input"
+			variant="outlined"
+			bind:value={domainName}
+			on:keyup={() => debounce()}
+			bind:invalid
+			label="Domain name"
+			withTrailingIcon
+			autofocus
+		>
+			<svelte:fragment slot="trailingIcon">
+				<div class="submit">
+					<IconButton aria-label="search">
+						<Icon icon="search" />
+					</IconButton>
+				</div>
+			</svelte:fragment>
+			<svelte:fragment slot="helper">
+				{#if errors.length > 0}
+					<HelperText slot="helper">{errors.join(', ')}</HelperText>
+				{/if}
+			</svelte:fragment>
+		</Textfield>
+	</form>
+
+/app/src/routes/DomainSearch.svelte:73:6
+Warn: 'HelperText' is not defined (svelte)
+				{#if errors.length > 0}
+					<HelperText slot="helper">{errors.join(', ')}</HelperText>
+				{/if}
+
+/app/src/routes/DomainSearch.svelte:66:6
+Warn: 'IconButton' is not defined (svelte)
+				<div class="submit">
+					<IconButton aria-label="search">
+						<Icon icon="search" />
+					</IconButton>
+				</div>
+
+/app/src/routes/DomainSearch.svelte:67:7
+Warn: 'Icon' is not defined (svelte)
+					<IconButton aria-label="search">
+						<Icon icon="search" />
+					</IconButton>
+
+/app/src/routes/DomainSearch.svelte:79:3
+Warn: 'Card' is not defined (svelte)
+	{#if isLoading}
+		<Card class="domain-link">
+			<CardContent>
+				<div class="card-content">
+					<span>{nameSearchedLabel}</span>
+
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+				</div>
+			</CardContent>
+		</Card>
+	{:else if domain}
+
+/app/src/routes/DomainSearch.svelte:80:4
+Warn: 'CardContent' is not defined (svelte)
+		<Card class="domain-link">
+			<CardContent>
+				<div class="card-content">
+					<span>{nameSearchedLabel}</span>
+
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+				</div>
+			</CardContent>
+		</Card>
+
+/app/src/routes/DomainSearch.svelte:84:6
+Warn: 'CircularProgress' is not defined (svelte)
+
+					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+				</div>
+
+/app/src/routes/DomainSearch.svelte:90:4
+Warn: 'Card' is not defined (svelte)
+		<a class="domain-link" href={`/domain/${domain.name}`}>
+			<Card>
+				<CardContent>
+					<div class="card-content">
+						<span>{nameSearchedLabel}</span>
+						<span class="chip registered">Registered</span>
+					</div>
+				</CardContent>
+			</Card>
+		</a>
+
+/app/src/routes/DomainSearch.svelte:91:5
+Warn: 'CardContent' is not defined (svelte)
+			<Card>
+				<CardContent>
+					<div class="card-content">
+						<span>{nameSearchedLabel}</span>
+						<span class="chip registered">Registered</span>
+					</div>
+				</CardContent>
+			</Card>
+
+/app/src/routes/DomainSearch.svelte:101:4
+Warn: 'Card' is not defined (svelte)
+		<a class="domain-link" href={`/register/${nameSearched}`}>
+			<Card>
+				<CardContent>
+					<div class="card-content">
+						<span>{nameSearchedLabel}</span>
+						<span class="chip available">Available</span>
+					</div>
+				</CardContent>
+			</Card>
+		</a>
+
+/app/src/routes/DomainSearch.svelte:102:5
+Warn: 'CardContent' is not defined (svelte)
+			<Card>
+				<CardContent>
+					<div class="card-content">
+						<span>{nameSearchedLabel}</span>
+						<span class="chip available">Available</span>
+					</div>
+				</CardContent>
+			</Card>
+
+/app/src/routes/DomainSearch.svelte:12:20
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+	const validator = $metaNamesSdk.domainRepository.domainValidator;
+
+/app/src/routes/DomainSearch.svelte:12:20
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+	const validator = $metaNamesSdk.domainRepository.domainValidator;
+
+/app/src/routes/DomainSearch.svelte:12:20
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+	const validator = $metaNamesSdk.domainRepository.domainValidator;
+
+/app/src/routes/DomainSearch.svelte:22:59
+Warn: 'metaNamesSdk' is not defined (svelte)
+	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
+	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
+
+/app/src/routes/DomainSearch.svelte:22:59
+Warn: 'metaNamesSdk' is not defined (svelte)
+	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
+	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
+
+/app/src/routes/DomainSearch.svelte:22:59
+Warn: 'metaNamesSdk' is not defined (svelte)
+	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
+	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
+
+/app/src/routes/DomainSearch.svelte:42:18
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		domain = await $metaNamesSdk.domainRepository.find(domainName);
+
+/app/src/routes/DomainSearch.svelte:42:18
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		domain = await $metaNamesSdk.domainRepository.find(domainName);
+
+/app/src/routes/DomainSearch.svelte:42:18
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		domain = await $metaNamesSdk.domainRepository.find(domainName);
+
+/app/src/routes/+page.svelte:14:2
+Warn: 'DomainSearch' is not defined (svelte)
+	</div>
+	<DomainSearch />
+</div>
+
+/app/src/routes/domain/[name]/+page.svelte:51:3
+Warn: 'CircularProgress' is not defined (svelte)
+	{#if !$domain}
+		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+	{:else if $domain}
+
+/app/src/routes/domain/[name]/+page.svelte:53:3
+Warn: 'Domain' is not defined (svelte)
+	{:else if $domain}
+		<Domain domain={$domain} />
+		<br />
+
+/app/src/routes/domain/[name]/+page.svelte:55:3
+Warn: 'GoBackButton' is not defined (svelte)
+		<br />
+		<GoBackButton />
+	{/if}
+
+/app/src/routes/domain/[name]/+page.svelte:15:21
+Warn: 'page' is not defined (svelte)
+	let domain = writable<DomainModel | undefined>();
+	const domainName = $page.params.name!;
+
+/app/src/routes/domain/[name]/+page.svelte:15:21
+Warn: 'page' is not defined (svelte)
+	let domain = writable<DomainModel | undefined>();
+	const domainName = $page.params.name!;
+
+/app/src/routes/domain/[name]/+page.svelte:15:21
+Warn: 'page' is not defined (svelte)
+	let domain = writable<DomainModel | undefined>();
+	const domainName = $page.params.name!;
+
+/app/src/routes/domain/[name]/+page.svelte:28:32
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function loadDomain() {
+		const domainResponse = await $metaNamesSdk.domainRepository.find(domainName);
+		if (domainResponse) domain.set(domainResponse);
+
+/app/src/routes/domain/[name]/+page.svelte:28:32
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function loadDomain() {
+		const domainResponse = await $metaNamesSdk.domainRepository.find(domainName);
+		if (domainResponse) domain.set(domainResponse);
+
+/app/src/routes/domain/[name]/+page.svelte:28:32
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function loadDomain() {
+		const domainResponse = await $metaNamesSdk.domainRepository.find(domainName);
+		if (domainResponse) domain.set(domainResponse);
+
+/app/src/routes/domain/[name]/renew/+page.svelte:51:3
+Warn: 'DomainPayment' is not defined (svelte)
+		<h2 class="mt-0">Renew domain</h2>
+		<DomainPayment
+			domainName={data.analyzed.name}
+			tld={data.analyzed.tld}
+			paymentLabel="Renew domain"
+			{payment}
+		/>
+		<br />
+
+/app/src/routes/domain/[name]/renew/+page.svelte:58:3
+Warn: 'GoBackButton' is not defined (svelte)
+		<br />
+		<GoBackButton />
+	{/if}
+
+/app/src/routes/domain/[name]/renew/+page.svelte:16:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function payment(params: DomainPaymentParams) {
+		const transactionIntent = await $metaNamesSdk.domainRepository.renew({
+			domain: params.domainName,
+
+/app/src/routes/domain/[name]/renew/+page.svelte:16:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function payment(params: DomainPaymentParams) {
+		const transactionIntent = await $metaNamesSdk.domainRepository.renew({
+			domain: params.domainName,
+
+/app/src/routes/domain/[name]/renew/+page.svelte:16:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function payment(params: DomainPaymentParams) {
+		const transactionIntent = await $metaNamesSdk.domainRepository.renew({
+			domain: params.domainName,
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:63:3
+Warn: 'Card' is not defined (svelte)
+		<h2 class="mt-0">Transfer domain</h2>
+		<Card class="w-100 flex-content">
+			<Content>
+				<h4>{domainName}</h4>
+				<p>
+					Please note that all transfers are irreversible.
+					<br />
+					<b>Verify the address is correct</b> before proceeding.
+				</p>
+				<div class="mt-2 mb-2">
+					<Textfield
+						class="w-100"
+						variant="outlined"
+						bind:value={address}
+						bind:invalid
+						label="Recipient address"
+					>
+						<svelte:fragment slot="helper">
+							{#if errors.length > 0}
+								<HelperText slot="helper">{errors.join(', ')}</HelperText>
+							{/if}
+						</svelte:fragment>
+					</Textfield>
+				</div>
+				<ConnectionRequired>
+					<LoadingButton disabled={invalid} onClick={transfer} variant="raised"
+						>Transfer domain</LoadingButton
+					>
+				</ConnectionRequired>
+			</Content>
+		</Card>
+		<br />
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:64:4
+Warn: 'Content' is not defined (svelte)
+		<Card class="w-100 flex-content">
+			<Content>
+				<h4>{domainName}</h4>
+				<p>
+					Please note that all transfers are irreversible.
+					<br />
+					<b>Verify the address is correct</b> before proceeding.
+				</p>
+				<div class="mt-2 mb-2">
+					<Textfield
+						class="w-100"
+						variant="outlined"
+						bind:value={address}
+						bind:invalid
+						label="Recipient address"
+					>
+						<svelte:fragment slot="helper">
+							{#if errors.length > 0}
+								<HelperText slot="helper">{errors.join(', ')}</HelperText>
+							{/if}
+						</svelte:fragment>
+					</Textfield>
+				</div>
+				<ConnectionRequired>
+					<LoadingButton disabled={invalid} onClick={transfer} variant="raised"
+						>Transfer domain</LoadingButton
+					>
+				</ConnectionRequired>
+			</Content>
+		</Card>
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:72:6
+Warn: 'Textfield' is not defined (svelte)
+				<div class="mt-2 mb-2">
+					<Textfield
+						class="w-100"
+						variant="outlined"
+						bind:value={address}
+						bind:invalid
+						label="Recipient address"
+					>
+						<svelte:fragment slot="helper">
+							{#if errors.length > 0}
+								<HelperText slot="helper">{errors.join(', ')}</HelperText>
+							{/if}
+						</svelte:fragment>
+					</Textfield>
+				</div>
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:81:9
+Warn: 'HelperText' is not defined (svelte)
+							{#if errors.length > 0}
+								<HelperText slot="helper">{errors.join(', ')}</HelperText>
+							{/if}
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:86:5
+Warn: 'ConnectionRequired' is not defined (svelte)
+				</div>
+				<ConnectionRequired>
+					<LoadingButton disabled={invalid} onClick={transfer} variant="raised"
+						>Transfer domain</LoadingButton
+					>
+				</ConnectionRequired>
+			</Content>
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:87:6
+Warn: 'LoadingButton' is not defined (svelte)
+				<ConnectionRequired>
+					<LoadingButton disabled={invalid} onClick={transfer} variant="raised"
+						>Transfer domain</LoadingButton
+					>
+				</ConnectionRequired>
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:94:3
+Warn: 'GoBackButton' is not defined (svelte)
+		<br />
+		<GoBackButton />
+	{/if}
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:33:8
+Warn: 'walletAddress' is not defined (svelte)
+		if (errors.length > 0) return;
+		if (!$walletAddress) return;
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:35:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		const transactionIntent = await $metaNamesSdk.domainRepository.transfer({
+			domain: domainName,
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:35:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		const transactionIntent = await $metaNamesSdk.domainRepository.transfer({
+			domain: domainName,
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:35:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		const transactionIntent = await $metaNamesSdk.domainRepository.transfer({
+			domain: domainName,
+
+/app/src/routes/domain/[name]/transfer/+page.svelte:37:10
+Warn: 'walletAddress' is not defined (svelte)
+			domain: domainName,
+			from: $walletAddress,
+			to: address
+
+/app/src/routes/profile/DomainsTable.svelte:42:1
+Warn: 'DataTable' is not defined (svelte)
+
+<DataTable
+	sortable
+	bind:sort
+	bind:sortDirection
+	on:SMUIDataTable:sorted={handleSort}
+	table$aria-label="Domain list"
+	class="w-100"
+>
+	<Head>
+		<Row>
+			<Cell numeric columnId="tokenId">
+				<IconButton aria-label="sort-by-token">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+				<Label>Token ID</Label>
+			</Cell>
+			<Cell class="w-80" columnId="name">
+				<Label>Domain Name</Label>
+				<IconButton aria-label="sort-by-name">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+			</Cell>
+			<Cell columnId="parentId" sortable={false}>
+				<Label>Parent Name</Label>
+			</Cell>
+		</Row>
+	</Head>
+	{#if loaded}
+		{#if domainsLength > 0}
+			<Body>
+				{#each slice as domain (domain.tokenId)}
+					<Row>
+						<Cell numeric>{domain.tokenId}</Cell>
+						<Cell>
+							<a href="/domain/{domain.name}">{domain.name}</a>
+						</Cell>
+						<Cell>
+							{#if domain.parentId}
+								<a href="/domain/{domain.parentId}">{domain.parentId}</a>
+							{/if}
+						</Cell>
+					</Row>
+				{/each}
+			</Body>
+		{:else if domainsLength === 0}
+			<Body>
+				<Row>
+					<Cell colspan={3}>
+						<div class="flex-content py-1">
+							<p>No domains found</p>
+							<Button href="/" variant="raised">Register a domain</Button>
+						</div>
+					</Cell>
+				</Row>
+			</Body>
+		{/if}
+	{/if}
+	<Pagination slot="paginate">
+		<svelte:fragment slot="rowsPerPage">
+			<Label>Rows Per Page</Label>
+			<Select variant="outlined" bind:value={rowsPerPage} noLabel>
+				<Option value={5}>5</Option>
+				<Option value={10}>10</Option>
+				<Option value={20}>20</Option>
+				<Option value={domainsLength}>Max</Option>
+			</Select>
+		</svelte:fragment>
+		<svelte:fragment slot="total">
+			{start + 1}-{end} of {domainsLength}
+		</svelte:fragment>
+
+		<IconButton
+			action="first-page"
+			title="First page"
+			on:click={() => (currentPage = 0)}
+			disabled={currentPage === 0}
+			aria-label="first page"
+		>
+			<Icon icon="first-page" />
+		</IconButton>
+		<IconButton
+			action="prev-page"
+			title="Prev page"
+			on:click={() => currentPage--}
+			disabled={currentPage === 0}
+			aria-label="previous page"
+		>
+			<Icon icon="chevron-left" />
+		</IconButton>
+		<IconButton
+			action="next-page"
+			title="Next page"
+			on:click={() => currentPage++}
+			disabled={currentPage === lastPage}
+			aria-label="next page"
+		>
+			<Icon icon="chevron-right" />
+		</IconButton>
+		<IconButton
+			action="last-page"
+			title="Last page"
+			on:click={() => (currentPage = lastPage)}
+			disabled={currentPage === lastPage}
+			aria-label="last page"
+		>
+			<Icon icon="last-page" />
+		</IconButton>
+	</Pagination>
+	<LinearProgress
+		closed={loaded}
+		indeterminate
+		aria-label="Data is being loaded..."
+		slot="progress"
+	/>
+</DataTable>
+
+/app/src/routes/profile/DomainsTable.svelte:150:2
+Warn: 'LinearProgress' is not defined (svelte)
+	</Pagination>
+	<LinearProgress
+		closed={loaded}
+		indeterminate
+		aria-label="Data is being loaded..."
+		slot="progress"
+	/>
+</DataTable>
+
+/app/src/routes/profile/DomainsTable.svelte:99:2
+Warn: 'Pagination' is not defined (svelte)
+	{/if}
+	<Pagination slot="paginate">
+		<svelte:fragment slot="rowsPerPage">
+			<Label>Rows Per Page</Label>
+			<Select variant="outlined" bind:value={rowsPerPage} noLabel>
+				<Option value={5}>5</Option>
+				<Option value={10}>10</Option>
+				<Option value={20}>20</Option>
+				<Option value={domainsLength}>Max</Option>
+			</Select>
+		</svelte:fragment>
+		<svelte:fragment slot="total">
+			{start + 1}-{end} of {domainsLength}
+		</svelte:fragment>
+
+		<IconButton
+			action="first-page"
+			title="First page"
+			on:click={() => (currentPage = 0)}
+			disabled={currentPage === 0}
+			aria-label="first page"
+		>
+			<Icon icon="first-page" />
+		</IconButton>
+		<IconButton
+			action="prev-page"
+			title="Prev page"
+			on:click={() => currentPage--}
+			disabled={currentPage === 0}
+			aria-label="previous page"
+		>
+			<Icon icon="chevron-left" />
+		</IconButton>
+		<IconButton
+			action="next-page"
+			title="Next page"
+			on:click={() => currentPage++}
+			disabled={currentPage === lastPage}
+			aria-label="next page"
+		>
+			<Icon icon="chevron-right" />
+		</IconButton>
+		<IconButton
+			action="last-page"
+			title="Last page"
+			on:click={() => (currentPage = lastPage)}
+			disabled={currentPage === lastPage}
+			aria-label="last page"
+		>
+			<Icon icon="last-page" />
+		</IconButton>
+	</Pagination>
+	<LinearProgress
+
+/app/src/routes/profile/DomainsTable.svelte:101:4
+Warn: 'Label' is not defined (svelte)
+		<svelte:fragment slot="rowsPerPage">
+			<Label>Rows Per Page</Label>
+			<Select variant="outlined" bind:value={rowsPerPage} noLabel>
+
+/app/src/routes/profile/DomainsTable.svelte:102:4
+Warn: 'Select' is not defined (svelte)
+			<Label>Rows Per Page</Label>
+			<Select variant="outlined" bind:value={rowsPerPage} noLabel>
+				<Option value={5}>5</Option>
+				<Option value={10}>10</Option>
+				<Option value={20}>20</Option>
+				<Option value={domainsLength}>Max</Option>
+			</Select>
+		</svelte:fragment>
+
+/app/src/routes/profile/DomainsTable.svelte:103:5
+Warn: 'Option' is not defined (svelte)
+			<Select variant="outlined" bind:value={rowsPerPage} noLabel>
+				<Option value={5}>5</Option>
+				<Option value={10}>10</Option>
+
+/app/src/routes/profile/DomainsTable.svelte:104:5
+Warn: 'Option' is not defined (svelte)
+				<Option value={5}>5</Option>
+				<Option value={10}>10</Option>
+				<Option value={20}>20</Option>
+
+/app/src/routes/profile/DomainsTable.svelte:105:5
+Warn: 'Option' is not defined (svelte)
+				<Option value={10}>10</Option>
+				<Option value={20}>20</Option>
+				<Option value={domainsLength}>Max</Option>
+
+/app/src/routes/profile/DomainsTable.svelte:106:5
+Warn: 'Option' is not defined (svelte)
+				<Option value={20}>20</Option>
+				<Option value={domainsLength}>Max</Option>
+			</Select>
+
+/app/src/routes/profile/DomainsTable.svelte:113:3
+Warn: 'IconButton' is not defined (svelte)
+
+		<IconButton
+			action="first-page"
+			title="First page"
+			on:click={() => (currentPage = 0)}
+			disabled={currentPage === 0}
+			aria-label="first page"
+		>
+			<Icon icon="first-page" />
+		</IconButton>
+		<IconButton
+
+/app/src/routes/profile/DomainsTable.svelte:120:4
+Warn: 'Icon' is not defined (svelte)
+		>
+			<Icon icon="first-page" />
+		</IconButton>
+
+/app/src/routes/profile/DomainsTable.svelte:122:3
+Warn: 'IconButton' is not defined (svelte)
+		</IconButton>
+		<IconButton
+			action="prev-page"
+			title="Prev page"
+			on:click={() => currentPage--}
+			disabled={currentPage === 0}
+			aria-label="previous page"
+		>
+			<Icon icon="chevron-left" />
+		</IconButton>
+		<IconButton
+
+/app/src/routes/profile/DomainsTable.svelte:129:4
+Warn: 'Icon' is not defined (svelte)
+		>
+			<Icon icon="chevron-left" />
+		</IconButton>
+
+/app/src/routes/profile/DomainsTable.svelte:131:3
+Warn: 'IconButton' is not defined (svelte)
+		</IconButton>
+		<IconButton
+			action="next-page"
+			title="Next page"
+			on:click={() => currentPage++}
+			disabled={currentPage === lastPage}
+			aria-label="next page"
+		>
+			<Icon icon="chevron-right" />
+		</IconButton>
+		<IconButton
+
+/app/src/routes/profile/DomainsTable.svelte:138:4
+Warn: 'Icon' is not defined (svelte)
+		>
+			<Icon icon="chevron-right" />
+		</IconButton>
+
+/app/src/routes/profile/DomainsTable.svelte:140:3
+Warn: 'IconButton' is not defined (svelte)
+		</IconButton>
+		<IconButton
+			action="last-page"
+			title="Last page"
+			on:click={() => (currentPage = lastPage)}
+			disabled={currentPage === lastPage}
+			aria-label="last page"
+		>
+			<Icon icon="last-page" />
+		</IconButton>
+	</Pagination>
+
+/app/src/routes/profile/DomainsTable.svelte:147:4
+Warn: 'Icon' is not defined (svelte)
+		>
+			<Icon icon="last-page" />
+		</IconButton>
+
+/app/src/routes/profile/DomainsTable.svelte:50:2
+Warn: 'Head' is not defined (svelte)
+>
+	<Head>
+		<Row>
+			<Cell numeric columnId="tokenId">
+				<IconButton aria-label="sort-by-token">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+				<Label>Token ID</Label>
+			</Cell>
+			<Cell class="w-80" columnId="name">
+				<Label>Domain Name</Label>
+				<IconButton aria-label="sort-by-name">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+			</Cell>
+			<Cell columnId="parentId" sortable={false}>
+				<Label>Parent Name</Label>
+			</Cell>
+		</Row>
+	</Head>
+	{#if loaded}
+
+/app/src/routes/profile/DomainsTable.svelte:51:3
+Warn: 'Row' is not defined (svelte)
+	<Head>
+		<Row>
+			<Cell numeric columnId="tokenId">
+				<IconButton aria-label="sort-by-token">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+				<Label>Token ID</Label>
+			</Cell>
+			<Cell class="w-80" columnId="name">
+				<Label>Domain Name</Label>
+				<IconButton aria-label="sort-by-name">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+			</Cell>
+			<Cell columnId="parentId" sortable={false}>
+				<Label>Parent Name</Label>
+			</Cell>
+		</Row>
+	</Head>
+
+/app/src/routes/profile/DomainsTable.svelte:52:4
+Warn: 'Cell' is not defined (svelte)
+		<Row>
+			<Cell numeric columnId="tokenId">
+				<IconButton aria-label="sort-by-token">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+				<Label>Token ID</Label>
+			</Cell>
+			<Cell class="w-80" columnId="name">
+
+/app/src/routes/profile/DomainsTable.svelte:53:5
+Warn: 'IconButton' is not defined (svelte)
+			<Cell numeric columnId="tokenId">
+				<IconButton aria-label="sort-by-token">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+				<Label>Token ID</Label>
+
+/app/src/routes/profile/DomainsTable.svelte:54:6
+Warn: 'Icon' is not defined (svelte)
+				<IconButton aria-label="sort-by-token">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+
+/app/src/routes/profile/DomainsTable.svelte:56:5
+Warn: 'Label' is not defined (svelte)
+				</IconButton>
+				<Label>Token ID</Label>
+			</Cell>
+
+/app/src/routes/profile/DomainsTable.svelte:58:4
+Warn: 'Cell' is not defined (svelte)
+			</Cell>
+			<Cell class="w-80" columnId="name">
+				<Label>Domain Name</Label>
+				<IconButton aria-label="sort-by-name">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+			</Cell>
+			<Cell columnId="parentId" sortable={false}>
+
+/app/src/routes/profile/DomainsTable.svelte:59:5
+Warn: 'Label' is not defined (svelte)
+			<Cell class="w-80" columnId="name">
+				<Label>Domain Name</Label>
+				<IconButton aria-label="sort-by-name">
+
+/app/src/routes/profile/DomainsTable.svelte:60:5
+Warn: 'IconButton' is not defined (svelte)
+				<Label>Domain Name</Label>
+				<IconButton aria-label="sort-by-name">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+			</Cell>
+
+/app/src/routes/profile/DomainsTable.svelte:61:6
+Warn: 'Icon' is not defined (svelte)
+				<IconButton aria-label="sort-by-name">
+					<Icon icon="arrow-upward" />
+				</IconButton>
+
+/app/src/routes/profile/DomainsTable.svelte:64:4
+Warn: 'Cell' is not defined (svelte)
+			</Cell>
+			<Cell columnId="parentId" sortable={false}>
+				<Label>Parent Name</Label>
+			</Cell>
+		</Row>
+
+/app/src/routes/profile/DomainsTable.svelte:65:5
+Warn: 'Label' is not defined (svelte)
+			<Cell columnId="parentId" sortable={false}>
+				<Label>Parent Name</Label>
+			</Cell>
+
+/app/src/routes/profile/DomainsTable.svelte:71:4
+Warn: 'Body' is not defined (svelte)
+		{#if domainsLength > 0}
+			<Body>
+				{#each slice as domain (domain.tokenId)}
+					<Row>
+						<Cell numeric>{domain.tokenId}</Cell>
+						<Cell>
+							<a href="/domain/{domain.name}">{domain.name}</a>
+						</Cell>
+						<Cell>
+							{#if domain.parentId}
+								<a href="/domain/{domain.parentId}">{domain.parentId}</a>
+							{/if}
+						</Cell>
+					</Row>
+				{/each}
+			</Body>
+		{:else if domainsLength === 0}
+
+/app/src/routes/profile/DomainsTable.svelte:73:6
+Warn: 'Row' is not defined (svelte)
+				{#each slice as domain (domain.tokenId)}
+					<Row>
+						<Cell numeric>{domain.tokenId}</Cell>
+						<Cell>
+							<a href="/domain/{domain.name}">{domain.name}</a>
+						</Cell>
+						<Cell>
+							{#if domain.parentId}
+								<a href="/domain/{domain.parentId}">{domain.parentId}</a>
+							{/if}
+						</Cell>
+					</Row>
+				{/each}
+
+/app/src/routes/profile/DomainsTable.svelte:74:7
+Warn: 'Cell' is not defined (svelte)
+					<Row>
+						<Cell numeric>{domain.tokenId}</Cell>
+						<Cell>
+
+/app/src/routes/profile/DomainsTable.svelte:75:7
+Warn: 'Cell' is not defined (svelte)
+						<Cell numeric>{domain.tokenId}</Cell>
+						<Cell>
+							<a href="/domain/{domain.name}">{domain.name}</a>
+						</Cell>
+						<Cell>
+
+/app/src/routes/profile/DomainsTable.svelte:78:7
+Warn: 'Cell' is not defined (svelte)
+						</Cell>
+						<Cell>
+							{#if domain.parentId}
+								<a href="/domain/{domain.parentId}">{domain.parentId}</a>
+							{/if}
+						</Cell>
+					</Row>
+
+/app/src/routes/profile/DomainsTable.svelte:87:4
+Warn: 'Body' is not defined (svelte)
+		{:else if domainsLength === 0}
+			<Body>
+				<Row>
+					<Cell colspan={3}>
+						<div class="flex-content py-1">
+							<p>No domains found</p>
+							<Button href="/" variant="raised">Register a domain</Button>
+						</div>
+					</Cell>
+				</Row>
+			</Body>
+		{/if}
+
+/app/src/routes/profile/DomainsTable.svelte:88:5
+Warn: 'Row' is not defined (svelte)
+			<Body>
+				<Row>
+					<Cell colspan={3}>
+						<div class="flex-content py-1">
+							<p>No domains found</p>
+							<Button href="/" variant="raised">Register a domain</Button>
+						</div>
+					</Cell>
+				</Row>
+			</Body>
+
+/app/src/routes/profile/DomainsTable.svelte:89:6
+Warn: 'Cell' is not defined (svelte)
+				<Row>
+					<Cell colspan={3}>
+						<div class="flex-content py-1">
+							<p>No domains found</p>
+							<Button href="/" variant="raised">Register a domain</Button>
+						</div>
+					</Cell>
+				</Row>
+
+/app/src/routes/profile/DomainsTable.svelte:92:8
+Warn: 'Button' is not defined (svelte)
+							<p>No domains found</p>
+							<Button href="/" variant="raised">Register a domain</Button>
+						</div>
+
+/app/src/routes/profile/+page.svelte:47:2
+Warn: 'Paper' is not defined (svelte)
+<div class="profile content">
+	<Paper class="w-100" variant="raised">
+		<div class="paper-content">
+			<h3>Profile</h3>
+			{#if $walletConnected}
+				<Chip label="Address" value={$walletAddress || ''} />
+				<h4 class="domains">Domains</h4>
+				<Textfield
+					class="my-1 search-bar"
+					label="Search"
+					bind:value={search}
+					variant="outlined"
+					withTrailingIcon
+				>
+					<svelte:fragment slot="trailingIcon">
+						<div class="close-icon">
+							<IconButton on:click={cleanSearch} aria-label="cancel">
+								<Icon icon="cancel" />
+							</IconButton>
+						</div>
+					</svelte:fragment>
+				</Textfield>
+				<DomainsTable domains={domainsFiltered} {loaded} />
+			{:else}
+				<p>Connect your wallet to see your domains</p>
+			{/if}
+		</div>
+	</Paper>
+</div>
+
+/app/src/routes/profile/+page.svelte:50:9
+Warn: 'walletConnected' is not defined (svelte)
+			<h3>Profile</h3>
+			{#if $walletConnected}
+				<Chip label="Address" value={$walletAddress || ''} />
+
+/app/src/routes/profile/+page.svelte:51:5
+Warn: 'Chip' is not defined (svelte)
+			{#if $walletConnected}
+				<Chip label="Address" value={$walletAddress || ''} />
+				<h4 class="domains">Domains</h4>
+
+/app/src/routes/profile/+page.svelte:53:5
+Warn: 'Textfield' is not defined (svelte)
+				<h4 class="domains">Domains</h4>
+				<Textfield
+					class="my-1 search-bar"
+					label="Search"
+					bind:value={search}
+					variant="outlined"
+					withTrailingIcon
+				>
+					<svelte:fragment slot="trailingIcon">
+						<div class="close-icon">
+							<IconButton on:click={cleanSearch} aria-label="cancel">
+								<Icon icon="cancel" />
+							</IconButton>
+						</div>
+					</svelte:fragment>
+				</Textfield>
+				<DomainsTable domains={domainsFiltered} {loaded} />
+
+/app/src/routes/profile/+page.svelte:62:8
+Warn: 'IconButton' is not defined (svelte)
+						<div class="close-icon">
+							<IconButton on:click={cleanSearch} aria-label="cancel">
+								<Icon icon="cancel" />
+							</IconButton>
+						</div>
+
+/app/src/routes/profile/+page.svelte:63:9
+Warn: 'Icon' is not defined (svelte)
+							<IconButton on:click={cleanSearch} aria-label="cancel">
+								<Icon icon="cancel" />
+							</IconButton>
+
+/app/src/routes/profile/+page.svelte:68:5
+Warn: 'DomainsTable' is not defined (svelte)
+				</Textfield>
+				<DomainsTable domains={domainsFiltered} {loaded} />
+			{:else}
+
+/app/src/routes/profile/+page.svelte:26:19
+Warn: 'metaNamesSdk' is not defined (svelte)
+		loaded = false;
+		domains = await $metaNamesSdk.domainRepository.findByOwner(address);
+		domainsFiltered = domains;
+
+/app/src/routes/profile/+page.svelte:26:19
+Warn: 'metaNamesSdk' is not defined (svelte)
+		loaded = false;
+		domains = await $metaNamesSdk.domainRepository.findByOwner(address);
+		domainsFiltered = domains;
+
+/app/src/routes/profile/+page.svelte:26:19
+Warn: 'metaNamesSdk' is not defined (svelte)
+		loaded = false;
+		domains = await $metaNamesSdk.domainRepository.findByOwner(address);
+		domainsFiltered = domains;
+
+/app/src/routes/proposals/tld-migration/Timer.svelte:50:10
+Warn: 'fly' is not defined (svelte)
+		{#key hh}
+			<span in:fly={{ delay, duration, y: '1em' }} out:fly={{ duration, y: '-1em' }}>{f(hh)}</span>
+		{/key}
+
+/app/src/routes/proposals/tld-migration/Timer.svelte:50:49
+Warn: 'fly' is not defined (svelte)
+		{#key hh}
+			<span in:fly={{ delay, duration, y: '1em' }} out:fly={{ duration, y: '-1em' }}>{f(hh)}</span>
+		{/key}
+
+/app/src/routes/proposals/tld-migration/Timer.svelte:54:10
+Warn: 'fly' is not defined (svelte)
+		{#key mm}
+			<span in:fly={{ delay, duration, y: '1em' }} out:fly={{ duration, y: '-1em' }}>{f(mm)}</span>
+		{/key}
+
+/app/src/routes/proposals/tld-migration/Timer.svelte:54:49
+Warn: 'fly' is not defined (svelte)
+		{#key mm}
+			<span in:fly={{ delay, duration, y: '1em' }} out:fly={{ duration, y: '-1em' }}>{f(mm)}</span>
+		{/key}
+
+/app/src/routes/proposals/tld-migration/Timer.svelte:58:10
+Warn: 'fly' is not defined (svelte)
+		{#key ss}
+			<span in:fly={{ delay, duration, y: '1em' }} out:fly={{ duration, y: '-1em' }}>{f(ss)}</span>
+		{/key}
+
+/app/src/routes/proposals/tld-migration/Timer.svelte:58:49
+Warn: 'fly' is not defined (svelte)
+		{#key ss}
+			<span in:fly={{ delay, duration, y: '1em' }} out:fly={{ duration, y: '-1em' }}>{f(ss)}</span>
+		{/key}
+
+/app/src/routes/proposals/tld-migration/+page.svelte:90:2
+Warn: 'Card' is not defined (svelte)
+<div class="content checkout">
+	<Card class="w-100 flex-content">
+		<Content>
+			<h3>TLD Migration Proposal</h3>
+			<p>
+				The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to
+				<code>.MPC</code>.
+				<br />
+				Learn more in the
+				<a
+					href="https://docs.metanames.app/proposals/transition-from-.meta-to-.mpc"
+					target="_blank"
+				>
+					<b>documentation</b></a
+				>
+			</p>
+			{#if voteEnabled}
+				<p>
+					<b>Ownership of a domain is required to vote</b>
+				</p>
+				<p class="subtitle">
+					Please allow a minimum of 10 minutes after purchasing a domain before casting your vote.
+				</p>
+				<h4>Proposal countdown</h4>
+				<Timer class="timer" {countFrom} on:timesup={timesUp} />
+				<p class="question">
+					Do you want to migrate the TLD from <code>.META</code> to <code>.MPC</code>?
+				</p>
+				<div class="options">
+					{#each options as option}
+						<FormField>
+							<Radio bind:group={selected} value={option} />
+							<span slot="label">{option}</span>
+						</FormField>
+					{/each}
+				</div>
+				<ConnectionRequired class="mt-1">
+					<LoadingButton disabled={!voteEnabled} onClick={vote} variant="raised">Vote</LoadingButton
+					>
+				</ConnectionRequired>
+			{:else}
+				<h4 class="mb-1">Voting Results</h4>
+				<div class="chart">
+					<Doughnut class="doughnut" data={votesChartData} options={chartOptions} />
+				</div>
+				<p class="title mt-3">
+					<b>
+						{#if proposalPassed}
+							The proposal has been approved
+						{:else}
+							The proposal was not approved
+						{/if}
+					</b>
+				</p>
+			{/if}
+		</Content>
+	</Card>
+	<br />
+
+/app/src/routes/proposals/tld-migration/+page.svelte:91:3
+Warn: 'Content' is not defined (svelte)
+	<Card class="w-100 flex-content">
+		<Content>
+			<h3>TLD Migration Proposal</h3>
+			<p>
+				The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to
+				<code>.MPC</code>.
+				<br />
+				Learn more in the
+				<a
+					href="https://docs.metanames.app/proposals/transition-from-.meta-to-.mpc"
+					target="_blank"
+				>
+					<b>documentation</b></a
+				>
+			</p>
+			{#if voteEnabled}
+				<p>
+					<b>Ownership of a domain is required to vote</b>
+				</p>
+				<p class="subtitle">
+					Please allow a minimum of 10 minutes after purchasing a domain before casting your vote.
+				</p>
+				<h4>Proposal countdown</h4>
+				<Timer class="timer" {countFrom} on:timesup={timesUp} />
+				<p class="question">
+					Do you want to migrate the TLD from <code>.META</code> to <code>.MPC</code>?
+				</p>
+				<div class="options">
+					{#each options as option}
+						<FormField>
+							<Radio bind:group={selected} value={option} />
+							<span slot="label">{option}</span>
+						</FormField>
+					{/each}
+				</div>
+				<ConnectionRequired class="mt-1">
+					<LoadingButton disabled={!voteEnabled} onClick={vote} variant="raised">Vote</LoadingButton
+					>
+				</ConnectionRequired>
+			{:else}
+				<h4 class="mb-1">Voting Results</h4>
+				<div class="chart">
+					<Doughnut class="doughnut" data={votesChartData} options={chartOptions} />
+				</div>
+				<p class="title mt-3">
+					<b>
+						{#if proposalPassed}
+							The proposal has been approved
+						{:else}
+							The proposal was not approved
+						{/if}
+					</b>
+				</p>
+			{/if}
+		</Content>
+	</Card>
+
+/app/src/routes/proposals/tld-migration/+page.svelte:113:5
+Warn: 'Timer' is not defined (svelte)
+				<h4>Proposal countdown</h4>
+				<Timer class="timer" {countFrom} on:timesup={timesUp} />
+				<p class="question">
+
+/app/src/routes/proposals/tld-migration/+page.svelte:119:7
+Warn: 'FormField' is not defined (svelte)
+					{#each options as option}
+						<FormField>
+							<Radio bind:group={selected} value={option} />
+							<span slot="label">{option}</span>
+						</FormField>
+					{/each}
+
+/app/src/routes/proposals/tld-migration/+page.svelte:120:8
+Warn: 'Radio' is not defined (svelte)
+						<FormField>
+							<Radio bind:group={selected} value={option} />
+							<span slot="label">{option}</span>
+
+/app/src/routes/proposals/tld-migration/+page.svelte:125:5
+Warn: 'ConnectionRequired' is not defined (svelte)
+				</div>
+				<ConnectionRequired class="mt-1">
+					<LoadingButton disabled={!voteEnabled} onClick={vote} variant="raised">Vote</LoadingButton
+					>
+				</ConnectionRequired>
+			{:else}
+
+/app/src/routes/proposals/tld-migration/+page.svelte:126:6
+Warn: 'LoadingButton' is not defined (svelte)
+				<ConnectionRequired class="mt-1">
+					<LoadingButton disabled={!voteEnabled} onClick={vote} variant="raised">Vote</LoadingButton
+					>
+				</ConnectionRequired>
+
+/app/src/routes/proposals/tld-migration/+page.svelte:132:6
+Warn: 'Doughnut' is not defined (svelte)
+				<div class="chart">
+					<Doughnut class="doughnut" data={votesChartData} options={chartOptions} />
+				</div>
+
+/app/src/routes/proposals/tld-migration/+page.svelte:147:2
+Warn: 'GoBackButton' is not defined (svelte)
+	<br />
+	<GoBackButton />
+</div>
+
+/app/src/routes/proposals/tld-migration/+page.svelte:71:26
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function vote() {
+		const contract = await $metaNamesSdk.contractRepository.getContract({
+			contractAddress: config.tldMigrationProposalContractAddress
+
+/app/src/routes/proposals/tld-migration/+page.svelte:71:26
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function vote() {
+		const contract = await $metaNamesSdk.contractRepository.getContract({
+			contractAddress: config.tldMigrationProposalContractAddress
+
+/app/src/routes/proposals/tld-migration/+page.svelte:71:26
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function vote() {
+		const contract = await $metaNamesSdk.contractRepository.getContract({
+			contractAddress: config.tldMigrationProposalContractAddress
+
+/app/src/routes/proposals/tld-migration/+page.svelte:75:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+		const payload = actionVotePayload(contract.abi, selected === 'Yes');
+		const transactionIntent = await $metaNamesSdk.contractRepository.createTransaction({
+			contractAddress: config.tldMigrationProposalContractAddress,
+
+/app/src/routes/proposals/tld-migration/+page.svelte:75:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+		const payload = actionVotePayload(contract.abi, selected === 'Yes');
+		const transactionIntent = await $metaNamesSdk.contractRepository.createTransaction({
+			contractAddress: config.tldMigrationProposalContractAddress,
+
+/app/src/routes/proposals/tld-migration/+page.svelte:75:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+		const payload = actionVotePayload(contract.abi, selected === 'Yes');
+		const transactionIntent = await $metaNamesSdk.contractRepository.createTransaction({
+			contractAddress: config.tldMigrationProposalContractAddress,
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:48:1
+Warn: 'Card' is not defined (svelte)
+
+<Card class="domain-container">
+	<Content>
+		<div class="card-content">
+			<h4 class="domain-title">{domainName}</h4>
+
+			<div class="content">
+				<Chip class="flex mt-2" label="Parent" value={parentDomainName} href={parentLink} />
+			</div>
+
+			<div class="fees">
+				<p class="title text-center">Price breakdown</p>
+				<div class="row">
+					<span>Total (excluding network fees)</span>
+					<span><b>FREE</b></span>
+				</div>
+			</div>
+
+			<div class="submit">
+				<ConnectionRequired>
+					<LoadingButton onClick={registerDomain} variant="raised">
+						<Label>Register domain</Label>
+					</LoadingButton>
+				</ConnectionRequired>
+			</div>
+		</div></Content
+	>
+</Card>
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:49:2
+Warn: 'Content' is not defined (svelte)
+<Card class="domain-container">
+	<Content>
+		<div class="card-content">
+			<h4 class="domain-title">{domainName}</h4>
+
+			<div class="content">
+				<Chip class="flex mt-2" label="Parent" value={parentDomainName} href={parentLink} />
+			</div>
+
+			<div class="fees">
+				<p class="title text-center">Price breakdown</p>
+				<div class="row">
+					<span>Total (excluding network fees)</span>
+					<span><b>FREE</b></span>
+				</div>
+			</div>
+
+			<div class="submit">
+				<ConnectionRequired>
+					<LoadingButton onClick={registerDomain} variant="raised">
+						<Label>Register domain</Label>
+					</LoadingButton>
+				</ConnectionRequired>
+			</div>
+		</div></Content
+	>
+</Card>
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:54:5
+Warn: 'Chip' is not defined (svelte)
+			<div class="content">
+				<Chip class="flex mt-2" label="Parent" value={parentDomainName} href={parentLink} />
+			</div>
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:66:5
+Warn: 'ConnectionRequired' is not defined (svelte)
+			<div class="submit">
+				<ConnectionRequired>
+					<LoadingButton onClick={registerDomain} variant="raised">
+						<Label>Register domain</Label>
+					</LoadingButton>
+				</ConnectionRequired>
+			</div>
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:67:6
+Warn: 'LoadingButton' is not defined (svelte)
+				<ConnectionRequired>
+					<LoadingButton onClick={registerDomain} variant="raised">
+						<Label>Register domain</Label>
+					</LoadingButton>
+				</ConnectionRequired>
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:68:7
+Warn: 'Label' is not defined (svelte)
+					<LoadingButton onClick={registerDomain} variant="raised">
+						<Label>Register domain</Label>
+					</LoadingButton>
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:24:24
+Warn: 'metaNamesSdk' is not defined (svelte)
+	onMount(async () => {
+		parentDomain = await $metaNamesSdk.domainRepository.find(parentDomainName);
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:24:24
+Warn: 'metaNamesSdk' is not defined (svelte)
+	onMount(async () => {
+		parentDomain = await $metaNamesSdk.domainRepository.find(parentDomainName);
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:24:24
+Warn: 'metaNamesSdk' is not defined (svelte)
+	onMount(async () => {
+		parentDomain = await $metaNamesSdk.domainRepository.find(parentDomainName);
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:30:19
+Warn: 'walletAddress' is not defined (svelte)
+	async function registerDomain() {
+		const address = $walletAddress;
+		if (!address) return;
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:33:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		const transactionIntent = await $metaNamesSdk.domainRepository.register({
+			domain: domainName,
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:33:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		const transactionIntent = await $metaNamesSdk.domainRepository.register({
+			domain: domainName,
+
+/app/src/routes/register/[name]/SubdomainRegistration.svelte:33:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+		const transactionIntent = await $metaNamesSdk.domainRepository.register({
+			domain: domainName,
+
+/app/src/routes/register/[name]/+page.svelte:93:3
+Warn: 'CircularProgress' is not defined (svelte)
+	{#if $isDomainPresent === undefined}
+		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+	{:else}
+
+/app/src/routes/register/[name]/+page.svelte:97:4
+Warn: 'SubdomainRegistration' is not defined (svelte)
+		{#if $isParentPresent && parentDomainName}
+			<SubdomainRegistration {domainName} {parentDomainName} />
+		{:else}
+
+/app/src/routes/register/[name]/+page.svelte:99:4
+Warn: 'DomainPayment' is not defined (svelte)
+		{:else}
+			<DomainPayment {domainName} {tld} paymentLabel="Register domain" {payment} />
+		{/if}
+
+/app/src/routes/register/[name]/+page.svelte:22:20
+Warn: 'page' is not defined (svelte)
+
+	const nameParam = $page.params.name!;
+
+/app/src/routes/register/[name]/+page.svelte:22:20
+Warn: 'page' is not defined (svelte)
+
+	const nameParam = $page.params.name!;
+
+/app/src/routes/register/[name]/+page.svelte:22:20
+Warn: 'page' is not defined (svelte)
+
+	const nameParam = $page.params.name!;
+
+/app/src/routes/register/[name]/+page.svelte:30:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function payment(params: DomainPaymentParams) {
+		const transactionIntent = await $metaNamesSdk.domainRepository.register({
+			domain: params.domainName,
+
+/app/src/routes/register/[name]/+page.svelte:30:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function payment(params: DomainPaymentParams) {
+		const transactionIntent = await $metaNamesSdk.domainRepository.register({
+			domain: params.domainName,
+
+/app/src/routes/register/[name]/+page.svelte:30:35
+Warn: 'metaNamesSdk' is not defined (svelte)
+	async function payment(params: DomainPaymentParams) {
+		const transactionIntent = await $metaNamesSdk.domainRepository.register({
+			domain: params.domainName,
+
+/app/src/routes/register/[name]/+page.svelte:56:27
+Warn: 'metaNamesSdk' is not defined (svelte)
+		try {
+			const domainAnalysis = $metaNamesSdk.domainRepository.analyze(nameParam);
+			analyzed.set(domainAnalysis);
+
+/app/src/routes/register/[name]/+page.svelte:56:27
+Warn: 'metaNamesSdk' is not defined (svelte)
+		try {
+			const domainAnalysis = $metaNamesSdk.domainRepository.analyze(nameParam);
+			analyzed.set(domainAnalysis);
+
+/app/src/routes/register/[name]/+page.svelte:56:27
+Warn: 'metaNamesSdk' is not defined (svelte)
+		try {
+			const domainAnalysis = $metaNamesSdk.domainRepository.analyze(nameParam);
+			analyzed.set(domainAnalysis);
+
+/app/src/routes/tld/+page.svelte:27:2
+Warn: 'Domain' is not defined (svelte)
+<div class="content domain">
+	<Domain {domain} isTld={true} />
+</div>
+
+/app/src/routes/tld/+page.svelte:7:26
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+	const metaNamesConfig = $metaNamesSdk.config;
+	const contractAddress = metaNamesConfig.contractAddress;
+
+/app/src/routes/tld/+page.svelte:7:26
+Warn: 'metaNamesSdk' is not defined (svelte)
+
+	const metaNamesConfig = $metaNamesSdk.config;
+	const contractAddress = metaNamesConfig.contractAddress;
+
+====================================
+svelte-check found 11 errors and 293 warnings in 29 files
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
