@@ -28,7 +28,7 @@
 	$: errors = invalid ? validator.getErrors() : [];
 	$: disabled = !edit;
 	$: validator = getValidator(klass);
-	$: maxLength = 'maxLength' in validator.rules ? validator.rules['maxLength'] as number : 64
+	$: maxLength = 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
 
 	let edit = false;
 
@@ -58,14 +58,14 @@
 		aria-labelledby="confirmation-title"
 		aria-describedby="confirmation-content"
 	>
-		<Title id="simple-title">Confirm action</Title>
-		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Title id="confirmation-title">Confirm action</Title>
+		<Content id="confirmation-content">Do you really want to remove the record?</Content>
 		<Actions>
-			<Button>
-				<Label>No</Label>
+			<Button on:click={() => (dialogOpen = false)}>
+				<Label>Cancel</Label>
 			</Button>
 			<Button on:click={destroy}>
-				<Label>Yes</Label>
+				<Label>Delete</Label>
 			</Button>
 		</Actions>
 	</Dialog>
@@ -99,10 +99,18 @@
 		</div>
 	{:else if editMode}
 		<div class="actions">
-			<IconButton on:click={() => toggleEdit()} disabled={!$walletConnected} aria-label="edit-record">
+			<IconButton
+				on:click={() => toggleEdit()}
+				disabled={!$walletConnected}
+				aria-label="edit-record"
+			>
 				<Icon icon="edit" />
 			</IconButton>
-			<IconButton on:click={() => (dialogOpen = true)} disabled={!$walletConnected} aria-label="delete-record">
+			<IconButton
+				on:click={() => (dialogOpen = true)}
+				disabled={!$walletConnected}
+				aria-label="delete-record"
+			>
 				<Icon icon="delete" />
 			</IconButton>
 		</div>
