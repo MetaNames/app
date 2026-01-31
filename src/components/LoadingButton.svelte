@@ -8,7 +8,7 @@
 	let className = '';
 	export { className as class };
 	export let onClick: () => Promise<void>;
-	export let onError: (error: any) => Promise<void> = async (error) => {
+	export let onError: (error: unknown) => Promise<void> = async (error) => {
 		let message;
 		if (error && error instanceof Error) message = error.message;
 		else message = 'Something went wrong';
@@ -45,12 +45,12 @@
 	<Label><slot /></Label>
 	{#if loading}
 		<div class="loading">
-			<CircularProgress style="height: 20px; width: 20px;" indeterminate />
+			<CircularProgress style="height: 20px; width: 20px;" indeterminate aria-label="Loading" />
 		</div>
 	{:else if hasError}
 		<Icon icon="error" align="right" />
 	{:else if loading === false}
-		<Icon icon="done" align="right"/>
+		<Icon icon="done" align="right" />
 	{/if}
 </Button>
 

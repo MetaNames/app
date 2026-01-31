@@ -2,6 +2,7 @@
 	"exclude": ["test", "jest.config.ts"] /* Exclude files and folders from the program. */,
 	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
+		"verbatimModuleSyntax": false,
 		"allowJs": true,
 		"checkJs": true,
 		"esModuleInterop": true,
