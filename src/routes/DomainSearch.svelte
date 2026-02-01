@@ -1,3 +1,10 @@
+<script context="module" lang="ts">
+	import type { Domain } from '@metanames/sdk';
+
+	// Cache search results to prevent redundant API calls
+	const searchCache = new Map<string, Domain | null>();
+</script>
+
 <script lang="ts">
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
@@ -15,7 +22,7 @@
 	let domainName: string = '';
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
-	let debounceTimer: NodeJS.Timeout;
+	let debounceTimer: ReturnType<typeof setTimeout>;
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -37,9 +44,16 @@
 		}
 
 		nameSearched = domainName.toLocaleLowerCase();
+
+		if (searchCache.has(nameSearched)) {
+			domain = searchCache.get(nameSearched);
+			return;
+		}
+
 		isLoading = true;
 
 		domain = await $metaNamesSdk.domainRepository.find(domainName);
+		searchCache.set(nameSearched, domain);
 
 		isLoading = false;
 	}
@@ -81,7 +95,11 @@
 				<div class="card-content">
 					<span>{nameSearchedLabel}</span>
 
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+					<CircularProgress
+						style="height: 32px; width: 32px;"
+						indeterminate
+						aria-label="Loading domain availability"
+					/>
 				</div>
 			</CardContent>
 		</Card>
