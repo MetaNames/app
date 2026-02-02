@@ -15,7 +15,8 @@
 	let domainName: string = '';
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
-	let debounceTimer: NodeJS.Timeout;
+	let debounceTimer: ReturnType<typeof setTimeout>;
+	let currentSearchId = 0;
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -36,11 +37,14 @@
 			return goto(url);
 		}
 
+		const searchId = ++currentSearchId;
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
-		domain = await $metaNamesSdk.domainRepository.find(domainName);
+		const result = await $metaNamesSdk.domainRepository.find(domainName);
+		if (searchId !== currentSearchId) return;
 
+		domain = result;
 		isLoading = false;
 	}
 
