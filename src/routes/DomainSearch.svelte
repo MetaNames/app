@@ -15,7 +15,7 @@
 	let domainName: string = '';
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
-	let debounceTimer: NodeJS.Timeout;
+	let debounceTimer: ReturnType<typeof setTimeout>;
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -63,7 +63,7 @@
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
-					<IconButton aria-label="search">
+					<IconButton aria-label="search" title="Search" disabled={isLoading}>
 						<Icon icon="search" />
 					</IconButton>
 				</div>
@@ -75,39 +75,45 @@
 			</svelte:fragment>
 		</Textfield>
 	</form>
-	{#if isLoading}
-		<Card class="domain-link">
-			<CardContent>
-				<div class="card-content">
-					<span>{nameSearchedLabel}</span>
+	<div class="results" aria-live="polite" aria-atomic="true">
+		{#if isLoading}
+			<Card class="domain-link">
+				<CardContent>
+					<div class="card-content">
+						<span>{nameSearchedLabel}</span>
 
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-				</div>
-			</CardContent>
-		</Card>
-	{:else if domain}
-		<a class="domain-link" href={`/domain/${domain.name}`}>
-			<Card>
-				<CardContent>
-					<div class="card-content">
-						<span>{nameSearchedLabel}</span>
-						<span class="chip registered">Registered</span>
+						<CircularProgress
+							style="height: 32px; width: 32px;"
+							indeterminate
+							aria-label="Loading search results"
+						/>
 					</div>
 				</CardContent>
 			</Card>
-		</a>
-	{:else if domain === null}
-		<a class="domain-link" href={`/register/${nameSearched}`}>
-			<Card>
-				<CardContent>
-					<div class="card-content">
-						<span>{nameSearchedLabel}</span>
-						<span class="chip available">Available</span>
-					</div>
-				</CardContent>
-			</Card>
-		</a>
-	{/if}
+		{:else if domain}
+			<a class="domain-link" href={`/domain/${domain.name}`}>
+				<Card>
+					<CardContent>
+						<div class="card-content">
+							<span>{nameSearchedLabel}</span>
+							<span class="chip registered">Registered</span>
+						</div>
+					</CardContent>
+				</Card>
+			</a>
+		{:else if domain === null}
+			<a class="domain-link" href={`/register/${nameSearched}`}>
+				<Card>
+					<CardContent>
+						<div class="card-content">
+							<span>{nameSearchedLabel}</span>
+							<span class="chip available">Available</span>
+						</div>
+					</CardContent>
+				</Card>
+			</a>
+		{/if}
+	</div>
 </div>
 
 <style lang="scss">
