@@ -50,7 +50,7 @@
 	{:else if hasError}
 		<Icon icon="error" align="right" />
 	{:else if loading === false}
-		<Icon icon="done" align="right"/>
+		<Icon icon="done" align="right" />
 	{/if}
 </Button>
 
