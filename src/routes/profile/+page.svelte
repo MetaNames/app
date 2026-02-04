@@ -74,7 +74,6 @@
 </div>
 
 <style lang="scss">
-
 	.domains {
 		margin-top: 1.5rem;
 		margin-bottom: 0;

@@ -201,5 +201,4 @@
 		align-items: center;
 		height: 100%;
 	}
-
 </style>
