@@ -90,7 +90,11 @@
 
 <div class="content checkout">
 	{#if $isDomainPresent === undefined}
-		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+		<CircularProgress
+			style="height: 32px; width: 32px;"
+			indeterminate
+			aria-label="Loading registration status"
+		/>
 	{:else}
 		<h2 class="mt-0">Register</h2>
 		{#if $isParentPresent && parentDomainName}

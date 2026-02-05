@@ -57,5 +57,4 @@ export const getStats = async (): Promise<DomainStats> => {
 	};
 };
 
-
 export const apiError = (message: string, status = 400) => json({ error: message }, { status });

@@ -102,7 +102,11 @@
 			<h4>{domainName}</h4>
 
 			<div class="years">
-				<IconButton on:click={() => addYears(-1)} disabled={years === 1 || feesApproved} aria-label="remove-year">
+				<IconButton
+					on:click={() => addYears(-1)}
+					disabled={years === 1 || feesApproved}
+					aria-label="remove-year"
+				>
 					<Icon icon="remove" />
 				</IconButton>
 				<span>{years} {yearsLabel}</span>
@@ -111,7 +115,7 @@
 				</IconButton>
 			</div>
 
-	 		<div class="coin">
+			<div class="coin">
 				<p class="title text-center">Payment token</p>
 				<div class="row centered">
 					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
@@ -124,7 +128,11 @@
 			<div class="fees">
 				<p class="title text-center">Price breakdown</p>
 				{#await loadFees}
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+					<CircularProgress
+						style="height: 32px; width: 32px;"
+						indeterminate
+						aria-label="Loading fees"
+					/>
 				{:then fees}
 					{#if 'symbol' in fees}
 						<div class="row">
