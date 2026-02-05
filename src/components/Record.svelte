@@ -28,7 +28,7 @@
 	$: errors = invalid ? validator.getErrors() : [];
 	$: disabled = !edit;
 	$: validator = getValidator(klass);
-	$: maxLength = 'maxLength' in validator.rules ? validator.rules['maxLength'] as number : 64
+	$: maxLength = 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
 
 	let edit = false;
 
@@ -99,10 +99,18 @@
 		</div>
 	{:else if editMode}
 		<div class="actions">
-			<IconButton on:click={() => toggleEdit()} disabled={!$walletConnected} aria-label="edit-record">
+			<IconButton
+				on:click={() => toggleEdit()}
+				disabled={!$walletConnected}
+				aria-label="edit-record"
+			>
 				<Icon icon="edit" />
 			</IconButton>
-			<IconButton on:click={() => (dialogOpen = true)} disabled={!$walletConnected} aria-label="delete-record">
+			<IconButton
+				on:click={() => (dialogOpen = true)}
+				disabled={!$walletConnected}
+				aria-label="delete-record"
+			>
 				<Icon icon="delete" />
 			</IconButton>
 		</div>

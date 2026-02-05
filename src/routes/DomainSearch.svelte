@@ -81,7 +81,11 @@
 				<div class="card-content">
 					<span>{nameSearchedLabel}</span>
 
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+					<CircularProgress
+						style="height: 32px; width: 32px;"
+						indeterminate
+						aria-label="Loading domain availability"
+					/>
 				</div>
 			</CardContent>
 		</Card>
