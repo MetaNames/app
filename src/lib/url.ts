@@ -8,12 +8,11 @@ export const explorerAddressUrl = (address: string) => {
 	if (address.startsWith('00'))
 		// Account
 		url += `/accounts/${address}/assets`;
-	else
-		// Contract
-		url += `/contracts/${address}`;
+	// Contract
+	else url += `/contracts/${address}`;
 
-	return url
-}
+	return url;
+};
 
 export const bridgeUrl = `${config.browserUrl}/bridge`;
 

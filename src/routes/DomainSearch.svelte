@@ -55,7 +55,7 @@
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
-			on:keyup={() => debounce()}
+			on:input={() => debounce()}
 			bind:invalid
 			label="Domain name"
 			withTrailingIcon
@@ -81,7 +81,11 @@
 				<div class="card-content">
 					<span>{nameSearchedLabel}</span>
 
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+					<CircularProgress
+						style="height: 32px; width: 32px;"
+						indeterminate
+						aria-label="Searching for domain"
+					/>
 				</div>
 			</CardContent>
 		</Card>

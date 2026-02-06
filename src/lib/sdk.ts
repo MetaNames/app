@@ -22,4 +22,4 @@ export const profileRecords = [
 	RecordClassEnum.Price
 ].map((v) => RecordClassEnum[v]);
 
-export const getValidator = (klass: string) => getRecordValidator(getRecordClassFrom(klass))
+export const getValidator = (klass: string) => getRecordValidator(getRecordClassFrom(klass));
