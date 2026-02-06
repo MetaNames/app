@@ -15,7 +15,8 @@
 	let domainName: string = '';
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
-	let debounceTimer: NodeJS.Timeout;
+	let debounceTimer: ReturnType<typeof setTimeout>;
+	let searchRequestId = 0;
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -27,6 +28,8 @@
 	}
 
 	async function search(submit = false) {
+		const requestId = ++searchRequestId;
+
 		if (invalid) return;
 
 		if (domainName === '') return;
@@ -39,9 +42,12 @@
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
-		domain = await $metaNamesSdk.domainRepository.find(domainName);
+		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
-		isLoading = false;
+		if (requestId === searchRequestId) {
+			domain = result;
+			isLoading = false;
+		}
 	}
 
 	async function submit() {
@@ -55,7 +61,7 @@
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
-			on:keyup={() => debounce()}
+			on:input={() => debounce()}
 			bind:invalid
 			label="Domain name"
 			withTrailingIcon
