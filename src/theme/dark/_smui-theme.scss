@@ -5,7 +5,7 @@ $text-color: #d5ccff;
 @use '@material/theme/color-palette';
 @use '@material/theme/index' as theme with (
 	$primary: #6849fe,
-	$secondary: #D0C7FF,
+	$secondary: #d0c7ff,
 	$surface: color.adjust(color-palette.$grey-900, $blue: +4),
 	$background: #363535,
 	$error: color-palette.$red-700
