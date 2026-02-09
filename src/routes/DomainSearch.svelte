@@ -16,6 +16,7 @@
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
 	let debounceTimer: NodeJS.Timeout;
+	let lastRequestId = 0;
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -36,12 +37,17 @@
 			return goto(url);
 		}
 
+		// Race condition fix: track the request ID to ensure we only process the latest response
+		const requestId = ++lastRequestId;
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
-		domain = await $metaNamesSdk.domainRepository.find(domainName);
+		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
-		isLoading = false;
+		if (requestId === lastRequestId) {
+			domain = result;
+			isLoading = false;
+		}
 	}
 
 	async function submit() {
@@ -51,11 +57,12 @@
 
 <div class="search-container">
 	<form on:submit|preventDefault={submit}>
+		<!-- Use on:input instead of on:keyup to handle all input types (paste, drag-drop) efficiently -->
 		<Textfield
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
-			on:keyup={() => debounce()}
+			on:input={() => debounce()}
 			bind:invalid
 			label="Domain name"
 			withTrailingIcon
