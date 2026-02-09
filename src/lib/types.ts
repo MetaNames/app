@@ -42,8 +42,8 @@ export interface DomainPaymentParams {
 }
 
 export interface DomainFeesResponse {
-	feesLabel: number
-	fees: string
-	symbol: string
-	address: string
+	feesLabel: number;
+	fees: string;
+	symbol: string;
+	address: string;
 }
