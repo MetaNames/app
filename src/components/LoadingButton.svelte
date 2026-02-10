@@ -4,6 +4,7 @@
 	import Button, { Label } from '@smui/button';
 	import Icon from 'src/components/Icon.svelte';
 	import CircularProgress from '@smui/circular-progress';
+	import { onDestroy } from 'svelte';
 
 	let className = '';
 	export { className as class };
@@ -24,10 +25,16 @@
 
 	let loading: boolean | undefined;
 	let hasError = false;
+	let resetTimeout: ReturnType<typeof setTimeout>;
+
+	onDestroy(() => {
+		clearTimeout(resetTimeout);
+	});
 
 	async function handleClick() {
 		if (loading) return;
 
+		hasError = false;
 		loading = true;
 
 		try {
@@ -38,19 +45,26 @@
 		}
 
 		loading = false;
+
+		if (!hasError) {
+			clearTimeout(resetTimeout);
+			resetTimeout = setTimeout(() => {
+				loading = undefined;
+			}, 3000);
+		}
 	}
 </script>
 
 <Button class={className} disabled={isDisabled} on:click={handleClick} {variant}>
 	<Label><slot /></Label>
 	{#if loading}
-		<div class="loading">
+		<div class="loading" role="status" aria-label="Loading">
 			<CircularProgress style="height: 20px; width: 20px;" indeterminate />
 		</div>
 	{:else if hasError}
-		<Icon icon="error" align="right" />
+		<Icon icon="error" align="right" aria-label="Error" />
 	{:else if loading === false}
-		<Icon icon="done" align="right"/>
+		<Icon icon="done" align="right" aria-label="Success" />
 	{/if}
 </Button>
 
