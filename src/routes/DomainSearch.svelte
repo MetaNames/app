@@ -15,8 +15,10 @@
 	let domainName: string = '';
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
-	let debounceTimer: NodeJS.Timeout;
+	let debounceTimer: ReturnType<typeof setTimeout>;
+	let lastRequestId = 0;
 
+	$: domainName, debounce();
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
@@ -36,11 +38,18 @@
 			return goto(url);
 		}
 
-		nameSearched = domainName.toLocaleLowerCase();
+		const requestId = ++lastRequestId;
+		const currentName = domainName.toLocaleLowerCase();
+		nameSearched = currentName;
 		isLoading = true;
 
-		domain = await $metaNamesSdk.domainRepository.find(domainName);
+		// Capture the result in a local variable to avoid race conditions
+		const result = await $metaNamesSdk.domainRepository.find(currentName);
 
+		// If a new request has started since this one, ignore the result
+		if (requestId !== lastRequestId) return;
+
+		domain = result;
 		isLoading = false;
 	}
 
@@ -55,7 +64,6 @@
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
-			on:keyup={() => debounce()}
 			bind:invalid
 			label="Domain name"
 			withTrailingIcon
