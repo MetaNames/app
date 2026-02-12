@@ -15,11 +15,15 @@
 	let domainName: string = '';
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
-	let debounceTimer: NodeJS.Timeout;
+	let debounceTimer: ReturnType<typeof setTimeout>;
+	let lastRequestId = 0;
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
+	// Use a reactive statement instead of on:keyup to handle all input methods (paste, drag/drop)
+	// and prevent unnecessary searches on navigation keys (arrows, shift).
+	$: if (domainName !== null) debounce();
 
 	function debounce() {
 		clearTimeout(debounceTimer);
@@ -27,6 +31,7 @@
 	}
 
 	async function search(submit = false) {
+		clearTimeout(debounceTimer);
 		if (invalid) return;
 
 		if (domainName === '') return;
@@ -36,12 +41,17 @@
 			return goto(url);
 		}
 
+		// Track request ID to handle race conditions where a slow previous request
+		// overwrites the result of a faster subsequent request.
+		const requestId = ++lastRequestId;
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
-		domain = await $metaNamesSdk.domainRepository.find(domainName);
-
-		isLoading = false;
+		const result = await $metaNamesSdk.domainRepository.find(domainName);
+		if (requestId === lastRequestId) {
+			domain = result;
+			isLoading = false;
+		}
 	}
 
 	async function submit() {
@@ -55,7 +65,6 @@
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
-			on:keyup={() => debounce()}
 			bind:invalid
 			label="Domain name"
 			withTrailingIcon
@@ -81,7 +90,11 @@
 				<div class="card-content">
 					<span>{nameSearchedLabel}</span>
 
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+					<CircularProgress
+						style="height: 32px; width: 32px;"
+						indeterminate
+						aria-label="Loading domain search"
+					/>
 				</div>
 			</CardContent>
 		</Card>
