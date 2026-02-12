@@ -19,7 +19,7 @@
 	export { key as icon, align, width, height, color };
 </script>
 
-<Icon class={alignClass} {icon} {height} {width} {color} />
+<Icon class={alignClass} {icon} {height} {width} {color} {...$$restProps} />
 
 <style>
 	:global(.align-icon-right) {
