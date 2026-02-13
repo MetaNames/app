@@ -16,7 +16,7 @@
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
-	let lastRequestId = 0;
+	let requestId = 0;
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -41,14 +41,13 @@
 			return goto(url);
 		}
 
-		// Track request ID to handle race conditions where a slow previous request
-		// overwrites the result of a faster subsequent request.
-		const requestId = ++lastRequestId;
+		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
-		if (requestId === lastRequestId) {
+
+		if (currentRequestId === requestId) {
 			domain = result;
 			isLoading = false;
 		}
@@ -93,7 +92,7 @@
 					<CircularProgress
 						style="height: 32px; width: 32px;"
 						indeterminate
-						aria-label="Loading domain search"
+						aria-label="Loading domain search results"
 					/>
 				</div>
 			</CardContent>
