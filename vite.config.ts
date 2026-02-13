@@ -14,7 +14,7 @@ export default defineConfig({
 		}),
 		sveltekit(),
 		nodePolyfills({
-			include: ['buffer', 'crypto', 'stream']
+			include: ['buffer', 'crypto', 'stream', 'util']
 		}),
 		tsconfigPaths()
 	],
