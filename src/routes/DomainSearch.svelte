@@ -16,6 +16,7 @@
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
+	let requestId = 0;
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -36,16 +37,16 @@
 			return goto(url);
 		}
 
-		const currentName = domainName.toLocaleLowerCase();
-		nameSearched = currentName;
+		const currentRequestId = ++requestId;
+		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
-		if (currentName !== nameSearched) return;
-
-		domain = result;
-		isLoading = false;
+		if (currentRequestId === requestId) {
+			domain = result;
+			isLoading = false;
+		}
 	}
 
 	async function submit() {
@@ -87,9 +88,9 @@
 						<span>{nameSearchedLabel}</span>
 
 						<CircularProgress
-							aria-label="Loading domain availability"
 							style="height: 32px; width: 32px;"
 							indeterminate
+							aria-label="Loading domain search results"
 						/>
 					</div>
 				</CardContent>

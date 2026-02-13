@@ -51,7 +51,7 @@
 		years += amount;
 	}
 
-	async function handleApproveError(error: Error) {
+	async function handleApproveError(error: unknown) {
 		let message;
 		if (error instanceof InsufficientBalanceError)
 			message = {
@@ -102,7 +102,11 @@
 			<h4>{domainName}</h4>
 
 			<div class="years">
-				<IconButton on:click={() => addYears(-1)} disabled={years === 1 || feesApproved} aria-label="remove-year">
+				<IconButton
+					on:click={() => addYears(-1)}
+					disabled={years === 1 || feesApproved}
+					aria-label="remove-year"
+				>
 					<Icon icon="remove" />
 				</IconButton>
 				<span>{years} {yearsLabel}</span>
@@ -111,7 +115,7 @@
 				</IconButton>
 			</div>
 
-	 		<div class="coin">
+			<div class="coin">
 				<p class="title text-center">Payment token</p>
 				<div class="row centered">
 					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
