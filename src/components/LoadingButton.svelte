@@ -4,6 +4,7 @@
 	import Button, { Label } from '@smui/button';
 	import Icon from 'src/components/Icon.svelte';
 	import CircularProgress from '@smui/circular-progress';
+	import { onDestroy } from 'svelte';
 
 	let className = '';
 	export { className as class };
@@ -24,10 +25,16 @@
 
 	let loading: boolean | undefined;
 	let hasError = false;
+	let resetTimeout: ReturnType<typeof setTimeout>;
+
+	onDestroy(() => {
+		clearTimeout(resetTimeout);
+	});
 
 	async function handleClick() {
 		if (loading) return;
 
+		hasError = false;
 		loading = true;
 		hasError = false;
 
@@ -39,6 +46,13 @@
 		}
 
 		loading = false;
+
+		if (!hasError) {
+			clearTimeout(resetTimeout);
+			resetTimeout = setTimeout(() => {
+				loading = undefined;
+			}, 3000);
+		}
 	}
 </script>
 
