@@ -22,7 +22,12 @@
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
 
-	function debounce() {
+	// Reactive debounce: triggers on any value change (typing, paste, etc.)
+	// and avoids unnecessary triggers on non-input keys (unlike on:keyup).
+	$: debounce(domainName);
+
+	function debounce(_name?: string) {
+		void _name;
 		clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
@@ -50,6 +55,8 @@
 	}
 
 	async function submit() {
+		// Clear pending debounce timer to prevent double submission
+		clearTimeout(debounceTimer);
 		await search(true);
 	}
 </script>
@@ -60,7 +67,6 @@
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
-			on:keyup={() => debounce()}
 			bind:invalid
 			label="Domain name"
 			withTrailingIcon
