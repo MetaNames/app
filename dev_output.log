@@ -1,0 +1,99 @@
+yarn run v1.22.22
+$ vite dev --port 5173
+Forced re-optimization of dependencies
+
+  VITE v5.4.9  ready in 2120 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+9:06:09 PM [vite-plugin-svelte] /app/src/components/Icon.svelte:31:1 No scopable elements found in template. If you're using global styles in the style tag, you should move it into an external stylesheet file and import it in JS. See https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/faq.md#where-should-i-put-my-global-styles.
+DEPRECATION WARNING: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+1 │ @import './theme-overrides.scss';
+  │         ^^^^^^^^^^^^^^^^^^^^^^^^
+  ╵
+    src/styles/app.scss 1:9  root stylesheet
+
+DEPRECATION WARNING: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+2 │ @import './mixins.scss';
+  │         ^^^^^^^^^^^^^^^
+  ╵
+    src/styles/app.scss 2:9  root stylesheet
+
+DEPRECATION WARNING: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+9:06:10 PM [vite-plugin-svelte] /app/node_modules/@smui/snackbar/dist/Snackbar.svelte:16:2 A11y: Non-interactive element <div> should not be assigned mouse or keyboard event listeners.
+9:06:10 PM [vite-plugin-svelte] /app/node_modules/@smui/snackbar/dist/Snackbar.svelte:1:0 A11y: Non-interactive element <aside> should not be assigned mouse or keyboard event listeners.
+9:06:10 PM [vite-plugin-svelte] /app/node_modules/@smui/menu-surface/dist/MenuSurface.svelte:3:0 A11y: Non-interactive element <div> should not be assigned mouse or keyboard event listeners.
+DEPRECATION WARNING: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+1 │ @import './theme-overrides.scss';
+  │         ^^^^^^^^^^^^^^^^^^^^^^^^
+  ╵
+    src/styles/app.scss 1:9  root stylesheet
+
+DEPRECATION WARNING: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+2 │ @import './mixins.scss';
+  │         ^^^^^^^^^^^^^^^
+  ╵
+    src/styles/app.scss 2:9  root stylesheet
+
+DEPRECATION WARNING: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+9:06:16 PM [vite-plugin-svelte] /app/src/components/Icon.svelte:31:1 No scopable elements found in template. If you're using global styles in the style tag, you should move it into an external stylesheet file and import it in JS. See https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/faq.md#where-should-i-put-my-global-styles.
+DEPRECATION WARNING: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+1 │ @import './theme-overrides.scss';
+  │         ^^^^^^^^^^^^^^^^^^^^^^^^
+  ╵
+    src/styles/app.scss 1:9  root stylesheet
+
+DEPRECATION WARNING: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+2 │ @import './mixins.scss';
+  │         ^^^^^^^^^^^^^^^
+  ╵
+    src/styles/app.scss 2:9  root stylesheet
+
+DEPRECATION WARNING: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+9:09:13 PM [vite] .env changed, restarting server...
+9:09:13 PM [vite] server restarted.
