@@ -22,8 +22,17 @@
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
 
-	function debounce() {
+	$: debounce(domainName);
+
+	function debounce(name: string) {
 		clearTimeout(debounceTimer);
+
+		if (name === '' || invalid) {
+			domain = undefined;
+			isLoading = false;
+			return;
+		}
+
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 
@@ -60,7 +69,6 @@
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
-			on:keyup={() => debounce()}
 			bind:invalid
 			label="Domain name"
 			withTrailingIcon
@@ -68,9 +76,20 @@
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
-					<IconButton aria-label="search">
-						<Icon icon="search" />
-					</IconButton>
+					{#if isLoading}
+						<div
+							class="loading-icon"
+							role="status"
+							aria-label="Searching"
+							style="display: flex; align-items: center; justify-content: center;"
+						>
+							<CircularProgress style="height: 24px; width: 24px;" indeterminate />
+						</div>
+					{:else}
+						<IconButton aria-label="search">
+							<Icon icon="search" />
+						</IconButton>
+					{/if}
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="helper">
