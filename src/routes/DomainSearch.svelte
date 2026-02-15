@@ -22,10 +22,13 @@
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
 
-	function debounce() {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	function debounce(_domainName: string) {
 		clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
+
+	$: debounce(domainName);
 
 	async function search(submit = false) {
 		if (invalid) return;
@@ -60,7 +63,6 @@
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
-			on:keyup={() => debounce()}
 			bind:invalid
 			label="Domain name"
 			withTrailingIcon
