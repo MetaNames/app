@@ -17,6 +17,8 @@
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
+	const searchCache = new Map<string, { result: DomainModel | null; timestamp: number }>();
+	const CACHE_TTL = 60_000;
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -40,13 +42,24 @@
 			return goto(url);
 		}
 
+		const normalizedName = domainName.toLocaleLowerCase();
+		const cached = searchCache.get(normalizedName);
+		if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+			requestId++;
+			domain = cached.result;
+			nameSearched = normalizedName;
+			isLoading = false;
+			return;
+		}
+
 		const currentRequestId = ++requestId;
-		nameSearched = domainName.toLocaleLowerCase();
+		nameSearched = normalizedName;
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
+			searchCache.set(normalizedName, { result, timestamp: Date.now() });
 			domain = result;
 			isLoading = false;
 		}
