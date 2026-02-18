@@ -17,6 +17,8 @@
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
+	// Cache for domain search results to prevent redundant API calls
+	let cache = new Map<string, DomainModel | null>();
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -33,15 +35,34 @@
 	async function search(submit = false) {
 		if (invalid) return;
 
+		// Clear pending debounce timer to prevent double fetches on manual submit
+		clearTimeout(debounceTimer);
+
 		if (domainName === '') return;
-		if (submit && domainName === nameSearched) {
+
+		const normalizedDomain = domainName.toLocaleLowerCase();
+
+		if (submit && normalizedDomain === nameSearched) {
 			const url = domain ? `/domain/${nameSearched}` : `/register/${nameSearched}`;
 
 			return goto(url);
 		}
 
+		// Return cached result if available
+		if (cache.has(normalizedDomain)) {
+			domain = cache.get(normalizedDomain);
+			nameSearched = normalizedDomain;
+			isLoading = false;
+
+			if (submit) {
+				const url = domain ? `/domain/${nameSearched}` : `/register/${nameSearched}`;
+				return goto(url);
+			}
+			return;
+		}
+
 		const currentRequestId = ++requestId;
-		nameSearched = domainName.toLocaleLowerCase();
+		nameSearched = normalizedDomain;
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
@@ -49,6 +70,7 @@
 		if (currentRequestId === requestId) {
 			domain = result;
 			isLoading = false;
+			cache.set(normalizedDomain, result);
 		}
 	}
 
