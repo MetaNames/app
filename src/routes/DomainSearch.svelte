@@ -69,11 +69,17 @@
 			autofocus
 		>
 			<svelte:fragment slot="trailingIcon">
-				<div class="submit">
-					<IconButton aria-label="search">
-						<Icon icon="search" />
-					</IconButton>
-				</div>
+				{#if isLoading}
+					<div class="loading-spinner" role="status" aria-label="Searching...">
+						<CircularProgress style="height: 24px; width: 24px;" indeterminate />
+					</div>
+				{:else}
+					<div class="submit">
+						<IconButton aria-label="search">
+							<Icon icon="search" />
+						</IconButton>
+					</div>
+				{/if}
 			</svelte:fragment>
 			<svelte:fragment slot="helper">
 				{#if errors.length > 0}
@@ -177,6 +183,15 @@
 	}
 
 	.submit {
+		align-self: center;
+	}
+
+	.loading-spinner {
+		width: 48px;
+		height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		align-self: center;
 	}
 </style>
