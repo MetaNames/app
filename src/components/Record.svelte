@@ -29,6 +29,7 @@
 	$: disabled = !edit;
 	$: validator = getValidator(klass);
 	$: maxLength = 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
+	$: dialogId = klass.toLowerCase().replace(/\s+/g, '-');
 
 	let edit = false;
 
@@ -55,13 +56,15 @@
 <div class="record-container {editMode ? 'edit' : ''}">
 	<Dialog
 		bind:open={dialogOpen}
-		aria-labelledby="confirmation-title"
-		aria-describedby="confirmation-content"
+		aria-labelledby={`confirmation-title-${dialogId}`}
+		aria-describedby={`confirmation-content-${dialogId}`}
 	>
-		<Title id="simple-title">Confirm action</Title>
-		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Title id={`confirmation-title-${dialogId}`}>Confirm action</Title>
+		<Content id={`confirmation-content-${dialogId}`}
+			>Do you really want to remove the record?</Content
+		>
 		<Actions>
-			<Button>
+			<Button action="close">
 				<Label>No</Label>
 			</Button>
 			<Button on:click={destroy}>
