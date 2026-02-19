@@ -7,6 +7,7 @@
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
+	import { onDestroy } from 'svelte';
 	import Icon from 'src/components/Icon.svelte';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
@@ -17,6 +18,10 @@
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
+	// Cache for domain search results to prevent redundant API calls
+	const cache = new Map<string, DomainModel | null | undefined>();
+
+	onDestroy(() => clearTimeout(debounceTimer));
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -42,11 +47,20 @@
 
 		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		// Check cache first to avoid unnecessary network request
+		if (cache.has(nameSearched)) {
+			domain = cache.get(nameSearched);
+			isLoading = false;
+			return;
+		}
+
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
+			cache.set(nameSearched, result);
 			domain = result;
 			isLoading = false;
 		}
