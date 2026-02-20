@@ -7,6 +7,7 @@
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
+	import { onDestroy } from 'svelte';
 	import Icon from 'src/components/Icon.svelte';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
@@ -17,6 +18,10 @@
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
+
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -44,11 +49,18 @@
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
-		const result = await $metaNamesSdk.domainRepository.find(domainName);
+		try {
+			const result = await $metaNamesSdk.domainRepository.find(domainName);
 
-		if (currentRequestId === requestId) {
-			domain = result;
-			isLoading = false;
+			if (currentRequestId === requestId) {
+				domain = result;
+				isLoading = false;
+			}
+		} catch (error) {
+			console.error(error);
+			if (currentRequestId === requestId) {
+				isLoading = false;
+			}
 		}
 	}
 
@@ -70,9 +82,15 @@
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
-					<IconButton aria-label="search">
-						<Icon icon="search" />
-					</IconButton>
+					{#if isLoading}
+						<div class="loading-icon" role="status" aria-label="Searching">
+							<CircularProgress style="height: 24px; width: 24px;" indeterminate />
+						</div>
+					{:else}
+						<IconButton aria-label="search">
+							<Icon icon="search" />
+						</IconButton>
+					{/if}
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="helper">
@@ -178,5 +196,13 @@
 
 	.submit {
 		align-self: center;
+	}
+
+	.loading-icon {
+		width: 48px;
+		height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>
