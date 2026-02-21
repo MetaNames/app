@@ -70,9 +70,15 @@
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
-					<IconButton aria-label="search">
-						<Icon icon="search" />
-					</IconButton>
+					{#if isLoading}
+						<div class="loading-icon" role="status" aria-label="Searching">
+							<CircularProgress style="height: 24px; width: 24px;" indeterminate />
+						</div>
+					{:else}
+						<IconButton aria-label="search">
+							<Icon icon="search" />
+						</IconButton>
+					{/if}
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="helper">
@@ -178,5 +184,13 @@
 
 	.submit {
 		align-self: center;
+	}
+
+	.loading-icon {
+		width: 48px;
+		height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>
