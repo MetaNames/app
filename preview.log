@@ -1,0 +1,28 @@
+yarn run v1.22.22
+$ vite preview
+[sentry-vite-plugin] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+[sentry-vite-plugin] Warning: No auth token provided. Will not upload source maps. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+  ➜  Local:   http://localhost:4173/
+  ➜  Network: use --host to expose
+Error: Not found: /_vercel/insights/script.js
+    at resolve2 (file:///app/.svelte-kit/output/server/index.js:2882:18)
+    at resolve (file:///app/.svelte-kit/output/server/index.js:2715:34)
+    at resolve (file:///app/.svelte-kit/output/server/chunks/hooks.server.js:37:16)
+    at instrumentHandle (/app/node_modules/@sentry/sveltekit/build/cjs/server/handle.js:104:12)
+    at /app/node_modules/@sentry/sveltekit/build/cjs/server/handle.js:92:85
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at SentryContextManager.with (/app/node_modules/@opentelemetry/context-async-hooks/build/src/AsyncLocalStorageContextManager.js:33:40)
+    at SentryContextManager.with (/app/node_modules/@sentry/opentelemetry/build/cjs/index.js:1398:24)
+    at ContextAPI.with (/app/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at continueTraceAsRemoteSpan (/app/node_modules/@sentry/opentelemetry/build/cjs/index.js:865:26)
+Error: Not found: /_vercel/speed-insights/script.js
+    at resolve2 (file:///app/.svelte-kit/output/server/index.js:2882:18)
+    at resolve (file:///app/.svelte-kit/output/server/index.js:2715:34)
+    at resolve (file:///app/.svelte-kit/output/server/chunks/hooks.server.js:37:16)
+    at instrumentHandle (/app/node_modules/@sentry/sveltekit/build/cjs/server/handle.js:104:12)
+    at /app/node_modules/@sentry/sveltekit/build/cjs/server/handle.js:92:85
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+    at SentryContextManager.with (/app/node_modules/@opentelemetry/context-async-hooks/build/src/AsyncLocalStorageContextManager.js:33:40)
+    at SentryContextManager.with (/app/node_modules/@sentry/opentelemetry/build/cjs/index.js:1398:24)
+    at ContextAPI.with (/app/node_modules/@opentelemetry/api/build/src/api/context.js:60:46)
+    at continueTraceAsRemoteSpan (/app/node_modules/@sentry/opentelemetry/build/cjs/index.js:865:26)
