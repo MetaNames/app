@@ -8,6 +8,7 @@
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
 	import Icon from 'src/components/Icon.svelte';
+	import { onDestroy } from 'svelte';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
 
@@ -17,6 +18,11 @@
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
+	const cache = new Map<string, DomainModel | null>();
+
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -42,12 +48,21 @@
 
 		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		// Check cache to avoid redundant API calls
+		if (cache.has(nameSearched)) {
+			domain = cache.get(nameSearched);
+			isLoading = false;
+			return;
+		}
+
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
 			domain = result;
+			cache.set(nameSearched, result);
 			isLoading = false;
 		}
 	}
