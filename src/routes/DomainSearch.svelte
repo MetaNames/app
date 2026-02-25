@@ -17,6 +17,10 @@
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
+	// Local cache to store domain availability results.
+	// Key: normalized (lowercase) domain name.
+	// Value: DomainModel (if registered) or null (if available).
+	const cache = new Map<string, DomainModel | null>();
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -34,20 +38,32 @@
 		if (invalid) return;
 
 		if (domainName === '') return;
-		if (submit && domainName === nameSearched) {
+		const normalizedDomainName = domainName.toLocaleLowerCase();
+
+		if (submit && normalizedDomainName === nameSearched) {
 			const url = domain ? `/domain/${nameSearched}` : `/register/${nameSearched}`;
 
 			return goto(url);
 		}
 
+		if (cache.has(normalizedDomainName)) {
+			// Cache hit: Increment requestId to invalidate any pending network requests from previous inputs.
+			requestId++;
+			nameSearched = normalizedDomainName;
+			domain = cache.get(normalizedDomainName);
+			isLoading = false;
+			return;
+		}
+
 		const currentRequestId = ++requestId;
-		nameSearched = domainName.toLocaleLowerCase();
+		nameSearched = normalizedDomainName;
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
 			domain = result;
+			cache.set(normalizedDomainName, result);
 			isLoading = false;
 		}
 	}
