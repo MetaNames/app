@@ -1,13 +1,19 @@
+<script context="module" lang="ts">
+	import type { Domain as DomainModel } from '@metanames/sdk';
+
+	const searchCache = new Map<string, DomainModel | null>();
+</script>
+
 <script lang="ts">
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from '@metanames/sdk';
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
 	import Icon from 'src/components/Icon.svelte';
+	import { onDestroy } from 'svelte';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
 
@@ -17,6 +23,10 @@
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
+
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -44,10 +54,17 @@
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
+		if (searchCache.has(nameSearched)) {
+			domain = searchCache.get(nameSearched);
+			isLoading = false;
+			return;
+		}
+
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
 			domain = result;
+			searchCache.set(nameSearched, result);
 			isLoading = false;
 		}
 	}
