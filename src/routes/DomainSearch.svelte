@@ -1,4 +1,14 @@
+<script context="module" lang="ts">
+	import type { Domain as DomainModelModule } from '@metanames/sdk';
+
+	// Cache to store domain search results, persisting across component instances and navigations
+	// Includes a timestamp to invalidate stale data after a short TTL (e.g., 1 minute)
+	const domainCache = new Map<string, { data: DomainModelModule | null; timestamp: number }>();
+	const CACHE_TTL_MS = 60 * 1000; // 1 minute
+</script>
+
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
@@ -17,6 +27,11 @@
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
+
+	// Clear timer on component destroy to prevent memory leaks
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -40,14 +55,27 @@
 			return goto(url);
 		}
 
-		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		const cachedResult = domainCache.get(nameSearched);
+		const isCacheValid = cachedResult && Date.now() - cachedResult.timestamp < CACHE_TTL_MS;
+
+		if (isCacheValid) {
+			// Increment request ID to invalidate any pending network requests
+			++requestId;
+			domain = cachedResult.data;
+			isLoading = false;
+			return;
+		}
+
+		const currentRequestId = ++requestId;
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
 			domain = result;
+			domainCache.set(nameSearched, { data: result ?? null, timestamp: Date.now() });
 			isLoading = false;
 		}
 	}
