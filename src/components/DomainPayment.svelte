@@ -128,7 +128,11 @@
 			<div class="fees">
 				<p class="title text-center">Price breakdown</p>
 				{#await loadFees}
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+					<CircularProgress
+						style="height: 32px; width: 32px;"
+						indeterminate
+						aria-label="Loading domain fees..."
+					/>
 				{:then fees}
 					{#if 'symbol' in fees}
 						<div class="row">
