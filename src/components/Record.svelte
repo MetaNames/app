@@ -55,11 +55,11 @@
 <div class="record-container {editMode ? 'edit' : ''}">
 	<Dialog
 		bind:open={dialogOpen}
-		aria-labelledby="confirmation-title"
-		aria-describedby="confirmation-content"
+		aria-labelledby="confirmation-title-{klass}"
+		aria-describedby="confirmation-content-{klass}"
 	>
-		<Title id="simple-title">Confirm action</Title>
-		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Title id="confirmation-title-{klass}">Confirm action</Title>
+		<Content id="confirmation-content-{klass}">Do you really want to remove the record?</Content>
 		<Actions>
 			<Button>
 				<Label>No</Label>
