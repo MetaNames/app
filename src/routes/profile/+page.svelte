@@ -37,9 +37,7 @@
 		const trimmedDomain = domain.trim().toLowerCase();
 		const trimmedSearch = search.trim().toLowerCase();
 
-		if (trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch))
-			return true;
-		else false;
+		return trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch);
 	}
 </script>
 
@@ -59,9 +57,15 @@
 				>
 					<svelte:fragment slot="trailingIcon">
 						<div class="close-icon">
-							<IconButton on:click={cleanSearch} aria-label="cancel">
-								<Icon icon="cancel" />
-							</IconButton>
+							{#if search !== ''}
+								<IconButton on:click={cleanSearch} aria-label="clear search">
+									<Icon icon="cancel" />
+								</IconButton>
+							{:else}
+								<IconButton aria-label="search domains" disabled>
+									<Icon icon="search" />
+								</IconButton>
+							{/if}
 						</div>
 					</svelte:fragment>
 				</Textfield>
