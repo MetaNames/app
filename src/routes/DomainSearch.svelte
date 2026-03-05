@@ -1,12 +1,22 @@
+<script context="module" lang="ts">
+	import type { Domain as DomainModel } from '@metanames/sdk';
+	const searchCache = new Map<
+		string,
+		{ result: DomainModel | null | undefined; expiresAt: number }
+	>();
+	const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+</script>
+
 <script lang="ts">
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from '@metanames/sdk';
+
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
+	import { onDestroy } from 'svelte';
 	import Icon from 'src/components/Icon.svelte';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
@@ -30,6 +40,10 @@
 
 	$: debounce(domainName);
 
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
+
 	async function search(submit = false) {
 		if (invalid) return;
 
@@ -42,11 +56,20 @@
 
 		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		const cached = searchCache.get(nameSearched);
+		if (cached && cached.expiresAt > Date.now()) {
+			domain = cached.result;
+			isLoading = false;
+			return;
+		}
+
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
+			searchCache.set(nameSearched, { result, expiresAt: Date.now() + CACHE_TTL });
 			domain = result;
 			isLoading = false;
 		}
