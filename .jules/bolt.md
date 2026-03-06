@@ -9,3 +9,8 @@
 
 **Learning:** Using `on:keyup` for search input debouncing triggers unnecessary API calls on navigation keys (arrows, home, end) and misses changes from paste/cut. Svelte's reactive statements `$: debounce(value)` provide a robust, declarative way to trigger debouncing only when the value actually changes.
 **Action:** Replace `on:keyup` handlers with reactive statements for input debouncing to improve performance and correctness.
+
+## 2024-11-20 - Array operations in sort comparators
+
+**Learning:** Using array allocations and methods like `[a, b].reverse()` inside `Array.prototype.sort()` comparator functions creates severe garbage collection overhead, allocating an array on every comparison `O(N*logN)`.
+**Action:** Avoid instantiating arrays in tight loops like comparators. Use variable assignments and conditionally swap them instead for `O(1)` allocations.

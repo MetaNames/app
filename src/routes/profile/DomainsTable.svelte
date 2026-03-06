@@ -29,9 +29,15 @@
 
 	function handleSort() {
 		domains.sort((a, b) => {
-			const [aVal, bVal] = [a[sort], b[sort]][
-				sortDirection === 'ascending' ? 'slice' : 'reverse'
-			]();
+			let aVal = a[sort];
+			let bVal = b[sort];
+
+			// Swap variables to reverse the sort order instead of allocating and reversing an array.
+			if (sortDirection !== 'ascending') {
+				aVal = b[sort];
+				bVal = a[sort];
+			}
+
 			if (typeof aVal === 'string' && typeof bVal === 'string') return aVal.localeCompare(bVal);
 			return Number(aVal) - Number(bVal);
 		});
