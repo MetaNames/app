@@ -1,13 +1,25 @@
+<script context="module" lang="ts">
+	import type { Domain as DomainModel } from '@metanames/sdk';
+
+	interface CacheEntry {
+		result: DomainModel | null;
+		expiresAt: number;
+	}
+
+	const CACHE_TTL_MS = 60000; // 1 minute
+	const searchCache = new Map<string, CacheEntry>();
+</script>
+
 <script lang="ts">
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from '@metanames/sdk';
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
 	import Icon from 'src/components/Icon.svelte';
+	import { onDestroy } from 'svelte';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
 
@@ -30,6 +42,10 @@
 
 	$: debounce(domainName);
 
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
+
 	async function search(submit = false) {
 		if (invalid) return;
 
@@ -42,11 +58,27 @@
 
 		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		// ⚡ Bolt Optimization: Client-side Cache for search results
+		const cacheEntry = searchCache.get(nameSearched);
+		if (cacheEntry && Date.now() < cacheEntry.expiresAt) {
+			if (currentRequestId === requestId) {
+				domain = cacheEntry.result;
+				isLoading = false;
+			}
+			return;
+		}
+
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
+			searchCache.set(nameSearched, {
+				result,
+				expiresAt: Date.now() + CACHE_TTL_MS
+			});
+
 			domain = result;
 			isLoading = false;
 		}
