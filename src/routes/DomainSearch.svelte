@@ -1,9 +1,21 @@
+<script context="module" lang="ts">
+	import type { Domain as DomainModel } from '@metanames/sdk';
+
+	// Cache domain search results to avoid redundant API calls.
+	// We use a Map to keep it across component instances.
+	const searchCache = new Map<
+		string,
+		{ result: DomainModel | null | undefined; timestamp: number }
+	>();
+	const CACHE_TTL = 1000 * 60 * 5; // 5 minutes
+</script>
+
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from '@metanames/sdk';
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
@@ -30,6 +42,10 @@
 
 	$: debounce(domainName);
 
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
+
 	async function search(submit = false) {
 		if (invalid) return;
 
@@ -42,11 +58,20 @@
 
 		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		const cached = searchCache.get(nameSearched);
+		if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+			domain = cached.result;
+			isLoading = false;
+			return;
+		}
+
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
+			searchCache.set(nameSearched, { result, timestamp: Date.now() });
 			domain = result;
 			isLoading = false;
 		}
