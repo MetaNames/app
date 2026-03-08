@@ -70,9 +70,32 @@
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
-					<IconButton aria-label="search">
-						<Icon icon="search" />
-					</IconButton>
+					{#if isLoading}
+						<div class="spinner-container" role="status" aria-label="Searching">
+							<CircularProgress style="height: 24px; width: 24px;" indeterminate />
+						</div>
+					{:else if domainName}
+						<div class="actions-container">
+							<IconButton
+								aria-label="clear search"
+								type="button"
+								on:click={() => {
+									domainName = '';
+									domain = undefined;
+									isLoading = false;
+								}}
+							>
+								<Icon icon="clear" />
+							</IconButton>
+							<IconButton aria-label="search" type="submit" disabled={invalid}>
+								<Icon icon="search" />
+							</IconButton>
+						</div>
+					{:else}
+						<IconButton aria-label="search" disabled>
+							<Icon icon="search" />
+						</IconButton>
+					{/if}
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="helper">
@@ -82,21 +105,7 @@
 			</svelte:fragment>
 		</Textfield>
 	</form>
-	{#if isLoading}
-		<Card class="domain-link">
-			<CardContent>
-				<div class="card-content">
-					<span>{nameSearchedLabel}</span>
-
-					<CircularProgress
-						style="height: 32px; width: 32px;"
-						indeterminate
-						aria-label="Loading domain search results"
-					/>
-				</div>
-			</CardContent>
-		</Card>
-	{:else if domain}
+	{#if !isLoading && domain}
 		<a class="domain-link" href={`/domain/${domain.name}`}>
 			<Card>
 				<CardContent>
@@ -178,5 +187,18 @@
 
 	.submit {
 		align-self: center;
+	}
+
+	.spinner-container {
+		width: 48px;
+		height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.actions-container {
+		display: flex;
+		align-items: center;
 	}
 </style>
