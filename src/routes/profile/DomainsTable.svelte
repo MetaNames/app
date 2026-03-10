@@ -29,9 +29,15 @@
 
 	function handleSort() {
 		domains.sort((a, b) => {
-			const [aVal, bVal] = [a[sort], b[sort]][
-				sortDirection === 'ascending' ? 'slice' : 'reverse'
-			]();
+			let aVal = a[sort];
+			let bVal = b[sort];
+
+			if (sortDirection !== 'ascending') {
+				const temp = aVal;
+				aVal = bVal;
+				bVal = temp;
+			}
+
 			if (typeof aVal === 'string' && typeof bVal === 'string') return aVal.localeCompare(bVal);
 			return Number(aVal) - Number(bVal);
 		});
