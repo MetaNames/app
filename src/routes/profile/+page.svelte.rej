@@ -1,0 +1,11 @@
+--- +page.svelte
++++ +page.svelte
+@@ -63,7 +63,7 @@
+					<svelte:fragment slot="trailingIcon">
+						<div class="close-icon">
+							{#if search.length > 0}
+-								<IconButton on:click={cleanSearch} aria-label="cancel">
++								<IconButton on:click={cleanSearch} aria-label="clear search">
+									<Icon icon="cancel" />
+								</IconButton>
+							{:else}

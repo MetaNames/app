@@ -39,7 +39,7 @@
 
 		if (trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch))
 			return true;
-		else return false;
+		else false;
 	}
 </script>
 
@@ -59,15 +59,9 @@
 				>
 					<svelte:fragment slot="trailingIcon">
 						<div class="close-icon">
-							{#if search.length > 0}
-								<IconButton on:click={cleanSearch} aria-label="clear search">
-									<Icon icon="cancel" />
-								</IconButton>
-							{:else}
-								<IconButton disabled aria-label="search">
-									<Icon icon="search" />
-								</IconButton>
-							{/if}
+							<IconButton on:click={cleanSearch} aria-label="cancel">
+								<Icon icon="cancel" />
+							</IconButton>
 						</div>
 					</svelte:fragment>
 				</Textfield>

@@ -70,9 +70,15 @@
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
-					<IconButton aria-label="search">
-						<Icon icon="search" />
-					</IconButton>
+					{#if domainName.length > 0}
+						<IconButton on:click={() => (domainName = '')} aria-label="clear search">
+							<Icon icon="cancel" />
+						</IconButton>
+					{:else}
+						<IconButton disabled aria-label="search">
+							<Icon icon="search" />
+						</IconButton>
+					{/if}
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="helper">
