@@ -55,11 +55,11 @@
 <div class="record-container {editMode ? 'edit' : ''}">
 	<Dialog
 		bind:open={dialogOpen}
-		aria-labelledby="confirmation-title"
-		aria-describedby="confirmation-content"
+		aria-labelledby="confirmation-title-{label}"
+		aria-describedby="confirmation-content-{label}"
 	>
-		<Title id="simple-title">Confirm action</Title>
-		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Title id="confirmation-title-{label}">Confirm action</Title>
+		<Content id="confirmation-content-{label}">Do you really want to remove the record?</Content>
 		<Actions>
 			<Button>
 				<Label>No</Label>
@@ -72,7 +72,7 @@
 	<label for={label}>{label}</label>
 	<div class="value">
 		<Textfield
-			for={label}
+			input$id={label}
 			input$maxlength={maxLength}
 			bind:value={recordValue}
 			bind:invalid
