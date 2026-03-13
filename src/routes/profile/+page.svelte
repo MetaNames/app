@@ -39,7 +39,7 @@
 
 		if (trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch))
 			return true;
-		else false;
+		return false;
 	}
 </script>
 
@@ -58,10 +58,16 @@
 					withTrailingIcon
 				>
 					<svelte:fragment slot="trailingIcon">
-						<div class="close-icon">
-							<IconButton on:click={cleanSearch} aria-label="cancel">
-								<Icon icon="cancel" />
-							</IconButton>
+						<div class="icon-container">
+							{#if search.length > 0}
+								<IconButton on:click={cleanSearch} aria-label="clear search">
+									<Icon icon="cancel" />
+								</IconButton>
+							{:else}
+								<IconButton aria-label="search" disabled>
+									<Icon icon="search" />
+								</IconButton>
+							{/if}
 						</div>
 					</svelte:fragment>
 				</Textfield>
@@ -88,7 +94,7 @@
 		min-width: 50%;
 	}
 
-	.close-icon {
+	.icon-container {
 		align-self: center;
 		opacity: 0.7;
 	}
