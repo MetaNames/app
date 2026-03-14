@@ -16,6 +16,7 @@
 	export let repository: RecordRepository;
 	export let editMode = false;
 
+	const dialogId = Math.random().toString(36).substring(2, 9);
 	let recordValue = String(value);
 	let dialogOpen = false;
 
@@ -55,11 +56,11 @@
 <div class="record-container {editMode ? 'edit' : ''}">
 	<Dialog
 		bind:open={dialogOpen}
-		aria-labelledby="confirmation-title"
-		aria-describedby="confirmation-content"
+		aria-labelledby="confirmation-title-{dialogId}"
+		aria-describedby="confirmation-content-{dialogId}"
 	>
-		<Title id="simple-title">Confirm action</Title>
-		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Title id="confirmation-title-{dialogId}">Confirm action</Title>
+		<Content id="confirmation-content-{dialogId}">Do you really want to remove the record?</Content>
 		<Actions>
 			<Button>
 				<Label>No</Label>
