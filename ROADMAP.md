@@ -13,7 +13,50 @@
 
 ---
 
+## Design System
+
+> **IMPORTANT:** The landing page has been modernized with a new design system. See `DESIGN_SYSTEM.md` for the unified design language.
+
+### Key Design Tokens (from landing page)
+
+| Element | Value |
+|---------|-------|
+| Font | **Plus Jakarta Sans** (geometric, modern) |
+| Primary | `#6849fe` (purple) |
+| Background | Dark gradient (purple → indigo) |
+| Cards | Glassmorphism (`bg-white/5 backdrop-blur-sm`) |
+| Borders | `border-white/10` |
+| Radius | `rounded-2xl` cards, `rounded-full` buttons |
+| Animations | 200-300ms ease-out, hover lift |
+
+### Design System Goals for App
+
+- [ ] Replace SMUI with custom components using design tokens
+- [ ] Import Plus Jakarta Sans font
+- [ ] Apply glassmorphism patterns to cards
+- [ ] Add consistent hover/focus states
+- [ ] Add scroll reveal animations
+- [ ] Ensure mobile responsiveness matches landing page
+
+---
+
 ## Priority Areas
+
+### 0. Design System (HIGHEST PRIORITY)
+
+> The landing page was just modernized. The app should match.
+
+**Goals:**
+- [ ] Create `src/lib/design-tokens.css` with CSS variables
+- [ ] Import Plus Jakarta Sans font in `app.html`
+- [ ] Replace SMUI components with custom design-system components
+- [ ] Add glassmorphism card component
+- [ ] Add button component with hover/focus states
+- [ ] Add input component with focus states
+- [ ] Add scroll reveal animation component
+- [ ] Apply dark theme consistently
+
+---
 
 ### 1. Dependencies
 
