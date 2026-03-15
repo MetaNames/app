@@ -35,7 +35,8 @@
 - [ ] Import Plus Jakarta Sans font
 - [ ] Apply glassmorphism patterns to cards
 - [ ] Add consistent hover/focus states
-- [ ] Add scroll reveal animations
+- [ ] **Add scroll reveal animations** ← Priority
+- [ ] **Add micro-interactions** (hover lift, button press)
 - [ ] Ensure mobile responsiveness matches landing page
 
 ---
@@ -117,23 +118,46 @@
 
 ### 5. Layout & UI/UX
 
+> **Aligned with Landing Page Design System** — See `DESIGN_SYSTEM.md`
+
 **Issues:**
-- Heavy Material Design look may not fit brand
+- Heavy Material Design look from SMUI doesn't match landing page
 - Mobile responsiveness may need work
 - No consistent design system
 
 **Goals:**
+- [ ] Import Plus Jakarta Sans font
+- [ ] Create `src/lib/design-tokens.css` with CSS variables
+- [ ] Create custom UI components (Button, Card, Input) using design tokens
+- [ ] Apply glassmorphism patterns to cards and containers
+- [ ] Add consistent hover/focus states with lift animations
+- [ ] Add scroll reveal animations (fade-in on scroll)
+- [ ] Add micro-interactions (button press, hover effects)
+- [ ] Implement dark theme consistently
 - [ ] Audit mobile responsiveness
 - [ ] Improve accessibility (a11y)
-- [ ] Create design tokens/constants
 - [ ] Add loading skeletons
 - [ ] Improve error states
 - [ ] Add empty states
-- [ ] Improve navigation UX
 
 ---
 
-### 6. Code Quality
+### 6. Animations
+
+> Following landing page patterns: 200-300ms ease-out, scroll reveal, hover lift
+
+**Goals:**
+- [ ] Add scroll reveal animations (fade-in on viewport enter)
+- [ ] Add page transition animations
+- [ ] Add micro-interactions (button hover/press effects)
+- [ ] Add loading state animations
+- [ ] Add staggered list animations for domain lists
+- [ ] Ensure animations are performant (use CSS transforms)
+- [ ] Add `prefers-reduced-motion` support
+
+---
+
+### 7. Code Quality
 
 **Goals:**
 - [ ] Add/fix TypeScript types
