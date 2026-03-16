@@ -207,6 +207,7 @@
 | 2026-03-16 | Use npm instead of yarn | Yarn corepack fails in container environment | Partial - npm works but prepare script (yarn) still runs |
 | 2026-03-16 | Cannot use npm audit fix --force | Would break @metanames/sdk (requires older elliptic) | Blocked - SDK depends on vulnerable transitive deps |
 | 2026-03-16 | Use npm run build instead of yarn | Bypasses yarn corepack issues | ✅ Works - verified build passes |
+| 2026-03-16 | Fix @partisiablockchain/abi-client imports | SDK v5 changed export names (FnRpcBuilder→RpcBuilder, AbiOutputBytes→AbiBitOutput) | ✅ Build passes in 23.30s |
 
 ---
 

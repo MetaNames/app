@@ -44,7 +44,8 @@
 | 3 | 2026-03-16 06:06 | Design System - Design Tokens | ✅ Done | Created design-tokens.css with CSS variables, added scroll reveal action. Build verified with npm. |
 | 4 | 2026-03-16 08:08 | Custom Button Component | ✅ Done | Created src/lib/components/Button.svelte with design tokens. Build verified with npm. |
 | 5 | 2026-03-16 10:04 | Build Fix | ✅ Done | Build now succeeds (✓ built in 23.97s). Warnings are optional deps only. |
-| 6 | 2026-03-16 10:04 | Scroll Reveal Animations | ✅ Done | Added scroll reveal to main page (+page.svelte). Uses existing reveal action with IntersectionObserver. Build verified with npm. |
+| 6 | 2026-03-16 11:12 | Build Fix - SDK Import | ✅ Done | Fixed @partisiablockchain/abi-client v5 imports (AbiOutputBytes→AbiBitOutput, FnRpcBuilder→RpcBuilder). Build passes in 23.30s. |
+| 7 | 2026-03-16 11:12 | Dependencies - npm | ✅ Done | Switched from yarn to npm (yarn corepack fails in container). Added package-lock.json. |
 
 ---
 
