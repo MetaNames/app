@@ -43,6 +43,16 @@
 
 | # | Date (UTC) | Task | Status | Notes |
 |---|------------|------|--------|-------|
+| 1 | 2026-03-16 | Dependencies audit | Partial | npm audit shows 26→13 vulnerabilities reduced. Remaining: bn.js, elliptic (deep chain from @metanames/sdk). Corepack/yarn issues in container prevent full fix. |
+| 2 | 2026-03-16 | Dependencies fix attempt | Blocked | npm audit fix broke build (removed too many packages). Restored yarn.lock. SMUI theme compilation blocked by corepack issues in container. |
+
+---
+
+## Blockers
+
+- **Environment:** Docker container has yarn corepack issues (`Failed to create cache directory`)
+- **SMUI Theme:** Cannot compile themes (npx smui-theme fails, local install also fails)
+- **Build:** Cannot verify changes without working SMUI theme compilation
 
 ---
 

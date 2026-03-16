@@ -188,7 +188,17 @@
 
 | # | Date | Area | Task | Result | Notes |
 |---|------|------|------|--------|-------|
-| 1 | TBD | - | Initial roadmap | Pending | - |
+| 1 | 2026-03-16 | Dependencies | Audit vulnerabilities | Partial | 26→13 vulnerabilities reduced via npm audit fix. Remaining: bn.js, elliptic (deep chain from @metanames/sdk). |
+| 2 | 2026-03-16 | Dependencies | Fix vulnerabilities | Blocked | npm audit fix broke build. Corepack/yarn issues in Docker container prevent clean fix. SMUI theme compilation blocked. |
+
+---
+
+## Decisions Log
+
+| Date | Decision | Rationale | Outcome |
+|------|----------|-----------|---------|
+| 2026-03-16 | Use npm instead of yarn | Yarn corepack fails in container environment | Partial - npm works but prepare script (yarn) still runs |
+| 2026-03-16 | Cannot use npm audit fix --force | Would break @metanames/sdk (requires older elliptic) | Blocked - SDK depends on vulnerable transitive deps |
 
 ---
 
