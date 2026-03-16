@@ -1,3 +1,9 @@
+/* Plus Jakarta Sans Font */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+/* Design Tokens */
+@import './design-tokens.css';
+
 @import './theme-overrides.scss';
 @import './mixins.scss';
 @import './theme/smui-dark.css';
