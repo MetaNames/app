@@ -47,12 +47,18 @@
 
 > GitHub found 60 vulnerabilities (6 critical). Must address security first.
 
+**New Upgrades:**
+- [ ] **P0: Upgrade to Svelte 5** — Runes, snippets, improved performance
+- [ ] **P0: Upgrade to SMUI 8** — Latest version with Svelte 5 support
+
 **Issues:**
 - SMUI 7.x is heavy and may have compatibility issues
 - GitHub reports 60 vulnerabilities (6 critical, 19 high)
 - Some dev dependencies may be outdated
 
 **Goals:**
+- [ ] **Upgrade to Svelte 5** ← New priority
+- [ ] **Upgrade to SMUI 8** ← New priority
 - [x] Run `yarn audit` to assess vulnerabilities
 - [x] Run `yarn outdated` to check outdated packages
 - [x] **Build now succeeds** ✅ (npm build passes in 23.97s)
