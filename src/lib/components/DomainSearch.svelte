@@ -124,7 +124,7 @@
 <style lang="scss">
 	@use 'sass:color';
 	@use '@material/theme/color-palette';
-	@use '../theme/colors.scss';
+	@use '../../theme/colors.scss';
 
 	.search-container {
 		display: flex;

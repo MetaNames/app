@@ -8,7 +8,7 @@
 
 	import 'src/styles/wallet-connect.scss';
 	import { goto } from '$app/navigation';
-	import WalletConnectButton from 'src/routes/WalletConnectButton.svelte';
+	import WalletConnectButton from '$lib/components/WalletConnectButton.svelte';
 
 	const shortAddress = derived(walletAddress, ($address) => {
 		if ($address) return $address.slice(0, 4) + '...' + $address.slice(-4);

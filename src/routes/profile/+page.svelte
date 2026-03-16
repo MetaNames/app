@@ -4,7 +4,7 @@
 	import { metaNamesSdk } from '$lib/stores/sdk';
 
 	import Paper from '@smui/paper';
-	import DomainsTable from './DomainsTable.svelte';
+	import DomainsTable from '$lib/components/DomainsTable.svelte';
 	import Textfield from '@smui/textfield';
 	import IconButton from '@smui/icon-button';
 	import Icon from 'src/components/Icon.svelte';

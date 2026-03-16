@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { walletConnected } from '$lib/stores/main';
 
-	import WalletConnectButton from 'src/routes/WalletConnectButton.svelte';
+	import WalletConnectButton from '$lib/components/WalletConnectButton.svelte';
 
 	let anchor: HTMLDivElement;
 	let className: string = '';

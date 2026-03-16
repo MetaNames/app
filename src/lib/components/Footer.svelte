@@ -1,6 +1,6 @@
 <script>
 	import { config } from 'src/lib';
-	import Logo from 'src/routes/Logo.svelte';
+	import Logo from '$lib/components/Logo.svelte';
 </script>
 
 <footer>

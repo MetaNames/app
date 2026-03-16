@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DomainSearch from 'src/routes/DomainSearch.svelte';
+	import DomainSearch from '$lib/components/DomainSearch.svelte';
 </script>
 
 <svelte:head>
