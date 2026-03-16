@@ -22,8 +22,14 @@
 	export let required: boolean = false;
 	export let className: string = '';
 	export let inputClass: string = '';
+	export let variant: 'outlined' | 'filled' | 'standard' = 'outlined';
+	export let invalid: boolean = false;
+	export let autofocus: boolean = false;
 
 	let inputElement: HTMLInputElement;
+
+	// Auto-compute invalid from error
+	$: invalid = !!error;
 
 	export function focus() {
 		inputElement?.focus();
@@ -34,7 +40,7 @@
 	}
 </script>
 
-<div class="input-wrapper {className}" class:has-error={!!error} class:disabled>
+<div class="input-wrapper {className}" class:has-error={invalid} class:disabled>
 	{#if label}
 		<label for={id} class="label">
 			{label}
@@ -42,7 +48,7 @@
 		</label>
 	{/if}
 	
-	<div class="input-container">
+	<div class="input-container input-{variant}">
 		<slot name="prefix" />
 		<input
 			bind:this={inputElement}
@@ -59,9 +65,11 @@
 			on:focus
 			on:blur
 			on:keydown
+			{autofocus}
 			{...$$restProps}
 		/>
 		<slot name="suffix" />
+		<slot name="trailingIcon" />
 	</div>
 
 	{#if error}
@@ -69,6 +77,7 @@
 	{:else if helperText}
 		<span class="helper-text">{helperText}</span>
 	{/if}
+	<slot name="helper" />
 </div>
 
 <style>
@@ -113,6 +122,32 @@
 		box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 	}
 
+	/* Variants */
+	.input-outlined {
+		background: transparent;
+	}
+
+	.input-filled {
+		background: rgba(255, 255, 255, 0.1);
+		border-color: transparent;
+	}
+
+	.input-filled:focus-within {
+		background: rgba(255, 255, 255, 0.15);
+	}
+
+	.input-standard {
+		background: transparent;
+		border: none;
+		border-bottom: 1px solid var(--border);
+		border-radius: 0;
+	}
+
+	.input-standard:focus-within {
+		border-color: var(--primary);
+		box-shadow: 0 2px 0 2px rgba(104, 73, 254, 0.2);
+	}
+
 	.input {
 		flex: 1;
 		background: transparent;
@@ -137,11 +172,16 @@
 
 	/* Slots */
 	.input-container :global(.prefix),
-	.input-container :global(.suffix) {
+	.input-container :global(.suffix),
+	.input-container :global(.trailingIcon) {
 		display: flex;
 		align-items: center;
 		padding: 0 0.75rem;
 		color: var(--text-muted);
+	}
+
+	.input-container :global(.trailingIcon) {
+		cursor: pointer;
 	}
 
 	.helper-text {

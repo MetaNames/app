@@ -8,6 +8,10 @@
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
 	import Icon from '$lib/components/Icon.svelte';
+	import CardComponent from './Card.svelte';
+	import CircularProgressComponent from './CircularProgress.svelte';
+	import Input from './Input.svelte';
+	import IconButtonComponent from './IconButton.svelte';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
 
@@ -59,73 +63,61 @@
 
 <div class="search-container">
 	<form on:submit|preventDefault={submit}>
-		<Textfield
-			class="domain-input"
-			variant="outlined"
-			bind:value={domainName}
-			bind:invalid
-			label="Domain name"
-			withTrailingIcon
-			autofocus
-		>
-			<svelte:fragment slot="trailingIcon">
-				<div class="submit">
-					<IconButton aria-label="search">
+		<div class="input-wrapper">
+			<Input
+				class="domain-input"
+				variant="outlined"
+				bind:value={domainName}
+				label="Domain name"
+				autofocus
+			>
+				<div slot="trailingIcon" class="submit">
+					<IconButtonComponent aria-label="search">
 						<Icon icon="search" />
-					</IconButton>
+					</IconButtonComponent>
 				</div>
-			</svelte:fragment>
-			<svelte:fragment slot="helper">
-				{#if errors.length > 0}
-					<HelperText slot="helper">{errors.join(', ')}</HelperText>
-				{/if}
-			</svelte:fragment>
-		</Textfield>
+			</Input>
+			{#if errors.length > 0}
+				<span class="helper-text">{errors.join(', ')}</span>
+			{/if}
+		</div>
 	</form>
 	{#if isLoading}
-		<Card class="domain-link">
-			<CardContent>
+		<a class="domain-link" href="#">
+			<CardComponent>
 				<div class="card-content">
 					<span>{nameSearchedLabel}</span>
 
-					<CircularProgress
+					<CircularProgressComponent
 						style="height: 32px; width: 32px;"
 						indeterminate
 						aria-label="Loading domain search results"
 					/>
 				</div>
-			</CardContent>
-		</Card>
+			</CardComponent>
+		</a>
 	{:else if domain}
 		<a class="domain-link" href={`/domain/${domain.name}`}>
-			<Card>
-				<CardContent>
-					<div class="card-content">
-						<span>{nameSearchedLabel}</span>
-						<span class="chip registered">Registered</span>
-					</div>
-				</CardContent>
-			</Card>
+			<CardComponent>
+				<div class="card-content">
+					<span>{nameSearchedLabel}</span>
+					<span class="chip registered">Registered</span>
+				</div>
+			</CardComponent>
 		</a>
 	{:else if domain === null}
 		<a class="domain-link" href={`/register/${nameSearched}`}>
-			<Card>
-				<CardContent>
-					<div class="card-content">
-						<span>{nameSearchedLabel}</span>
-						<span class="chip available">Available</span>
-					</div>
-				</CardContent>
-			</Card>
+			<CardComponent>
+				<div class="card-content">
+					<span>{nameSearchedLabel}</span>
+					<span class="chip available">Available</span>
+				</div>
+			</CardComponent>
 		</a>
 	{/if}
 </div>
 
 <style lang="scss">
-	@use 'sass:color';
-	@use '@material/theme/color-palette';
-	@use '../../theme/colors.scss';
-
 	.search-container {
 		display: flex;
 		flex-direction: column;
@@ -141,42 +133,55 @@
 		}
 	}
 
+	.input-wrapper {
+		width: 100%;
+		max-width: 400px;
+	}
+
 	.card-content {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
+		gap: 1rem;
 	}
 
 	.chip {
-		padding: 0.3rem;
+		padding: 0.3rem 0.8rem;
 		border-radius: 1rem;
 		font-size: 0.7rem;
-		background-color: color-palette.$grey-300;
+		background-color: var(--surface-hover);
 		font-weight: 700;
 
 		&.available {
-			background-color: color.scale(color-palette.$light-green-400, $whiteness: 50%);
-			color: color-palette.$light-green-900;
+			background-color: rgba(34, 197, 94, 0.2);
+			color: #22c55e;
 		}
 
 		&.registered {
-			background-color: color.scale(colors.$primary, $whiteness: 60%);
-			color: color.scale(colors.$primary, $whiteness: -20%);
+			background-color: rgba(104, 73, 254, 0.2);
+			color: var(--primary);
 		}
 	}
 
 	a:visited {
-		color: var(--mdc-theme-text-primary-on-background);
+		color: var(--text-primary);
 	}
 
 	:global(.domain-link) {
 		margin-top: 0.2rem;
 		text-decoration: none;
-		color: var(--mdc-theme-text-primary-on-background);
+		color: var(--text-primary);
+		display: block;
 	}
 
 	.submit {
 		align-self: center;
+	}
+
+	.helper-text {
+		color: var(--text-secondary);
+		font-size: 0.75rem;
+		margin-top: 0.25rem;
 	}
 </style>
