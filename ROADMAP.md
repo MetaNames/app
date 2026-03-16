@@ -53,9 +53,10 @@
 - Some dev dependencies may be outdated
 
 **Goals:**
-- [ ] Run `yarn audit` to assess vulnerabilities
-- [ ] Run `yarn outdated` to check outdated packages
-- [ ] Update critical security patches first
+- [x] Run `yarn audit` to assess vulnerabilities
+- [x] Run `yarn outdated` to check outdated packages
+- [x] **Build now succeeds** ✅ (npm build passes in 23.97s)
+- [ ] Update critical security patches first (remaining 13 vulnerabilities are deep transitive deps)
 - [ ] Consider migrating from SMUI to custom components (removes heavy dependency)
 - [ ] Update outdated packages
 - [ ] Consider switching from Yarn to npm/pnpm if needed

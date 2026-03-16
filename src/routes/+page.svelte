@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DomainSearch from '$lib/components/DomainSearch.svelte';
+	import { reveal } from '$lib/actions/reveal';
 </script>
 
 <svelte:head>
@@ -7,11 +8,13 @@
 </svelte:head>
 
 <div class="container">
-	<div class="header">
+	<div class="header" use:reveal={{ delay: 0, threshold: 0.2 }}>
 		<h3>Find your Meta Name</h3>
 		<p class="subtitle">Powered by Partisia</p>
 	</div>
-	<DomainSearch />
+	<div use:reveal={{ delay: 150, threshold: 0.1 }}>
+		<DomainSearch />
+	</div>
 </div>
 
 <style lang="scss">

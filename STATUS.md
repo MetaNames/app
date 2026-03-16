@@ -42,14 +42,14 @@
 | 1 | 2026-03-16 | Dependencies audit | Partial | npm audit shows 26→13 vulnerabilities reduced. Remaining: bn.js, elliptic (deep chain from @metanames/sdk). Corepack/yarn issues in container prevent full fix. |
 | 2 | 2026-03-16 | Dependencies fix attempt | Blocked | npm audit fix broke build (removed too many packages). Restored yarn.lock. SMUI theme compilation blocked by corepack issues in container. |
 | 3 | 2026-03-16 06:06 | Design System - Design Tokens | ✅ Done | Created design-tokens.css with CSS variables, added scroll reveal action. Build verified with npm. |
+| 4 | 2026-03-16 08:08 | Custom Button Component | ✅ Done | Created src/lib/components/Button.svelte with design tokens. Build verified with npm. |
+| 5 | 2026-03-16 10:04 | Build Fix | ✅ Done | Build now succeeds (✓ built in 23.97s). Warnings are optional deps only. |
 
 ---
 
 ## Blockers
 
-- **Environment:** Docker container has yarn corepack issues (`Failed to create cache directory`)
-- **SMUI Theme:** Cannot compile themes (npx smui-theme fails, local install also fails)
-- **Build:** Cannot verify changes without working SMUI theme compilation
+- **SMUI Theme:** Cannot compile themes (npx smui-theme fails)
 
 ---
 
@@ -71,4 +71,4 @@ yarn lint
 
 ---
 
-*Updated: 2026-03-15*
+*Updated: 2026-03-16*
