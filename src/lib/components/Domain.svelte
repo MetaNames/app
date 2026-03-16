@@ -2,11 +2,6 @@
 	import type { Domain } from '@metanames/sdk';
 	import { toSvg } from 'jdenticon';
 
-	import Card, { Content as CardContent } from '@smui/card';
-	import Paper, { Content } from '@smui/paper';
-	import Tab, { Label } from '@smui/tab';
-	import TabBar from '@smui/tab-bar';
-
 	import {
 		explorerAddressUrl,
 		formatDate,
@@ -21,7 +16,9 @@
 	import Records from '$lib/components/Records.svelte';
 	import { walletAddress } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
-	import Button from '@smui/button';
+	import Button from '$lib/components/Button.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import TabBar from '$lib/components/TabBar.svelte';
 
 	export let domain: Domain;
 	export let isTld: boolean = false;
@@ -42,8 +39,8 @@
 	if (!isTld) tabs.push(DomainTab.settings);
 </script>
 
-<Card class="domain-container">
-	<CardContent>
+<Card class="domain-container" padded={false}>
+	<div class="card-content">
 		<div class="avatar">
 			<div class="svg">
 				{@html domainAvatar}
@@ -52,17 +49,12 @@
 		<h5 class="domain">{domainName}</h5>
 
 		{#if ownerConnected}
-			<TabBar {tabs} let:tab bind:active={activeTab}>
-				<Tab {tab}>
-					<Label>{tab}</Label>
-				</Tab>
-			</TabBar>
+			<TabBar {tabs} bind:active={activeTab} />
 		{/if}
 
 		{#if activeTab === DomainTab.details}
-			<Paper variant="unelevated">
-				<Content>
-					<div class="container">
+			<Card variant="glass">
+				<div class="container">
 						<div class="section">
 							<h5 class="mt-0">Profile</h5>
 							<div class="chips">
@@ -146,12 +138,10 @@
 							</div>
 						{/if}
 					</div>
-				</Content>
-			</Paper>
+			</Card>
 		{:else if activeTab === DomainTab.settings}
-			<Paper variant="unelevated">
-				<Content>
-					<Records
+			<Card variant="glass">
+				<Records
 						ownerAddress={domain.owner}
 						{records}
 						repository={domain.getRecordRepository($metaNamesSdk)}
@@ -161,15 +151,14 @@
 					<Button
 						class="mt-1 mr-1 mobile--mr-0"
 						href={`/domain/${domain.name}/renew`}
-						variant="raised">Renew</Button
+						variant="filled">Renew</Button
 					>
-					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="raised"
+					<Button class="mt-1" href={`/domain/${domain.name}/transfer`} variant="filled"
 						>Transfer</Button
 					>
-				</Content>
-			</Paper>
+			</Card>
 		{/if}
-	</CardContent>
+	</div>
 </Card>
 
 <style lang="scss">

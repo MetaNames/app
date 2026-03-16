@@ -1,256 +1,127 @@
 <script lang="ts">
-	/**
-	 * Custom Select component using design tokens
-	 * Drop-in replacement for SMUI Select
-	 * 
-	 * Usage:
-	 * <Select 
-	 *   bind:value={selected}
-	 *   label="Choose option"
-	 * >
-	 *   <Option value="a">Option A</Option>
-	 *   <Option value="b">Option B</Option>
-	 * </Select>
-	 */
-
-	import { createEventDispatcher } from 'svelte';
-
-	export let value: string = '';
+	export let value: string | undefined = undefined;
 	export let label: string = '';
-	export let placeholder: string = 'Select an option...';
-	export let disabled: boolean = false;
-	export let error: string = '';
-	export let id: string = '';
-	export let name: string = '';
-	export let required: boolean = false;
+	export let invalid: boolean = false;
+	export let variant: 'outlined' | 'filled' | 'standard' = 'outlined';
 	export let className: string = '';
-
-	const dispatch = createEventDispatcher();
-	let open = false;
-	let containerEl: HTMLDivElement;
-
-	function toggle() {
-		if (!disabled) {
-			open = !open;
-		}
+	
+	let isOpen = false;
+	let selectRef: HTMLSelectElement;
+	
+	function handleFocus() {
+		isOpen = true;
 	}
-
-	function select(optionValue: string) {
-		value = optionValue;
-		open = false;
-		dispatch('change', value);
+	
+	function handleBlur() {
+		isOpen = false;
 	}
-
-	function handleClickOutside(e: MouseEvent) {
-		if (containerEl && !containerEl.contains(e.target as Node)) {
-			open = false;
-		}
-	}
-
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') {
-			open = false;
-		}
-	}
-
-	$: selectedLabel = placeholder;
-	$: {
-		const slot = $$slots.default?.();
-		if (slot && value) {
-			for (const s of slot) {
-				if (s?.props?.value === value) {
-					selectedLabel = s.props.label || s.props.value;
-					break;
-				}
-			}
-		}
+	
+	function handleChange(e: Event) {
+		const target = e.target as HTMLSelectElement;
+		value = target.value || undefined;
 	}
 </script>
 
-<svelte:window on:click={handleClickOutside} on:keydown={handleKeydown} />
-
-<div 
-	class="select-wrapper {className}" 
-	class:disabled 
-	class:open 
-	class:has-error={!!error}
-	bind:this={containerEl}
->
-	{#if label}
-		<label for={id} class="select-label">
-			{label}
-			{#if required}<span class="required">*</span>{/if}
-		</label>
-	{/if}
-
-	<div class="select-container">
-		<button
-			type="button"
-			class="select-trigger"
-			{id}
-			{name}
-			{disabled}
-			{required}
-			on:click={toggle}
-			on:focus
-			on:blur
-		>
-			<span class="select-value" class:placeholder={!value}>
-				{selectedLabel}
-			</span>
-			<span class="select-arrow">
-				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-					<path d="M6 9l6 6 6-6"/>
-				</svg>
-			</span>
-		</button>
-
-		{#if open}
-			<div class="select-dropdown" transition:slide={{ duration: 150 }}>
-				<slot />
-			</div>
+<div class="select-wrapper {className}" class:invalid class:focused={isOpen}>
+	<select
+		bind:this={selectRef}
+		bind:value
+		on:change={handleChange}
+		on:focus={handleFocus}
+		on:blur={handleBlur}
+		class:outlined={variant === 'outlined'}
+		class:filled={variant === 'filled'}
+		class:standard={variant === 'standard'}
+	>
+		{#if label}
+			<option value="" disabled selected={value === undefined}>{label}</option>
 		{/if}
-	</div>
-
-	{#if error}
-		<span class="helper-text error">{error}</span>
+		<slot />
+	</select>
+	{#if label}
+		<label class:floating={value && value !== ''}>{label}</label>
 	{/if}
 </div>
 
 <style>
 	.select-wrapper {
-		display: flex;
+		position: relative;
+		display: inline-flex;
 		flex-direction: column;
-		gap: 0.375rem;
-		width: 100%;
-		position: relative;
+		min-width: 120px;
 	}
-
-	.select-label {
-		font-size: 0.875rem;
-		font-weight: 500;
-		color: var(--text-secondary);
-	}
-
-	.required {
-		color: #ef4444;
-		margin-left: 2px;
-	}
-
-	.select-container {
-		position: relative;
-	}
-
-	.select-trigger {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		width: 100%;
-		padding: 0.75rem 1rem;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid var(--border);
-		border-radius: var(--radius-md);
-		color: var(--text-primary);
-		font-size: 1rem;
-		font-family: inherit;
+	
+	select {
+		appearance: none;
+		background: transparent;
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		border-radius: 4px;
+		padding: 16px 12px 8px;
+		font-size: 16px;
+		color: white;
 		cursor: pointer;
-		transition: all var(--transition-normal);
-		text-align: left;
-	}
-
-	.select-trigger:hover:not(:disabled) {
-		border-color: var(--border-hover);
-		background: rgba(255, 255, 255, 0.08);
-	}
-
-	.select-trigger:focus {
+		width: 100%;
 		outline: none;
-		border-color: var(--primary);
+		transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	}
+	
+	select.outlined {
+		border: 1px solid rgba(255, 255, 255, 0.3);
+	}
+	
+	select.filled {
+		border: none;
+		background: rgba(255, 255, 255, 0.1);
+	}
+	
+	select.standard {
+		border: none;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+		border-radius: 0;
+	}
+	
+	select:focus {
+		border-color: #6849fe;
 		box-shadow: 0 0 0 2px rgba(104, 73, 254, 0.2);
 	}
-
-	.select-trigger:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
+	
+	.invalid select {
+		border-color: #f44336;
 	}
-
-	.select-value.placeholder {
-		color: var(--text-muted);
+	
+	.invalid select:focus {
+		box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.2);
 	}
-
-	.select-arrow {
-		display: flex;
-		align-items: center;
-		color: var(--text-muted);
-		transition: transform var(--transition-fast);
-	}
-
-	.open .select-arrow {
-		transform: rotate(180deg);
-	}
-
-	.select-dropdown {
+	
+	label {
 		position: absolute;
-		top: calc(100% + 4px);
-		left: 0;
-		right: 0;
-		background: var(--bg-card, rgba(15, 15, 26, 0.98));
-		border: 1px solid var(--border);
-		border-radius: var(--radius-md);
-		box-shadow: var(--shadow-lg);
-		z-index: 100;
-		max-height: 200px;
-		overflow-y: auto;
-	}
-
-	.select-dropdown :global(.select-option) {
-		padding: 0.75rem 1rem;
-		color: var(--text-secondary);
-		cursor: pointer;
-		transition: all var(--transition-fast);
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.select-dropdown :global(.select-option:hover) {
-		background: rgba(255, 255, 255, 0.08);
-		color: var(--text-primary);
-	}
-
-	.select-dropdown :global(.select-option.selected) {
-		background: rgba(104, 73, 254, 0.15);
-		color: var(--primary);
-	}
-
-	.helper-text {
-		font-size: 0.75rem;
-		color: var(--text-muted);
-	}
-
-	.helper-text.error {
-		color: #ef4444;
-	}
-
-	.has-error .select-trigger {
-		border-color: #ef4444;
-	}
-
-	.disabled {
-		opacity: 0.6;
+		left: 12px;
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: 16px;
+		color: rgba(255, 255, 255, 0.6);
 		pointer-events: none;
+		transition: all 0.2s ease;
+		background: transparent;
 	}
-
-	/* Reduced motion */
-	@media (prefers-reduced-motion: reduce) {
-		.select-trigger,
-		.select-arrow,
-		.select-dropdown :global(.select-option) {
-			transition: none;
-		}
+	
+	.select-wrapper.focused label {
+		color: #6849fe;
+	}
+	
+	label.floating {
+		top: 8px;
+		font-size: 12px;
+		transform: translateY(0);
+	}
+	
+	.invalid label {
+		color: #f44336;
+	}
+	
+	option {
+		background: #1a1a2e;
+		color: white;
+		padding: 8px;
 	}
 </style>
-
-<script context="module" lang="ts">
-	import { slide } from 'svelte/transition';
-</script>

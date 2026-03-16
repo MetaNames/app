@@ -5,13 +5,13 @@
 	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
 	import { walletAddress } from '$lib/stores/main';
 
-	import { Label } from '@smui/button';
-	import Select, { Option } from '@smui/select';
-	import Textfield from '@smui/textfield';
+	import Select from '$lib/components/Select.svelte';
+	import Option from '$lib/components/Option.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
 	import RecordComponent from '$lib/components/Record.svelte';
-	import HelperText from '@smui/textfield/helper-text';
+	import HelperText from '$lib/components/HelperText.svelte';
 
 	export let ownerAddress: string;
 	export let records: Record<string, string>;
@@ -82,28 +82,21 @@
 				{/each}
 			</Select>
 			<div class="value">
-				<Textfield
+				<Input
 					class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
 					bind:value={newRecordValue}
-					input$maxlength={newRecordValueMaxLength}
+					maxlength={newRecordValueMaxLength}
 					label="Record value"
-					bind:invalid={recordValueInvalid}
+					error={recordValueInvalid ? recordValueErrors?.join(', ') : ''}
 					variant="outlined"
-				>
-					<svelte:fragment slot="helper">
-						{#if recordValueErrors.length > 0}
-							<HelperText class="error" slot="helper">{recordValueErrors?.join(', ')}</HelperText>
-						{/if}
-					</svelte:fragment>
-				</Textfield>
+				/>
 			</div>
 			<LoadingButton
 				class="mobile--mt-1"
 				disabled={newRecordClass === undefined || recordValueInvalid}
 				onClick={createRecord}
-				variant="raised"
 			>
-				<Label>Add record</Label>
+				Add record
 			</LoadingButton>
 		</div>
 	{:else}
