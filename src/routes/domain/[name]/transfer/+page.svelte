@@ -7,9 +7,8 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
-	import Card, { Content } from '@smui/card';
-	import Textfield from '@smui/textfield';
-	import HelperText from '@smui/textfield/helper-text';
+	import Card from '$lib/components/Card.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
 	import GoBackButton from '$lib/components/GoBackButton.svelte';
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
@@ -61,34 +60,25 @@
 	{#if data.analyzed}
 		<h2 class="mt-0">Transfer domain</h2>
 		<Card class="w-100 flex-content">
-			<Content>
-				<h4>{domainName}</h4>
-				<p>
-					Please note that all transfers are irreversible.
-					<br />
-					<b>Verify the address is correct</b> before proceeding.
-				</p>
-				<div class="mt-2 mb-2">
-					<Textfield
-						class="w-100"
-						variant="outlined"
-						bind:value={address}
-						bind:invalid
-						label="Recipient address"
-					>
-						<svelte:fragment slot="helper">
-							{#if errors.length > 0}
-								<HelperText slot="helper">{errors.join(', ')}</HelperText>
-							{/if}
-						</svelte:fragment>
-					</Textfield>
-				</div>
-				<ConnectionRequired>
-					<LoadingButton disabled={invalid} onClick={transfer} variant="raised"
-						>Transfer domain</LoadingButton
-					>
-				</ConnectionRequired>
-			</Content>
+			<h4>{domainName}</h4>
+			<p>
+				Please note that all transfers are irreversible.
+				<br />
+				<b>Verify the address is correct</b> before proceeding.
+			</p>
+			<div class="mt-2 mb-2">
+				<Input
+					class="w-100"
+					bind:value={address}
+					label="Recipient address"
+					error={invalid ? errors.join(', ') : ''}
+				/>
+			</div>
+			<ConnectionRequired>
+				<LoadingButton disabled={invalid} onClick={transfer} variant="primary"
+					>Transfer domain</LoadingButton
+				>
+			</ConnectionRequired>
 		</Card>
 		<br />
 		<GoBackButton />

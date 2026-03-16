@@ -1,7 +1,6 @@
 <script lang="ts">
-	import Card, { Content } from '@smui/card';
-	import Radio from '@smui/radio';
-	import FormField from '@smui/form-field';
+	import Card from '$lib/components/Card.svelte';
+	import Radio from '$lib/components/Radio.svelte';
 	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
 	import GoBackButton from '$lib/components/GoBackButton.svelte';
@@ -88,60 +87,55 @@
 
 <div class="content checkout">
 	<Card class="w-100 flex-content">
-		<Content>
-			<h3>TLD Migration Proposal</h3>
+		<h3>TLD Migration Proposal</h3>
+		<p>
+			The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to
+			<code>.MPC</code>.
+			<br />
+			Learn more in the
+			<a
+				href="https://docs.metanames.app/proposals/transition-from-.meta-to-.mpc"
+				target="_blank"
+			>
+				<b>documentation</b></a
+			>
+		</p>
+		{#if voteEnabled}
 			<p>
-				The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to
-				<code>.MPC</code>.
-				<br />
-				Learn more in the
-				<a
-					href="https://docs.metanames.app/proposals/transition-from-.meta-to-.mpc"
-					target="_blank"
-				>
-					<b>documentation</b></a
-				>
+				<b>Ownership of a domain is required to vote</b>
 			</p>
-			{#if voteEnabled}
-				<p>
-					<b>Ownership of a domain is required to vote</b>
-				</p>
-				<p class="subtitle">
-					Please allow a minimum of 10 minutes after purchasing a domain before casting your vote.
-				</p>
-				<h4>Proposal countdown</h4>
-				<Timer class="timer" {countFrom} on:timesup={timesUp} />
-				<p class="question">
-					Do you want to migrate the TLD from <code>.META</code> to <code>.MPC</code>?
-				</p>
-				<div class="options">
-					{#each options as option}
-						<FormField>
-							<Radio bind:group={selected} value={option} />
-							<span slot="label">{option}</span>
-						</FormField>
-					{/each}
-				</div>
-				<ConnectionRequired class="mt-1">
-					<LoadingButton disabled={!voteEnabled} onClick={vote} variant="raised">Vote</LoadingButton
-					>
-				</ConnectionRequired>
-			{:else}
-				<h4 class="mb-1">Voting Results</h4>
-				<div class="chart">
-					<Doughnut class="doughnut" data={votesChartData} options={chartOptions} />
-				</div>
-				<p class="title mt-3">
-					<b>
-						{#if proposalPassed}
-							The proposal has been approved
-						{:else}
-							The proposal was not approved
-						{/if}
-					</b>
-				</p>
-			{/if}
-		</Content>
+			<p class="subtitle">
+				Please allow a minimum of 10 minutes after purchasing a domain before casting your vote.
+			</p>
+			<h4>Proposal countdown</h4>
+			<Timer class="timer" {countFrom} on:timesup={timesUp} />
+			<p class="question">
+				Do you want to migrate the TLD from <code>.META</code> to <code>.MPC</code>?
+			</p>
+			<div class="options">
+				{#each options as option}
+					<Radio bind:group={selected} value={option} label={option} />
+				{/each}
+			</div>
+			<ConnectionRequired class="mt-1">
+				<LoadingButton disabled={!voteEnabled} onClick={vote} variant="primary">Vote</LoadingButton
+				>
+			</ConnectionRequired>
+		{:else}
+			<h4 class="mb-1">Voting Results</h4>
+			<div class="chart">
+				<Doughnut class="doughnut" data={votesChartData} options={chartOptions} />
+			</div>
+			<p class="title mt-3">
+				<b>
+					{#if proposalPassed}
+						The proposal has been approved
+					{:else}
+						The proposal was not approved
+					{/if}
+				</b>
+			</p>
+		{/if}
 	</Card>
 	<br />
 	<GoBackButton />

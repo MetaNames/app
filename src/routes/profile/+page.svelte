@@ -3,10 +3,10 @@
 	import { walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 
-	import Paper from '@smui/paper';
+	import Card from '$lib/components/Card.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
 	import DomainsTable from '$lib/components/DomainsTable.svelte';
-	import Textfield from '@smui/textfield';
-	import IconButton from '@smui/icon-button';
 	import Icon from '$lib/components/Icon.svelte';
 	import Chip from '$lib/components/Chip.svelte';
 
@@ -44,33 +44,31 @@
 </script>
 
 <div class="profile content">
-	<Paper class="w-100" variant="raised">
-		<div class="paper-content">
+	<Card class="w-100">
+		<div class="card-content">
 			<h3>Profile</h3>
 			{#if $walletConnected}
 				<Chip label="Address" value={$walletAddress || ''} />
 				<h4 class="domains">Domains</h4>
-				<Textfield
-					class="my-1 search-bar"
-					label="Search"
-					bind:value={search}
-					variant="outlined"
-					withTrailingIcon
-				>
-					<svelte:fragment slot="trailingIcon">
-						<div class="close-icon">
+				<div class="search-bar">
+					<Input
+						class="my-1"
+						label="Search"
+						bind:value={search}
+					>
+						<div slot="suffix" class="close-icon">
 							<IconButton on:click={cleanSearch} aria-label="cancel">
 								<Icon icon="cancel" />
 							</IconButton>
 						</div>
-					</svelte:fragment>
-				</Textfield>
+					</Input>
+				</div>
 				<DomainsTable domains={domainsFiltered} {loaded} />
 			{:else}
 				<p>Connect your wallet to see your domains</p>
 			{/if}
 		</div>
-	</Paper>
+	</Card>
 </div>
 
 <style lang="scss">
@@ -98,7 +96,7 @@
 		margin: 2rem auto;
 	}
 
-	.paper-content {
+	.card-content {
 		padding: 1rem;
 		text-align: center;
 	}

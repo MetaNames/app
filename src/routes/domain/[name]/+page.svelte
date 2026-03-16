@@ -4,7 +4,7 @@
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
-	import CircularProgress from '@smui/circular-progress';
+	import CircularProgress from '$lib/components/CircularProgress.svelte';
 	import Domain from '$lib/components/Domain.svelte';
 	import GoBackButton from '$lib/components/GoBackButton.svelte';
 	import { writable } from 'svelte/store';

@@ -5,14 +5,12 @@
 	 * 
 	 * Usage:
 	 * <Input 
-	 *   type="text" 
 	 *   placeholder="Enter domain..." 
 	 *   bind:value={value}
 	 *   error="Error message"
 	 * />
 	 */
 
-	export let type: string = 'text';
 	export let placeholder: string = '';
 	export let value: string = '';
 	export let disabled: boolean = false;
@@ -50,7 +48,7 @@
 			bind:this={inputElement}
 			{id}
 			{name}
-			{type}
+			type="text"
 			{placeholder}
 			{disabled}
 			{required}
