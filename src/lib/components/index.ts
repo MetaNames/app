@@ -1,8 +1,23 @@
 // Components barrel export
+export { default as Banner } from './Banner.svelte';
 export { default as Button } from './Button.svelte';
+export { default as Card } from './Card.svelte';
+export { default as Chip } from './Chip.svelte';
+export { default as ConnectionRequired } from './ConnectionRequired.svelte';
+export { default as Domain } from './Domain.svelte';
+export { default as DomainPayment } from './DomainPayment.svelte';
 export { default as DomainSearch } from './DomainSearch.svelte';
+export { default as DomainsTable } from './DomainsTable.svelte';
 export { default as Footer } from './Footer.svelte';
+export { default as GoBackButton } from './GoBackButton.svelte';
+export { default as Icon } from './Icon.svelte';
+export { default as IconButton } from './IconButton.svelte';
+export { default as Input } from './Input.svelte';
+export { default as LoadingButton } from './LoadingButton.svelte';
 export { default as Logo } from './Logo.svelte';
+export { default as Navbar } from './Navbar.svelte';
+export { default as Record } from './Record.svelte';
+export { default as Records } from './Records.svelte';
+export { default as Snackbar } from './Snackbar.svelte';
 export { default as WalletConnectButton } from './WalletConnectButton.svelte';
 export { default as WalletConnectStatus } from './WalletConnectStatus.svelte';
-export { default as DomainsTable } from './DomainsTable.svelte';

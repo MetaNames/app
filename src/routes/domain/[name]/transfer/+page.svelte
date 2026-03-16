@@ -10,9 +10,9 @@
 	import Card, { Content } from '@smui/card';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
-	import GoBackButton from 'src/components/GoBackButton.svelte';
-	import LoadingButton from 'src/components/LoadingButton.svelte';
+	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
+	import GoBackButton from '$lib/components/GoBackButton.svelte';
+	import LoadingButton from '$lib/components/LoadingButton.svelte';
 
 	export let data: PageData;
 

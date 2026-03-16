@@ -4,7 +4,7 @@
 	import IconButton from '@smui/icon-button';
 	import CharacterCounter from '@smui/textfield/character-counter';
 	import Textfield from '@smui/textfield';
-	import Icon from 'src/components/Icon.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 
 	import type { RecordRepository } from '@metanames/sdk';
 	import { alertMessage, refresh, walletConnected } from '$lib/stores/main';

@@ -8,9 +8,9 @@
 	import { Label } from '@smui/button';
 	import Select, { Option } from '@smui/select';
 	import Textfield from '@smui/textfield';
-	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
-	import LoadingButton from 'src/components/LoadingButton.svelte';
-	import RecordComponent from 'src/components/Record.svelte';
+	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
+	import LoadingButton from '$lib/components/LoadingButton.svelte';
+	import RecordComponent from '$lib/components/Record.svelte';
 	import HelperText from '@smui/textfield/helper-text';
 
 	export let ownerAddress: string;

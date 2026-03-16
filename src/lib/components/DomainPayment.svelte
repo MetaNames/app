@@ -7,13 +7,13 @@
 	import { writable } from 'svelte/store';
 
 	import { Label } from '@smui/button';
-	import Icon from 'src/components/Icon.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
 	import Select, { Option } from '@smui/select';
-	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
-	import LoadingButton from 'src/components/LoadingButton.svelte';
+	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
+	import LoadingButton from '$lib/components/LoadingButton.svelte';
 	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
 	import { fetchApiJson } from 'src/lib/api';
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Icon from 'src/components/Icon.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import Button, { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
 	import { writable } from 'svelte/store';

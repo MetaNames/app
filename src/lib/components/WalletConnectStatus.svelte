@@ -2,7 +2,7 @@
 	import { walletAddress } from '$lib/stores/main';
 	import { derived } from 'svelte/store';
 
-	import Icon from 'src/components/Icon.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import { Label } from '@smui/button';
 	import { Item, Text } from '@smui/list';
 

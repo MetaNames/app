@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/stores';
-	import GoBackButton from 'src/components/GoBackButton.svelte';
+	import GoBackButton from '$lib/components/GoBackButton.svelte';
 </script>
 
 <svelte:head>

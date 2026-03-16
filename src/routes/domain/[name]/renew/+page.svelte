@@ -2,13 +2,13 @@
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 	import { alertMessage } from 'src/lib/stores/main';
-	import DomainPayment from 'src/components/DomainPayment.svelte';
+	import DomainPayment from '$lib/components/DomainPayment.svelte';
 	import type { DomainPaymentParams } from 'src/lib/types';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import { alertTransactionAndFetchResult } from 'src/lib';
 	import { track } from '@vercel/analytics';
 	import { onMount } from 'svelte';
-	import GoBackButton from 'src/components/GoBackButton.svelte';
+	import GoBackButton from '$lib/components/GoBackButton.svelte';
 
 	export let data: PageData;
 

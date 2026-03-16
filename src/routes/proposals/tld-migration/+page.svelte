@@ -2,9 +2,9 @@
 	import Card, { Content } from '@smui/card';
 	import Radio from '@smui/radio';
 	import FormField from '@smui/form-field';
-	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
-	import LoadingButton from 'src/components/LoadingButton.svelte';
-	import GoBackButton from 'src/components/GoBackButton.svelte';
+	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
+	import LoadingButton from '$lib/components/LoadingButton.svelte';
+	import GoBackButton from '$lib/components/GoBackButton.svelte';
 	import { actionVotePayload } from 'src/lib/proposal';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import { alertTransactionAndFetchResult, config } from 'src/lib';

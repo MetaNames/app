@@ -5,8 +5,8 @@
 	import { onMount } from 'svelte';
 
 	import CircularProgress from '@smui/circular-progress';
-	import Domain from 'src/components/Domain.svelte';
-	import GoBackButton from 'src/components/GoBackButton.svelte';
+	import Domain from '$lib/components/Domain.svelte';
+	import GoBackButton from '$lib/components/GoBackButton.svelte';
 	import { writable } from 'svelte/store';
 	import { alertMessage, refresh } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';

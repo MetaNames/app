@@ -9,9 +9,9 @@
 	import { onMount } from 'svelte';
 
 	import { alertTransactionAndFetchResult } from '$lib';
-	import Chip from 'src/components/Chip.svelte';
-	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
-	import LoadingButton from 'src/components/LoadingButton.svelte';
+	import Chip from '$lib/components/Chip.svelte';
+	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
+	import LoadingButton from '$lib/components/LoadingButton.svelte';
 
 	export let domainName: string;
 	export let parentDomainName: string;

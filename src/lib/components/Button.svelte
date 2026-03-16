@@ -39,7 +39,6 @@
 	<button
 		{type}
 		class="btn btn-{variant} {className}"
-		{disabled}
 		disabled={disabled || loading}
 		on:click={handleClick}
 	>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk';
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue, Pagination } from '@smui/data-table';
-	import Icon from 'src/components/Icon.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import LinearProgress from '@smui/linear-progress';
 	import Select, { Option } from '@smui/select';
 	import Button from '@smui/button';

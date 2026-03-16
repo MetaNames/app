@@ -2,7 +2,7 @@
 	import { alertMessage } from '$lib/stores/main';
 	import { captureException } from '@sentry/sveltekit';
 	import Button, { Label } from '@smui/button';
-	import Icon from 'src/components/Icon.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import CircularProgress from '@smui/circular-progress';
 	import { onDestroy } from 'svelte';
 

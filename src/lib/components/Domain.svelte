@@ -17,8 +17,8 @@
 		socialRecords
 	} from '$lib';
 	import { DomainTab } from 'src/lib/types';
-	import Chip from 'src/components/Chip.svelte';
-	import Records from 'src/components/Records.svelte';
+	import Chip from '$lib/components/Chip.svelte';
+	import Records from '$lib/components/Records.svelte';
 	import { walletAddress } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import Button from '@smui/button';

@@ -7,8 +7,8 @@
 	import DomainsTable from '$lib/components/DomainsTable.svelte';
 	import Textfield from '@smui/textfield';
 	import IconButton from '@smui/icon-button';
-	import Icon from 'src/components/Icon.svelte';
-	import Chip from 'src/components/Chip.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import Chip from '$lib/components/Chip.svelte';
 
 	let domains: Domain[] = [];
 	let domainsFiltered: Domain[] = [];

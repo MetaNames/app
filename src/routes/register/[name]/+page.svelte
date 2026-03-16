@@ -10,7 +10,7 @@
 	import CircularProgress from '@smui/circular-progress';
 	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
 	import { onMount } from 'svelte';
-	import DomainPayment from 'src/components/DomainPayment.svelte';
+	import DomainPayment from '$lib/components/DomainPayment.svelte';
 	import { alertTransactionAndFetchResult } from 'src/lib';
 	import { track } from '@vercel/analytics';
 	import { page } from '$app/stores';

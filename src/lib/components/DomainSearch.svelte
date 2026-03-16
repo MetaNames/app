@@ -7,7 +7,7 @@
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
-	import Icon from 'src/components/Icon.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
 

@@ -4,13 +4,12 @@
 	import { inject } from '@vercel/analytics';
 	// import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
-	import Button from '@smui/button';
-	import Banner from '@smui/banner';
-	import Icon from 'src/components/Icon.svelte';
-	import IconButton from '@smui/icon-button';
-	import Snackbar, { Actions, Label } from '@smui/snackbar';
-	import TopAppBar, { Row, Title, Section } from '@smui/top-app-bar';
-	import { Anchor } from '@smui/menu-surface';
+	import Button from '$lib/components/Button.svelte';
+	import Banner from '$lib/components/Banner.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
+	import Snackbar from '$lib/components/Snackbar.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 
 	import { config, explorerTransactionUrl } from '$lib';
 	import { alertMessage, alertTransaction } from '$lib/stores/main';
@@ -22,11 +21,8 @@
 
 	import 'src/styles/app.scss';
 
-	let anchor: HTMLDivElement;
-	let anchorClasses: { [k: string]: boolean } = {};
-
-	let alertsSnackbar: Snackbar;
-	let transactionSnackbar: Snackbar;
+	let snackbarOpen = false;
+	let transactionSnackbarOpen = false;
 	let snackbarTransactionMessage: string;
 	let snackbarMessage: string;
 
@@ -42,7 +38,7 @@
 		if (!transaction) return;
 
 		snackbarTransactionMessage = 'New Transaction submitted';
-		transactionSnackbar?.open();
+		transactionSnackbarOpen = true;
 	});
 	alertMessage.subscribe((message) => {
 		if (!message) return;
@@ -50,12 +46,24 @@
 		if (typeof message === 'string') snackbarMessage = message;
 		else snackbarMessage = message.message;
 
-		alertsSnackbar?.open();
+		snackbarOpen = true;
 
 		setTimeout(() => {
-			alertsSnackbar?.close();
+			snackbarOpen = false;
 		}, 5000);
 	});
+
+	function handleTransactionAction() {
+		if ($alertTransaction) {
+			window.open(explorerTransactionUrl($alertTransaction), '_blank');
+		}
+	}
+
+	function handleAlertAction() {
+		if ($alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action) {
+			$alertMessage.action.callback();
+		}
+	}
 </script>
 
 <svelte:head>
@@ -63,82 +71,49 @@
 </svelte:head>
 
 <div class="container">
-	<TopAppBar variant="static">
-		<div
-			class={Object.keys(anchorClasses).join(' ')}
-			use:Anchor={{
-				addClass: (className) => {
-					if (!anchorClasses[className]) {
-						anchorClasses[className] = true;
-					}
-				},
-				removeClass: (className) => {
-					if (anchorClasses[className]) {
-						delete anchorClasses[className];
-						anchorClasses = anchorClasses;
-					}
-				}
-			}}
-			bind:this={anchor}
-		>
-			<Row>
-				<Section>
-					<Title>
-						<a class="link-logo" href="/">
-							<Logo />
-							<span>Meta Names</span>
-							{#if isTestnet}
-								<span class="testnet">TESTNET</span>
-							{/if}
-						</a>
-					</Title>
-				</Section>
-
-				<Section align="end" toolbar>
-					<WalletConnect {anchor} />
-				</Section>
-			</Row>
+	<Navbar>
+		<a slot="start" class="link-logo" href="/">
+			<Logo />
+			<span>Meta Names</span>
+			{#if isTestnet}
+				<span class="testnet">TESTNET</span>
+			{/if}
+		</a>
+		<div slot="end">
+			<WalletConnect />
 		</div>
-	</TopAppBar>
+	</Navbar>
 
 	<main>
 		{#if contractDisabled}
 			<Banner open={true} centered={true} mobileStacked={true}>
-				<div class="icon-center" slot="icon">
+				<div slot="icon">
 					<Icon icon="system-update" width="25px" height="25px" color="white" />
 				</div>
-				<Label slot="label">Contract is temporarily disabled for updates</Label>
-				<svelte:fragment slot="actions">
-					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
-				</svelte:fragment>
+				<div slot="label">Contract is temporarily disabled for updates</div>
+				<div slot="actions">
+					<Button href="https://t.me/mpc_metanames" target="_blank" variant="secondary">Check status</Button>
+				</div>
 			</Banner>
 		{/if}
 		<slot />
 	</main>
 
-	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
-		<Label>{snackbarTransactionMessage}</Label>
-		<Actions>
-			<Button
-				on:click={() =>
-					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
-				>View</Button
-			>
-			<IconButton title="Dismiss" aria-label="close">
-				<Icon icon="close" />
-			</IconButton>
-		</Actions>
+	<Snackbar bind:open={transactionSnackbarOpen} timeoutMs={10_000}>
+		<div slot="label">{snackbarTransactionMessage}</div>
+		<div slot="actions">
+			<Button on:click={handleTransactionAction}>View</Button>
+			<IconButton icon="close" aria-label="close" />
+		</div>
 	</Snackbar>
-	<Snackbar bind:this={alertsSnackbar}>
-		<Label>{snackbarMessage}</Label>
-		<Actions>
+	<Snackbar bind:open={snackbarOpen}>
+		<div slot="label">{snackbarMessage}</div>
+		<div slot="actions">
 			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
-				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
+				<Button on:click={handleAlertAction}>{$alertMessage.action.label}</Button>
 			{/if}
-			<IconButton title="Dismiss" aria-label="close">
-				<Icon icon="close" />
-			</IconButton>
-		</Actions>
+			<IconButton icon="close" aria-label="close" />
+		</div>
 	</Snackbar>
 	<Footer />
 </div>
@@ -154,19 +129,21 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		background-color: var(--mdc-theme-background);
+		background-color: var(--bg-primary);
 		flex-grow: 1;
+		width: 100%;
 	}
 
 	@media only screen and (max-width: 768px) {
 		main {
 			display: flex;
 			flex-direction: column;
-			background-color: var(--mdc-theme-background);
+			background-color: var(--bg-primary);
 		}
 	}
+
 	.testnet {
-		background-color: var(--mdc-theme-background);
+		background: var(--bg-card);
 		font-weight: bold;
 		font-size: x-small;
 		line-height: 1.5rem;
@@ -179,15 +156,15 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-
 		text-decoration: none;
-		color: inherit;
+		color: var(--text-primary);
+		gap: 0.5rem;
 	}
 
 	.separator {
 		width: 1px;
 		height: 1.5rem;
-		background-color: var(--mdc-theme-on-primary);
+		background-color: var(--text-secondary);
 		margin: 0 1rem;
 	}
 
