@@ -47,6 +47,7 @@
 | 6 | 2026-03-16 11:12 | Build Fix - SDK Import | ✅ Done | Fixed @partisiablockchain/abi-client v5 imports (AbiOutputBytes→AbiBitOutput, FnRpcBuilder→RpcBuilder). Build passes in 23.30s. |
 | 7 | 2026-03-16 11:12 | Dependencies - npm | ✅ Done | Switched from yarn to npm (yarn corepack fails in container). Added package-lock.json. |
 | 8 | 2026-03-16 15:02 | Components - Card/Input/Radio | ✅ Done | Created CircularProgress, Radio, IconButton. Updated transfer/profile/tld-migration pages. Build passes. |
+| 9 | 2026-03-16 19:02 | DomainSearch SMUI Replacement | ✅ Done | Replaced SMUI Card, CircularProgress, Textfield, IconButton with custom components. Updated Input for variant/autofocus support. Build passes in 24.13s. |
 
 ---
 
