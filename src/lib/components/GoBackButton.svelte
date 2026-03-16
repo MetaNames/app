@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Button from '@smui/button';
+	import Button from '$lib/components/Button.svelte';
 
 	function goBackInHistory() {
 		history.back();
 	}
 </script>
 
-<Button variant="raised" on:click={goBackInHistory}>Go back</Button>
+<Button variant="primary" on:click={goBackInHistory}>Go back</Button>

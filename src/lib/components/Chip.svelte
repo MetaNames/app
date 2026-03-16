@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte';
-	import Button, { Label } from '@smui/button';
+	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { writable } from 'svelte/store';
 
@@ -28,13 +28,11 @@
 	export { className as class };
 </script>
 
-<Button on:click={action} variant="outlined" class={`chip ${className || ''}`}>
-	<Label>
-		<div class="container">
-			<span class="label">{label}</span>
-			<span class="value" class:ellipsis>{value}</span>
-		</div>
-	</Label>
+<Button variant="secondary" on:click={action} class={`chip ${className || ''}`}>
+	<div class="container">
+		<span class="label">{label}</span>
+		<span class="value" class:ellipsis>{value}</span>
+	</div>
 	{#if $icon === 'done'}
 		<Icon icon="done" align="right" />
 	{:else if $icon === 'open-in-new'}
@@ -56,7 +54,7 @@
 
 			.value {
 				margin-left: 0.5rem;
-				color: var(--mdc-theme-text-primary-on-background);
+				color: var(--text-primary);
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;

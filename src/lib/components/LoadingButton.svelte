@@ -1,9 +1,8 @@
 <script lang="ts">
+	import Button from '$lib/components/Button.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import { alertMessage } from '$lib/stores/main';
 	import { captureException } from '@sentry/sveltekit';
-	import Button, { Label } from '@smui/button';
-	import Icon from '$lib/components/Icon.svelte';
-	import CircularProgress from '@smui/circular-progress';
 	import { onDestroy } from 'svelte';
 
 	let className = '';
@@ -19,7 +18,7 @@
 		alertMessage.set(message);
 	};
 	export let disabled = false;
-	export let variant: 'text' | 'raised' | 'unelevated' | 'outlined' = 'raised';
+	export let variant: 'primary' | 'secondary' | 'text' = 'primary';
 
 	$: isDisabled = disabled || loading;
 
@@ -60,27 +59,13 @@
 	class={className}
 	disabled={isDisabled}
 	on:click={handleClick}
-	{variant}
-	aria-busy={loading}
+	variant={variant}
+	loading={loading === true}
 >
-	<Label><slot /></Label>
-	{#if loading}
-		<div class="loading" role="status" aria-label="Loading">
-			<CircularProgress style="height: 20px; width: 20px;" indeterminate />
-		</div>
-	{:else if hasError}
+	{#if hasError}
 		<Icon icon="error" align="right" aria-label="Error" />
 	{:else if loading === false}
 		<Icon icon="done" align="right" aria-label="Success" />
 	{/if}
+	<slot />
 </Button>
-
-<style lang="scss">
-	.loading {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		margin-left: 1rem;
-	}
-</style>

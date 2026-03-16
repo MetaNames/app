@@ -6,12 +6,12 @@
 	import { InsufficientBalanceError } from 'src/lib/error';
 	import { writable } from 'svelte/store';
 
-	import { Label } from '@smui/button';
 	import Icon from '$lib/components/Icon.svelte';
-	import Card, { Content } from '@smui/card';
-	import CircularProgress from '@smui/circular-progress';
-	import IconButton from '@smui/icon-button';
-	import Select, { Option } from '@smui/select';
+	import Card from '$lib/components/Card.svelte';
+	import CircularProgress from '$lib/components/CircularProgress.svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
+	import Select from '$lib/components/Select.svelte';
+	import Option from '$lib/components/Option.svelte';
 	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
 	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
@@ -38,8 +38,8 @@
 
 	const totalFees = writable(0);
 
-	const totalFeesLabel = (label: number, years: number) => {
-		const total = label * years;
+	const totalFeesLabel = (feesValue: number, years: number) => {
+		const total = feesValue * years;
 		totalFees.set(total);
 
 		return Math.ceil(total * 10000) / 10000;
@@ -97,71 +97,69 @@
 </script>
 
 <Card class="domain-container">
-	<Content>
-		<div class="card-content">
-			<h4>{domainName}</h4>
+	<div class="card-content">
+		<h4>{domainName}</h4>
 
-			<div class="years">
-				<IconButton
-					on:click={() => addYears(-1)}
-					disabled={years === 1 || feesApproved}
-					aria-label="remove-year"
-				>
-					<Icon icon="remove" />
-				</IconButton>
-				<span>{years} {yearsLabel}</span>
-				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
-					<Icon icon="add" />
-				</IconButton>
-			</div>
-
-			<div class="coin">
-				<p class="title text-center">Payment token</p>
-				<div class="row centered">
-					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
-						{#each availableCoins as coin}
-							<Option value={coin.symbol}>{coin.symbol}</Option>
-						{/each}
-					</Select>
-				</div>
-			</div>
-			<div class="fees">
-				<p class="title text-center">Price breakdown</p>
-				{#await loadFees}
-					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-				{:then fees}
-					{#if 'symbol' in fees}
-						<div class="row">
-							<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
-							<span>{fees.feesLabel} {fees.symbol}</span>
-						</div>
-						<div class="row" data-testid="total-fees">
-							<span>Total (excluding network fees)</span>
-							<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
-						</div>
-					{/if}
-				{/await}
-			</div>
-
-			<ConnectionRequired class="mt-1">
-				<div class="submit">
-					<LoadingButton
-						disabled={feesApproved}
-						onClick={approveFees}
-						onError={handleApproveError}
-						variant="raised"
-					>
-						<Label>Approve fees</Label>
-					</LoadingButton>
-				</div>
-				<div class="submit mt-1">
-					<LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
-						<Label>{paymentLabel}</Label>
-					</LoadingButton>
-				</div>
-			</ConnectionRequired>
+		<div class="years">
+			<IconButton
+				on:click={() => addYears(-1)}
+				disabled={years === 1 || feesApproved}
+				aria-label="remove-year"
+			>
+				<Icon icon="remove" />
+			</IconButton>
+			<span>{years} {yearsLabel}</span>
+			<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+				<Icon icon="add" />
+			</IconButton>
 		</div>
-	</Content>
+
+		<div class="coin">
+			<p class="title text-center">Payment token</p>
+			<div class="row centered">
+				<Select bind:value={$selectedCoin} label="Select Token">
+					{#each availableCoins as coin}
+						<Option value={coin.symbol}>{coin.symbol}</Option>
+					{/each}
+				</Select>
+			</div>
+		</div>
+		<div class="fees">
+			<p class="title text-center">Price breakdown</p>
+			{#await loadFees}
+				<CircularProgress size={32} />
+			{:then fees}
+				{#if 'symbol' in fees}
+					<div class="row">
+						<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
+						<span>{fees.feesLabel} {fees.symbol}</span>
+					</div>
+					<div class="row" data-testid="total-fees">
+						<span>Total (excluding network fees)</span>
+						<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
+					</div>
+				{/if}
+			{/await}
+		</div>
+
+		<ConnectionRequired class="mt-1">
+			<div class="submit">
+				<LoadingButton
+					disabled={feesApproved}
+					onClick={approveFees}
+					onError={handleApproveError}
+					variant="primary"
+				>
+					Approve fees
+				</LoadingButton>
+			</div>
+			<div class="submit mt-1">
+				<LoadingButton disabled={!feesApproved} onClick={pay} variant="primary">
+					{paymentLabel}
+				</LoadingButton>
+			</div>
+		</ConnectionRequired>
+	</div>
 </Card>
 
 <style lang="scss">
