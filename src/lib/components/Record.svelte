@@ -1,15 +1,13 @@
 <script lang="ts">
-	import Button, { Label } from '@smui/button';
-	import Dialog, { Title, Content, Actions } from '@smui/dialog';
-	import IconButton from '@smui/icon-button';
-	import CharacterCounter from '@smui/textfield/character-counter';
-	import Textfield from '@smui/textfield';
+	import Button from '$lib/components/Button.svelte';
+	import Dialog from '$lib/components/Dialog.svelte';
+	import IconButton from '$lib/components/IconButton.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 
 	import type { RecordRepository } from '@metanames/sdk';
 	import { alertMessage, refresh, walletConnected } from '$lib/stores/main';
 	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
-	import HelperText from '@smui/textfield/helper-text';
 
 	export let klass: string;
 	export let value: string;
@@ -55,38 +53,35 @@
 <div class="record-container {editMode ? 'edit' : ''}">
 	<Dialog
 		bind:open={dialogOpen}
-		aria-labelledby="confirmation-title"
-		aria-describedby="confirmation-content"
+		title="Confirm action"
 	>
-		<Title id="simple-title">Confirm action</Title>
-		<Content id="simple-content">Do you really want to remove the record?</Content>
-		<Actions>
-			<Button>
-				<Label>No</Label>
+		<p>Do you really want to remove the record?</p>
+		<svelte:fragment slot="actions">
+			<Button variant="secondary" on:click={() => dialogOpen = false}>
+				No
 			</Button>
-			<Button on:click={destroy}>
-				<Label>Yes</Label>
+			<Button variant="primary" on:click={destroy}>
+				Yes
 			</Button>
-		</Actions>
+		</svelte:fragment>
 	</Dialog>
 	<label for={label}>{label}</label>
 	<div class="value">
-		<Textfield
-			for={label}
-			input$maxlength={maxLength}
+		<Input
+			id={label}
+			type="textarea"
+			maxlength={maxLength}
 			bind:value={recordValue}
-			bind:invalid
-			variant="outlined"
-			textarea
+			error={errors.length > 0 ? errors.join(', ') : ''}
 			{disabled}
 		>
 			<svelte:fragment slot="helper">
 				{#if errors.length > 0}
-					<HelperText slot="helper">{errors.join(', ')}</HelperText>
+					<span class="helper-text error">{errors.join(', ')}</span>
 				{/if}
 			</svelte:fragment>
-			<CharacterCounter slot="internalCounter">0 / {maxLength}</CharacterCounter>
-		</Textfield>
+		</Input>
+		<span class="counter">0 / {maxLength}</span>
 	</div>
 	{#if edit}
 		<div class="actions">
@@ -133,6 +128,19 @@
 			:global(> *) {
 				width: 100%;
 			}
+		}
+
+		.counter {
+			display: block;
+			text-align: right;
+			font-size: 0.75rem;
+			color: var(--text-muted);
+			margin-top: 0.25rem;
+		}
+
+		.helper-text {
+			font-size: 0.75rem;
+			color: #ef4444;
 		}
 
 		:global(textarea:disabled) {
