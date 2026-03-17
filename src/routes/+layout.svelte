@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { dev } from '$app/environment';
+	import { page } from '$app/stores';
+	import { fade } from 'svelte/transition';
 
 	import { inject } from '@vercel/analytics';
 	// import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
@@ -96,7 +98,11 @@
 				</div>
 			</Banner>
 		{/if}
-		<slot />
+		{#key $page.url.pathname}
+			<div in:fade={{ duration: 200, delay: 200 }} out:fade={{ duration: 200 }}>
+				<slot />
+			</div>
+		{/key}
 	</main>
 
 	<Snackbar bind:open={transactionSnackbarOpen} timeoutMs={10_000}>

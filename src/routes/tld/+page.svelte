@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Domain from '$lib/components/Domain.svelte';
+	import { reveal } from '$lib/actions/reveal';
 
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { Domain as DomainModel, type IDomain } from '@metanames/sdk';
@@ -24,7 +25,9 @@
 </svelte:head>
 
 <div class="content domain">
-	<Domain {domain} isTld={true} />
+	<div use:reveal={{ delay: 0, threshold: 0.1 }}>
+		<Domain {domain} isTld={true} />
+	</div>
 </div>
 
 <style lang="scss">

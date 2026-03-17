@@ -2,6 +2,7 @@
 	import type { Domain } from '@metanames/sdk';
 	import { walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { reveal } from '$lib/actions/reveal';
 
 	import Card from '$lib/components/Card.svelte';
 	import Input from '$lib/components/Input.svelte';
@@ -44,31 +45,33 @@
 </script>
 
 <div class="profile content">
-	<Card class="w-100">
-		<div class="card-content">
-			<h3>Profile</h3>
-			{#if $walletConnected}
-				<Chip label="Address" value={$walletAddress || ''} />
-				<h4 class="domains">Domains</h4>
-				<div class="search-bar">
-					<Input
-						class="my-1"
-						label="Search"
-						bind:value={search}
-					>
-						<div slot="suffix" class="close-icon">
-							<IconButton on:click={cleanSearch} aria-label="cancel">
-								<Icon icon="cancel" />
-							</IconButton>
-						</div>
-					</Input>
-				</div>
-				<DomainsTable domains={domainsFiltered} {loaded} />
-			{:else}
-				<p>Connect your wallet to see your domains</p>
-			{/if}
-		</div>
-	</Card>
+	<div use:reveal={{ delay: 0, threshold: 0.1 }}>
+		<Card class="w-100">
+			<div class="card-content">
+				<h3>Profile</h3>
+				{#if $walletConnected}
+					<Chip label="Address" value={$walletAddress || ''} />
+					<h4 class="domains">Domains</h4>
+					<div class="search-bar">
+						<Input
+							class="my-1"
+							label="Search"
+							bind:value={search}
+						>
+							<div slot="suffix" class="close-icon">
+								<IconButton on:click={cleanSearch} aria-label="cancel">
+									<Icon icon="cancel" />
+								</IconButton>
+							</div>
+						</Input>
+					</div>
+					<DomainsTable domains={domainsFiltered} {loaded} />
+				{:else}
+					<p>Connect your wallet to see your domains</p>
+				{/if}
+			</div>
+		</Card>
+	</div>
 </div>
 
 <style lang="scss">
