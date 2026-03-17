@@ -7,7 +7,7 @@
 	import { writable } from 'svelte/store';
 
 	import type { IDomainAnalyzed } from '@metanames/sdk';
-	import CircularProgress from '@smui/circular-progress';
+	import CircularProgressComponent from '$lib/components/CircularProgress.svelte';
 	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
 	import { onMount } from 'svelte';
 	import DomainPayment from '$lib/components/DomainPayment.svelte';
@@ -90,7 +90,7 @@
 
 <div class="content checkout">
 	{#if $isDomainPresent === undefined}
-		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+		<CircularProgressComponent style="height: 32px; width: 32px;" indeterminate />
 	{:else}
 		<h2 class="mt-0">Register</h2>
 		{#if $isParentPresent && parentDomainName}

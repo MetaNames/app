@@ -3,8 +3,7 @@
 	import { derived } from 'svelte/store';
 
 	import Icon from '$lib/components/Icon.svelte';
-	import { Label } from '@smui/button';
-	import { Item, Text } from '@smui/list';
+	import MenuItem from './MenuItem.svelte';
 
 	import 'src/styles/wallet-connect.scss';
 	import { goto } from '$app/navigation';
@@ -22,12 +21,12 @@
 <WalletConnectButton connectButtonVariant="unelevated" {anchor}>
 	<div class="wallet-connect" slot="buttonLabel">
 		<Icon icon="wallet" align="left" />
-		<Label>{buttonLabel}</Label>
+		<span>{buttonLabel}</span>
 	</div>
 	<div slot="connectedMenuIems">
-		<Item on:SMUI:action={() => goto('/profile')}>
-			<Text>Profile</Text>
-		</Item>
+		<MenuItem onClick={() => goto('/profile')}>
+			Profile
+		</MenuItem>
 	</div>
 </WalletConnectButton>
 
@@ -35,5 +34,6 @@
 	.wallet-connect {
 		display: flex;
 		align-items: center;
+		gap: 8px;
 	}
 </style>

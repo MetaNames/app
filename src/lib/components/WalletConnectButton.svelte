@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 
-	import List, { Item, Text } from '@smui/list';
-	import Menu from '@smui/menu';
-
 	import metamaskLogo from '$lib/assets/images/metamask.png';
 	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.png';
 	import ledgerWalletLogo from '$lib/assets/images/ledger-wallet-white.png';
@@ -12,10 +9,12 @@
 	import { PartisiaLedgerClient } from '@metanames/sdk/dist/transactions/ledger';
 
 	import 'src/styles/wallet-connect.scss';
-	import Button from '@smui/button';
+	import Button from './Button.svelte';
+	import Menu from './Menu.svelte';
+	import MenuItem from './MenuItem.svelte';
 
-	let menu: Menu;
-	let toggleOpen = false;
+	let menuOpen = false;
+	let anchorElement: HTMLDivElement;
 
 	async function connectWithMetaMaskWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
@@ -30,6 +29,7 @@
 
 			const address = await getAddress(metamask);
 			walletAddress.set(address);
+			menuOpen = false;
 		} catch (e) {
 			alertMessage.set("Couldn't connect to MetaMask wallet");
 			console.log(e);
@@ -49,6 +49,7 @@
 			const client = new PartisiaLedgerClient(transport);
 			const address = await client.getAddress();
 			walletAddress.set(address);
+			menuOpen = false;
 		} catch (e) {
 			alertMessage.set("Couldn't connect to Ledger wallet");
 			console.log(e);
@@ -70,6 +71,7 @@
 
 			const address = await getAddress(client);
 			walletAddress.set(address);
+			menuOpen = false;
 		} catch (e) {
 			alertMessage.set("Couldn't connect to Partisia wallet");
 			console.log(e);
@@ -85,62 +87,50 @@
 			return sdk;
 		});
 
+		menuOpen = false;
 		return true;
 	}
 
 	function toggleMenu() {
-		toggleOpen = !toggleOpen;
-		menu.setOpen(toggleOpen);
+		menuOpen = !menuOpen;
 	}
 
-	export let anchor: HTMLDivElement;
+	export let anchor: HTMLDivElement = undefined;
 	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
 </script>
 
-<Button variant={connectButtonVariant} on:click={toggleMenu}>
-	<slot name="buttonLabel">Connect</slot>
-</Button>
-<Menu
-	bind:this={menu}
-	on:SMUIMenuSurface:closed={() => (toggleOpen = false)}
-	class="menu-floating-right"
-	anchor={true}
-	bind:anchorElement={anchor}
-	anchorCorner="BOTTOM_LEFT"
->
-	<List>
-		{#if $walletConnected}
-			<slot name="connectedMenuIems" />
-			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
-				<Text>Disconnect</Text>
-			</Item>
-		{:else}
-			<Item on:SMUI:action={connectWithMetaMaskWallet}>
-				<Text>
-					<div class="item">
-						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
-						<span>Meta Mask Wallet</span>
-					</div>
-				</Text>
-			</Item>
-			<Item on:SMUI:action={connectWithPartisiaWallet}>
-				<Text>
-					<div class="item">
-						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
-						<span>Partisia Wallet</span>
-					</div>
-				</Text>
-			</Item>
-			<Item on:SMUI:action={connectWithLedgerWallet}>
-				<Text>
-					<div class="item">
-						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
-						<span>Ledger</span>
-					</div>
-				</Text>
-			</Item>
-		{/if}
-	</List>
+<div bind:this={anchorElement}>
+	<Button variant={connectButtonVariant} on:click={toggleMenu}>
+		<slot name="buttonLabel">Connect</slot>
+	</Button>
+</div>
+
+<Menu bind:open={menuOpen} anchor={anchorElement} anchorCorner="BOTTOM_LEFT">
+	{#if $walletConnected}
+		<slot name="connectedMenuIems" />
+		<MenuItem onClick={async () => disconnectWallet()}>
+			Disconnect
+		</MenuItem>
+	{:else}
+		<MenuItem onClick={connectWithMetaMaskWallet}>
+			<div class="item">
+				<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
+				<span>Meta Mask Wallet</span>
+			</div>
+		</MenuItem>
+		<MenuItem onClick={connectWithPartisiaWallet}>
+			<div class="item">
+				<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
+				<span>Partisia Wallet</span>
+			</div>
+		</MenuItem>
+		<MenuItem onClick={connectWithLedgerWallet}>
+			<div class="item">
+				<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
+				<span>Ledger</span>
+			</div>
+		</MenuItem>
+	{/if}
 </Menu>
 
 <style lang="scss">

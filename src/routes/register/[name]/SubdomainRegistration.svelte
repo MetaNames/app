@@ -4,11 +4,10 @@
 	import { goto } from '$app/navigation';
 	import { alertMessage, walletAddress } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
-	import { Label } from '@smui/button';
-	import Card, { Content } from '@smui/card';
 	import { onMount } from 'svelte';
 
 	import { alertTransactionAndFetchResult } from '$lib';
+	import Card from '$lib/components/Card.svelte';
 	import Chip from '$lib/components/Chip.svelte';
 	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
@@ -46,31 +45,29 @@
 </script>
 
 <Card class="domain-container">
-	<Content>
-		<div class="card-content">
-			<h4 class="domain-title">{domainName}</h4>
+	<div class="card-content">
+		<h4 class="domain-title">{domainName}</h4>
 
-			<div class="content">
-				<Chip class="flex mt-2" label="Parent" value={parentDomainName} href={parentLink} />
-			</div>
+		<div class="content">
+			<Chip class="flex mt-2" label="Parent" value={parentDomainName} href={parentLink} />
+		</div>
 
-			<div class="fees">
-				<p class="title text-center">Price breakdown</p>
-				<div class="row">
-					<span>Total (excluding network fees)</span>
-					<span><b>FREE</b></span>
-				</div>
+		<div class="fees">
+			<p class="title text-center">Price breakdown</p>
+			<div class="row">
+				<span>Total (excluding network fees)</span>
+				<span><b>FREE</b></span>
 			</div>
+		</div>
 
-			<div class="submit">
-				<ConnectionRequired>
-					<LoadingButton onClick={registerDomain} variant="raised">
-						<Label>Register domain</Label>
-					</LoadingButton>
-				</ConnectionRequired>
-			</div>
-		</div></Content
-	>
+		<div class="submit">
+			<ConnectionRequired>
+				<LoadingButton onClick={registerDomain} variant="raised">
+					<span>Register domain</span>
+				</LoadingButton>
+			</ConnectionRequired>
+		</div>
+	</div>
 </Card>
 
 <style lang="scss">

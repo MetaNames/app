@@ -1,10 +1,5 @@
 <script lang="ts">
-	import Card, { Content as CardContent } from '@smui/card';
-	import CircularProgress from '@smui/circular-progress';
-	import Textfield from '@smui/textfield';
-	import HelperText from '@smui/textfield/helper-text';
 	import type { Domain as DomainModel } from '@metanames/sdk';
-	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
 	import Icon from '$lib/components/Icon.svelte';
