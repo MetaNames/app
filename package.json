@@ -3,11 +3,8 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"prepare": "echo 'SKIPPED - use npm run smui-theme-light/dark to compile themes'",
-		"smui-theme-light": "npx smui-theme compile src/styles/theme/smui.css -i src/theme",
-		"smui-theme-dark": "npx smui-theme compile src/styles/theme/smui-dark.css -i src/theme/dark",
 		"dev": "vite dev",
-		"build": "npm run smui-theme-light && npm run smui-theme-dark && vite build",
+		"build": "vite build",
 		"preview": "vite preview",
 		"test": "npm run test:integration && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
