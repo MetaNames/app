@@ -31,7 +31,7 @@ export const connectPartisia = async () => {
 
 	await sdk.connect({
 		chainId: config.chainId,
-		permissions: config.permissions as any,
+		permissions: config.permissions as string[],
 		dappName: config.dAppName
 	});
 
