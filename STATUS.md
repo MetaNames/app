@@ -57,7 +57,9 @@
 | 17 | 2026-03-17 09:05 | Project Structure - Move Components | ✅ Done | Moved Timer.svelte (tld-migration) and SubdomainRegistration.svelte (register/[name]) to src/lib/components/. Build passes. |
 | 18 | 2026-03-17 10:12 | Dependencies - Remove SMUI | ✅ Done | Removed all @smui/*, @material/*, smui-theme from package.json. Added sass. Build passes in ~21s. |
 | 19 | 2026-03-17 15:11 | TypeScript Fixes | ✅ Done | Added proper types for API route params (domains/[name], register/[name]/fees/[coin], domain/[name]/renew, domain/[name]/transfer). Fixed proposal.ts with @ts-ignore for RpcBuilder. Build passes in 20.29s. |
-| 20 | 2026-03-17 16:04 | SMUI Theme Cleanup | ✅ Done | Removed remaining SMUI theme files (smui-dark.css, smui.css, theme-overrides.scss) and imports from app.scss. Build passes.
+| 20 | 2026-03-17 16:04 | SMUI Theme Cleanup | ✅ Done | Removed remaining SMUI theme files (smui-dark.css, smui.css, theme-overrides.scss) and imports from app.scss. Build passes. |
+| 21 | 2026-03-17 19:04 | TypeScript - Wallet Types | ✅ Done | Replaced `any` with proper TypeScript interfaces (PartisiaWalletConnection, PartisiaSdkInstance) in wallet.ts. Build passes. |
+| 22 | 2026-03-17 19:04 | TypeScript - Proposal Types | ✅ Done | Replaced `any` with ContractAbi type in proposal.ts functions. Build passes. |
 
 ---
 
