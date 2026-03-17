@@ -217,6 +217,7 @@
 |------|----------|-----------|---------|
 | 2026-03-17 | Move Timer.svelte and SubdomainRegistration.svelte from routes to src/lib/components/ | Route-specific components should be in lib/components for reusability | ✅ Done - Build passes |
 | 2026-03-17 | Remove all SMUI dependencies from package.json | Custom components fully replace SMUI; packages no longer needed | ✅ Done - Build passes in ~21s |
+| 2026-03-17 | Move api.ts to src/lib/api/fetch.ts | Better organization - API utilities in dedicated folder | ✅ Done - Build passes in 20.46s |
 
 ---
 
