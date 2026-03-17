@@ -8,9 +8,17 @@ import type { ContractAbi } from '@partisiablockchain/abi-client';
 export async function GET() {
 	metaNamesSdk.setSigningStrategy('privateKey', proposalsWalletPrivateKey);
 
-	const votingContractState = await metaNamesSdk.contractRepository.getState({
-		contractAddress: config.tldMigrationProposalContractAddress
-	});
+	let votingContractState;
+	try {
+		votingContractState = await metaNamesSdk.contractRepository.getState({
+			contractAddress: config.tldMigrationProposalContractAddress
+		});
+	} catch (err) {
+		console.error('getState error:', err);
+		metaNamesSdk.resetSigningStrategy();
+		return json({ error: 'Failed to get contract state', details: String(err) }, { status: 500 });
+	}
+	
 	const fields = votingContractState.fieldsMap;
 
 	const deadline = fields.get('deadline_utc_millis')?.asBN().toNumber();
