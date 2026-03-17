@@ -7,6 +7,7 @@
 	import { actionVotePayload } from 'src/lib/proposal';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import { alertTransactionAndFetchResult, config } from 'src/lib';
+	import type { ContractAbi } from '@partisiablockchain/abi-client';
 
 	import { Doughnut } from 'svelte-chartjs';
 	import {
@@ -70,7 +71,7 @@
 		const contract = await $metaNamesSdk.contractRepository.getContract({
 			contractAddress: config.tldMigrationProposalContractAddress
 		});
-		const payload = actionVotePayload(contract.abi, selected === 'Yes');
+		const payload = actionVotePayload(contract.abi as ContractAbi, selected === 'Yes');
 		const transactionIntent = await $metaNamesSdk.contractRepository.createTransaction({
 			contractAddress: config.tldMigrationProposalContractAddress,
 			payload

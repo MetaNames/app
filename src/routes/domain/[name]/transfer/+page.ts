@@ -1,6 +1,7 @@
 import { metaNamesSdkFactory } from 'src/lib/sdk.js';
 
-export function load({ params: { name } }) {
+export function load({ params }: { params: { name: string } }) {
+	const { name } = params;
 	try {
 		const analyzed = metaNamesSdkFactory().domainRepository.analyze(name);
 		return { analyzed };

@@ -5,6 +5,7 @@ import {
 	tldMigrationProposalContractAddress
 } from 'src/lib/server/config';
 import { actionRemoveVotersPayload } from 'src/lib/proposal';
+import type { ContractAbi } from '@partisiablockchain/abi-client';
 
 export async function GET() {
 	metaNamesSdk.setSigningStrategy('privateKey', proposalsWalletPrivateKey);
@@ -31,7 +32,7 @@ export async function GET() {
 	const votingContract = await metaNamesSdk.contractRepository.getContract({
 		contractAddress: tldMigrationProposalContractAddress
 	});
-	const payload = actionRemoveVotersPayload(votingContract.abi, votersToRemove);
+	const payload = actionRemoveVotersPayload(votingContract.abi as ContractAbi, votersToRemove);
 
 	const { transactionHash } = await metaNamesSdk.contractRepository.createTransaction({
 		contractAddress: tldMigrationProposalContractAddress,

@@ -3,6 +3,7 @@ import { json } from '@sveltejs/kit';
 import { config } from 'src/lib';
 import { proposalsWalletPrivateKey } from 'src/lib/server/config';
 import { actionAddVotersPayload } from 'src/lib/proposal';
+import type { ContractAbi } from '@partisiablockchain/abi-client';
 
 export async function GET() {
 	metaNamesSdk.setSigningStrategy('privateKey', proposalsWalletPrivateKey);
@@ -29,7 +30,7 @@ export async function GET() {
 	const votingContract = await metaNamesSdk.contractRepository.getContract({
 		contractAddress: config.tldMigrationProposalContractAddress
 	});
-	const payload = actionAddVotersPayload(votingContract.abi, newVoters);
+	const payload = actionAddVotersPayload(votingContract.abi as ContractAbi, newVoters);
 
 	const { transactionHash } = await metaNamesSdk.contractRepository.createTransaction({
 		contractAddress: config.tldMigrationProposalContractAddress,

@@ -1,9 +1,9 @@
 import { apiError, handleError, metaNamesSdk } from '$lib/server';
 import type { BYOCSymbol } from '@metanames/sdk';
 import { json } from '@sveltejs/kit';
-import type { DomainFeesResponse } from 'src/lib/types';
 
-export async function GET({ params: { name, coin } }) {
+export async function GET({ params }: { params: { name: string; coin: string } }) {
+	const { name, coin } = params;
 	return handleError(async () => {
 		const validCoins = metaNamesSdk.config.byoc.map((byoc) => byoc.symbol.toString());
 		if (!validCoins.includes(coin)) return apiError('Invalid coin');
