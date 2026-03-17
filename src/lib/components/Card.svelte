@@ -19,6 +19,7 @@
 	class="card card-{variant} {className}"
 	class:hoverable
 	class:padded
+	{...$$restProps}
 >
 	<slot />
 </div>

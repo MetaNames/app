@@ -8,7 +8,7 @@
 
 	import type { IDomainAnalyzed } from '@metanames/sdk';
 	import CircularProgressComponent from '$lib/components/CircularProgress.svelte';
-	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
+	import SubdomainRegistration from '$lib/components/SubdomainRegistration.svelte';
 	import { onMount } from 'svelte';
 	import DomainPayment from '$lib/components/DomainPayment.svelte';
 	import { alertTransactionAndFetchResult } from 'src/lib';

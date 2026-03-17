@@ -11,7 +11,7 @@
 
 	import { createEventDispatcher } from 'svelte';
 
-	export let variant: 'primary' | 'secondary' | 'text' = 'primary';
+	export let variant: 'primary' | 'secondary' | 'text' | 'raised' = 'primary';
 	export let disabled: boolean = false;
 	export let type: 'button' | 'submit' | 'reset' = 'button';
 	export let className: string = '';
@@ -120,6 +120,23 @@
 
 	.btn-text:active:not(:disabled) {
 		transform: scale(0.98);
+	}
+
+	/* Raised variant - same as primary but with more emphasis */
+	.btn-raised {
+		background: var(--primary);
+		color: var(--text-primary);
+		box-shadow: 0 4px 14px rgba(104, 73, 254, 0.4);
+	}
+
+	.btn-raised:hover:not(:disabled) {
+		background: var(--primary-hover);
+		box-shadow: var(--shadow-glow-hover);
+		transform: translateY(-2px);
+	}
+
+	.btn-raised:active:not(:disabled) {
+		transform: translateY(0) scale(0.98);
 	}
 
 	/* Disabled state */

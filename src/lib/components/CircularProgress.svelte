@@ -10,13 +10,16 @@
 	export let color: 'primary' | 'white' = 'primary';
 	export let size: number = 40;
 	export let strokeWidth: number = 4;
+	export let style: string = '';
+	export let indeterminate: boolean = false;
 </script>
 
 <div 
 	class="circular-progress" 
 	class:color-primary={color === 'primary'}
 	class:color-white={color === 'white'}
-	style="width: {size}px; height: {size}px;"
+	class:indeterminate
+	style="width: {size}px; height: {size}px; {style}"
 >
 	<svg viewBox="0 0 {size} {size}">
 		<circle 
@@ -60,6 +63,25 @@
 
 	.progress {
 		animation: dash 1.4s ease-in-out infinite;
+	}
+
+	.indeterminate .progress {
+		animation: dash-indeterminate 1.4s ease-in-out infinite;
+	}
+
+	@keyframes dash-indeterminate {
+		0% {
+			stroke-dasharray: 1, 100;
+			stroke-dashoffset: 0;
+		}
+		50% {
+			stroke-dasharray: 50, 100;
+			stroke-dashoffset: -25;
+		}
+		100% {
+			stroke-dasharray: 50, 100;
+			stroke-dashoffset: -50;
+		}
 	}
 
 	/* Primary color */

@@ -169,13 +169,13 @@
 > Following landing page patterns: 200-300ms ease-out, scroll reveal, hover lift
 
 **Goals:**
-- [ ] Add scroll reveal animations (fade-in on viewport enter)
-- [ ] Add page transition animations
-- [ ] Add micro-interactions (button hover/press effects)
+- [x] Add scroll reveal animations (fade-in on viewport enter)
+- [x] Add page transition animations
+- [x] Add micro-interactions (button hover/press effects)
 - [ ] Add loading state animations
 - [ ] Add staggered list animations for domain lists
-- [ ] Ensure animations are performant (use CSS transforms)
-- [ ] Add `prefers-reduced-motion` support
+- [x] Ensure animations are performant (use CSS transforms)
+- [x] Add `prefers-reduced-motion` support
 
 ---
 

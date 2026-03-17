@@ -21,7 +21,7 @@
 
 	import { alertMessage } from 'src/lib/stores/main';
 	import type { PageData } from './$types';
-	import Timer from './Timer.svelte';
+	import Timer from '$lib/components/Timer.svelte';
 
 	export let data: PageData;
 

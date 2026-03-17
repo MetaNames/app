@@ -18,7 +18,7 @@
 		alertMessage.set(message);
 	};
 	export let disabled = false;
-	export let variant: 'primary' | 'secondary' | 'text' = 'primary';
+	export let variant: 'primary' | 'secondary' | 'text' | 'raised' = 'primary';
 
 	$: isDisabled = disabled || loading;
 
