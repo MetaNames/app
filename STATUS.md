@@ -6,7 +6,7 @@
 
 | Feature | Status | Tests |
 |---------|--------|-------|
-| Feature 1: Domain Search & Validation | 🔄 Next | - |
+| Feature 1: Domain Search & Validation | ✅ Done | 13 |
 | Feature 2: Wallet Connection | ⏳ Pending | - |
 | Feature 3: Domain Registration | ⏳ Pending | - |
 | Feature 4: Domain Management | ⏳ Pending | - |
@@ -22,16 +22,16 @@
 
 ## Next Task
 
-**Feature 1: Domain Search & Validation**
+**Feature 2: Wallet Connection**
 
 User Stories:
-- 1.1 Search for domain name on homepage
-- 1.2 Validate domain names before registration
-- 1.3 See domain availability status
+- 2.1 Connect wallet to the app
+- 2.2 Display wallet connection status
+- 2.3 Handle connection errors
 
 **Files to test:**
-- `src/lib/components/DomainSearch.svelte`
-- SDK domain validator functions (mock if needed)
+- `src/lib/wallet.ts`
+- Wallet store (`src/lib/stores/wallet.ts` if exists)
 
 ---
 
