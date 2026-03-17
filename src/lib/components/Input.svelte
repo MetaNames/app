@@ -102,7 +102,7 @@
 	.input-container {
 		display: flex;
 		align-items: center;
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--bg-secondary, #0f0f1a);
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
 		transition: all var(--transition-normal);
@@ -124,7 +124,7 @@
 
 	/* Variants */
 	.input-outlined {
-		background: transparent;
+		background: var(--bg-secondary, #0f0f1a);
 	}
 
 	.input-filled {
