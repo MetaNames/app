@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { alertMessage } from '$lib/stores/main';
-	import { fetchApiJson } from 'src/lib/api';
+	import { fetchApiJson } from 'src/lib/api/fetch';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import type { DomainCheckResponse, DomainPaymentParams } from 'src/lib/types';
 	import { writable } from 'svelte/store';

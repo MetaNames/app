@@ -60,6 +60,7 @@
 | 20 | 2026-03-17 16:04 | SMUI Theme Cleanup | ✅ Done | Removed remaining SMUI theme files (smui-dark.css, smui.css, theme-overrides.scss) and imports from app.scss. Build passes. |
 | 21 | 2026-03-17 19:04 | TypeScript - Wallet Types | ✅ Done | Replaced `any` with proper TypeScript interfaces (PartisiaWalletConnection, PartisiaSdkInstance) in wallet.ts. Build passes. |
 | 22 | 2026-03-17 19:04 | TypeScript - Proposal Types | ✅ Done | Replaced `any` with ContractAbi type in proposal.ts functions. Build passes. |
+| 23 | 2026-03-17 20:04 | TypeScript - Wallet Permissions | ✅ Done | Fixed `as any` cast on config.permissions in wallet.ts (changed to `as string[]`). Build passes in 20.42s. |
 
 ---
 

@@ -15,7 +15,7 @@
 	import ConnectionRequired from '$lib/components/ConnectionRequired.svelte';
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
 	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
-	import { fetchApiJson } from 'src/lib/api';
+	import { fetchApiJson } from 'src/lib/api/fetch';
 
 	export let domainName: string;
 	export let tld: string;
