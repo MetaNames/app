@@ -6,9 +6,8 @@ import {
 } from '@partisiablockchain/abi-client';
 import { BigEndianByteOutput } from '@secata-public/bitmanipulation-ts';
 
-export const actionAddVotersPayload = (contractAbi: any, voters: string[]): Buffer => {
-	const abi = contractAbi as ContractAbi;
-	if (!abi.getFunctionByName('add_voters'))
+export const actionAddVotersPayload = (contractAbi: ContractAbi, voters: string[]): Buffer => {
+	if (!contractAbi.getFunctionByName('add_voters'))
 		throw new Error('Function add_voters not found in contract abi');
 
 	// @ts-ignore - RpcBuilder accepts ContractAbi at runtime
@@ -19,9 +18,8 @@ export const actionAddVotersPayload = (contractAbi: any, voters: string[]): Buff
 	return builderToBytesBe(rpc);
 };
 
-export const actionRemoveVotersPayload = (contractAbi: any, voters: string[]): Buffer => {
-	const abi = contractAbi as ContractAbi;
-	if (!abi.getFunctionByName('remove_voters'))
+export const actionRemoveVotersPayload = (contractAbi: ContractAbi, voters: string[]): Buffer => {
+	if (!contractAbi.getFunctionByName('remove_voters'))
 		throw new Error('Function add_voters not found in contract abi');
 
 	// @ts-ignore - RpcBuilder accepts ContractAbi at runtime
@@ -32,9 +30,8 @@ export const actionRemoveVotersPayload = (contractAbi: any, voters: string[]): B
 	return builderToBytesBe(rpc);
 };
 
-export const actionVotePayload = (contractAbi: any, vote: boolean): Buffer => {
-	const abi = contractAbi as ContractAbi;
-	if (!abi.getFunctionByName('vote'))
+export const actionVotePayload = (contractAbi: ContractAbi, vote: boolean): Buffer => {
+	if (!contractAbi.getFunctionByName('vote'))
 		throw new Error('Function vote not found in contract abi');
 
 	// @ts-ignore - RpcBuilder accepts ContractAbi at runtime
@@ -70,7 +67,8 @@ export const getVotesResult = (contractState: ScValueStruct) => {
 
 const builderToBytesBe = (rpc: RpcBuilder) => {
 	const bitOutput = new BigEndianByteOutput();
-	const abiOutputBits = new AbiBitOutput(bitOutput as any);
+	// @ts-ignore - AbiBitOutput accepts BigEndianByteOutput at runtime
+	const abiOutputBits = new AbiBitOutput(bitOutput);
 	rpc.write(abiOutputBits);
 
 	return bitOutput.toBuffer();

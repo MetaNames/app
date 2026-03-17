@@ -3,7 +3,25 @@ import type { MetaMaskSdk } from '@metanames/sdk';
 import type { AccountData } from './types';
 import { backendBrowserUrl } from './url';
 
-export type OptionalWalletClient = any | undefined | null;
+// Define proper types for wallet connections
+export interface PartisiaWalletConnection {
+	account: {
+		address: string;
+		publicKey: string;
+	};
+	chainId: string;
+}
+
+export interface PartisiaSdkInstance {
+	connection: PartisiaWalletConnection | null;
+	connect: (options: {
+		chainId: string;
+		permissions: string[];
+		dappName: string;
+	}) => Promise<void>;
+}
+
+export type OptionalWalletClient = PartisiaSdkInstance | MetaMaskSdk | undefined | null;
 
 const metaMaskSnapId = 'npm:@partisiablockchain/snap';
 
