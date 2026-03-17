@@ -50,6 +50,7 @@
 | 9 | 2026-03-16 19:02 | DomainSearch SMUI Replacement | ✅ Done | Replaced SMUI Card, CircularProgress, Textfield, IconButton with custom components. Updated Input for variant/autofocus support. Build passes in 24.13s. |
 | 10 | 2026-03-16 20:07 | SMUI Button Replacement | ✅ Done | Replaced SMUI Button in GoBackButton, LoadingButton, Chip. Replaced SMUI Card/Dialog/Input/Select in DomainPayment, Record. Build passes in 23.92s. |
 | 11 | 2026-03-16 22:08 | Domain.svelte SMUI Replacement | ✅ Done | Created TabBar.svelte, replaced SMUI Card/Paper/Tab/TabBar/Button with custom components. Build passes in 23.91s. |
+| 12 | 2026-03-17 01:05 | DomainsTable SMUI Replacement | ✅ Done | Created LinearProgress.svelte, replaced @smui/data-table with custom HTML table. Added sorting/pagination. Build passes in ~20s. |
 
 ---
 
