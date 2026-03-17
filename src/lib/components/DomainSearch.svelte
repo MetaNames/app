@@ -43,11 +43,21 @@
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
-		const result = await $metaNamesSdk.domainRepository.find(domainName);
+		try {
+			const result = await $metaNamesSdk.domainRepository.find(domainName);
 
-		if (currentRequestId === requestId) {
-			domain = result;
-			isLoading = false;
+			if (currentRequestId === requestId) {
+				domain = result;
+			}
+		} catch (error) {
+			console.error('Domain search error:', error);
+			if (currentRequestId === requestId) {
+				domain = null;
+			}
+		} finally {
+			if (currentRequestId === requestId) {
+				isLoading = false;
+			}
 		}
 	}
 
