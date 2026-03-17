@@ -1,9 +1,20 @@
+<script context="module" lang="ts">
+	import type { Domain as DomainModel } from '@metanames/sdk';
+
+	type CacheEntry = {
+		domain: DomainModel | null | undefined;
+		timestamp: number;
+	};
+
+	const searchCache = new Map<string, CacheEntry>();
+	const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+</script>
+
 <script lang="ts">
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from '@metanames/sdk';
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
@@ -42,6 +53,14 @@
 
 		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		const cachedItem = searchCache.get(nameSearched);
+		if (cachedItem && Date.now() < cachedItem.timestamp + CACHE_TTL) {
+			domain = cachedItem.domain;
+			isLoading = false;
+			return;
+		}
+
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
@@ -49,6 +68,7 @@
 		if (currentRequestId === requestId) {
 			domain = result;
 			isLoading = false;
+			searchCache.set(nameSearched, { domain, timestamp: Date.now() });
 		}
 	}
 
