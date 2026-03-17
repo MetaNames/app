@@ -215,7 +215,7 @@
 
 | Date | Decision | Rationale | Outcome |
 |------|----------|-----------|---------|
-| | | | |
+| 2026-03-17 | Move Timer.svelte and SubdomainRegistration.svelte from routes to src/lib/components/ | Route-specific components should be in lib/components for reusability | ✅ Done - Build passes |
 
 ---
 
