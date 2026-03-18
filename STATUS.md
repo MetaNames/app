@@ -14,7 +14,7 @@
 | Feature 6: Domain Transfer | ✅ Done | 14 |
 | Feature 7: DNS Records | ✅ Done | 29 |
 | Feature 8: Types & URL Helpers | ✅ Done | 23 |
-| Feature 9: API Endpoints | ⏳ Pending | - |
+| Feature 9: API Endpoints | ✅ Done | 10 |
 | Feature 10: UI Components | ⏳ Pending | - |
 | Feature 12: Utility Functions | ✅ Done | 13 |
 
@@ -40,9 +40,10 @@ Server-side API route tests for:
 
 ## Test Summary
 
-- Total tests: 129 (all passing)
-- Test files: 11
-  - `src/lib/types.test.ts` (23 tests) ✨ NEW
+- Total tests: 139 (all passing)
+- Test files: 12
+  - `src/lib/api-endpoints.test.ts` (10 tests) ✨ NEW
+  - `src/lib/types.test.ts` (23 tests)
   - `src/lib/domain-search.test.ts` (4 tests)
   - `src/lib/domain-validator.test.ts` (8 tests)
   - `src/lib/wallet.test.ts` (6 tests)
