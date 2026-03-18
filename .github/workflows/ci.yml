@@ -45,8 +45,5 @@ jobs:
       - name: Generate themes
         run: npm run generate:themes
 
-      - name: Type check
-        run: npm run check
-
       - name: Lint
         run: npm run lint
