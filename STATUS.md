@@ -9,7 +9,7 @@
 | Feature 1: Domain Search & Validation | ✅ Done | 13 |
 | Feature 2: Wallet Connection | ✅ Done | 6 |
 | Feature 3: Domain Registration | ✅ Done | 9 |
-| Feature 4: Domain Management | ⏳ Pending | - |
+| Feature 4: Domain Management | ✅ Done | 16 |
 | Feature 5: Domain Renewal | ⏳ Pending | - |
 | Feature 6: Domain Transfer | ⏳ Pending | - |
 | Feature 7: DNS Records | ⏳ Pending | - |
@@ -44,10 +44,11 @@ User Stories:
 
 ## Test Summary
 
-- Total tests: 28 (all passing)
-- Test files: 5
+- Total tests: 44 (all passing)
+- Test files: 6
   - `src/lib/domain-search.test.ts` (4 tests)
   - `src/lib/domain-validator.test.ts` (8 tests)
   - `src/lib/wallet.test.ts` (6 tests)
   - `src/lib/domain-registration.test.ts` (9 tests)
+  - `src/lib/proposal.test.ts` (16 tests)
   - `src/index.test.ts` (1 test)
