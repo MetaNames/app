@@ -17,7 +17,7 @@
 | Feature 6: Domain Transfer | ⏳ Pending | 2 | - |
 | Feature 7: DNS Records | ⏳ Pending | 4 | - |
 | Feature 8: User Profile | ⏳ Pending | 3 | - |
-| Feature 9: API Endpoints | ⏳ Pending | 7 | - |
+| Feature 9: API Endpoints | ⚠️ Written (ABI blocked) | 7 | Tests written, 1 passes in container — ABI issue blocks most endpoints |
 | Feature 10: Proposals | ⏳ Pending | 2 | - |
 
 **Total:** 37 stories (32 actionable) | **Completed:** 3 | **Progress:** 9%
@@ -26,8 +26,8 @@
 
 ## Current Iteration
 
-**Status:** Feature 3 tests written but blocked — E2E tests need Playwright browser deps (cannot install in container). Consider Feature 4 (Domain Management) or Feature 9 (API tests — no browser needed).
-**Next story:** 3.1 - Register available domain
+**Status:** Feature 9 tests written (API endpoints). Most blocked by ABI issue — only /api/domains/recent passes. Next: Feature 4 (Domain Management) or Feature 10 (Proposals — no contract calls).
+**Next story:** 4.1 - View domain details
 
 ---
 
@@ -38,6 +38,7 @@
 | 1 | 2026-03-18 | Feature 1: Domain Search | 3 | Merged into `integration-tests` |
 | 2 | 2026-03-18 | Feature 2: Wallet Connection | - | Skipped — cannot test browser extensions |
 | 3 | 2026-03-18 | Feature 3: Domain Registration | 6 | Tests written but blocked — missing Playwright browser deps in container |
+| 4 | 2026-03-18 | Feature 9: API Endpoints | 7 | Tests written, 1/7 passes — ABI client issue blocks most endpoints |
 
 ---
 
@@ -54,16 +55,16 @@
 tests/
 ├── e2e/
 │   ├── domain-search.spec.ts        ✅ Feature 1 (3 tests)
-│   ├── domain-registration.spec.ts ⏳ Feature 3 (pending)
-│   ├── domain-management.spec.ts     ⏳ Feature 4 (pending)
+│   ├── domain-registration.spec.ts ⚠️ Feature 3 (6 tests, E2E blocked)
+│   ├── domain-management.spec.ts    ⏳ Feature 4 (pending)
 │   ├── domain-renewal.spec.ts       ⏳ Feature 5 (pending)
 │   ├── domain-transfer.spec.ts      ⏳ Feature 6 (pending)
 │   ├── dns-records.spec.ts         ⏳ Feature 7 (pending)
 │   ├── profile.spec.ts             ⏳ Feature 8 (pending)
 │   └── proposals.spec.ts           ⏳ Feature 10 (pending)
 └── api/
-    ├── domains.spec.ts            ⏳ Feature 9 (pending)
-    └── fees.spec.ts               ⏳ Feature 9 (pending)
+    ├── domains.spec.ts             ⚠️ Feature 9 (4 tests, 1 passes)
+    └── fees.spec.ts                ⚠️ Feature 9 (3 tests, 1 passes)
 ```
 
 ---
