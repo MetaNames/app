@@ -13,8 +13,8 @@
 | Feature 2: Wallet Connection | ❌ Skipped | 5 | Cannot test browser extensions in Playwright |
 | Feature 3: Domain Registration | ⚠️ Written (blocked) | 6 | Tests written, cannot run — missing Playwright browser deps in container |
 | Feature 4: Domain Management | ⚠️ Written (blocked) | 4 | E2E blocked by browser deps; tests written, run in CI |
-| Feature 5: Domain Renewal | ⏳ Pending | 2 | - |
-| Feature 6: Domain Transfer | ⏳ Pending | 2 | - |
+| Feature 5: Domain Renewal | ⚠️ Written (blocked) | 2 | Tests written, E2E blocked by browser deps in container |
+| Feature 6: Domain Transfer | ⚠️ Written (blocked) | 2 | Tests written, E2E blocked by browser deps in container |
 | Feature 7: DNS Records | ⏳ Pending | 4 | - |
 | Feature 8: User Profile | ⏳ Pending | 3 | - |
 | Feature 9: API Endpoints | ⚠️ Written (ABI blocked) | 7 | Tests written, 1 passes in container — ABI issue blocks most endpoints |
@@ -26,8 +26,8 @@
 
 ## Current Iteration
 
-**Status:** Feature 4 tests written (E2E blocked by browser deps). Next: Feature 5 (Domain Renewal) or Feature 6 (Domain Transfer — no contract calls needed for basic UI). Consider Feature 9 improvements for API tests that pass.
-**Next story:** 5.1 - Renew domain
+**Status:** Features 5 & 6 tests written (E2E blocked by browser deps). All E2E tests need CI environment with browser deps. Next: Feature 7 (DNS Records) or Feature 8 (User Profile) — no contract calls needed, pure UI flows.
+**Next story:** 7.1 - Add DNS record
 
 ---
 
@@ -39,6 +39,8 @@
 | 2 | 2026-03-18 | Feature 2: Wallet Connection | - | Skipped — cannot test browser extensions |
 | 3 | 2026-03-18 | Feature 3: Domain Registration | 6 | Tests written but blocked — missing Playwright browser deps in container |
 | 5 | 2026-03-18 | Feature 4: Domain Management | 4 | Tests written, E2E blocked by browser deps in container — will run in CI |
+
+| 6 | 2026-03-18 | Feature 6: Domain Transfer | 2 | Tests written, E2E blocked by browser deps in container |
 
 ---
 
@@ -57,14 +59,14 @@ tests/
 │   ├── domain-search.spec.ts        ✅ Feature 1 (3 tests)
 │   ├── domain-registration.spec.ts ⚠️ Feature 3 (6 tests, E2E blocked)
 │   ├── domain-management.spec.ts    ⚠️ Feature 4 (4 tests, E2E blocked)
-│   ├── domain-renewal.spec.ts       ⏳ Feature 5 (pending)
-│   ├── domain-transfer.spec.ts      ⏳ Feature 6 (pending)
+│   ├── domain-renewal.spec.ts       ⚠️ Feature 5 (2 tests, E2E blocked)
+│   ├── domain-transfer.spec.ts      ⚠️ Feature 6 (2 tests, E2E blocked)
 │   ├── dns-records.spec.ts         ⏳ Feature 7 (pending)
 │   ├── profile.spec.ts             ⏳ Feature 8 (pending)
 │   └── proposals.spec.ts           ⏳ Feature 10 (pending)
 └── api/
     ├── domains.spec.ts             ⚠️ Feature 9 (4 tests, 1 passes)
-    └── fees.spec.ts                ⚠️ Feature 9 (3 tests, 1 passes)
+    └── fees.spec.ts                ⚠️ Feature 9 (3 tests, 2 passes)
 ```
 
 ---
