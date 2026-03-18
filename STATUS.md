@@ -10,7 +10,7 @@
 | Feature 2: Wallet Connection | ✅ Done | 6 |
 | Feature 3: Domain Registration | ✅ Done | 9 |
 | Feature 4: Domain Management | ✅ Done | 16 |
-| Feature 5: Domain Renewal | ⏳ Pending | - |
+| Feature 5: Domain Renewal | ✅ Done | 6 |
 | Feature 6: Domain Transfer | ⏳ Pending | - |
 | Feature 7: DNS Records | ⏳ Pending | - |
 | Feature 8: User Profile | ⏳ Pending | - |
@@ -22,16 +22,16 @@
 
 ## Next Task
 
-**Feature 4: Domain Management**
+**Feature 6: Domain Transfer**
 
 User Stories:
-- 4.1 View domain details
-- 4.2 Edit domain records
-- 4.3 Transfer domain ownership
-- 4.4 Handle management errors
+- 6.1 Initiate domain transfer
+- 6.2 Accept domain transfer
+- 6.3 Cancel pending transfer
+- 6.4 Handle transfer errors
 
 **Files to test:**
-- Domain management functions in `src/lib/`
+- Domain transfer functions in `src/lib/`
 
 ---
 
@@ -44,12 +44,13 @@ User Stories:
 
 ## Test Summary
 
-- Total tests: 57 (all passing)
-- Test files: 7
+- Total tests: 63 (all passing)
+- Test files: 8
   - `src/lib/domain-search.test.ts` (4 tests)
   - `src/lib/domain-validator.test.ts` (8 tests)
   - `src/lib/wallet.test.ts` (6 tests)
   - `src/lib/domain-registration.test.ts` (9 tests)
   - `src/lib/proposal.test.ts` (16 tests)
   - `src/lib/utils.test.ts` (13 tests)
+  - `src/lib/api.test.ts` (6 tests)
   - `src/index.test.ts` (1 test)
