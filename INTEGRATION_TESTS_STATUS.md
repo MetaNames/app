@@ -12,7 +12,7 @@
 | Feature 1: Domain Search | ✅ Done | 3 | Merged into `integration-tests` |
 | Feature 2: Wallet Connection | ❌ Skipped | 5 | Cannot test browser extensions in Playwright |
 | Feature 3: Domain Registration | ⚠️ Written (blocked) | 6 | Tests written, cannot run — missing Playwright browser deps in container |
-| Feature 4: Domain Management | ⏳ Pending | 4 | - |
+| Feature 4: Domain Management | ⚠️ Written (blocked) | 4 | E2E blocked by browser deps; tests written, run in CI |
 | Feature 5: Domain Renewal | ⏳ Pending | 2 | - |
 | Feature 6: Domain Transfer | ⏳ Pending | 2 | - |
 | Feature 7: DNS Records | ⏳ Pending | 4 | - |
@@ -26,8 +26,8 @@
 
 ## Current Iteration
 
-**Status:** Feature 9 tests written (API endpoints). Most blocked by ABI issue — only /api/domains/recent passes. Next: Feature 4 (Domain Management) or Feature 10 (Proposals — no contract calls).
-**Next story:** 4.1 - View domain details
+**Status:** Feature 4 tests written (E2E blocked by browser deps). Next: Feature 5 (Domain Renewal) or Feature 6 (Domain Transfer — no contract calls needed for basic UI). Consider Feature 9 improvements for API tests that pass.
+**Next story:** 5.1 - Renew domain
 
 ---
 
@@ -38,7 +38,7 @@
 | 1 | 2026-03-18 | Feature 1: Domain Search | 3 | Merged into `integration-tests` |
 | 2 | 2026-03-18 | Feature 2: Wallet Connection | - | Skipped — cannot test browser extensions |
 | 3 | 2026-03-18 | Feature 3: Domain Registration | 6 | Tests written but blocked — missing Playwright browser deps in container |
-| 4 | 2026-03-18 | Feature 9: API Endpoints | 7 | Tests written, 1/7 passes — ABI client issue blocks most endpoints |
+| 5 | 2026-03-18 | Feature 4: Domain Management | 4 | Tests written, E2E blocked by browser deps in container — will run in CI |
 
 ---
 
@@ -56,7 +56,7 @@ tests/
 ├── e2e/
 │   ├── domain-search.spec.ts        ✅ Feature 1 (3 tests)
 │   ├── domain-registration.spec.ts ⚠️ Feature 3 (6 tests, E2E blocked)
-│   ├── domain-management.spec.ts    ⏳ Feature 4 (pending)
+│   ├── domain-management.spec.ts    ⚠️ Feature 4 (4 tests, E2E blocked)
 │   ├── domain-renewal.spec.ts       ⏳ Feature 5 (pending)
 │   ├── domain-transfer.spec.ts      ⏳ Feature 6 (pending)
 │   ├── dns-records.spec.ts         ⏳ Feature 7 (pending)
