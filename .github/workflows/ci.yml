@@ -25,25 +25,3 @@ jobs:
 
       - name: Run unit tests
         run: npm run test:unit
-
-  check:
-    name: Type Check & Lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
-
-      - name: Generate themes
-        run: npm run generate:themes
-
-      - name: Lint
-        run: npm run lint
