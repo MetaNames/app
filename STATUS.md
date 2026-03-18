@@ -7,7 +7,7 @@
 | Feature | Status | Tests |
 |---------|--------|-------|
 | Feature 1: Domain Search & Validation | ✅ Done | 13 |
-| Feature 2: Wallet Connection | ⏳ Pending | - |
+| Feature 2: Wallet Connection | ✅ Done | 6 |
 | Feature 3: Domain Registration | ⏳ Pending | - |
 | Feature 4: Domain Management | ⏳ Pending | - |
 | Feature 5: Domain Renewal | ⏳ Pending | - |
@@ -22,22 +22,31 @@
 
 ## Next Task
 
-**Feature 2: Wallet Connection**
+**Feature 3: Domain Registration**
 
 User Stories:
-- 2.1 Connect wallet to the app
-- 2.2 Display wallet connection status
-- 2.3 Handle connection errors
+- 3.1 Register a domain name
+- 3.2 Select registration duration (years)
+- 3.3 Choose payment token (BYOC)
+- 3.4 Handle registration errors
 
 **Files to test:**
-- `src/lib/wallet.ts`
-- Wallet store (`src/lib/stores/wallet.ts` if exists)
+- Domain registration functions in `src/lib/` (check for registration-related modules)
 
 ---
 
 ## Notes
 
 - Branch: `unit-tests` (from `main`)
-- Test command: `npm run test:unit`
-- Build command: `npm run build`
-- Always run build after adding tests
+- Test command: `pnpm test:unit`
+- Build command: `pnpm build` (⚠️ Build has pre-existing SMUI theme issue in this environment)
+- Always run tests after adding tests
+
+## Test Summary
+
+- Total tests: 19 (all passing)
+- Test files: 4
+  - `src/lib/domain-search.test.ts` (4 tests)
+  - `src/lib/domain-validator.test.ts` (8 tests)
+  - `src/lib/wallet.test.ts` (6 tests)
+  - `src/index.test.ts` (1 test)
