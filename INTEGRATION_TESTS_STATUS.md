@@ -1,7 +1,7 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-18 17:35 UTC
-> Branch: `staging`
+> Last updated: 2026-03-18 18:06 UTC
+> Branch: `integration-tests`
 
 ---
 
@@ -9,7 +9,7 @@
 
 | Feature | Status | Stories | Notes |
 |---------|--------|---------|-------|
-| Feature 1: Domain Search | ✅ Done | 3/3 | PR #188 - 3 tests written, CI needed to run |
+| Feature 1: Domain Search | ✅ Done | 3 | Merged into `integration-tests` |
 | Feature 2: Wallet Connection | ⏳ Pending | 5 | - |
 | Feature 3: Domain Registration | ⏳ Pending | 5 | - |
 | Feature 4: Domain Management | ⏳ Pending | 4 | - |
@@ -20,14 +20,13 @@
 | Feature 9: API Endpoints | ⏳ Pending | 7 | - |
 | Feature 10: Proposals | ⏳ Pending | 2 | - |
 
-**Total:** 37 stories | **Completed:** 0 | **Progress:** 0%
+**Total:** 37 stories | **Completed:** 3 | **Progress:** 8%
 
 ---
 
 ## Current Iteration
 
-**Status:** In Progress
-**Next feature:** Feature 2 - Wallet Connection
+**Status:** Ready for Feature 2 - Wallet Connection
 **Next story:** 2.1 - Connect Partisia Wallet
 
 ---
@@ -36,8 +35,7 @@
 
 | # | Date | Feature | Stories | Notes |
 |---|------|---------|---------|-------|
-| 1 | 2026-03-18 | Setup | - | Created ROADMAP.md, STATUS.md |
-| 2 | 2026-03-18 | Feature 1: Domain Search | 3/3 | PR #188 |
+| 1 | 2026-03-18 | Feature 1: Domain Search | 3 | Merged into `integration-tests` |
 
 ---
 
@@ -45,27 +43,26 @@
 
 ```
 tests/
-├── e2e/                    ✅ Created structure
-│   ├── domain-search.spec.ts
-│   ├── wallet-connect.spec.ts
-│   ├── domain-registration.spec.ts
-│   ├── domain-management.spec.ts
-│   ├── domain-renewal.spec.ts
-│   ├── domain-transfer.spec.ts
-│   ├── dns-records.spec.ts
-│   ├── profile.spec.ts
-│   └── proposals.spec.ts
+├── e2e/
+│   ├── domain-search.spec.ts        ✅ Feature 1 (3 tests)
+│   ├── wallet-connect.spec.ts       ⏳ Feature 2 (pending)
+│   ├── domain-registration.spec.ts ⏳ Feature 3 (pending)
+│   ├── domain-management.spec.ts    ⏳ Feature 4 (pending)
+│   ├── domain-renewal.spec.ts       ⏳ Feature 5 (pending)
+│   ├── domain-transfer.spec.ts      ⏳ Feature 6 (pending)
+│   ├── dns-records.spec.ts         ⏳ Feature 7 (pending)
+│   ├── profile.spec.ts             ⏳ Feature 8 (pending)
+│   └── proposals.spec.ts           ⏳ Feature 10 (pending)
 └── api/
-    ├── domains.spec.ts
-    └── fees.spec.ts
+    ├── domains.spec.ts             ⏳ Feature 9 (pending)
+    └── fees.spec.ts                ⏳ Feature 9 (pending)
 ```
 
 ---
 
 ## Known Issues
 
-- Build currently fails due to `@partisiablockchain/abi-client` import error (pre-existing, unrelated to tests) - **Use `npm run dev` instead of `npm run build` for local testing**
-- Playwright tests cannot run locally in container (missing browser deps: libnss3, libnspr4, etc.) - **CI handles this; tests committed to PR #188**
+- Build fails due to `@partisiablockchain/abi-client` import error — pre-existing, unrelated to tests. Use `npm run dev` for local testing.
 
 ---
 

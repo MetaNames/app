@@ -2,7 +2,7 @@
 
 > Document version: 1.0
 > Created: 2026-03-18
-> Branch: `staging`
+> Branch: `integration-tests`
 
 ---
 
