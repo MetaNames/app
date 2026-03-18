@@ -13,7 +13,7 @@
 | Feature 5: Domain Renewal | ✅ Done | 6 |
 | Feature 6: Domain Transfer | ✅ Done | 14 |
 | Feature 7: DNS Records | ✅ Done | 29 |
-| Feature 8: User Profile | ⏳ Pending | - |
+| Feature 8: Types & URL Helpers | ✅ Done | 23 |
 | Feature 9: API Endpoints | ⏳ Pending | - |
 | Feature 10: UI Components | ⏳ Pending | - |
 | Feature 12: Utility Functions | ✅ Done | 13 |
@@ -22,16 +22,12 @@
 
 ## Next Task
 
-**Feature 8: User Profile**
+**Feature 9: API Endpoints**
 
-User Stories:
-- 7.1 Add DNS records
-- 7.2 Update DNS records
-- 7.3 Delete DNS records
-- 7.4 View DNS history
-
-**Files to test:**
-- DNS records functions in `src/lib/`
+Server-side API route tests for:
+- Domain check endpoints
+- Domain stats endpoints
+- Registration fee endpoints
 
 ---
 
@@ -44,8 +40,9 @@ User Stories:
 
 ## Test Summary
 
-- Total tests: 106 (all passing)
-- Test files: 10
+- Total tests: 129 (all passing)
+- Test files: 11
+  - `src/lib/types.test.ts` (23 tests) ✨ NEW
   - `src/lib/domain-search.test.ts` (4 tests)
   - `src/lib/domain-validator.test.ts` (8 tests)
   - `src/lib/wallet.test.ts` (6 tests)
