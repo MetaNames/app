@@ -1,6 +1,6 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-18 18:06 UTC
+> Last updated: 2026-03-18 18:07 UTC
 > Branch: `integration-tests`
 
 ---
@@ -10,7 +10,7 @@
 | Feature | Status | Stories | Notes |
 |---------|--------|---------|-------|
 | Feature 1: Domain Search | ✅ Done | 3 | Merged into `integration-tests` |
-| Feature 2: Wallet Connection | ⏳ Pending | 5 | - |
+| Feature 2: Wallet Connection | ❌ Skipped | 5 | Cannot test browser extensions in Playwright |
 | Feature 3: Domain Registration | ⏳ Pending | 5 | - |
 | Feature 4: Domain Management | ⏳ Pending | 4 | - |
 | Feature 5: Domain Renewal | ⏳ Pending | 2 | - |
@@ -20,14 +20,14 @@
 | Feature 9: API Endpoints | ⏳ Pending | 7 | - |
 | Feature 10: Proposals | ⏳ Pending | 2 | - |
 
-**Total:** 37 stories | **Completed:** 3 | **Progress:** 8%
+**Total:** 37 stories (32 actionable) | **Completed:** 3 | **Progress:** 9%
 
 ---
 
 ## Current Iteration
 
-**Status:** Ready for Feature 2 - Wallet Connection
-**Next story:** 2.1 - Connect Partisia Wallet
+**Status:** Ready for Feature 3 - Domain Registration
+**Next story:** 3.1 - Register available domain
 
 ---
 
@@ -36,6 +36,14 @@
 | # | Date | Feature | Stories | Notes |
 |---|------|---------|---------|-------|
 | 1 | 2026-03-18 | Feature 1: Domain Search | 3 | Merged into `integration-tests` |
+| 2 | 2026-03-18 | Feature 2: Wallet Connection | - | Skipped — cannot test browser extensions |
+
+---
+
+## Skipped Features
+
+### Feature 2: Wallet Connection
+**Reason:** Cannot test browser extensions (Partisia Wallet, MetaMask, Ledger) in Playwright E2E tests. Wallet connection requires user interaction with external browser extensions which is not possible in an automated test environment. These would need manual testing or a specialized testing setup (e.g., Mocked wallet provider injected via browser context).
 
 ---
 
@@ -45,17 +53,16 @@
 tests/
 ├── e2e/
 │   ├── domain-search.spec.ts        ✅ Feature 1 (3 tests)
-│   ├── wallet-connect.spec.ts       ⏳ Feature 2 (pending)
 │   ├── domain-registration.spec.ts ⏳ Feature 3 (pending)
-│   ├── domain-management.spec.ts    ⏳ Feature 4 (pending)
+│   ├── domain-management.spec.ts     ⏳ Feature 4 (pending)
 │   ├── domain-renewal.spec.ts       ⏳ Feature 5 (pending)
 │   ├── domain-transfer.spec.ts      ⏳ Feature 6 (pending)
 │   ├── dns-records.spec.ts         ⏳ Feature 7 (pending)
 │   ├── profile.spec.ts             ⏳ Feature 8 (pending)
 │   └── proposals.spec.ts           ⏳ Feature 10 (pending)
 └── api/
-    ├── domains.spec.ts             ⏳ Feature 9 (pending)
-    └── fees.spec.ts                ⏳ Feature 9 (pending)
+    ├── domains.spec.ts            ⏳ Feature 9 (pending)
+    └── fees.spec.ts               ⏳ Feature 9 (pending)
 ```
 
 ---

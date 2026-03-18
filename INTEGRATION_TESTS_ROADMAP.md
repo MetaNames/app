@@ -24,17 +24,20 @@ Write Playwright integration tests for all MetaNames app features. Tests hit the
 | 1.2 | Validate domain names before registration | P0 |
 | 1.3 | See domain availability status | P1 |
 
-### Feature 2: Wallet Connection
+### Feature 2: Wallet Connection — SKIPPED
+
+> **Reason:** Cannot test browser extensions (Partisia Wallet, MetaMask, Ledger) in Playwright E2E tests. Wallet connection requires user interaction with external browser extensions which is not possible in an automated test environment.
+> These would need manual testing or a specialized testing setup (e.g., Mocked wallet provider injected via browser context).
 
 | ID | Story | Priority |
 |----|-------|----------|
-| 2.1 | Connect Partisia Wallet | P0 |
-| 2.2 | Connect via MetaMask | P1 |
-| 2.3 | Connect via Ledger | P2 |
-| 2.4 | Disconnect wallet | P0 |
-| 2.5 | See account balance | P1 |
+| 2.1 | Connect Partisia Wallet | N/A |
+| 2.2 | Connect via MetaMask | N/A |
+| 2.3 | Connect via Ledger | N/A |
+| 2.4 | Disconnect wallet | N/A |
+| 2.5 | See account balance | N/A |
 
-### Feature 3: Domain Registration
+### Feature 2: Domain Registration
 
 | ID | Story | Priority |
 |----|-------|----------|
@@ -44,47 +47,47 @@ Write Playwright integration tests for all MetaNames app features. Tests hit the
 | 3.4 | Register subdomain | P1 |
 | 3.5 | See registration confirmation | P0 |
 
-### Feature 4: Domain Management
+### Feature 3: Domain Management
 
 | ID | Story | Priority |
 |----|-------|----------|
-| 4.1 | View domain details | P0 |
-| 4.2 | View domain records | P0 |
-| 4.3 | See if I'm the owner | P0 |
-| 4.4 | Navigate to owner | P1 |
+| 3.1 | View domain details | P0 |
+| 3.2 | View domain records | P0 |
+| 3.3 | See if I'm the owner | P0 |
+| 3.4 | Navigate to owner | P1 |
 
-### Feature 5: Domain Renewal
-
-| ID | Story | Priority |
-|----|-------|----------|
-| 5.1 | Renew domain | P0 |
-| 5.2 | See renewal fees | P0 |
-
-### Feature 6: Domain Transfer
+### Feature 4: Domain Renewal
 
 | ID | Story | Priority |
 |----|-------|----------|
-| 6.1 | Transfer domain | P0 |
-| 6.2 | Validate recipient address | P1 |
+| 4.1 | Renew domain | P0 |
+| 4.2 | See renewal fees | P0 |
 
-### Feature 7: DNS Records
-
-| ID | Story | Priority |
-|----|-------|----------|
-| 7.1 | Add DNS record | P0 |
-| 7.2 | Edit DNS record | P0 |
-| 7.3 | Delete DNS record | P0 |
-| 7.4 | Validate record values | P1 |
-
-### Feature 8: User Profile
+### Feature 5: Domain Transfer
 
 | ID | Story | Priority |
 |----|-------|----------|
-| 8.1 | View profile | P1 |
-| 8.2 | Search domains | P1 |
-| 8.3 | Access domain from profile | P1 |
+| 5.1 | Transfer domain | P0 |
+| 5.2 | Validate recipient address | P1 |
 
-### Feature 9: API Endpoints
+### Feature 6: DNS Records
+
+| ID | Story | Priority |
+|----|-------|----------|
+| 6.1 | Add DNS record | P0 |
+| 6.2 | Edit DNS record | P0 |
+| 6.3 | Delete DNS record | P0 |
+| 6.4 | Validate record values | P1 |
+
+### Feature 7: User Profile
+
+| ID | Story | Priority |
+|----|-------|----------|
+| 7.1 | View profile | P1 |
+| 7.2 | Search domains | P1 |
+| 7.3 | Access domain from profile | P1 |
+
+### Feature 8: API Endpoints
 
 | Endpoint | Description | Priority |
 |----------|-------------|----------|
@@ -96,12 +99,12 @@ Write Playwright integration tests for all MetaNames app features. Tests hit the
 | POST /api/proposals/voters/add | Add voters | P2 |
 | POST /api/proposals/voters/remove | Remove voters | P2 |
 
-### Feature 10: Proposals
+### Feature 9: Proposals
 
 | ID | Story | Priority |
 |----|-------|----------|
-| 10.1 | View TLD migration proposal | P1 |
-| 10.2 | Vote on proposal | P2 |
+| 9.1 | View TLD migration proposal | P1 |
+| 9.2 | Vote on proposal | P2 |
 
 ---
 
@@ -110,18 +113,17 @@ Write Playwright integration tests for all MetaNames app features. Tests hit the
 ```
 tests/
 ├── e2e/
-│   ├── domain-search.spec.ts      # Feature 1
-│   ├── wallet-connect.spec.ts     # Feature 2
-│   ├── domain-registration.spec.ts # Feature 3
-│   ├── domain-management.spec.ts  # Feature 4
-│   ├── domain-renewal.spec.ts     # Feature 5
-│   ├── domain-transfer.spec.ts    # Feature 6
-│   ├── dns-records.spec.ts        # Feature 7
-│   ├── profile.spec.ts             # Feature 8
-│   └── proposals.spec.ts          # Feature 10
+│   ├── domain-search.spec.ts        # Feature 1
+│   ├── domain-registration.spec.ts  # Feature 2
+│   ├── domain-management.spec.ts     # Feature 3
+│   ├── domain-renewal.spec.ts        # Feature 4
+│   ├── domain-transfer.spec.ts       # Feature 5
+│   ├── dns-records.spec.ts          # Feature 6
+│   ├── profile.spec.ts              # Feature 7
+│   └── proposals.spec.ts            # Feature 9
 └── api/
-    ├── domains.spec.ts            # Feature 9 (API)
-    └── fees.spec.ts               # Feature 9 (API)
+    ├── domains.spec.ts             # Feature 8 (API)
+    └── fees.spec.ts                # Feature 8 (API)
 ```
 
 ---
@@ -130,8 +132,8 @@ tests/
 
 1. **E2E Tests (Playwright)**
    - Test full user flows in a real browser
-   - Mock wallet connections (no real transactions)
-   - Use `TESTNET_PRIVATE_KEY` for wallet-signing operations
+   - Mock wallet connections where possible (no real wallet extensions)
+   - Use `TESTNET_PRIVATE_KEY` for wallet-signing operations when supported
    - Test happy paths and error states
 
 2. **API Tests (Playwright/Supertest)**
@@ -148,7 +150,7 @@ tests/
 
 ## Notes
 
-- `TESTNET_PRIVATE_KEY` env var required for wallet operations
+- Wallet extension tests (Partisia, MetaMask, Ledger) are excluded — cannot automate browser extension interactions in Playwright
+- `TESTNET_PRIVATE_KEY` env var required for wallet signing tests
 - Playwright runs against `http://localhost:4173` (preview server)
 - Web server auto-started by Playwright config
-- All wallet-dependent tests skip if no TESTNET_PRIVATE_KEY set
