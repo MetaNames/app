@@ -4,8 +4,8 @@
 	"private": true,
 	"scripts": {
 		"generate:themes": "npm run smui-theme-light && npm run smui-theme-dark",
-		"smui-theme-light": "smui-theme compile src/styles/theme/smui.css -i src/theme",
-		"smui-theme-dark": "smui-theme compile src/styles/theme/smui-dark.css -i src/theme/dark",
+		"smui-theme-light": "SASS_PATH=./node_modules npx smui-theme@7.0.0 compile src/styles/theme/smui.css -i src/theme",
+		"smui-theme-dark": "SASS_PATH=./node_modules npx smui-theme@7.0.0 compile src/styles/theme/smui-dark.css -i src/theme/dark",
 		"dev": "vite dev",
 		"build": "npm run generate:themes && vite build",
 		"build:themes": "npm run generate:themes",
@@ -19,8 +19,10 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
-		"@arisbh/marqueeck": "^0.5.0",
+		"@arisbh/marqueeck": "^0.4.16",
 		"@iconify/svelte": "^4.0.2",
+		"@material/dom": "^14.0.0",
+		"@material/theme": "^14.0.0",
 		"@material/typography": "^14.0.0",
 		"@playwright/test": "^1.48.1",
 		"@smui/banner": "^7.0.0",
@@ -43,7 +45,7 @@
 		"@smui/tab-bar": "^7.0.0",
 		"@smui/textfield": "^7.0.0",
 		"@smui/top-app-bar": "^7.0.0",
-		"@sveltejs/adapter-auto": "^3.2.5",
+		"@sveltejs/adapter-auto": "^3.3.1",
 		"@sveltejs/adapter-vercel": "^5.4.5",
 		"@sveltejs/kit": "^2.55.0",
 		"@sveltejs/vite-plugin-svelte": "^3.1.2",
@@ -58,7 +60,7 @@
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.7",
 		"smui-theme": "^7.0.0",
-		"svelte": "^4.2.19",
+		"svelte": "^4.2.20",
 		"svelte-check": "^4.0.5",
 		"svelte-preprocess": "^6.0.3",
 		"tslib": "^2.8.0",
@@ -71,7 +73,6 @@
 	"type": "module",
 	"dependencies": {
 		"@ledgerhq/hw-transport-webusb": "^6.27.2",
-		"@material/theme": "^14.0.0",
 		"@metanames/sdk": "^6.3.0",
 		"@partisiablockchain/abi-client": "^5.48.0",
 		"@secata-public/bitmanipulation-ts": "^3.2.0",
