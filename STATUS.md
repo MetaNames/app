@@ -16,7 +16,7 @@
 | Feature 8: User Profile | ⏳ Pending | - |
 | Feature 9: API Endpoints | ⏳ Pending | - |
 | Feature 10: UI Components | ⏳ Pending | - |
-| Feature 12: Utility Functions | ⏳ Pending | - |
+| Feature 12: Utility Functions | ✅ Done | 13 |
 
 ---
 
@@ -44,11 +44,12 @@ User Stories:
 
 ## Test Summary
 
-- Total tests: 44 (all passing)
-- Test files: 6
+- Total tests: 57 (all passing)
+- Test files: 7
   - `src/lib/domain-search.test.ts` (4 tests)
   - `src/lib/domain-validator.test.ts` (8 tests)
   - `src/lib/wallet.test.ts` (6 tests)
   - `src/lib/domain-registration.test.ts` (9 tests)
   - `src/lib/proposal.test.ts` (16 tests)
+  - `src/lib/utils.test.ts` (13 tests)
   - `src/index.test.ts` (1 test)
