@@ -11,7 +11,7 @@
 | Feature 3: Domain Registration | ✅ Done | 9 |
 | Feature 4: Domain Management | ✅ Done | 16 |
 | Feature 5: Domain Renewal | ✅ Done | 6 |
-| Feature 6: Domain Transfer | ⏳ Pending | - |
+| Feature 6: Domain Transfer | ✅ Done | 14 |
 | Feature 7: DNS Records | ⏳ Pending | - |
 | Feature 8: User Profile | ⏳ Pending | - |
 | Feature 9: API Endpoints | ⏳ Pending | - |
@@ -22,16 +22,16 @@
 
 ## Next Task
 
-**Feature 6: Domain Transfer**
+**Feature 7: DNS Records**
 
 User Stories:
-- 6.1 Initiate domain transfer
-- 6.2 Accept domain transfer
-- 6.3 Cancel pending transfer
-- 6.4 Handle transfer errors
+- 7.1 Add DNS records
+- 7.2 Update DNS records
+- 7.3 Delete DNS records
+- 7.4 View DNS history
 
 **Files to test:**
-- Domain transfer functions in `src/lib/`
+- DNS records functions in `src/lib/`
 
 ---
 
@@ -44,12 +44,13 @@ User Stories:
 
 ## Test Summary
 
-- Total tests: 63 (all passing)
-- Test files: 8
+- Total tests: 77 (all passing)
+- Test files: 9
   - `src/lib/domain-search.test.ts` (4 tests)
   - `src/lib/domain-validator.test.ts` (8 tests)
   - `src/lib/wallet.test.ts` (6 tests)
   - `src/lib/domain-registration.test.ts` (9 tests)
+  - `src/lib/domain-transfer.test.ts` (14 tests)
   - `src/lib/proposal.test.ts` (16 tests)
   - `src/lib/utils.test.ts` (13 tests)
   - `src/lib/api.test.ts` (6 tests)
