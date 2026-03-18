@@ -9,7 +9,7 @@
 
 | Feature | Status | Stories | Notes |
 |---------|--------|---------|-------|
-| Feature 1: Domain Search | ⏳ Pending | 3 | - |
+| Feature 1: Domain Search | ✅ Done | 3/3 | PR #188 - 3 tests written, CI needed to run |
 | Feature 2: Wallet Connection | ⏳ Pending | 5 | - |
 | Feature 3: Domain Registration | ⏳ Pending | 5 | - |
 | Feature 4: Domain Management | ⏳ Pending | 4 | - |
@@ -26,9 +26,9 @@
 
 ## Current Iteration
 
-**Status:** Not started
-**Next feature:** Feature 1 - Domain Search & Validation
-**Next story:** 1.1 - Search for domain name on homepage
+**Status:** In Progress
+**Next feature:** Feature 2 - Wallet Connection
+**Next story:** 2.1 - Connect Partisia Wallet
 
 ---
 
@@ -37,6 +37,7 @@
 | # | Date | Feature | Stories | Notes |
 |---|------|---------|---------|-------|
 | 1 | 2026-03-18 | Setup | - | Created ROADMAP.md, STATUS.md |
+| 2 | 2026-03-18 | Feature 1: Domain Search | 3/3 | PR #188 |
 
 ---
 
@@ -63,7 +64,8 @@ tests/
 
 ## Known Issues
 
-- Build currently fails due to `@partisiablockchain/abi-client` import error (pre-existing, unrelated to tests)
+- Build currently fails due to `@partisiablockchain/abi-client` import error (pre-existing, unrelated to tests) - **Use `npm run dev` instead of `npm run build` for local testing**
+- Playwright tests cannot run locally in container (missing browser deps: libnss3, libnspr4, etc.) - **CI handles this; tests committed to PR #188**
 
 ---
 
