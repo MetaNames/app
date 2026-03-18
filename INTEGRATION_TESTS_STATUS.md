@@ -70,6 +70,8 @@ tests/
 ## Known Issues
 
 - Build fails due to `@partisiablockchain/abi-client` import error — pre-existing, unrelated to tests. Use `npm run dev` for local testing.
+- **Playwright browser deps missing:** Cannot install via `playwright install-deps` (requires root). Tests written but fail to launch browser in this container environment. Tests will run in proper CI/local environment with deps installed.
+- **E2E tests blocked:** All E2E tests fail at `browserType.launch` because system lacks Chromium dependencies. API tests (Feature 9) may still work as they don't need a browser.
 
 ---
 
