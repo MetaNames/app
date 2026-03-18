@@ -11,7 +11,7 @@
 |---------|--------|---------|-------|
 | Feature 1: Domain Search | ✅ Done | 3 | Merged into `integration-tests` |
 | Feature 2: Wallet Connection | ❌ Skipped | 5 | Cannot test browser extensions in Playwright |
-| Feature 3: Domain Registration | ⏳ Pending | 5 | - |
+| Feature 3: Domain Registration | ⚠️ Written (blocked) | 6 | Tests written, cannot run — missing Playwright browser deps in container |
 | Feature 4: Domain Management | ⏳ Pending | 4 | - |
 | Feature 5: Domain Renewal | ⏳ Pending | 2 | - |
 | Feature 6: Domain Transfer | ⏳ Pending | 2 | - |
@@ -26,7 +26,7 @@
 
 ## Current Iteration
 
-**Status:** Ready for Feature 3 - Domain Registration
+**Status:** Feature 3 tests written but blocked — E2E tests need Playwright browser deps (cannot install in container). Consider Feature 4 (Domain Management) or Feature 9 (API tests — no browser needed).
 **Next story:** 3.1 - Register available domain
 
 ---
@@ -37,6 +37,7 @@
 |---|------|---------|---------|-------|
 | 1 | 2026-03-18 | Feature 1: Domain Search | 3 | Merged into `integration-tests` |
 | 2 | 2026-03-18 | Feature 2: Wallet Connection | - | Skipped — cannot test browser extensions |
+| 3 | 2026-03-18 | Feature 3: Domain Registration | 6 | Tests written but blocked — missing Playwright browser deps in container |
 
 ---
 
