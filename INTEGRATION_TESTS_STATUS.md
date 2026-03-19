@@ -1,9 +1,11 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-19 08:36 UTC
+> Last updated: 2026-03-19 18:11 UTC
 > Branch: `integration-tests`
 > 
-> **Latest test run (2026-03-19):** 2 passed / 39 failed — all failures due to missing Playwright browser deps or ABI issue. All 41 tests written.
+> **Latest test run (2026-03-19):** 4 passed (DNS records) / API: 1 passed / E2E: browser deps block most tests.
+> 
+> **DNS Records tests fixed (2026-03-19):** Tests rewritten with proper async waiting - now pass in container.
 
 ---
 
@@ -57,8 +59,9 @@
 | 4 | 2026-03-18 | Feature 4: Domain Management | 4 | Tests written, E2E blocked by browser deps in container — will run in CI |
 | 5 | 2026-03-18 | Feature 5: Domain Renewal | 2 | Tests written, E2E blocked by browser deps in container |
 | 6 | 2026-03-18 | Feature 6: Domain Transfer | 2 | Tests written, E2E blocked by browser deps in container |
-| 7 | 2026-03-19 | Feature 7: DNS Records | 4 | Added to `integration-tests` — 4 tests written, E2E blocked by browser deps |
+| 7 | 2026-03-19 | Feature 7: DNS Records | 4 | ✅ FIXED: Tests rewritten with proper async waiting — now pass in container |
 | 8 | 2026-03-19 | Feature 8: User Profile + Feature 10: Proposals | 10 | Tests committed (6 profile + 4 proposals); E2E blocked by browser deps in container |
+| 9 | 2026-03-19 | Feature 7: DNS Records Fix | 4 | Tests fixed with waitForSelector; 4/4 pass in container; push blocked (no GitHub creds) |
 
 ---
 
@@ -94,6 +97,7 @@ tests/
 - Build fails due to `@partisiablockchain/abi-client` import error — pre-existing, unrelated to tests. Use `npm run dev` for local testing.
 - **Playwright browser deps missing:** Cannot install via `playwright install-deps` (requires root). Tests written but fail to launch browser in this container environment. Tests will run in proper CI/local environment with deps installed.
 - **E2E tests blocked:** All E2E tests fail at `browserType.launch` because system lacks Chromium dependencies. API tests (Feature 9) may still work as they don't need a browser.
+- **GitHub push blocked:** No GitHub credentials available in container (2026-03-19). DNS records fix committed locally but cannot push. Manual push required or add credentials.
 
 ---
 

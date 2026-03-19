@@ -13,14 +13,14 @@ vi.mock('@partisiablockchain/abi-client', async () => {
 	const actual = await vi.importActual('@partisiablockchain/abi-client');
 	return {
 		...actual,
-		FnRpcBuilder: vi.fn().mockImplementation(() => ({
+		RpcBuilder: vi.fn().mockImplementation(() => ({
 			addVec: vi.fn().mockReturnValue({
 				addAddress: vi.fn()
 			}),
 			addBool: vi.fn(),
 			write: vi.fn()
 		})),
-		AbiOutputBytes: vi.fn().mockImplementation(() => ({
+		AbiByteOutput: vi.fn().mockImplementation(() => ({
 			write: vi.fn()
 		}))
 	};
