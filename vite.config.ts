@@ -24,7 +24,7 @@ export default defineConfig({
 	],
 	css: {
 		preprocessorOptions: {
-			scss: {
+			sass: {
 				includePaths: ['./node_modules']
 			}
 		}
