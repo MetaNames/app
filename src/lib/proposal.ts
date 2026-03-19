@@ -1,10 +1,13 @@
-import abiClient from '@partisiablockchain/abi-client';
-const { FnRpcBuilder, AbiOutputBytes, ScValueStruct: ScValueStructClass } = abiClient;
-type ContractAbi = abiClient.ContractAbi;
-type ScValueStruct = InstanceType<typeof ScValueStructClass>;
+import type { ContractAbi, ScValueStruct } from '@partisiablockchain/abi-client';
 import { BigEndianByteOutput } from '@secata-public/bitmanipulation-ts';
 
-export const actionAddVotersPayload = (contractAbi: ContractAbi, voters: string[]): Buffer => {
+async function getAbiClient() {
+	const mod = await import('@partisiablockchain/abi-client');
+	return mod.default || mod;
+}
+
+export const actionAddVotersPayload = async (contractAbi: ContractAbi, voters: string[]): Promise<Buffer> => {
+	const { FnRpcBuilder } = await getAbiClient();
 	if (!contractAbi.getFunctionByName('add_voters'))
 		throw new Error('Function add_voters not found in contract abi');
 
@@ -15,7 +18,8 @@ export const actionAddVotersPayload = (contractAbi: ContractAbi, voters: string[
 	return builderToBytesBe(rpc);
 };
 
-export const actionRemoveVotersPayload = (contractAbi: ContractAbi, voters: string[]): Buffer => {
+export const actionRemoveVotersPayload = async (contractAbi: ContractAbi, voters: string[]): Promise<Buffer> => {
+	const { FnRpcBuilder } = await getAbiClient();
 	if (!contractAbi.getFunctionByName('remove_voters'))
 		throw new Error('Function add_voters not found in contract abi');
 
@@ -26,7 +30,8 @@ export const actionRemoveVotersPayload = (contractAbi: ContractAbi, voters: stri
 	return builderToBytesBe(rpc);
 };
 
-export const actionVotePayload = (contractAbi: ContractAbi, vote: boolean): Buffer => {
+export const actionVotePayload = async (contractAbi: ContractAbi, vote: boolean): Promise<Buffer> => {
+	const { FnRpcBuilder } = await getAbiClient();
 	if (!contractAbi.getFunctionByName('vote'))
 		throw new Error('Function vote not found in contract abi');
 
@@ -60,7 +65,8 @@ export const getVotesResult = (contractState: ScValueStruct) => {
 	return result;
 };
 
-const builderToBytesBe = (rpc: FnRpcBuilder) => {
+const builderToBytesBe = async (rpc: any) => {
+	const { AbiOutputBytes } = await getAbiClient();
 	const bitOutput = new BigEndianByteOutput();
 	const abiOutputBits = new AbiOutputBytes(bitOutput);
 	rpc.write(abiOutputBits);
