@@ -15,8 +15,8 @@ importers:
         specifier: ^6.3.0
         version: 6.3.0
       '@partisiablockchain/abi-client':
-        specifier: ^5.48.0
-        version: 5.310.0
+        specifier: ^6.139.0
+        version: 6.139.0
       '@secata-public/bitmanipulation-ts':
         specifier: ^3.2.0
         version: 3.4.0
@@ -1196,11 +1196,20 @@ packages:
   '@partisiablockchain/abi-client@5.310.0':
     resolution: {integrity: sha512-V5qZUwXT23i95RSb02q6I/R3xd1Pd22uIIRCnirZiYQsqd1bUCZ3RqgOWitoo1mqkcte//iJgPUcQ8qBLmIkYQ==}
 
+  '@partisiablockchain/abi-client@6.139.0':
+    resolution: {integrity: sha512-ZZGDJsd6puzh4Azni7RN+rtG4m/5nacxabvUwdKJnwYOufOl0H5KEB+1GBf/5w07YL2lblmPSGzZCh/tSrgoiA==}
+
   '@partisiablockchain/blockchain-api-transaction-client@5.214.0':
     resolution: {integrity: sha512-9ckT3oJrayxMQVaVbSjG88K1r6ePcJiwVceJNJQqEiL1D4vvdpvIp8RyS4bBHSWLhwquMi/lELHMQ83C9HnfaA==}
 
+  '@partisiablockchain/blockchain-api-transaction-client@6.104.0':
+    resolution: {integrity: sha512-AcfkmKcTl5e7w41/E1k7zJOlZJSCQsGrRd6cK6JsRdg1I/0MB/2ybsfOKCxyGtB6Lg4WAw62LBlo8ycVKqSjMA==}
+
   '@partisiablockchain/sections@5.66.0':
     resolution: {integrity: sha512-9W7Tku0XoJMco8HsKb6NxsiRiBNw1nIG956OlctzX6jzu7gsC0GtT78v4Zkqw+tJWm7dB19u8Ilt+QwLoXXghw==}
+
+  '@partisiablockchain/sections@6.30.0':
+    resolution: {integrity: sha512-jBXeE2F8hIVHTE1FBfYZ0HvyCI3E4hr3Xp2c/Cl9dBVOTr4JRLLhZ8CJU1Cx8jhuXJo3YNfMU2gB7cr1HYETjA==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -5073,7 +5082,25 @@ snapshots:
       bn.js: 5.2.3
       hash.js: 1.1.7
 
+  '@partisiablockchain/abi-client@6.139.0':
+    dependencies:
+      '@partisiablockchain/blockchain-api-transaction-client': 6.104.0
+      '@partisiablockchain/sections': 6.30.0
+      '@secata-public/bitmanipulation-ts': 3.4.0
+      '@types/bn.js': 5.2.0
+      '@types/elliptic': 6.4.18
+      bn.js: 5.2.3
+      hash.js: 1.1.7
+
   '@partisiablockchain/blockchain-api-transaction-client@5.214.0':
+    dependencies:
+      '@secata-public/bitmanipulation-ts': 3.4.0
+      '@types/elliptic': 6.4.18
+      bn.js: 5.2.3
+      elliptic: 6.6.1
+      hash.js: 1.1.7
+
+  '@partisiablockchain/blockchain-api-transaction-client@6.104.0':
     dependencies:
       '@secata-public/bitmanipulation-ts': 3.4.0
       '@types/elliptic': 6.4.18
@@ -5084,6 +5111,10 @@ snapshots:
   '@partisiablockchain/sections@5.66.0':
     dependencies:
       '@secata-public/bitmanipulation-ts': 3.3.0
+
+  '@partisiablockchain/sections@6.30.0':
+    dependencies:
+      '@secata-public/bitmanipulation-ts': 3.4.0
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
