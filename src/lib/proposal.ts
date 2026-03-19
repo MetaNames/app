@@ -1,9 +1,7 @@
-import {
-	RpcBuilder,
-	type ContractAbi,
-	AbiByteOutput,
-	ScValueStruct
-} from '@partisiablockchain/abi-client';
+import abiClient from '@partisiablockchain/abi-client';
+const { RpcBuilder, AbiByteOutput, ScValueStruct: ScValueStructClass } = abiClient;
+type ContractAbi = abiClient.ContractAbi;
+type ScValueStruct = InstanceType<typeof ScValueStructClass>;
 import { BigEndianByteOutput } from '@secata-public/bitmanipulation-ts';
 
 export const actionAddVotersPayload = (contractAbi: ContractAbi, voters: string[]): Buffer => {
