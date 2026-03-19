@@ -8,10 +8,10 @@ import {
 } from './proposal';
 import type { ContractAbi, ScValueStruct } from '@partisiablockchain/abi-client';
 
-// Mock the ABI client
+// Mock the ABI client (default import — CJS compat)
 vi.mock('@partisiablockchain/abi-client', async () => {
 	const actual = await vi.importActual('@partisiablockchain/abi-client');
-	return {
+	const mocked = {
 		...actual,
 		RpcBuilder: vi.fn().mockImplementation(() => ({
 			addVec: vi.fn().mockReturnValue({
@@ -23,6 +23,10 @@ vi.mock('@partisiablockchain/abi-client', async () => {
 		AbiByteOutput: vi.fn().mockImplementation(() => ({
 			write: vi.fn()
 		}))
+	};
+	return {
+		...mocked,
+		default: mocked
 	};
 });
 
