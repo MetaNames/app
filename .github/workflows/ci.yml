@@ -18,15 +18,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Install pnpm
-        run: npm install -g pnpm
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci --legacy-peer-deps
 
       - name: Run unit tests
-        run: pnpm run test:unit
+        run: npm run test:unit
 
   integration-tests:
     name: Integration Tests
@@ -39,18 +37,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Install pnpm
-        run: npm install -g pnpm
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci --legacy-peer-deps
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
       - name: Run integration tests
-        run: pnpm run test:integration
+        run: npm run test:integration
         env:
           TESTNET_PRIVATE_KEY: ${{ secrets.TESTNET_PRIVATE_KEY }}
 
