@@ -1,6 +1,6 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-18 18:07 UTC
+> Last updated: 2026-03-19 02:03 UTC
 > Branch: `integration-tests`
 
 ---
@@ -15,19 +15,19 @@
 | Feature 4: Domain Management | ⚠️ Written (blocked) | 4 | E2E blocked by browser deps; tests written, run in CI |
 | Feature 5: Domain Renewal | ⚠️ Written (blocked) | 2 | Tests written, E2E blocked by browser deps in container |
 | Feature 6: Domain Transfer | ⚠️ Written (blocked) | 2 | Tests written, E2E blocked by browser deps in container |
-| Feature 7: DNS Records | ⏳ Pending | 4 | - |
+| Feature 7: DNS Records | ✅ Done | 4 | Added to `integration-tests` |
 | Feature 8: User Profile | ⏳ Pending | 3 | - |
 | Feature 9: API Endpoints | ⚠️ Written (ABI blocked) | 7 | Tests written, 1 passes in container — ABI issue blocks most endpoints |
 | Feature 10: Proposals | ⏳ Pending | 2 | - |
 
-**Total:** 37 stories (32 actionable) | **Completed:** 3 | **Progress:** 9%
+**Total:** 37 stories (32 actionable) | **Completed:** 7 | **Progress:** 22%
 
 ---
 
 ## Current Iteration
 
-**Status:** Features 5 & 6 tests written (E2E blocked by browser deps). All E2E tests need CI environment with browser deps. Next: Feature 7 (DNS Records) or Feature 8 (User Profile) — no contract calls needed, pure UI flows.
-**Next story:** 7.1 - Add DNS record
+**Status:** Feature 7 (DNS Records) tests committed. All E2E tests blocked by browser deps — tests written, run in CI. Next: Feature 8 (User Profile) — pure UI, no contract calls.
+**Next story:** 8.1 - View profile
 
 ---
 
@@ -41,6 +41,7 @@
 | 5 | 2026-03-18 | Feature 4: Domain Management | 4 | Tests written, E2E blocked by browser deps in container — will run in CI |
 
 | 6 | 2026-03-18 | Feature 6: Domain Transfer | 2 | Tests written, E2E blocked by browser deps in container |
+| 7 | 2026-03-19 | Feature 7: DNS Records | 4 | Added to `integration-tests` — 4 tests written, E2E blocked by browser deps |
 
 ---
 
@@ -61,7 +62,7 @@ tests/
 │   ├── domain-management.spec.ts    ⚠️ Feature 4 (4 tests, E2E blocked)
 │   ├── domain-renewal.spec.ts       ⚠️ Feature 5 (2 tests, E2E blocked)
 │   ├── domain-transfer.spec.ts      ⚠️ Feature 6 (2 tests, E2E blocked)
-│   ├── dns-records.spec.ts         ⏳ Feature 7 (pending)
+│   ├── dns-records.spec.ts         ✅ Feature 7 (4 tests)
 │   ├── profile.spec.ts             ⏳ Feature 8 (pending)
 │   └── proposals.spec.ts           ⏳ Feature 10 (pending)
 └── api/
