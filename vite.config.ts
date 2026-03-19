@@ -18,9 +18,13 @@ export default defineConfig({
 		}),
 		tsconfigPaths()
 	],
+	transpilePackages: [
+		'@partisiablockchain/abi-client',
+		'@partisiablockchain/bc-ur'
+	],
 	css: {
 		preprocessorOptions: {
-			sass: {
+			scss: {
 				includePaths: ['./node_modules']
 			}
 		}
