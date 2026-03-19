@@ -1,7 +1,9 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-19 04:05 UTC
+> Last updated: 2026-03-19 08:36 UTC
 > Branch: `integration-tests`
+> 
+> **Latest test run (2026-03-19):** 2 passed / 39 failed — all failures due to missing Playwright browser deps or ABI issue. All 41 tests written.
 
 ---
 
