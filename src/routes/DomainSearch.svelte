@@ -97,23 +97,23 @@
 			</CardContent>
 		</Card>
 	{:else if domain}
-		<a class="domain-link" href={`/domain/${domain.name}`}>
+		<a class="domain-link" href={`/domain/${domain.name}`} data-testid="domain-result-registered">
 			<Card>
 				<CardContent>
 					<div class="card-content">
 						<span>{nameSearchedLabel}</span>
-						<span class="chip registered">Registered</span>
+						<span class="chip registered" data-testid="domain-status-registered">Registered</span>
 					</div>
 				</CardContent>
 			</Card>
 		</a>
 	{:else if domain === null}
-		<a class="domain-link" href={`/register/${nameSearched}`}>
+		<a class="domain-link" href={`/register/${nameSearched}`} data-testid="domain-result-available">
 			<Card>
 				<CardContent>
 					<div class="card-content">
 						<span>{nameSearchedLabel}</span>
-						<span class="chip available">Available</span>
+						<span class="chip available" data-testid="domain-status-available">Available</span>
 					</div>
 				</CardContent>
 			</Card>

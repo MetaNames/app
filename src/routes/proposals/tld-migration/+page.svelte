@@ -89,7 +89,7 @@
 <div class="content checkout">
 	<Card class="w-100 flex-content">
 		<Content>
-			<h3>TLD Migration Proposal</h3>
+			<h3 data-testid="proposal-title">TLD Migration Proposal</h3>
 			<p>
 				The proposal aims to migrate Top Level Domains (TLD) from <code>.META</code> to
 				<code>.MPC</code>.

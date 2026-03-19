@@ -88,7 +88,7 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content checkout">
+<div class="content checkout" data-testid="checkout-content">
 	{#if $isDomainPresent === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}
