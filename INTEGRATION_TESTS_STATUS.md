@@ -1,6 +1,6 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-19 02:03 UTC
+> Last updated: 2026-03-19 04:05 UTC
 > Branch: `integration-tests`
 
 ---
@@ -16,18 +16,18 @@
 | Feature 5: Domain Renewal | ⚠️ Written (blocked) | 2 | Tests written, E2E blocked by browser deps in container |
 | Feature 6: Domain Transfer | ⚠️ Written (blocked) | 2 | Tests written, E2E blocked by browser deps in container |
 | Feature 7: DNS Records | ✅ Done | 4 | Added to `integration-tests` |
-| Feature 8: User Profile | ⏳ Pending | 3 | - |
-| Feature 9: API Endpoints | ⚠️ Written (ABI blocked) | 7 | Tests written, 1 passes in container — ABI issue blocks most endpoints |
-| Feature 10: Proposals | ⏳ Pending | 2 | - |
+| Feature 8: User Profile | ⚠️ Written (blocked) | 6 | Tests committed; E2E blocked by browser deps in container |
+| Feature 9: API Endpoints | ⚠️ Written (ABI blocked) | 7 | Tests written, 2 pass in container — ABI issue blocks most endpoints |
+| Feature 10: Proposals | ⚠️ Written (blocked) | 4 | Tests committed; E2E blocked by browser deps in container |
 
-**Total:** 37 stories (32 actionable) | **Completed:** 7 | **Progress:** 22%
+**Total:** 41 stories (36 actionable) | **Completed:** 7 | **Progress:** 19%
 
 ---
 
 ## Current Iteration
 
-**Status:** Feature 7 (DNS Records) tests committed. All E2E tests blocked by browser deps — tests written, run in CI. Next: Feature 8 (User Profile) — pure UI, no contract calls.
-**Next story:** 8.1 - View profile
+**Status:** Features 8 (User Profile) and 10 (Proposals) tests committed to `integration-tests`. All E2E tests blocked by browser deps — tests written for CI. API tests: 2 pass, 7 fail due to ABI issue (`contractAbi.getStateStruct is not a function`).
+**Next:** All actionable E2E features written. Remaining work blocked by infrastructure (browser deps) or ABI issues.
 
 ---
 
@@ -38,10 +38,11 @@
 | 1 | 2026-03-18 | Feature 1: Domain Search | 3 | Merged into `integration-tests` |
 | 2 | 2026-03-18 | Feature 2: Wallet Connection | - | Skipped — cannot test browser extensions |
 | 3 | 2026-03-18 | Feature 3: Domain Registration | 6 | Tests written but blocked — missing Playwright browser deps in container |
-| 5 | 2026-03-18 | Feature 4: Domain Management | 4 | Tests written, E2E blocked by browser deps in container — will run in CI |
-
+| 4 | 2026-03-18 | Feature 4: Domain Management | 4 | Tests written, E2E blocked by browser deps in container — will run in CI |
+| 5 | 2026-03-18 | Feature 5: Domain Renewal | 2 | Tests written, E2E blocked by browser deps in container |
 | 6 | 2026-03-18 | Feature 6: Domain Transfer | 2 | Tests written, E2E blocked by browser deps in container |
 | 7 | 2026-03-19 | Feature 7: DNS Records | 4 | Added to `integration-tests` — 4 tests written, E2E blocked by browser deps |
+| 8 | 2026-03-19 | Feature 8: User Profile + Feature 10: Proposals | 10 | Tests committed (6 profile + 4 proposals); E2E blocked by browser deps in container |
 
 ---
 
@@ -63,11 +64,11 @@ tests/
 │   ├── domain-renewal.spec.ts       ⚠️ Feature 5 (2 tests, E2E blocked)
 │   ├── domain-transfer.spec.ts      ⚠️ Feature 6 (2 tests, E2E blocked)
 │   ├── dns-records.spec.ts         ✅ Feature 7 (4 tests)
-│   ├── profile.spec.ts             ⏳ Feature 8 (pending)
-│   └── proposals.spec.ts           ⏳ Feature 10 (pending)
+│   ├── profile.spec.ts             ⚠️ Feature 8 (6 tests, E2E blocked)
+│   └── proposals.spec.ts          ⚠️ Feature 10 (4 tests, E2E blocked)
 └── api/
-    ├── domains.spec.ts             ⚠️ Feature 9 (4 tests, 1 passes)
-    └── fees.spec.ts                ⚠️ Feature 9 (3 tests, 2 passes)
+    ├── domains.spec.ts             ⚠️ Feature 9 (4 tests, 1 passes — ABI blocks most)
+    └── fees.spec.ts                ⚠️ Feature 9 (3 tests, 2 passes — ABI blocks most)
 ```
 
 ---
