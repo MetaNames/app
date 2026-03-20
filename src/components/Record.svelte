@@ -31,6 +31,12 @@
 	$: maxLength = 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
 
 	let edit = false;
+	let dialogId = '';
+
+	import { onMount } from 'svelte';
+	onMount(() => {
+		dialogId = Math.random().toString(36).substring(2, 9);
+	});
 
 	function toggleEdit(restore = true) {
 		edit = !edit;
@@ -55,11 +61,11 @@
 <div class="record-container {editMode ? 'edit' : ''}">
 	<Dialog
 		bind:open={dialogOpen}
-		aria-labelledby="confirmation-title"
-		aria-describedby="confirmation-content"
+		aria-labelledby="confirmation-title-{dialogId}"
+		aria-describedby="confirmation-content-{dialogId}"
 	>
-		<Title id="simple-title">Confirm action</Title>
-		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Title id="confirmation-title-{dialogId}">Confirm action</Title>
+		<Content id="confirmation-content-{dialogId}">Do you really want to remove the record?</Content>
 		<Actions>
 			<Button>
 				<Label>No</Label>
