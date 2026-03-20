@@ -7,7 +7,7 @@ test.describe('Feature 5: Domain Renewal', () => {
 
 	test('4.1 - Renew domain - navigate to renew page from domain page', async ({ page }) => {
 		// Navigate to domain page for a known domain
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for domain to load
@@ -37,7 +37,7 @@ test.describe('Feature 5: Domain Renewal', () => {
 
 	test('4.2 - See renewal fees - displays fee breakdown for domain renewal', async ({ page }) => {
 		// Navigate directly to renew page for a known domain
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}/renew`);
 
 		// Wait for page to load (either content or redirect)

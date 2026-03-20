@@ -6,7 +6,7 @@ test.describe('Feature 7: DNS Records', () => {
 	});
 
 	test('7.1 - View domain page - domain loads and displays correctly', async ({ page }) => {
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for domain to load - look for the h5.domain heading or the spinner
@@ -31,7 +31,7 @@ test.describe('Feature 7: DNS Records', () => {
 	test('7.2 - DNS records display - records section renders when domain has records', async ({
 		page
 	}) => {
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for content to load
@@ -48,7 +48,7 @@ test.describe('Feature 7: DNS Records', () => {
 	});
 
 	test('7.3 - DNS records - settings tab visible only to domain owner', async ({ page }) => {
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for domain to load
@@ -70,7 +70,7 @@ test.describe('Feature 7: DNS Records', () => {
 	});
 
 	test('7.4 - Domain whois section - Whois info displays correctly', async ({ page }) => {
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for domain to load

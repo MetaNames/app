@@ -21,7 +21,7 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 		testWithBlockchain('8.1 - Check availability returns correct structure for available domain', async ({
 			request
 		}) => {
-			const domainName = `notregistered${Date.now()}.ppg`;
+			const domainName = `notregistered${Date.now()}.mpc`;
 			const response = await request.get(`${baseUrl}/api/domains/${domainName}/check`);
 
 			if (!response.ok()) {
@@ -42,7 +42,7 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 		testWithBlockchain('8.1 - Check availability returns domainPresent for registered domain', async ({
 			request
 		}) => {
-			const domainName = 'test.ppg';
+			const domainName = 'test.mpc';
 			const response = await request.get(`${baseUrl}/api/domains/${domainName}/check`);
 
 			if (!response.ok()) {
@@ -63,7 +63,7 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 		testWithBlockchain('8.2 - Get domain details for existing domain returns domain data', async ({
 			request
 		}) => {
-			const domainName = 'test.ppg';
+			const domainName = 'test.mpc';
 			const response = await request.get(`${baseUrl}/api/domains/${domainName}`);
 
 			if (!response.ok()) {
@@ -82,7 +82,7 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 		testWithBlockchain('8.2 - Get domain details for non-existent domain returns null', async ({
 			request
 		}) => {
-			const domainName = `nonexistent${Date.now()}.ppg`;
+			const domainName = `nonexistent${Date.now()}.mpc`;
 			const response = await request.get(`${baseUrl}/api/domains/${domainName}`);
 
 			if (!response.ok()) {

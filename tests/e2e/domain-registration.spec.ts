@@ -153,8 +153,8 @@ test.describe('Feature 3: Domain Registration', () => {
 
 	test('3.6 - Already registered domain - redirects to domain page', async ({ page }) => {
 		// We need to find a domain that is already registered
-		// Common test domains like "test.ppg" might be registered
-		const knownDomain = 'test.ppg';
+		// Common test domains like "test.mpc" might be registered
+		const knownDomain = 'test.mpc';
 
 		await page.goto(`/register/${knownDomain}`);
 
@@ -162,7 +162,7 @@ test.describe('Feature 3: Domain Registration', () => {
 		await page.waitForTimeout(3000);
 
 		// Should end up either:
-		// 1. On domain page (/domain/test.ppg) if registered
+		// 1. On domain page (/domain/test.mpc) if registered
 		// 2. On homepage if SDK failed
 		// 3. Still on registration page if not registered
 		const currentUrl = page.url();

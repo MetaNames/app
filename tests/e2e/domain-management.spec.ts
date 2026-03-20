@@ -7,7 +7,7 @@ test.describe('Feature 4: Domain Management', () => {
 
 	test('3.1 - View domain details - loads domain page with name and avatar', async ({ page }) => {
 		// Navigate to domain page for a known domain
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for domain to load - either the domain heading or redirect/loading state
@@ -33,7 +33,7 @@ test.describe('Feature 4: Domain Management', () => {
 	});
 
 	test('3.2 - View domain records - shows profile records and Whois info', async ({ page }) => {
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for domain to load
@@ -64,7 +64,7 @@ test.describe('Feature 4: Domain Management', () => {
 	});
 
 	test('3.3 - See if I am the owner - shows owner-connected indicator', async ({ page }) => {
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for domain to load
@@ -85,7 +85,7 @@ test.describe('Feature 4: Domain Management', () => {
 	});
 
 	test('3.4 - Navigate to owner - owner address links to block explorer', async ({ page }) => {
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for domain to load

@@ -7,7 +7,7 @@ test.describe('Feature 6: Domain Transfer', () => {
 
 	test('5.1 - Transfer domain - navigate to transfer page from domain page', async ({ page }) => {
 		// Navigate to domain page for a known domain
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}`);
 
 		// Wait for domain to load
@@ -45,7 +45,7 @@ test.describe('Feature 6: Domain Transfer', () => {
 		page
 	}) => {
 		// Navigate directly to transfer page for a known domain
-		const knownDomain = 'test.ppg';
+		const knownDomain = 'test.mpc';
 		await page.goto(`/domain/${knownDomain}/transfer`);
 
 		// Wait for page to load (short timeout since SDK may fail)
