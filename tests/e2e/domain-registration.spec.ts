@@ -65,17 +65,23 @@ test.describe('Feature 3: Domain Registration', () => {
 		await expect(yearLabel).toBeVisible({ timeout: 3000 });
 	});
 
-	test('3.4 - Register subdomain - parent domain exists, subdomain form shown', async ({ page }) => {
-		// test.mpc exists; sub.test.mpc should be registerable
+	test('3.4 - Register subdomain - shows subdomain registration form when parent exists', async ({ page }) => {
+		// test.mpc exists on testnet; sub.test.mpc should show subdomain registration form
 		const subdomain = `sub.test.mpc`;
 		await page.goto(`/register/${subdomain}`);
 
-		// Wait for either subdomain form or redirect
-		// Either the subdomain registration form or checkout should appear
-		const subForm = page.locator('text=Subdomain Registration').or(
-			page.locator('.content.checkout')
-		);
-		await expect(subForm.first()).toBeVisible({ timeout: 15000 });
+		// Wait for the subdomain name to appear in the domain title
+		const domainTitle = page.locator('h4.domain-title');
+		await expect(domainTitle).toBeVisible({ timeout: 15000 });
+		await expect(domainTitle).toContainText(subdomain);
+
+		// Parent chip must show test.mpc
+		const parentChip = page.locator('.chip').filter({ hasText: 'test.mpc' });
+		await expect(parentChip).toBeVisible({ timeout: 5000 });
+
+		// Price breakdown must show "FREE" for subdomain
+		const priceText = page.locator('text=FREE');
+		await expect(priceText).toBeVisible({ timeout: 5000 });
 	});
 
 	test('3.5 - See registration confirmation UI - fees breakdown visible', async ({ page }) => {
