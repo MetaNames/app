@@ -49,7 +49,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run integration tests
-        run: CI=true npm run test:integration
+        run: npm run test:integration
         env:
           TESTNET_PRIVATE_KEY: ${{ secrets.TESTNET_PRIVATE_KEY }}
 

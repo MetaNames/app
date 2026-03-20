@@ -1,21 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-/**
- * These tests require live blockchain interaction (SDK calls to testnet).
- * They are skipped in CI since the blockchain state is not available.
- * To run these tests locally:
- * 1. Ensure you have TESTNET_PRIVATE_KEY set
- * 2. Run: CI=false npm run test:integration
- */
-
-const testWithBlockchain = process.env.CI === 'true' ? test.skip : test;
-
 test.describe('Feature 1: Domain Search & Validation', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
 	});
 
-	testWithBlockchain('1.1 - Search for domain name on homepage', async ({ page }) => {
+	test('1.1 - Search for domain name on homepage', async ({ page }) => {
 		// Find the search input - SMUI Textfield renders input inside div with class "mdc-text-field"
 		const searchInput = page.locator('.mdc-text-field input[type="text"]').first();
 		await expect(searchInput).toBeVisible();
@@ -32,7 +22,7 @@ test.describe('Feature 1: Domain Search & Validation', () => {
 		await expect(domainCard).toBeVisible({ timeout: 10000 });
 	});
 
-	testWithBlockchain('1.2 - Validate domain names before registration', async ({ page }) => {
+	test('1.2 - Validate domain names before registration', async ({ page }) => {
 		// Find the search input - SMUI Textfield renders input inside div with class "mdc-text-field"
 		const searchInput = page.locator('.mdc-text-field input[type="text"]').first();
 		await expect(searchInput).toBeVisible();
@@ -51,7 +41,7 @@ test.describe('Feature 1: Domain Search & Validation', () => {
 		await expect(helperText).toBeVisible({ timeout: 10000 });
 	});
 
-	testWithBlockchain('1.3 - See domain availability status', async ({ page }) => {
+	test('1.3 - See domain availability status', async ({ page }) => {
 		// Find the search input - SMUI Textfield renders input inside div with class "mdc-text-field"
 		const searchInput = page.locator('.mdc-text-field input[type="text"]').first();
 		await expect(searchInput).toBeVisible();
