@@ -1,6 +1,6 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-20 15:04 UTC
+> Last updated: 2026-03-20 17:01 UTC
 > Branch: `integration-tests`
 > CI: GitHub Actions (unit + integration tests)
 
@@ -15,7 +15,7 @@
 | Feature 3: Domain Registration | ✅ Pass | 6 | E2E tests with data-testid selectors |
 | Feature 4: Domain Management | ✅ Pass | 4 | E2E tests |
 | Feature 5: Domain Renewal | ✅ Pass | 2 | E2E tests |
-| Feature 6: Domain Transfer | ✅ Pass | 2 | E2E tests (5.2 timeout fixed) |
+| Feature 6: Domain Transfer | ⚠️ 1 Flaky | 2 | Test 5.2 crashes Playwright worker - selector `getByRole('textbox', { name: /recipient address/i })` not matching |
 | Feature 7: DNS Records | ✅ Pass | 4 | Tests pass with proper async waiting |
 | Feature 8: User Profile | ✅ Pass | 6 | E2E tests |
 | Feature 9: API Endpoints | ⚠️ SDK Issue | 7 | Most fail due to SDK contract error |
@@ -67,7 +67,7 @@ tests/
 - `contractAbi.getStateStruct is not a function` — SDK issue, blocks Feature 1 (Domain Search) and Feature 9 (API) tests
 - SMUI theme requires npm (flat node_modules) — pnpm breaks `@use '@material/theme/...'` resolution
 - Feature 1 domain-search tests: SMUI Textfield selector updated from `textbox[aria-label="Domain name search"]` to `.mdc-text-field input[type="text"]` — tests find input but no results show due to SDK error
-- Feature 6 domain-transfer test 5.2: Previously timed out due to page close; fixed with reduced timeouts and early return on SDK failure
+- Feature 6 domain-transfer test 5.2: Test crashes Playwright worker - `getByRole('textbox', { name: /recipient address/i })` doesn't match any element on the transfer page. The recipient address input may use a different role/label. Need to inspect actual transfer page form.
 
 ---
 
