@@ -10,7 +10,7 @@
 
 | Feature | Status | Stories | Notes |
 |---------|--------|---------|-------|
-| Feature 1: Domain Search | ⚠️ SDK Issue | 3 | Tests fail due to `contractAbi.getStateStruct` SDK error |
+| Feature 1: Domain Search | ⚠️ SDK Issue | 3 | Tests fail due to `contractAbi.getStateStruct` SDK error — known upstream issue |
 | Feature 2: Wallet Connection | ❌ Skipped | - | Cannot test browser extensions in Playwright |
 | Feature 3: Domain Registration | ✅ Pass | 6 | E2E tests with data-testid selectors |
 | Feature 4: Domain Management | ✅ Pass | 4 | E2E tests |
