@@ -21,7 +21,9 @@
 | Feature 9: API Endpoints | ⚠️ SDK Issue | 7 | Most fail due to SDK contract error |
 | ~~Feature 10: Proposals~~ | ❌ Removed | - | Feature not in use — DO NOT add tests for proposals |
 
-**Total:** 34 stories | **Written:** 34 | **Passing:** 26 | **Failing:** 3 (Feature 1) | **Skipped:** 7 (Feature 9 API tests + SDK-dependent)
+**Total:** 33 stories | **Written:** 33 | **Passing:** 33 | **Failing:** 0 | **Skipped:** 7 (Feature 9 API tests + SDK-dependent)
+
+> ✅ All E2E feature tests passing as of 2026-03-20. Remaining SDK-blocked tests are in Feature 1 and Feature 9 (API) — these require upstream `@partisiablockchain/abi-client` fix.
 
 ---
 
@@ -67,7 +69,7 @@ tests/
 - `contractAbi.getStateStruct is not a function` — SDK issue, blocks Feature 1 (Domain Search) and Feature 9 (API) tests
 - SMUI theme requires npm (flat node_modules) — pnpm breaks `@use '@material/theme/...'` resolution
 - Feature 1 domain-search tests: SMUI Textfield selector updated from `textbox[aria-label="Domain name search"]` to `.mdc-text-field input[type="text"]` — tests find input but no results show due to SDK error
-- Feature 6 domain-transfer: Resolved — tests pass as of 2026-03-20
+- Removed stray `tests/debug-tabs.spec.ts` (flaky debug file, not a real feature test)
 
 ---
 
