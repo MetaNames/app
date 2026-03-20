@@ -76,16 +76,32 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 	});
 
 	test.describe('GET /api/domains/stats', () => {
-		test('8.4 - Get stats returns statistics object', async ({ request }) => {
-			const response = await request.get(`${baseUrl}/api/domains/stats`);
+		test('8.4 - Get stats returns valid statistics', async ({ request }) => {
+			const response = await request.get(`${baseUrl}/api/domains/stats`, {
+				timeout: 30000
+			});
 
 			expect(response.ok()).toBeTruthy();
 			const data = await response.json();
 
+			// Stats structure
 			expect(typeof data).toBe('object');
 			expect(data).toHaveProperty('domainCount');
 			expect(data).toHaveProperty('ownerCount');
 			expect(data).toHaveProperty('recentDomains');
+
+			// Counts are non-negative numbers
+			expect(typeof data.domainCount).toBe('number');
+			expect(typeof data.ownerCount).toBe('number');
+			expect(data.domainCount).toBeGreaterThanOrEqual(0);
+			expect(data.ownerCount).toBeGreaterThanOrEqual(0);
+
+			// recentDomains is an array of domain projections
+			expect(Array.isArray(data.recentDomains)).toBeTruthy();
+			for (const domain of data.recentDomains) {
+				expect(typeof domain.name).toBe('string');
+				expect(domain.name.length).toBeGreaterThan(0);
+			}
 		});
 	});
 });

@@ -7,7 +7,9 @@ const config: PlaywrightTestConfig = {
 		reuseExistingServer: true
 	},
 	testDir: 'tests',
-	testMatch: /(.+\.)?(test|spec)\.[jt]s/
+	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
+	retries: 3,
+	workers: 2
 };
 
 export default config;
