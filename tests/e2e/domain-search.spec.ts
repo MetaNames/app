@@ -3,62 +3,46 @@ import { test, expect } from '@playwright/test';
 test.describe('Feature 1: Domain Search & Validation', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
+		await page.waitForLoadState('networkidle');
 	});
 
 	test('1.1 - Search for domain name on homepage', async ({ page }) => {
-		// Find the search input - SMUI Textfield renders input inside div with class "mdc-text-field"
-		const searchInput = page.locator('.mdc-text-field input[type="text"]').first();
+		const searchInput = page.locator('input').first();
 		await expect(searchInput).toBeVisible();
 
-		// Enter a domain name
-		await searchInput.fill('test');
+		await searchInput.click();
+		await page.keyboard.type('test', { delay: 50 });
 
-		// Wait for debounced search (400ms) + API response
-		await page.waitForTimeout(1500);
-
-		// Should show a result card (available or registered) or loading state
-		// Result cards have class "domain-link"
+		// Wait for debounced search (400ms) + blockchain API response
+		// First request may be slow due to cold start (~10-20s)
 		const domainCard = page.locator('.domain-link').first();
-		await expect(domainCard).toBeVisible({ timeout: 10000 });
+		await expect(domainCard).toBeVisible({ timeout: 30000 });
 	});
 
 	test('1.2 - Validate domain names before registration', async ({ page }) => {
-		// Find the search input - SMUI Textfield renders input inside div with class "mdc-text-field"
-		const searchInput = page.locator('.mdc-text-field input[type="text"]').first();
+		const searchInput = page.locator('input').first();
 		await expect(searchInput).toBeVisible();
 
-		// Enter an invalid domain (too short - should trigger validation)
-		await searchInput.fill('ab');
+		// Type invalid chars (spaces/special chars fail STD3 ASCII rules in tr46)
+		await searchInput.click();
+		await page.keyboard.type('test!@#', { delay: 50 });
 
-		// Blur the field to trigger validation display
-		await searchInput.blur();
-
-		// Wait for debounce and validation
-		await page.waitForTimeout(600);
-
-		// Should show validation error in helper text
-		const helperText = page.locator('.mdc-text-field-helper-text');
-		await expect(helperText).toBeVisible({ timeout: 10000 });
+		// The input should be marked as invalid
+		const invalidField = page.locator('.mdc-text-field--invalid');
+		await expect(invalidField).toBeVisible({ timeout: 10000 });
 	});
 
 	test('1.3 - See domain availability status', async ({ page }) => {
-		// Find the search input - SMUI Textfield renders input inside div with class "mdc-text-field"
-		const searchInput = page.locator('.mdc-text-field input[type="text"]').first();
+		const searchInput = page.locator('input').first();
 		await expect(searchInput).toBeVisible();
 
-		// Search for a domain that might be available (random string to minimize collision)
 		const randomDomain = `zzztest${Date.now()}`;
-		await searchInput.fill(randomDomain);
+		await searchInput.click();
+		await page.keyboard.type(randomDomain, { delay: 20 });
 
-		// Wait for search to complete
-		await page.waitForTimeout(2000);
-
-		// Should show either "Available" or "Registered" chip
-		const availableChip = page.locator('.chip.available');
-		const registeredChip = page.locator('.chip.registered');
-		const hasAvailable = await availableChip.count() > 0;
-		const hasRegistered = await registeredChip.count() > 0;
-
-		expect(hasAvailable || hasRegistered).toBeTruthy();
+		// Wait for either "Available" or "Registered" chip (blockchain response ~5s)
+		await expect(
+			page.locator('.chip.available, .chip.registered').first()
+		).toBeVisible({ timeout: 15000 });
 	});
 });

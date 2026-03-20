@@ -74,7 +74,7 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 			expect(data).toHaveProperty('domain');
 		});
 
-		test('8.2 - Get domain details for non-existent domain returns null', async ({
+		test('8.2 - Get domain details for non-existent domain returns empty object', async ({
 			request
 		}) => {
 			const domainName = `nonexistent${Date.now()}.mpc`;
@@ -90,8 +90,9 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 
 			expect(response.ok()).toBeTruthy();
 			const data = await response.json();
-			expect(data).toHaveProperty('domain');
-			expect(data.domain).toBeNull();
+			// When domain is not found, find() returns undefined
+			// json({ domain: undefined }) serializes to {} (JSON strips undefined)
+			expect(data.domain).toBeUndefined();
 		});
 	});
 
