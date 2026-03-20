@@ -90,9 +90,8 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 
 			expect(response.ok()).toBeTruthy();
 			const data = await response.json();
-			// When domain is not found, find() returns undefined
-			// json({ domain: undefined }) serializes to {} (JSON strips undefined)
-			expect(data.domain).toBeUndefined();
+			// When domain is not found, find() returns null
+			expect(data.domain).toBeNull();
 		});
 	});
 
