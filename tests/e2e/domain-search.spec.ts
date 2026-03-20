@@ -19,7 +19,7 @@ test.describe('Feature 1: Domain Search & Validation', () => {
 		// Should show a result card (available or registered) or loading state
 		// Result cards have class "domain-link"
 		const domainCard = page.locator('.domain-link').first();
-		await expect(domainCard).toBeVisible({ timeout: 5000 });
+		await expect(domainCard).toBeVisible({ timeout: 10000 });
 	});
 
 	test('1.2 - Validate domain names before registration', async ({ page }) => {

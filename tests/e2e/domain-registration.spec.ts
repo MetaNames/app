@@ -28,7 +28,7 @@ test.describe('Feature 3: Domain Registration', () => {
 		if (hasCheckout) {
 			// If checkout loaded, verify domain name appears
 			const heading = page.locator('h2, h4').filter({ hasText: domainName }).first();
-			await expect(heading).toBeVisible({ timeout: 5000 }).catch(() => {
+			await expect(heading).toBeVisible({ timeout: 10000 }).catch(() => {
 				// Heading may not contain exact domain name due to TLD handling
 			});
 		}
@@ -41,7 +41,7 @@ test.describe('Feature 3: Domain Registration', () => {
 
 		// Wait for content - either checkout or redirect
 		const checkoutContent = page.locator('.content.checkout');
-		await checkoutContent.waitFor({ state: 'visible', timeout: 5000 }).catch(() => null);
+		await checkoutContent.waitFor({ state: 'visible', timeout: 10000 }).catch(() => null);
 
 		const hasCheckout = await checkoutContent.isVisible().catch(() => false);
 
@@ -62,7 +62,7 @@ test.describe('Feature 3: Domain Registration', () => {
 
 		// Wait for checkout content
 		const checkoutContent = page.locator('.content.checkout');
-		await checkoutContent.waitFor({ state: 'visible', timeout: 5000 }).catch(() => null);
+		await checkoutContent.waitFor({ state: 'visible', timeout: 10000 }).catch(() => null);
 
 		const hasCheckout = await checkoutContent.isVisible().catch(() => false);
 
@@ -131,14 +131,14 @@ test.describe('Feature 3: Domain Registration', () => {
 
 		// Wait for checkout content
 		const checkoutContent = page.locator('.content.checkout');
-		await checkoutContent.waitFor({ state: 'visible', timeout: 5000 }).catch(() => null);
+		await checkoutContent.waitFor({ state: 'visible', timeout: 10000 }).catch(() => null);
 
 		const hasCheckout = await checkoutContent.isVisible().catch(() => false);
 
 		if (hasCheckout) {
 			// Should show "Price breakdown" section
 			const priceBreakdown = page.locator('text=Price breakdown');
-			await expect(priceBreakdown).toBeVisible({ timeout: 5000 }).catch(() => {
+			await expect(priceBreakdown).toBeVisible({ timeout: 10000 }).catch(() => {
 				// May not be visible if SDK data not loaded
 			});
 

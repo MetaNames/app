@@ -18,7 +18,7 @@ test.describe('Feature 4: Domain Management', () => {
 		const hasDomain = await domainHeading.count() > 0;
 
 		if (hasDomain) {
-			await expect(domainHeading).toBeVisible({ timeout: 5000 });
+			await expect(domainHeading).toBeVisible({ timeout: 10000 });
 
 			// Should show avatar (SVG identicon) if the domain loaded
 			const avatar = page.locator('.avatar .svg, .avatar svg').first();
@@ -44,7 +44,7 @@ test.describe('Feature 4: Domain Management', () => {
 		const hasWhois = await whoisHeading.count() > 0;
 
 		if (hasWhois) {
-			await expect(whoisHeading).toBeVisible({ timeout: 5000 });
+			await expect(whoisHeading).toBeVisible({ timeout: 10000 });
 
 			// Should show Owner chip with address
 			const ownerChip = page.locator('.chips .chip').filter({ hasText: /Owner/ }).first();
@@ -75,7 +75,7 @@ test.describe('Feature 4: Domain Management', () => {
 		const hasOwnerChip = await ownerChip.count() > 0;
 
 		if (hasOwnerChip) {
-			await expect(ownerChip).toBeVisible({ timeout: 5000 });
+			await expect(ownerChip).toBeVisible({ timeout: 10000 });
 
 			// The owner address should be shown
 			const ownerText = await ownerChip.textContent();

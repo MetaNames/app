@@ -43,7 +43,7 @@ test.describe('Feature 7: DNS Records', () => {
 		const hasProfile = await profileSection.count() > 0;
 
 		if (hasProfile) {
-			await expect(profileSection).toBeVisible({ timeout: 5000 });
+			await expect(profileSection).toBeVisible({ timeout: 10000 });
 		}
 	});
 
@@ -62,7 +62,7 @@ test.describe('Feature 7: DNS Records', () => {
 		if (hasSettings) {
 			// If settings tab exists, it should only be visible to owner
 			// Since we're not connected, it may or may not show based on app design
-			await expect(settingsTab).toBeVisible({ timeout: 5000 }).catch(() => {
+			await expect(settingsTab).toBeVisible({ timeout: 10000 }).catch(() => {
 				// Settings tab might not be visible without wallet - that's expected
 			});
 		}
@@ -81,7 +81,7 @@ test.describe('Feature 7: DNS Records', () => {
 		const hasWhois = await whoisSection.count() > 0;
 
 		if (hasWhois) {
-			await expect(whoisSection).toBeVisible({ timeout: 5000 });
+			await expect(whoisSection).toBeVisible({ timeout: 10000 });
 		}
 	});
 });

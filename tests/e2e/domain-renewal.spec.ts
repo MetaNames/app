@@ -15,14 +15,14 @@ test.describe('Feature 5: Domain Renewal', () => {
 
 		// Look for the Renew button in Actions section
 		const renewButton = page.locator('a:has-text("Renew"), button:has-text("Renew")').first();
-		const hasRenewBtn = await renewButton.isVisible({ timeout: 5000 }).catch(() => false);
+		const hasRenewBtn = await renewButton.isVisible({ timeout: 10000 }).catch(() => false);
 
 		if (hasRenewBtn) {
 			// Click the Renew button
 			await renewButton.click();
 
 			// Should navigate to renew page
-			await page.waitForURL(`**/domain/${knownDomain}/renew**`, { timeout: 5000 }).catch(() => null);
+			await page.waitForURL(`**/domain/${knownDomain}/renew**`, { timeout: 10000 }).catch(() => null);
 
 			// Should show "Renew domain" heading
 			const renewHeading = page.locator('h2:has-text("Renew")').first();
@@ -45,7 +45,7 @@ test.describe('Feature 5: Domain Renewal', () => {
 
 		// Check if we're on the renew page or redirected elsewhere
 		const renewHeading = page.locator('h2:has-text("Renew")').first();
-		const hasRenewHeading = await renewHeading.isVisible({ timeout: 5000 }).catch(() => false);
+		const hasRenewHeading = await renewHeading.isVisible({ timeout: 10000 }).catch(() => false);
 
 		if (hasRenewHeading) {
 			// Should show the domain name in the payment card

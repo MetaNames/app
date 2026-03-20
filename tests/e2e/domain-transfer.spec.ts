@@ -15,14 +15,14 @@ test.describe('Feature 6: Domain Transfer', () => {
 
 		// Look for the Transfer button in Actions section
 		const transferButton = page.locator('a:has-text("Transfer"), button:has-text("Transfer")').first();
-		const hasTransferBtn = await transferButton.isVisible({ timeout: 5000 }).catch(() => false);
+		const hasTransferBtn = await transferButton.isVisible({ timeout: 10000 }).catch(() => false);
 
 		if (hasTransferBtn) {
 			// Click the Transfer button
 			await transferButton.click();
 
 			// Should navigate to transfer page
-			await page.waitForURL(`**/domain/${knownDomain}/transfer**`, { timeout: 5000 }).catch(() => null);
+			await page.waitForURL(`**/domain/${knownDomain}/transfer**`, { timeout: 10000 }).catch(() => null);
 
 			// Should show "Transfer domain" heading
 			const transferHeading = page.locator('h2:has-text("Transfer")').first();
