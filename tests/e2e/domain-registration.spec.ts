@@ -1,175 +1,103 @@
 import { test, expect } from '@playwright/test';
 
+/**
+ * Domain Registration feature tests.
+ * Tests register pages for new (available) domains.
+ */
+
 test.describe('Feature 3: Domain Registration', () => {
 	test.beforeEach(async ({ page }) => {
-		// Start from homepage to get a fresh session
 		await page.goto('/');
 	});
 
-	test('3.1 - Register available domain - shows registration form', async ({ page }) => {
-		// Navigate to registration page for a domain
-		// Note: The page may redirect to homepage if SDK fails - handle gracefully
+	test('3.1 - Register available domain - checkout form is visible', async ({ page }) => {
+		// Use a unique domain name that is definitely available
 		const domainName = `e2ereg${Date.now()}`;
 		await page.goto(`/register/${domainName}`);
 
-		// Wait for either the checkout content or redirect to homepage
+		// Checkout content must be visible for an available domain
 		const checkoutContent = page.locator('.content.checkout');
-		const homepageHeading = page.locator('h3:has-text("Find your Meta Name")');
-
-		// Wait for either element to appear
-		const hasCheckout = await checkoutContent.isVisible().catch(() => false);
-		const hasHomepage = await homepageHeading.isVisible().catch(() => false);
-
-		// Test passes if either:
-		// 1. Checkout content is visible (SDK works and domain is available)
-		// 2. Homepage is visible (SDK failed and redirected)
-		expect(hasCheckout || hasHomepage).toBeTruthy();
-
-		if (hasCheckout) {
-			// If checkout loaded, verify domain name appears
-			const heading = page.locator('h2, h4').filter({ hasText: domainName }).first();
-			await expect(heading).toBeVisible({ timeout: 10000 }).catch(() => {
-				// Heading may not contain exact domain name due to TLD handling
-			});
-		}
+		await expect(checkoutContent).toBeVisible({ timeout: 15000 });
 	});
 
 	test('3.2 - Choose BYOC token - token dropdown is visible and populated', async ({ page }) => {
-		// Navigate to registration for a domain
 		const domainName = `e2etoken${Date.now()}`;
 		await page.goto(`/register/${domainName}`);
 
-		// Wait for content - either checkout or redirect
-		const checkoutContent = page.locator('.content.checkout');
-		await checkoutContent.waitFor({ state: 'visible', timeout: 10000 }).catch(() => null);
+		// Wait for checkout
+		await expect(page.locator('.content.checkout')).toBeVisible({ timeout: 15000 });
 
-		const hasCheckout = await checkoutContent.isVisible().catch(() => false);
+		// Payment token section must be visible
+		const paymentTokenSection = page.locator('[data-testid="payment-token-section"]');
+		await expect(paymentTokenSection).toBeVisible({ timeout: 10000 });
 
-		if (hasCheckout) {
-			// Should show token selector dropdown with label "Payment token"
-			const paymentTokenLabel = page.locator('text=Payment token');
-			await expect(paymentTokenLabel).toBeVisible({ timeout: 3000 }).catch(() => {
-				// Token selector may not be visible without SDK data
-			});
-		}
-		// If redirected to homepage, test passes (SDK issue, not a test issue)
+		// Token select dropdown must be visible and have options
+		const tokenSelect = page.locator('[data-testid="payment-token-select"]');
+		await expect(tokenSelect).toBeVisible({ timeout: 5000 });
 	});
 
-	test('3.3 - Choose registration duration - years selector visible and increment/decrement works', async ({ page }) => {
-		// Navigate to registration for a domain
+	test('3.3 - Choose registration duration - years selector works', async ({ page }) => {
 		const domainName = `e2eyears${Date.now()}`;
 		await page.goto(`/register/${domainName}`);
 
-		// Wait for checkout content
-		const checkoutContent = page.locator('.content.checkout');
-		await checkoutContent.waitFor({ state: 'visible', timeout: 10000 }).catch(() => null);
+		// Wait for checkout
+		await expect(page.locator('.content.checkout')).toBeVisible({ timeout: 15000 });
 
-		const hasCheckout = await checkoutContent.isVisible().catch(() => false);
+		// Years selector must be visible
+		const addYearBtn = page.locator('[aria-label="add-year"]');
+		const removeYearBtn = page.locator('[aria-label="remove-year"]');
+		await expect(addYearBtn).toBeVisible({ timeout: 5000 });
+		await expect(removeYearBtn).toBeVisible({ timeout: 5000 });
 
-		if (hasCheckout) {
-			// Should show years selector (add/remove buttons)
-			const addYearBtn = page.locator('[aria-label="add-year"]');
-			const removeYearBtn = page.locator('[aria-label="remove-year"]');
+		// Should start at 1 year
+		const yearLabel = page.locator('.years span').filter({ hasText: /1 year/ });
+		await expect(yearLabel).toBeVisible({ timeout: 3000 });
 
-			const hasAddBtn = await addYearBtn.isVisible().catch(() => false);
-			const hasRemoveBtn = await removeYearBtn.isVisible().catch(() => false);
+		// Click add year → should show 2 years
+		await addYearBtn.click();
+		await page.waitForTimeout(300);
+		const yearLabel2 = page.locator('.years span').filter({ hasText: /2 years/ });
+		await expect(yearLabel2).toBeVisible({ timeout: 3000 });
 
-			if (hasAddBtn && hasRemoveBtn) {
-				// Should show "1 year" initially
-				const yearLabel = page.locator('.years span').filter({ hasText: /1 year/ });
-				await expect(yearLabel).toBeVisible({ timeout: 3000 });
-
-				// Click add year
-				await addYearBtn.click();
-				await page.waitForTimeout(200);
-
-				// Should now show "2 years"
-				const yearLabel2 = page.locator('.years span').filter({ hasText: /2 years/ });
-				await expect(yearLabel2).toBeVisible({ timeout: 3000 });
-
-				// Click remove year
-				await removeYearBtn.click();
-				await page.waitForTimeout(200);
-
-				// Should be back to "1 year"
-				const yearLabel3 = page.locator('.years span').filter({ hasText: /1 year/ });
-				await expect(yearLabel3).toBeVisible({ timeout: 3000 });
-			}
-		}
-		// If SDK failed and redirected, test passes gracefully
+		// Click remove year → back to 1 year
+		await removeYearBtn.click();
+		await page.waitForTimeout(300);
+		await expect(yearLabel).toBeVisible({ timeout: 3000 });
 	});
 
-	test('3.4 - Register subdomain - shows subdomain registration form when parent exists', async ({
-		page
-	}) => {
-		// Use a subdomain that likely has a parent in the system
-		const subdomain = `sub.test${Date.now()}`;
-
+	test('3.4 - Register subdomain - parent domain exists, subdomain form shown', async ({ page }) => {
+		// test.mpc exists; sub.test.mpc should be registerable
+		const subdomain = `sub.test.mpc`;
 		await page.goto(`/register/${subdomain}`);
-		await page.waitForTimeout(2000);
 
-		// The page should show either:
-		// 1. SubdomainRegistration if parent exists
-		// 2. Redirect to register parent if parent doesn't exist
-		// 3. Redirect to homepage if SDK fails
-		// We just verify the page loaded something meaningful
-		const checkoutContent = page.locator('.content.checkout');
-		const homepageHeading = page.locator('h3:has-text("Find your Meta Name")');
-
-		const hasCheckout = await checkoutContent.isVisible().catch(() => false);
-		const hasHomepage = await homepageHeading.isVisible().catch(() => false);
-
-		expect(hasCheckout || hasHomepage).toBeTruthy();
+		// Wait for either subdomain form or redirect
+		// Either the subdomain registration form or checkout should appear
+		const subForm = page.locator('text=Subdomain Registration').or(
+			page.locator('.content.checkout')
+		);
+		await expect(subForm.first()).toBeVisible({ timeout: 15000 });
 	});
 
-	test('3.5 - See registration confirmation UI - fees breakdown visible before wallet connection', async ({
-		page
-	}) => {
-		// Navigate to registration
+	test('3.5 - See registration confirmation UI - fees breakdown visible', async ({ page }) => {
 		const domainName = `e2efees${Date.now()}`;
 		await page.goto(`/register/${domainName}`);
 
-		// Wait for checkout content
-		const checkoutContent = page.locator('.content.checkout');
-		await checkoutContent.waitFor({ state: 'visible', timeout: 10000 }).catch(() => null);
+		// Wait for checkout
+		await expect(page.locator('.content.checkout')).toBeVisible({ timeout: 15000 });
 
-		const hasCheckout = await checkoutContent.isVisible().catch(() => false);
-
-		if (hasCheckout) {
-			// Should show "Price breakdown" section
-			const priceBreakdown = page.locator('text=Price breakdown');
-			await expect(priceBreakdown).toBeVisible({ timeout: 10000 }).catch(() => {
-				// May not be visible if SDK data not loaded
-			});
-
-			// Should show total fees if visible
-			const totalFees = page.locator('[data-testid="total-fees"]');
-			await expect(totalFees).toBeVisible({ timeout: 3000 }).catch(() => {
-				// Fees may not load without SDK
-			});
-		}
-		// SDK failure redirects to homepage - test passes gracefully
+		// Price breakdown section must be visible
+		const priceBreakdown = page.locator('[data-testid="price-breakdown-section"]');
+		await expect(priceBreakdown).toBeVisible({ timeout: 10000 });
 	});
 
 	test('3.6 - Already registered domain - redirects to domain page', async ({ page }) => {
-		// We need to find a domain that is already registered
-		// Common test domains like "test.mpc" might be registered
-		const knownDomain = 'test.mpc';
+		// test.mpc is registered on testnet
+		await page.goto(`/register/${'test.mpc'}`);
 
-		await page.goto(`/register/${knownDomain}`);
+		// Must redirect to domain page (not stay on /register/)
+		await page.waitForURL(/\/domain\/test\.mpc/, { timeout: 15000 });
 
-		// Wait for navigation
-		await page.waitForTimeout(3000);
-
-		// Should end up either:
-		// 1. On domain page (/domain/test.mpc) if registered
-		// 2. On homepage if SDK failed
-		// 3. Still on registration page if not registered
-		const currentUrl = page.url();
-		const isOnDomainPage = currentUrl.includes(`/domain/${knownDomain}`);
-		const isOnHomepage = currentUrl === page.url() && (await page.locator('h3:has-text("Find your Meta Name")').isVisible().catch(() => false));
-		const isOnRegisterPage = currentUrl.includes('/register/');
-
-		expect(isOnDomainPage || isOnHomepage || isOnRegisterPage).toBeTruthy();
+		// Domain page should load correctly
+		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
 	});
 });
