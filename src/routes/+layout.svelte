@@ -17,6 +17,7 @@
 	import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
 	import Logo from 'src/routes/Logo.svelte';
 	import Footer from 'src/routes/Footer.svelte';
+	import DevWalletPanel from 'src/components/DevWalletPanel.svelte';
 
 	import favicon from '$lib/assets/images/favicon.png';
 
@@ -141,6 +142,7 @@
 		</Actions>
 	</Snackbar>
 	<Footer />
+	<DevWalletPanel />
 </div>
 
 <style>

@@ -154,3 +154,45 @@ tests/
 - `TESTNET_PRIVATE_KEY` env var required for wallet signing tests
 - Playwright runs against `http://localhost:4173` (preview server)
 - Web server auto-started by Playwright config
+
+---
+
+## Dev Wallet Panel (Testnet Only)
+
+**Status:** ✅ Implemented (2026-03-20)
+
+A testnet-only dev panel allows injecting a wallet address OR logging in with a private key for full transaction signing.
+
+**Purpose:** Enable testing of owner-only features (Settings tab, DNS record editing, domain transfers) with real transaction signing in local/dev environments.
+
+**Two modes:**
+
+1. **Address Only (UI Testing)**
+   - Paste a Partisia address (66 chars)
+   - Sets `$walletAddress` store directly
+   - No transaction signing possible
+   - Good for: testing UI flows that don't require signing
+
+2. **Private Key (Full Integration Testing)**
+   - Click "▶ Full Access (Private Key)" to expand
+   - Paste private key (64 chars)
+   - Uses `sdk.setSigningStrategy('privateKey', privateKey)` to enable real signing
+   - Derives address from private key via `privateKeyToAccountAddress()`
+   - Full transaction signing works
+   - Good for: testing DNS record updates, transfers, renewals
+
+**How it works:**
+1. Shows as a "🐷 Dev Wallet" button in the bottom-right corner (testnet only)
+2. Click to open panel
+3. Choose Address Only or Private Key mode
+4. Wallet persists until cleared with × button
+
+**Security:** Only available when `config.environment === 'test'` (same as TESTNET badge)
+
+**Files:**
+- `src/components/DevWalletPanel.svelte` — the dev wallet panel component
+- `src/routes/+layout.svelte` — imports and renders DevWalletPanel
+
+**SDK Integration:**
+- Uses `metaNamesSdk.setSigningStrategy('privateKey', privateKey)` for real signing
+- Uses `privateKeyToAccountAddress()` from `partisia-blockchain-applications-crypto` to derive address
