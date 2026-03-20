@@ -5,10 +5,6 @@ import { test, expect } from '@playwright/test';
  * These tests call the actual blockchain via the SDK.
  */
 
-/** Detect server-side SDK errors (ABI incompatibility, network, etc.) */
-const isSdkError = (data: any): boolean =>
-	typeof data?.error === 'string' && !data.error.includes('Invalid');
-
 test.describe('Feature 9: API Endpoints - Domains', () => {
 	const baseUrl = 'http://localhost:4173';
 
@@ -18,14 +14,6 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 		}) => {
 			const domainName = `notregistered${Date.now()}.mpc`;
 			const response = await request.get(`${baseUrl}/api/domains/${domainName}/check`);
-
-			if (!response.ok()) {
-				const data = await response.json();
-				if (isSdkError(data)) {
-					test.skip(true, 'SDK error - likely ABI incompatibility');
-					return;
-				}
-			}
 
 			expect(response.ok()).toBeTruthy();
 			const data = await response.json();
@@ -40,14 +28,6 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 			const domainName = 'test.mpc';
 			const response = await request.get(`${baseUrl}/api/domains/${domainName}/check`);
 
-			if (!response.ok()) {
-				const data = await response.json();
-				if (isSdkError(data)) {
-					test.skip(true, 'SDK error - likely ABI incompatibility');
-					return;
-				}
-			}
-
 			expect(response.ok()).toBeTruthy();
 			const data = await response.json();
 			expect(typeof data.domainPresent).toBe('boolean');
@@ -61,14 +41,6 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 			const domainName = 'test.mpc';
 			const response = await request.get(`${baseUrl}/api/domains/${domainName}`);
 
-			if (!response.ok()) {
-				const data = await response.json();
-				if (isSdkError(data)) {
-					test.skip(true, 'SDK error - likely ABI incompatibility');
-					return;
-				}
-			}
-
 			expect(response.ok()).toBeTruthy();
 			const data = await response.json();
 			expect(data).toHaveProperty('domain');
@@ -79,14 +51,6 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 		}) => {
 			const domainName = `nonexistent${Date.now()}.mpc`;
 			const response = await request.get(`${baseUrl}/api/domains/${domainName}`);
-
-			if (!response.ok()) {
-				const data = await response.json();
-				if (isSdkError(data)) {
-					test.skip(true, 'SDK error - likely ABI incompatibility');
-					return;
-				}
-			}
 
 			expect(response.ok()).toBeTruthy();
 			const data = await response.json();
@@ -114,14 +78,6 @@ test.describe('Feature 9: API Endpoints - Domains', () => {
 	test.describe('GET /api/domains/stats', () => {
 		test('8.4 - Get stats returns statistics object', async ({ request }) => {
 			const response = await request.get(`${baseUrl}/api/domains/stats`);
-
-			if (!response.ok()) {
-				const data = await response.json();
-				if (isSdkError(data)) {
-					test.skip(true, 'SDK error - likely ABI incompatibility');
-					return;
-				}
-			}
 
 			expect(response.ok()).toBeTruthy();
 			const data = await response.json();

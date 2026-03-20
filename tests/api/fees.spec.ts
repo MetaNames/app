@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Known issue: The @metanames/sdk has an ABI client incompatibility that causes
- * most blockchain-querying endpoints to fail. The BYOC config may also be empty,
- * causing all coins to return "Invalid coin". Tests gracefully skip when SDK
- * errors are detected.
+ * API tests for fee endpoints.
+ * These tests call the actual blockchain via the SDK.
  */
 
 test.describe('Feature 9: API Endpoints - Fees', () => {
@@ -21,13 +19,7 @@ test.describe('Feature 9: API Endpoints - Fees', () => {
 				`${baseUrl}/api/register/${domainName}/fees/${coin}`
 			);
 
-			if (!response.ok()) {
-				const data = await response.json();
-				// Skip if SDK/config issue (empty BYOC list or ABI error)
-				test.skip(true, `SDK/config issue: ${data.error?.substring(0, 80) ?? 'unknown'}`);
-				return;
-			}
-
+			expect(response.ok()).toBeTruthy();
 			const data = await response.json();
 			expect(data).toHaveProperty('fees');
 			expect(typeof data.fees).toBe('string');
@@ -52,16 +44,6 @@ test.describe('Feature 9: API Endpoints - Fees', () => {
 		}) => {
 			const domainName = `testfees${Date.now()}`;
 			const validCoins = ['PT', 'BTC', 'ETH', 'USDC'];
-
-			// Probe first coin to detect SDK/config issues
-			const probeResponse = await request.get(
-				`${baseUrl}/api/register/${domainName}/fees/${validCoins[0]}`
-			);
-			if (!probeResponse.ok()) {
-				const probeData = await probeResponse.json();
-				test.skip(true, `SDK/config issue: ${probeData.error?.substring(0, 80) ?? 'unknown'}`);
-				return;
-			}
 
 			for (const coin of validCoins) {
 				const response = await request.get(
