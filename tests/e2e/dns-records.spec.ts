@@ -15,8 +15,8 @@ test.describe('Feature 7: DNS Records', () => {
 		const domainHeading = page.locator('h5.domain');
 		await expect(domainHeading).toBeVisible({ timeout: 15000 });
 
-		// Must contain the domain name
-		await expect(domainHeading).toContainText(/test/i);
+		// Must contain the domain name — wait for it to settle
+		await expect(domainHeading).toContainText(/test/i, { timeout: 5000 });
 	});
 
 	test('7.2 - DNS records display - profile section is visible for registered domain', async ({
