@@ -42,6 +42,9 @@ jobs:
       - name: Install dependencies
         run: NODE_ENV=development npm ci
 
+      - name: Compile SMUI themes
+        run: npm run generate:themes
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
