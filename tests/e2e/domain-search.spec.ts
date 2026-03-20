@@ -6,8 +6,8 @@ test.describe('Feature 1: Domain Search & Validation', () => {
 	});
 
 	test('1.1 - Search for domain name on homepage', async ({ page }) => {
-		// Find the search input
-		const searchInput = page.locator('input[type="text"], input.mdc-text-field__input').first();
+		// Find the search input - SMUI Textfield renders input inside div with class "mdc-text-field"
+		const searchInput = page.locator('.mdc-text-field input[type="text"]').first();
 		await expect(searchInput).toBeVisible();
 
 		// Enter a domain name
@@ -16,30 +16,34 @@ test.describe('Feature 1: Domain Search & Validation', () => {
 		// Wait for debounced search (400ms) + API response
 		await page.waitForTimeout(1500);
 
-		// Should show a result card (available or registered)
+		// Should show a result card (available or registered) or loading state
+		// Result cards have class "domain-link"
 		const domainCard = page.locator('.domain-link').first();
-		await expect(domainCard).toBeVisible();
+		await expect(domainCard).toBeVisible({ timeout: 5000 });
 	});
 
 	test('1.2 - Validate domain names before registration', async ({ page }) => {
-		// Find the search input
-		const searchInput = page.locator('input[type="text"], input.mdc-text-field__input').first();
+		// Find the search input - SMUI Textfield renders input inside div with class "mdc-text-field"
+		const searchInput = page.locator('.mdc-text-field input[type="text"]').first();
 		await expect(searchInput).toBeVisible();
 
 		// Enter an invalid domain (too short - should trigger validation)
 		await searchInput.fill('ab');
 
-		// Wait for debounce
+		// Blur the field to trigger validation display
+		await searchInput.blur();
+
+		// Wait for debounce and validation
 		await page.waitForTimeout(600);
 
-		// Should show validation error
-		const helperText = page.locator('.mdc-text-field-helper-text').first();
-		await expect(helperText).toBeVisible();
+		// Should show validation error in helper text
+		const helperText = page.locator('.mdc-text-field-helper-text');
+		await expect(helperText).toBeVisible({ timeout: 3000 });
 	});
 
 	test('1.3 - See domain availability status', async ({ page }) => {
-		// Find the search input
-		const searchInput = page.locator('input[type="text"], input.mdc-text-field__input').first();
+		// Find the search input - SMUI Textfield renders input inside div with class "mdc-text-field"
+		const searchInput = page.locator('.mdc-text-field input[type="text"]').first();
 		await expect(searchInput).toBeVisible();
 
 		// Search for a domain that might be available (random string to minimize collision)
