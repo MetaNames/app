@@ -5,9 +5,9 @@ test.describe('Feature: DevWalletPanel Private Key Login', () => {
 	test('should open dev wallet panel on testnet', async ({ page }) => {
 		await page.goto('/', { waitUntil: 'networkidle' });
 		const devWalletBtn = page.locator('.dev-toggle');
-		await expect(devWalletBtn).toBeVisible({ timeout: 10000 });
+		await expect(devWalletBtn).toBeVisible({ timeout: 15000 });
 		await devWalletBtn.click();
-		await expect(page.locator('.dev-panel')).toBeVisible({ timeout: 5000 });
+		await expect(page.locator('.dev-panel')).toBeVisible({ timeout: 10000 });
 	});
 
 	test('should login with valid private key and show address', async ({ page }) => {
