@@ -1,21 +1,23 @@
 import { expect, type Page } from '@playwright/test';
 
-export const TEST_PRIVATE_KEY = '07375d80367a5f19a22509df960a5cfce5b683728d3c930f8f918aeb091dfad8';
+export const TEST_PRIVATE_KEY = 'df4642ef258f9aef2adb6c148590208b20387fb067f2c0907d6c85697c27928c';
 
 /**
  * Login via DevWalletPanel on the CURRENT page (no page.goto).
  * The page must already be loaded. Avoids clearing Svelte stores.
+ * Waits for hydration before interacting with the dev panel.
  */
 export async function loginOnCurrentPage(page: Page) {
+	// Wait for Svelte hydration — the dev-toggle only renders when {#if isTestnet} evaluates
 	const devWalletBtn = page.locator('.dev-toggle');
-	await expect(devWalletBtn).toBeVisible({ timeout: 10000 });
+	await expect(devWalletBtn).toBeVisible({ timeout: 15000 });
 	await devWalletBtn.click();
 
 	const devPanel = page.locator('.dev-panel');
 	await expect(devPanel).toBeVisible({ timeout: 5000 });
 	await devPanel.locator('input[type="password"]').fill(TEST_PRIVATE_KEY);
 	await devPanel.locator('button').filter({ hasText: 'Connect' }).click();
-	await expect(devPanel.locator('.wallet-status')).toBeVisible({ timeout: 5000 });
+	await expect(devPanel.locator('.wallet-status')).toBeVisible({ timeout: 10000 });
 }
 
 /**

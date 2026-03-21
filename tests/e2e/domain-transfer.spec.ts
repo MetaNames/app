@@ -72,5 +72,18 @@ test.describe('Feature 6: Domain Transfer', () => {
 			const goBackBtn = page.locator('a:has-text("Go back"), button:has-text("Go back")');
 			await expect(goBackBtn).toBeVisible({ timeout: 5000 });
 		});
+
+		test('6.8 - Invalid address shows validation error', async ({ page }) => {
+			await page.goto('/domain/test.mpc/transfer', { waitUntil: 'networkidle' });
+			await expect(page.locator('h2:has-text("Transfer domain")')).toBeVisible({ timeout: 15000 });
+
+			// Type an invalid address
+			const recipientInput = page.locator('input').first();
+			await recipientInput.fill('not-a-valid-address');
+
+			// Should show error (invalid class on the textfield)
+			const invalidField = page.locator('.mdc-text-field--invalid');
+			await expect(invalidField).toBeVisible({ timeout: 5000 });
+		});
 	});
 });

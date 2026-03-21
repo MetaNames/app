@@ -154,7 +154,49 @@ test.describe('Feature 7: DNS Records', () => {
 			}
 		});
 
-		test('7.10 - Can switch between details and settings tabs', async ({ page }) => {
+		test('7.10 - Click edit on a record shows save/cancel buttons', async ({ page }) => {
+			await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
+			await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+
+			await loginOnCurrentPage(page);
+
+			// Switch to settings
+			const settingsTab = page.locator('button:has-text("settings")');
+			await expect(settingsTab).toBeVisible({ timeout: 10000 });
+			await settingsTab.click();
+
+			await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });
+
+			// Check for existing records
+			const recordContainers = page.locator('.record-container');
+			const count = await recordContainers.count();
+
+			if (count > 0) {
+				// Click edit on first record
+				const editBtn = page.locator('[aria-label="edit-record"]').first();
+				await expect(editBtn).toBeVisible({ timeout: 5000 });
+				await editBtn.click();
+
+				// Save and cancel buttons must appear
+				await expect(page.locator('[aria-label="save-record"]').first()).toBeVisible({
+					timeout: 5000
+				});
+				await expect(page.locator('[aria-label="cancel-edit"]').first()).toBeVisible({
+					timeout: 5000
+				});
+
+				// Cancel to restore original state
+				await page.locator('[aria-label="cancel-edit"]').first().click();
+
+				// Edit button should reappear
+				await expect(editBtn).toBeVisible({ timeout: 5000 });
+			} else {
+				// No records — "No records found" must show
+				await expect(page.locator('text=No records found')).toBeVisible({ timeout: 5000 });
+			}
+		});
+
+		test('7.11 - Can switch between details and settings tabs', async ({ page }) => {
 			await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
 			await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
 

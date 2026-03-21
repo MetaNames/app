@@ -15,14 +15,15 @@
 | Feature 3: Domain Registration | ✅ Pass | 9 | 6 unauthenticated + 2 authenticated + 1 subdomain auth |
 | Feature 4: Domain Management | ✅ Pass | 6 | 4 unauthenticated + 2 authenticated (owner TabBar) |
 | Feature 5: Domain Renewal | ✅ Pass | 5 | 3 unauthenticated + 2 authenticated |
-| Feature 6: Domain Transfer | ✅ Pass | 7 | 4 unauthenticated + 3 authenticated (transfer button, warnings) |
-| Feature 7: DNS Records | ✅ Pass | 10 | 5 unauthenticated + 5 authenticated (settings, records, edit/delete, tab switching) |
+| Feature 6: Domain Transfer | ✅ Pass | 8 | 4 unauthenticated + 3 authenticated + 1 address validation |
+| Feature 7: DNS Records | ✅ Pass | 11 | 5 unauthenticated + 6 authenticated (settings, records, edit flow, tab switching) |
 | Feature 8: User Profile | ✅ Pass | 9 | 4 disconnected + 5 authenticated (domains table, search, navigation) |
-| Feature 9: API Endpoints | ⚠️ SDK Issue | 7 | API tests pass; blockchain state calls fail due to SDK error |
+| Feature 9: API Endpoints | ⚠️ SDK Issue | 8 | API tests pass; blockchain state calls fail due to SDK error |
 | ~~Feature 10: Proposals~~ | ❌ Removed | - | Feature not in use — DO NOT add tests for proposals |
+| TLD Page | ✅ Pass | 3 | Domain card, Whois, no settings tab |
 | DevWalletPanel | ✅ Pass | 4 | Open, login, disconnect, invalid key rejection |
 
-**Total:** 60 tests | **Passing:** 60 | **Failing:** 0 | **Skipped:** 7 (Feature 9 blockchain calls + Feature 2 wallet extensions)
+**Total:** 66 tests | **Passing:** 66 | **Failing:** 0 | **Skipped:** 7 (Feature 9 blockchain calls + Feature 2 wallet extensions)
 
 > ✅ All tests use strict assertions — no "if visible then check" patterns.
 > Tests login on the current page (not via page.goto redirect) to preserve Svelte stores.
@@ -74,13 +75,14 @@ tests/
 │   ├── domain-registration-auth.spec.ts  Feature 3 subdomain auth (1 test)
 │   ├── domain-management.spec.ts         Feature 4 (6 tests)
 │   ├── domain-renewal.spec.ts            Feature 5 (5 tests)
-│   ├── domain-transfer.spec.ts           Feature 6 (7 tests)
-│   ├── dns-records.spec.ts               Feature 7 (10 tests)
+│   ├── domain-transfer.spec.ts           Feature 6 (8 tests)
+│   ├── dns-records.spec.ts               Feature 7 (11 tests)
 │   ├── profile.spec.ts                   Feature 8 (9 tests)
+│   ├── tld.spec.ts                       TLD page (3 tests)
 │   └── dev-wallet.spec.ts                DevWalletPanel (4 tests)
 └── api/
-    ├── domains.spec.ts                   Feature 9 (4 tests)
-    └── fees.spec.ts                      Feature 9 (3 tests)
+    ├── domains.spec.ts                   Feature 9 (6 tests)
+    └── fees.spec.ts                      Feature 9 (2 tests)
 ```
 
 ---
