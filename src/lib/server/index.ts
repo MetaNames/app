@@ -44,11 +44,12 @@ export interface DomainStats {
 }
 
 export const getStats = async (): Promise<DomainStats> => {
-	const domainCount = await metaNamesSdk.domainRepository.count();
-	const ownerCount = await metaNamesSdk.domainRepository
-		.getOwners()
-		.then((owners) => owners.length);
-	const recentDomains = await getRecentDomains();
+	// ⚡ Bolt: Execute independent SDK API calls concurrently to avoid waterfall latency
+	const [domainCount, ownerCount, recentDomains] = await Promise.all([
+		metaNamesSdk.domainRepository.count(),
+		metaNamesSdk.domainRepository.getOwners().then((owners) => owners.length),
+		getRecentDomains()
+	]);
 
 	return {
 		domainCount,
