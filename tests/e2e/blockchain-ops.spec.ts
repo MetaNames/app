@@ -60,7 +60,7 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		await loginOnCurrentPage(page);
 
 		// Click settings tab
-		const settingsTab = page.locator('button:has-text("settings")');
+		const settingsTab = page.locator('role=tab[name="settings"]');
 		await expect(settingsTab).toBeVisible({ timeout: 10000 });
 		await settingsTab.click();
 
@@ -89,9 +89,10 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		// Wait for testnet confirmation
 		await page.waitForTimeout(3000);
 
-		// Record should appear (Bio with our value)
+		// Record should appear (Bio with our value inside disabled textbox)
 		await expect(page.locator('.record-container').first()).toBeVisible({ timeout: 15000 });
-		await expect(page.locator('text=Integration test bio')).toBeVisible({ timeout: 10000 });
+		// Use toHaveValue on the disabled textbox directly (text= doesn't search disabled inputs)
+		await expect(page.locator('.record-container textarea[disabled]')).toHaveValue('Integration test bio');
 	});
 
 	test('B3 - Edit the DNS record', async ({ page }) => {
@@ -128,8 +129,8 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		// Edit button should reappear (back to view mode)
 		await expect(page.locator('[aria-label="edit-record"]').first()).toBeVisible({ timeout: 15000 });
 
-		// Value should be updated
-		await expect(page.locator('text=Updated bio value')).toBeVisible({ timeout: 10000 });
+		// Value should be updated (check the disabled textarea)
+		await expect(page.locator('.record-container textarea[disabled]')).toHaveValue('Updated bio value');
 	});
 
 	test('B4 - Delete the DNS record', async ({ page }) => {
@@ -138,8 +139,8 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 
 		await loginOnCurrentPage(page);
 
-		// Navigate to settings
-		await page.locator('button:has-text("settings")').click();
+		// Navigate to settings tab (use tab role + text to be specific)
+		await page.locator('role=tab[name="settings"]').click();
 		await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });
 
 		// Record should exist
@@ -163,6 +164,13 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 
 		// Wait for testnet confirmation + page refresh
 		await page.waitForTimeout(3000);
+
+		// Reload and click settings tab to ensure we're on the right tab
+		await page.reload({ waitUntil: 'networkidle' });
+		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await loginOnCurrentPage(page);
+		await page.locator('role=tab[name="settings"]').click();
+		await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });
 
 		// Record should be gone — "No records found" should show
 		await expect(page.locator('text=No records found')).toBeVisible({ timeout: 15000 });
