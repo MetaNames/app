@@ -1,6 +1,6 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-21 03:01 UTC
+> Last updated: 2026-03-21 14:40 UTC
 > Branch: `integration-tests`
 > CI: GitHub Actions (unit + integration tests)
 
@@ -12,18 +12,21 @@
 |---------|--------|-------|-------|
 | Feature 1: Domain Search | ⚠️ SDK Issue | 3 | Tests run but SDK throws `contractAbi.getStateStruct` error for blockchain state calls |
 | Feature 2: Wallet Connection | ❌ Skipped | - | Cannot test browser extensions in Playwright |
-| Feature 3: Domain Registration | ✅ Pass | 6 | E2E tests with data-testid selectors |
-| Feature 4: Domain Management | ✅ Pass | 4 | E2E tests |
-| Feature 5: Domain Renewal | ✅ Pass | 4 | E2E tests (2 base + 2 authenticated with private key login) |
-| Feature 6: Domain Transfer | ✅ Pass | 4 | E2E tests (2 base + 2 authenticated with private key login) |
-| Feature 7: DNS Records | ✅ Pass | 7 | E2E tests (4 base + 2 auth + 1 owner settings) |
-| Feature 8: User Profile | ✅ Pass | 4 | E2E tests |
+| Feature 3: Domain Registration | ✅ Pass | 9 | 6 unauthenticated + 2 authenticated + 1 subdomain auth |
+| Feature 4: Domain Management | ✅ Pass | 6 | 4 unauthenticated + 2 authenticated (owner TabBar) |
+| Feature 5: Domain Renewal | ✅ Pass | 5 | 3 unauthenticated + 2 authenticated |
+| Feature 6: Domain Transfer | ✅ Pass | 7 | 4 unauthenticated + 3 authenticated (transfer button, warnings) |
+| Feature 7: DNS Records | ✅ Pass | 10 | 5 unauthenticated + 5 authenticated (settings, records, edit/delete, tab switching) |
+| Feature 8: User Profile | ✅ Pass | 9 | 4 disconnected + 5 authenticated (domains table, search, navigation) |
 | Feature 9: API Endpoints | ⚠️ SDK Issue | 7 | API tests pass; blockchain state calls fail due to SDK error |
 | ~~Feature 10: Proposals~~ | ❌ Removed | - | Feature not in use — DO NOT add tests for proposals |
+| DevWalletPanel | ✅ Pass | 4 | Open, login, disconnect, invalid key rejection |
 
-**Total:** 41 tests | **Written:** 41 | **Passing:** 41 | **Failing:** 0 | **Skipped:** 7 (Feature 9 blockchain calls + Feature 2 wallet extensions)
+**Total:** 60 tests | **Passing:** 60 | **Failing:** 0 | **Skipped:** 7 (Feature 9 blockchain calls + Feature 2 wallet extensions)
 
-> ✅ All 40 integration tests passing as of 2026-03-21. SDK-blocked blockchain calls (Feature 1 search results, Feature 9 state) are known upstream issues in `@partisiablockchain/abi-client`.
+> ✅ All tests use strict assertions — no "if visible then check" patterns.
+> Tests login on the current page (not via page.goto redirect) to preserve Svelte stores.
+> SDK-blocked blockchain calls (Feature 1 search, Feature 9 state) are upstream issues in `@partisiablockchain/abi-client`.
 
 ---
 
@@ -44,20 +47,37 @@
 
 ---
 
+## Test Architecture
+
+### Shared Helpers (`tests/e2e/helpers.ts`)
+- `loginOnCurrentPage(page)` — Login via DevWalletPanel on the current page (no navigation, preserves stores)
+- `loginAtHome(page)` — Login at homepage (for tests needing home-first flow)
+- `spaNavigate(page, path)` — Client-side goto() to preserve Svelte stores across navigation
+
+### Key Pattern: Login on Current Page
+All authenticated tests use `loginOnCurrentPage()` which logs in WITHOUT doing `page.goto()`.
+This preserves Svelte stores (`walletAddress`, `walletConnected`, etc.) so the UI reacts correctly.
+
+**Wrong:** `loginAtHome()` → `page.goto('/domain/test.mpc')` (stores cleared by full reload)
+**Right:** `page.goto('/domain/test.mpc')` → `loginOnCurrentPage()` (stores preserved)
+
+---
+
 ## Test File Inventory
 
 ```
 tests/
 ├── e2e/
+│   ├── helpers.ts                        Shared login/navigation helpers
 │   ├── domain-search.spec.ts             Feature 1 (3 tests)
-│   ├── domain-registration.spec.ts       Feature 3 (6 tests)
-│   ├── domain-registration-auth.spec.ts Feature 3 auth (2 tests)
-│   ├── domain-management.spec.ts         Feature 4 (4 tests)
-│   ├── domain-renewal.spec.ts            Feature 5 (2 tests)
-│   ├── domain-transfer.spec.ts          Feature 6 (2 tests)
-│   ├── dns-records.spec.ts               Feature 7 (7 tests)
-│   ├── profile.spec.ts                   Feature 8 (4 tests)
-│   └── dev-wallet.spec.ts               DevWalletPanel (3 tests)
+│   ├── domain-registration.spec.ts       Feature 3 (8 tests)
+│   ├── domain-registration-auth.spec.ts  Feature 3 subdomain auth (1 test)
+│   ├── domain-management.spec.ts         Feature 4 (6 tests)
+│   ├── domain-renewal.spec.ts            Feature 5 (5 tests)
+│   ├── domain-transfer.spec.ts           Feature 6 (7 tests)
+│   ├── dns-records.spec.ts               Feature 7 (10 tests)
+│   ├── profile.spec.ts                   Feature 8 (9 tests)
+│   └── dev-wallet.spec.ts                DevWalletPanel (4 tests)
 └── api/
     ├── domains.spec.ts                   Feature 9 (4 tests)
     └── fees.spec.ts                      Feature 9 (3 tests)

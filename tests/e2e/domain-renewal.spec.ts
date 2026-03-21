@@ -1,40 +1,54 @@
 import { test, expect } from '@playwright/test';
+import { loginOnCurrentPage } from './helpers';
 
-const TEST_PRIVATE_KEY = '07375d80367a5f19a22509df960a5cfce5b683728d3c930f8f918aeb091dfad8';
+test.describe('Feature 5: Domain Renewal', () => {
+	test.describe('Unauthenticated', () => {
+		test('5.1 - Renewal page loads with correct heading', async ({ page }) => {
+			await page.goto('/domain/test.mpc/renew', { waitUntil: 'networkidle' });
 
-async function loginWithPrivateKey(page: any) {
-	await page.goto('/', { waitUntil: 'networkidle' });
-	const devWalletBtn = page.locator('.dev-toggle');
-	await expect(devWalletBtn).toBeVisible({ timeout: 10000 });
-	await devWalletBtn.click();
+			// "Renew domain" heading must be visible (server load() analyzes the domain)
+			const renewHeading = page.locator('h2:has-text("Renew domain")');
+			await expect(renewHeading).toBeVisible({ timeout: 15000 });
+		});
 
-	const devPanel = page.locator('.dev-panel');
-	await expect(devPanel).toBeVisible({ timeout: 5000 });
-	await devPanel.locator('input[type="password"]').fill(TEST_PRIVATE_KEY);
-	devPanel.locator('button').filter({ hasText: 'Connect' }).click();
-	await expect(devPanel.locator('.wallet-status')).toBeVisible({ timeout: 5000 });
-}
+		test('5.2 - Renewal page URL is correct', async ({ page }) => {
+			await page.goto('/domain/test.mpc/renew', { waitUntil: 'networkidle' });
+			await expect(page).toHaveURL(/\/domain\/test\.mpc\/renew/);
+		});
 
-test.describe('Feature 5: Domain Renewal (Authenticated)', () => {
-	test('5.1 - Renew page accessible after wallet login', async ({ page }) => {
-		// Login first
-		await loginWithPrivateKey(page);
+		test('5.3 - Renewal page shows year selector', async ({ page }) => {
+			await page.goto('/domain/test.mpc/renew', { waitUntil: 'networkidle' });
+			await expect(page.locator('h2:has-text("Renew domain")')).toBeVisible({ timeout: 15000 });
 
-		// Navigate to renew page - server-side load() runs analyze()
-		await page.goto('/domain/test.mpc/renew', { waitUntil: 'networkidle' });
-
-		// Should show "Renew domain" heading (h2.mt-0) if domain analyzed successfully
-		const renewHeading = page.locator('h2:has-text("Renew domain")');
-		await expect(renewHeading).toBeVisible({ timeout: 10000 });
+			// Year add/remove buttons must be present
+			await expect(page.locator('[aria-label="add-year"]')).toBeVisible({ timeout: 5000 });
+			await expect(page.locator('[aria-label="remove-year"]')).toBeVisible({ timeout: 5000 });
+		});
 	});
 
-	test('5.2 - Renewal page URL is correct', async ({ page }) => {
-		await loginWithPrivateKey(page);
+	test.describe('Authenticated', () => {
+		test('5.4 - Renewal page shows payment token and fees when logged in', async ({ page }) => {
+			await page.goto('/domain/test.mpc/renew', { waitUntil: 'networkidle' });
+			await expect(page.locator('h2:has-text("Renew domain")')).toBeVisible({ timeout: 15000 });
 
-		// Go to renew page directly
-		await page.goto('/domain/test.mpc/renew', { waitUntil: 'networkidle' });
+			await loginOnCurrentPage(page);
 
-		// URL should be correct
-		await expect(page).toHaveURL(/\/domain\/test\.mpc\/renew/);
+			// Payment token section must be visible
+			const paymentTokenSection = page.locator('[data-testid="payment-token-section"]');
+			await expect(paymentTokenSection).toBeVisible({ timeout: 10000 });
+
+			// Price breakdown must be visible
+			const priceBreakdown = page.locator('[data-testid="price-breakdown-section"]');
+			await expect(priceBreakdown).toBeVisible({ timeout: 10000 });
+		});
+
+		test('5.5 - Go back button present on renewal page', async ({ page }) => {
+			await page.goto('/domain/test.mpc/renew', { waitUntil: 'networkidle' });
+			await expect(page.locator('h2:has-text("Renew domain")')).toBeVisible({ timeout: 15000 });
+
+			// Go back button should exist
+			const goBackBtn = page.locator('a:has-text("Go back"), button:has-text("Go back")');
+			await expect(goBackBtn).toBeVisible({ timeout: 5000 });
+		});
 	});
 });
