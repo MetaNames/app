@@ -10,7 +10,7 @@
 
 | Feature | Status | Tests | Notes |
 |---------|--------|-------|-------|
-| Feature 1: Domain Search | ⚠️ SDK Issue | 3 | Tests run but SDK throws `contractAbi.getStateStruct` error for blockchain state calls |
+| Feature 1: Domain Search | ✅ Pass | 3 | Search, validation, availability status |
 | Feature 2: Wallet Connection | ❌ Skipped | - | Cannot test browser extensions in Playwright |
 | Feature 3: Domain Registration | ✅ Pass | 9 | 6 unauthenticated + 2 authenticated + 1 subdomain auth |
 | Feature 4: Domain Management | ✅ Pass | 6 | 4 unauthenticated + 2 authenticated (owner TabBar) |
@@ -18,16 +18,16 @@
 | Feature 6: Domain Transfer | ✅ Pass | 8 | 4 unauthenticated + 3 authenticated + 1 address validation |
 | Feature 7: DNS Records | ✅ Pass | 11 | 5 unauthenticated + 6 authenticated (settings, records, edit flow, tab switching) |
 | Feature 8: User Profile | ✅ Pass | 9 | 4 disconnected + 5 authenticated (domains table, search, navigation) |
-| Feature 9: API Endpoints | ⚠️ SDK Issue | 8 | API tests pass; blockchain state calls fail due to SDK error |
+| Feature 9: API Endpoints | ✅ Pass | 8 | Domain check, details, recent, stats, fees |
 | ~~Feature 10: Proposals~~ | ❌ Removed | - | Feature not in use — DO NOT add tests for proposals |
 | TLD Page | ✅ Pass | 3 | Domain card, Whois, no settings tab |
 | DevWalletPanel | ✅ Pass | 4 | Open, login, disconnect, invalid key rejection |
 
-**Total:** 66 tests | **Passing:** 66 | **Failing:** 0 | **Skipped:** 7 (Feature 9 blockchain calls + Feature 2 wallet extensions)
+**Total:** 66 tests | **Passing:** 66 | **Failing:** 0 | **Skipped:** Feature 2 wallet extensions only
 
 > ✅ All tests use strict assertions — no "if visible then check" patterns.
 > Tests login on the current page (not via page.goto redirect) to preserve Svelte stores.
-> SDK-blocked blockchain calls (Feature 1 search, Feature 9 state) are upstream issues in `@partisiablockchain/abi-client`.
+> SDK `getStateStruct()` works correctly on testnet — no upstream issue.
 
 ---
 
@@ -90,7 +90,7 @@ tests/
 ## Known Issues
 
 - `@partisiablockchain/abi-client` is CJS — uses default import pattern in `proposal.ts` for SSR compat
-- `contractAbi.getStateStruct is not a function` — SDK issue, blocks blockchain state calls in Feature 1 (Domain Search) and Feature 9 (API). Tests still run and pass for UI-level assertions.
+- `contractAbi.getStateStruct` works correctly on testnet with abi-client@6.148.0. Previous reports of failure were incorrect.
 - SMUI theme requires npm (flat node_modules) — pnpm breaks `@use '@material/theme/...'` resolution
 
 ---

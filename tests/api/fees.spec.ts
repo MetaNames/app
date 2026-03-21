@@ -13,7 +13,7 @@ test.describe('Feature 9: API Endpoints - Fees', () => {
 	const baseUrl = 'http://localhost:4173';
 
 	test.describe('GET /api/register/{name}/fees/{coin}', () => {
-		test('8.5 - Get fees for TEST_COIN returns fee breakdown', async ({
+		test('8.5 - Get fees for TEST_COIN returns fee breakdown with numeric value', async ({
 			request
 		}) => {
 			const domainName = `testfees${Date.now()}`;
@@ -28,6 +28,8 @@ test.describe('Feature 9: API Endpoints - Fees', () => {
 			const data = await response.json();
 			expect(data).toHaveProperty('fees');
 			expect(typeof data.fees).toBe('string');
+			// Fees must be a parseable number > 0
+			expect(Number(data.fees)).toBeGreaterThan(0);
 		});
 
 		test('8.6 - Get fees for invalid coin returns error', async ({ request }) => {
