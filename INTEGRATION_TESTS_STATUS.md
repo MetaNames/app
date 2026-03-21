@@ -1,6 +1,6 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-21 14:40 UTC
+> Last updated: 2026-03-21 16:30 UTC
 > Branch: `integration-tests`
 > CI: GitHub Actions (unit + integration tests)
 
@@ -12,29 +12,36 @@
 |---------|--------|-------|-------|
 | Feature 1: Domain Search | ✅ Pass | 3 | Search, validation, availability status |
 | Feature 2: Wallet Connection | ❌ Skipped | - | Cannot test browser extensions in Playwright |
-| Feature 3: Domain Registration | ✅ Pass | 9 | 6 unauthenticated + 2 authenticated + 1 subdomain auth |
-| Feature 4: Domain Management | ✅ Pass | 6 | 4 unauthenticated + 2 authenticated (owner TabBar) |
-| Feature 5: Domain Renewal | ✅ Pass | 5 | 3 unauthenticated + 2 authenticated |
-| Feature 6: Domain Transfer | ✅ Pass | 8 | 4 unauthenticated + 3 authenticated + 1 address validation |
-| Feature 7: DNS Records | ✅ Pass | 11 | 5 unauthenticated + 6 authenticated (settings, records, edit flow, tab switching) |
-| Feature 8: User Profile | ✅ Pass | 9 | 4 disconnected + 5 authenticated (domains table, search, navigation) |
+| Feature 3: Domain Registration | ✅ Pass | 9 | Checkout, tokens, years, subdomain, redirect, auth |
+| Feature 4: Domain Management | ✅ Pass | 4 | Full page load, non-existent redirect, owner TabBar, non-owner |
+| Feature 5: Domain Renewal | ✅ Pass | 3 | Page load + controls, URL, auth payment/fees |
+| Feature 6: Domain Transfer | ✅ Pass | 5 | Page load + warnings, URL, ConnectionRequired, auth, validation |
+| Feature 7: DNS Records & Settings | ✅ Pass | 7 | Tabs, records, add form, Renew/Transfer links, edit flow, tab switching |
+| Feature 8: User Profile | ✅ Pass | 5 | Disconnected state, address chip, domains table, search, navigation |
 | Feature 9: API Endpoints | ✅ Pass | 8 | Domain check, details, recent, stats, fees |
-| ~~Feature 10: Proposals~~ | ❌ Removed | - | Feature not in use — DO NOT add tests for proposals |
+| ~~Feature 10: Proposals~~ | ❌ Removed | - | Feature not in use |
 | TLD Page | ✅ Pass | 3 | Domain card, Whois, no settings tab |
 | DevWalletPanel | ✅ Pass | 4 | Open, login, disconnect, invalid key rejection |
 
-**Total:** 66 tests | **Passing:** 66 | **Failing:** 0 | **Skipped:** Feature 2 wallet extensions only
-
-> ✅ All tests use strict assertions — no "if visible then check" patterns.
-> Tests login on the current page (not via page.goto redirect) to preserve Svelte stores.
-> SDK `getStateStruct()` works correctly on testnet — no upstream issue.
+**Total:** 51 tests | **Passing:** 51 | **Failing:** 0
 
 ---
 
-## ⚠️ DO NOT Test
+## Test Architecture
 
-- **Proposals** — Feature is not in use. Do not write unit or integration tests for `src/lib/proposal.ts` or proposals pages.
-- **Wallet Connection (browser extensions)** — Cannot be tested in Playwright. Requires manual testing.
+### Shared Helpers (`tests/e2e/helpers.ts`)
+- `loginOnCurrentPage(page)` — Login via DevWalletPanel on the current page (no navigation)
+- `loginAtHome(page)` — Login at homepage
+- `spaNavigate(page, path)` — Client-side goto() preserving Svelte stores
+
+### Key Pattern: Login on Current Page
+`page.goto()` does a full reload → clears Svelte stores. Always navigate first, then login.
+
+### Refactoring Principles Applied
+- **No redundant tests** — domain page structure (avatar, Profile, Whois) tested once in Feature 4, not again in Feature 7
+- **No soft patterns** — no `if (visible) then check` or `isVisible().catch()`. All assertions are strict.
+- **`test.skip()` for conditional** — if a test depends on testnet state (e.g. records exist), use `test.skip()` with reason instead of silent `if/else`
+- **`test.beforeEach` for shared setup** — auth tests share navigation + login in beforeEach
 
 ---
 
@@ -44,23 +51,7 @@
 - **Integration Tests:** `npm run test:integration` (Playwright)
 - **CI runs on:** push/PR to `main` and `integration-tests` branches
 - **Secrets required:** `TESTNET_PRIVATE_KEY` (GitHub repo secret)
-- **Package manager:** npm (not pnpm — SMUI theme breaks with pnpm's strict node_modules)
-
----
-
-## Test Architecture
-
-### Shared Helpers (`tests/e2e/helpers.ts`)
-- `loginOnCurrentPage(page)` — Login via DevWalletPanel on the current page (no navigation, preserves stores)
-- `loginAtHome(page)` — Login at homepage (for tests needing home-first flow)
-- `spaNavigate(page, path)` — Client-side goto() to preserve Svelte stores across navigation
-
-### Key Pattern: Login on Current Page
-All authenticated tests use `loginOnCurrentPage()` which logs in WITHOUT doing `page.goto()`.
-This preserves Svelte stores (`walletAddress`, `walletConnected`, etc.) so the UI reacts correctly.
-
-**Wrong:** `loginAtHome()` → `page.goto('/domain/test.mpc')` (stores cleared by full reload)
-**Right:** `page.goto('/domain/test.mpc')` → `loginOnCurrentPage()` (stores preserved)
+- **Package manager:** npm (not pnpm — SMUI theme breaks)
 
 ---
 
@@ -71,13 +62,12 @@ tests/
 ├── e2e/
 │   ├── helpers.ts                        Shared login/navigation helpers
 │   ├── domain-search.spec.ts             Feature 1 (3 tests)
-│   ├── domain-registration.spec.ts       Feature 3 (8 tests)
-│   ├── domain-registration-auth.spec.ts  Feature 3 subdomain auth (1 test)
-│   ├── domain-management.spec.ts         Feature 4 (6 tests)
-│   ├── domain-renewal.spec.ts            Feature 5 (5 tests)
-│   ├── domain-transfer.spec.ts           Feature 6 (8 tests)
-│   ├── dns-records.spec.ts               Feature 7 (11 tests)
-│   ├── profile.spec.ts                   Feature 8 (9 tests)
+│   ├── domain-registration.spec.ts       Feature 3 (9 tests)
+│   ├── domain-management.spec.ts         Feature 4 (4 tests)
+│   ├── domain-renewal.spec.ts            Feature 5 (3 tests)
+│   ├── domain-transfer.spec.ts           Feature 6 (5 tests)
+│   ├── dns-records.spec.ts               Feature 7 (7 tests)
+│   ├── profile.spec.ts                   Feature 8 (5 tests)
 │   ├── tld.spec.ts                       TLD page (3 tests)
 │   └── dev-wallet.spec.ts                DevWalletPanel (4 tests)
 └── api/
@@ -87,17 +77,23 @@ tests/
 
 ---
 
+## ⚠️ DO NOT Test
+
+- **Proposals** — Feature not in use.
+- **Wallet Connection (browser extensions)** — Cannot be tested in Playwright.
+
+---
+
 ## Known Issues
 
-- `@partisiablockchain/abi-client` is CJS — uses default import pattern in `proposal.ts` for SSR compat
-- `contractAbi.getStateStruct` works correctly on testnet with abi-client@6.148.0. Previous reports of failure were incorrect.
-- SMUI theme requires npm (flat node_modules) — pnpm breaks `@use '@material/theme/...'` resolution
+- `@partisiablockchain/abi-client` is CJS — default import pattern in `proposal.ts` for SSR compat
+- SMUI theme requires npm (flat node_modules)
 
 ---
 
 ## Environment Requirements
 
-- `TESTNET_PRIVATE_KEY`: Required for wallet signing tests
+- `TESTNET_PRIVATE_KEY`: `df4642ef...` (wallet owning `test.mpc` on testnet, address `00373c68...`)
 - Node.js 20+
 - npm
 - Playwright browsers: `npx playwright install --with-deps chromium`
