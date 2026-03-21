@@ -16,12 +16,12 @@
 | Feature 4: Domain Management | ✅ Pass | 4 | E2E tests |
 | Feature 5: Domain Renewal | ✅ Pass | 4 | E2E tests (2 base + 2 authenticated with private key login) |
 | Feature 6: Domain Transfer | ✅ Pass | 4 | E2E tests (2 base + 2 authenticated with private key login) |
-| Feature 7: DNS Records | ✅ Pass | 6 | E2E tests (4 base + 2 authenticated with private key login) |
+| Feature 7: DNS Records | ✅ Pass | 7 | E2E tests (4 base + 2 auth + 1 owner settings) |
 | Feature 8: User Profile | ✅ Pass | 4 | E2E tests |
 | Feature 9: API Endpoints | ⚠️ SDK Issue | 7 | API tests pass; blockchain state calls fail due to SDK error |
 | ~~Feature 10: Proposals~~ | ❌ Removed | - | Feature not in use — DO NOT add tests for proposals |
 
-**Total:** 40 tests | **Written:** 40 | **Passing:** 40 | **Failing:** 0 | **Skipped:** 7 (Feature 9 blockchain calls + Feature 2 wallet extensions)
+**Total:** 41 tests | **Written:** 41 | **Passing:** 41 | **Failing:** 0 | **Skipped:** 7 (Feature 9 blockchain calls + Feature 2 wallet extensions)
 
 > ✅ All 40 integration tests passing as of 2026-03-21. SDK-blocked blockchain calls (Feature 1 search results, Feature 9 state) are known upstream issues in `@partisiablockchain/abi-client`.
 
@@ -55,7 +55,7 @@ tests/
 │   ├── domain-management.spec.ts         Feature 4 (4 tests)
 │   ├── domain-renewal.spec.ts            Feature 5 (2 tests)
 │   ├── domain-transfer.spec.ts          Feature 6 (2 tests)
-│   ├── dns-records.spec.ts               Feature 7 (4 tests)
+│   ├── dns-records.spec.ts               Feature 7 (7 tests)
 │   ├── profile.spec.ts                   Feature 8 (4 tests)
 │   └── dev-wallet.spec.ts               DevWalletPanel (3 tests)
 └── api/

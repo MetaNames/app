@@ -57,14 +57,14 @@ test.describe('Feature 7: DNS Records', () => {
 	});
 
 	test('7.5 - Settings tab NOT visible for non-owned domain', async ({ page }) => {
-		// Login with private key
+		// Login first at home, then navigate to domain
 		await loginWithPrivateKey(page);
 
-		// Navigate to non-owned domain (stays on same page context)
+		// Navigate to domain (page.goto clears stores, so this tests unauthenticated state)
 		await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
 		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
 
-		// Settings tab should NOT appear (TEST_ADDRESS doesn't own test.mpc)
+		// Settings tab should NOT appear (stores cleared by page.goto = no wallet)
 		const settingsTab = page.locator('button:has-text("settings")');
 		await expect(settingsTab).not.toBeVisible();
 	});
@@ -80,5 +80,26 @@ test.describe('Feature 7: DNS Records', () => {
 		// Click profile link if exists, otherwise use nav
 		// For now just verify wallet is still connected on home page
 		await expect(page.locator('.dev-panel .wallet-status')).toBeVisible({ timeout: 5000 });
+	});
+
+	test('7.7 - Settings tab visible for owned domain', async ({ page }) => {
+		// Navigate to domain page first (page.goto clears stores)
+		await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
+		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+
+		// Login via DevWalletPanel on this page (no page.goto, preserves context)
+		const devWalletBtn = page.locator('.dev-toggle');
+		await expect(devWalletBtn).toBeVisible({ timeout: 10000 });
+		await devWalletBtn.click();
+
+		const devPanel = page.locator('.dev-panel');
+		await expect(devPanel).toBeVisible({ timeout: 5000 });
+		await devPanel.locator('input[type="password"]').fill(TEST_PRIVATE_KEY);
+		devPanel.locator('button').filter({ hasText: 'Connect' }).click();
+		await expect(devPanel.locator('.wallet-status')).toBeVisible({ timeout: 5000 });
+
+		// Settings tab should be visible (user owns this domain)
+		const settingsTab = page.locator('button:has-text("settings")');
+		await expect(settingsTab).toBeVisible({ timeout: 10000 });
 	});
 });

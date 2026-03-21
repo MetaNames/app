@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { alertTransactionAndFetchResult, bridgeUrl, getAccountBalance } from '$lib';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
@@ -30,9 +31,9 @@
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = fetchApiJson<DomainFeesResponse>(
-		`/api/register/${domainName}/fees/${$selectedCoin}`
-	);
+	$: loadFees = browser
+		? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${$selectedCoin}`)
+		: Promise.resolve(null);
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
