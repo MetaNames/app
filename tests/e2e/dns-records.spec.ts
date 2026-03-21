@@ -54,24 +54,20 @@ test.describe('Feature 7: DNS Records & Settings', () => {
 			await expect(transferBtn).toHaveAttribute('href', `/domain/${registeredDomain}/transfer`);
 		});
 
-		test('7.5 - Records show edit/delete buttons OR "No records found"', async ({ page }) => {
+		test('7.5 - Records visible with edit/delete buttons', async ({ page }) => {
 			await page.locator('button:has-text("settings")').click();
 			await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });
 
-			// Must show either records with edit/delete, OR the empty state — never neither
-			const hasRecords = (await page.locator('.record-container').count()) > 0;
-			const hasEmptyMsg = await page.locator('text=No records found').isVisible();
+			// test.mpc has records (Bio, Price) — record containers must exist
+			await expect(page.locator('.record-container').first()).toBeVisible({ timeout: 5000 });
 
-			expect(hasRecords || hasEmptyMsg).toBe(true);
-
-			if (hasRecords) {
-				await expect(page.locator('[aria-label="edit-record"]').first()).toBeVisible({
-					timeout: 5000
-				});
-				await expect(page.locator('[aria-label="delete-record"]').first()).toBeVisible({
-					timeout: 5000
-				});
-			}
+			// Edit and delete buttons must be present
+			await expect(page.locator('[aria-label="edit-record"]').first()).toBeVisible({
+				timeout: 5000
+			});
+			await expect(page.locator('[aria-label="delete-record"]').first()).toBeVisible({
+				timeout: 5000
+			});
 		});
 
 		test('7.6 - Clicking edit shows save/cancel, cancel restores edit button', async ({
@@ -79,9 +75,6 @@ test.describe('Feature 7: DNS Records & Settings', () => {
 		}) => {
 			await page.locator('button:has-text("settings")').click();
 			await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });
-
-			const recordCount = await page.locator('.record-container').count();
-			test.skip(recordCount === 0, 'No records on test.mpc — cannot test edit flow');
 
 			const editBtn = page.locator('[aria-label="edit-record"]').first();
 			await editBtn.click();
