@@ -20,10 +20,11 @@
 | Feature 8: User Profile | ✅ Pass | 5 | Disconnected state, address chip, domains table, search, navigation |
 | Feature 9: API Endpoints | ✅ Pass | 8 | Domain check, details, recent, stats, fees |
 | ~~Feature 10: Proposals~~ | ❌ Removed | - | Feature not in use |
+| Blockchain Ops | ✅ Pass | 4 | Register domain, add/edit/delete record (sequential, no retry) |
 | TLD Page | ✅ Pass | 3 | Domain card, Whois, no settings tab |
 | DevWalletPanel | ✅ Pass | 4 | Open, login, disconnect, invalid key rejection |
 
-**Total:** 51 tests | **Passing:** 51 | **Failing:** 0
+**Total:** 55 tests | **Passing:** 55 | **Failing:** 0
 
 ---
 
@@ -69,6 +70,7 @@ tests/
 │   ├── dns-records.spec.ts               Feature 7 (7 tests)
 │   ├── profile.spec.ts                   Feature 8 (5 tests)
 │   ├── tld.spec.ts                       TLD page (3 tests)
+│   ├── blockchain-ops.spec.ts            Blockchain Ops (4 tests, serial)
 │   └── dev-wallet.spec.ts                DevWalletPanel (4 tests)
 └── api/
     ├── domains.spec.ts                   Feature 9 (6 tests)
