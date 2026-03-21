@@ -25,7 +25,9 @@ export async function GET() {
 			?.setValue()
 			.values.map((voter) => voter.addressValue().value.toString('hex')) ?? [];
 
-	const votersToRemove = voters.filter((voter) => !owners.includes(voter)).slice(0, 50);
+	// ⚡ Bolt: Replace O(N^2) array.includes lookup with O(N) Set.has for performance
+	const ownersSet = new Set(owners);
+	const votersToRemove = voters.filter((voter) => !ownersSet.has(voter)).slice(0, 50);
 	if (votersToRemove.length === 0) return json({ newVoters: votersToRemove }, { status: 200 });
 
 	const votingContract = await metaNamesSdk.contractRepository.getContract({

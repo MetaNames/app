@@ -9,3 +9,8 @@
 
 **Learning:** Using `on:keyup` for search input debouncing triggers unnecessary API calls on navigation keys (arrows, home, end) and misses changes from paste/cut. Svelte's reactive statements `$: debounce(value)` provide a robust, declarative way to trigger debouncing only when the value actually changes.
 **Action:** Replace `on:keyup` handlers with reactive statements for input debouncing to improve performance and correctness.
+
+## 2024-11-20 - Concurrent Async Operations
+
+**Learning:** SvelteKit server functions often execute multiple independent API requests to the SDK (e.g., getting counts, owners, and items). Executing them sequentially with `await` creates waterfall latency.
+**Action:** Always group independent `await` calls using `Promise.all()` to execute them concurrently, drastically reducing the total response time to the maximum of the individual request times rather than their sum.
