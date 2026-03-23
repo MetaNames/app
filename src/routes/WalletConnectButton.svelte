@@ -118,7 +118,7 @@
 			<Item on:SMUI:action={connectWithMetaMaskWallet}>
 				<Text>
 					<div class="item">
-						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
+						<img class="logo" src={metamaskLogo} alt="" />
 						<span>Meta Mask Wallet</span>
 					</div>
 				</Text>
@@ -126,7 +126,7 @@
 			<Item on:SMUI:action={connectWithPartisiaWallet}>
 				<Text>
 					<div class="item">
-						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
+						<img class="logo" src={partisiaWalletLogo} alt="" />
 						<span>Partisia Wallet</span>
 					</div>
 				</Text>
@@ -134,7 +134,7 @@
 			<Item on:SMUI:action={connectWithLedgerWallet}>
 				<Text>
 					<div class="item">
-						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
+						<img class="logo" src={ledgerWalletLogo} alt="" />
 						<span>Ledger</span>
 					</div>
 				</Text>
