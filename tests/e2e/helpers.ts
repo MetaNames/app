@@ -25,19 +25,11 @@ export async function loginOnCurrentPage(page: Page) {
 	// Click the Connect button.
 	await connectBtn.click({ force: true });
 
-	// Use expect.poll to wait for the dev-key-input to appear in the DOM.
-	// This polls every 200ms for up to 15 seconds, which handles CI timing variations.
+	// Wait for the dev-key-input to appear and be visible.
+	// Use expect with toBeVisible which polls internally — more reliable than manual count checks.
 	// The element only appears when both: (1) menu is open AND (2) isTestnet is true.
-	await expect
-		.poll(
-			async () => (await page.locator('.dev-key-input').count()) > 0,
-			{ timeout: 15000, intervals: [200, 500, 1000, 2000] }
-		)
-		.toBe(true);
-
-	// The element is in the DOM — wait for it to be visible (animation complete).
 	const keyInput = page.locator('.dev-key-input');
-	await expect(keyInput).toBeVisible({ timeout: 10000 });
+	await expect(keyInput).toBeVisible({ timeout: 15000 });
 	await keyInput.fill(TEST_PRIVATE_KEY);
 
 	// Click the Connect button next to the input

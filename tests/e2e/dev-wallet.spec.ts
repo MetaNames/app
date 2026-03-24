@@ -9,17 +9,13 @@ test.describe('Feature: Dev Private Key Login (Wallet Menu)', () => {
 		const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
 		await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
-		// Allow full SvelteKit hydration to complete after networkidle.
+		// Allow SvelteKit hydration to complete.
 		await page.waitForTimeout(2000);
 		await connectBtn.click();
 
-		// Wait for the dev-key-input to be added to the DOM (SMUI {#if} block renders it when menu opens).
-		await page.waitForFunction(
-			() => document.querySelector('.dev-key-input') !== null,
-			{ timeout: 10000 }
-		);
-		await expect(page.locator('.dev-key-input').first()).toBeVisible({ timeout: 5000 });
-		await expect(page.locator('.dev-key-connect').first()).toBeVisible({ timeout: 5000 });
+		// Wait for dev-key-input to be visible (15s timeout handles hydration delays).
+		await expect(page.locator('.dev-key-input')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('.dev-key-connect')).toBeVisible({ timeout: 5000 });
 	});
 
 	test('should have connect button disabled with empty key', async ({ page }) => {
@@ -29,16 +25,13 @@ test.describe('Feature: Dev Private Key Login (Wallet Menu)', () => {
 		const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
 		await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
-		// Allow full SvelteKit hydration to complete after networkidle.
+		// Allow SvelteKit hydration to complete.
 		await page.waitForTimeout(2000);
 		await connectBtn.click();
 
-		// Wait for the dev-key-connect button to appear in the DOM.
-		await page.waitForFunction(
-			() => document.querySelector('.dev-key-connect') !== null,
-			{ timeout: 10000 }
-		);
-		await expect(page.locator('.dev-key-connect').first()).toBeDisabled({ timeout: 5000 });
+		// Wait for dev-key-connect button to be visible (15s timeout handles hydration delays).
+		await expect(page.locator('.dev-key-connect')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('.dev-key-connect')).toBeDisabled({ timeout: 5000 });
 	});
 
 	test('should login with valid private key and show address', async ({ page }) => {
@@ -71,19 +64,14 @@ test.describe('Feature: Dev Private Key Login (Wallet Menu)', () => {
 		const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
 		await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
-		// Allow full SvelteKit hydration to complete after networkidle.
+		// Allow SvelteKit hydration to complete.
 		await page.waitForTimeout(2000);
 		await connectBtn.click();
 
-		// Wait for the dev-key-input to be added to the DOM.
-		await page.waitForFunction(
-			() => document.querySelector('.dev-key-input') !== null,
-			{ timeout: 10000 }
-		);
-		const keyInput = page.locator('.dev-key-input').first();
-		await expect(keyInput).toBeVisible({ timeout: 5000 });
-		await keyInput.fill('abc123');
+		// Wait for dev-key-input to be visible (15s timeout handles hydration delays).
+		await expect(page.locator('.dev-key-input')).toBeVisible({ timeout: 15000 });
+		await page.locator('.dev-key-input').fill('abc123');
 
-		await expect(page.locator('.dev-key-connect').first()).toBeDisabled();
+		await expect(page.locator('.dev-key-connect')).toBeDisabled();
 	});
 });
