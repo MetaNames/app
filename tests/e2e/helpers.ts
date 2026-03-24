@@ -20,59 +20,22 @@ export async function loginOnCurrentPage(page: Page) {
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
 	// Allow SvelteKit hydration to complete.
-	// Use 'load' waitUntil for the initial page navigation so we know JS has loaded.
-	// Then add extra wait to ensure Svelte components are fully initialized.
 	await page.waitForTimeout(3000);
 
-	// Try the normal click first (most reliable when hydration is complete)
+	// Click the Connect button.
 	await connectBtn.click({ force: true });
 
-	// Wait for menu to open
-	let menuOpened = await page.locator('.dev-key-input').count() > 0;
+	// Use expect.poll to wait for the dev-key-input to appear in the DOM.
+	// This polls every 200ms for up to 15 seconds, which handles CI timing variations.
+	// The element only appears when both: (1) menu is open AND (2) isTestnet is true.
+	await expect
+		.poll(
+			async () => (await page.locator('.dev-key-input').count()) > 0,
+			{ timeout: 15000, intervals: [200, 500, 1000, 2000] }
+		)
+		.toBe(true);
 
-	// If click didn't work, try SMUI menu.setOpen directly via page.evaluate
-	if (!menuOpened) {
-		await page.waitForTimeout(500);
-		menuOpened = await page.locator('.dev-key-input').count() > 0;
-	}
-
-	// If still not open, find the SMUI menu component and call setOpen(true)
-	if (!menuOpened) {
-		await page.evaluate(() => {
-			// Find SMUI menu instances and call setOpen(true)
-			const menuSurfaces = document.querySelectorAll('.mdc-menu-surface');
-			for (const surface of menuSurfaces) {
-				const menu = (surface as HTMLElement & { _menu?: { setOpen: (v: boolean) => void } })._menu;
-				if (menu?.setOpen) {
-					menu.setOpen(true);
-					break;
-				}
-			}
-		});
-		await page.waitForTimeout(500);
-		menuOpened = await page.locator('.dev-key-input').count() > 0;
-	}
-
-	// Final fallback: try dispatchEvent click
-	if (!menuOpened) {
-		await page.evaluate(() => {
-			const btns = document.querySelectorAll('header button');
-			for (const btn of btns) {
-				if (btn.textContent?.trim().includes('Connect')) {
-					btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-					break;
-				}
-			}
-		});
-		await page.waitForTimeout(1000);
-		menuOpened = await page.locator('.dev-key-input').count() > 0;
-	}
-
-	if (!menuOpened) {
-		throw new Error('Menu did not open after all fallback attempts');
-	}
-
-	// Now the element is in the DOM — wait for it to be visible (animation complete).
+	// The element is in the DOM — wait for it to be visible (animation complete).
 	const keyInput = page.locator('.dev-key-input');
 	await expect(keyInput).toBeVisible({ timeout: 10000 });
 	await keyInput.fill(TEST_PRIVATE_KEY);
