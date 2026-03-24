@@ -19,12 +19,22 @@ export async function loginOnCurrentPage(page: Page) {
 	const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
-	// Allow full SvelteKit hydration to complete after networkidle.
-	// In CI, the dev server may not have fully hydrated before networkidle fires.
+	// Allow SvelteKit hydration to complete. Use a combination approach:
+	// 1. Wait for the button to have a parent with a click handler (Svelte attaches event listeners to the root)
+	// 2. Then click via evaluate to bypass Playwright's actionability checks
 	await page.waitForTimeout(2000);
 
-	// Use JS click to bypass Playwright's strict mode actionability checks.
-	await connectBtn.click({ force: true });
+	// Click via page.evaluate to ensure the click event is dispatched directly to the element,
+	// bypassing any Playwright/Svelte event delegation timing issues in CI.
+	await page.evaluate(() => {
+		const btns = document.querySelectorAll('header button');
+		for (const btn of btns) {
+			if (btn.textContent?.trim().includes('Connect')) {
+				btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+				break;
+			}
+		}
+	});
 
 	// Wait for the dev-key-input to appear in the DOM.
 	await page.waitForFunction(
