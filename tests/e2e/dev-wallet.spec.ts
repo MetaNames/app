@@ -8,6 +8,9 @@ test.describe('Feature: Dev Private Key Login (Wallet Menu)', () => {
 		const topBar = page.locator('header').first();
 		const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
 		await expect(connectBtn).toBeVisible({ timeout: 15000 });
+
+		// Allow full SvelteKit hydration to complete after networkidle.
+		await page.waitForTimeout(2000);
 		await connectBtn.click();
 
 		// Wait for the dev-key-input to be added to the DOM (SMUI {#if} block renders it when menu opens).
@@ -23,8 +26,18 @@ test.describe('Feature: Dev Private Key Login (Wallet Menu)', () => {
 		await page.goto('/', { waitUntil: 'networkidle' });
 
 		const topBar = page.locator('header').first();
-		topBar.locator('button', { hasText: /Connect/ }).first().click();
+		const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
+		await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
+		// Allow full SvelteKit hydration to complete after networkidle.
+		await page.waitForTimeout(2000);
+		await connectBtn.click();
+
+		// Wait for the dev-key-connect button to appear in the DOM.
+		await page.waitForFunction(
+			() => document.querySelector('.dev-key-connect') !== null,
+			{ timeout: 10000 }
+		);
 		await expect(page.locator('.dev-key-connect').first()).toBeDisabled({ timeout: 5000 });
 	});
 
@@ -55,7 +68,12 @@ test.describe('Feature: Dev Private Key Login (Wallet Menu)', () => {
 		await page.goto('/', { waitUntil: 'networkidle' });
 
 		const topBar = page.locator('header').first();
-		topBar.locator('button', { hasText: /Connect/ }).first().click();
+		const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
+		await expect(connectBtn).toBeVisible({ timeout: 15000 });
+
+		// Allow full SvelteKit hydration to complete after networkidle.
+		await page.waitForTimeout(2000);
+		await connectBtn.click();
 
 		// Wait for the dev-key-input to be added to the DOM.
 		await page.waitForFunction(

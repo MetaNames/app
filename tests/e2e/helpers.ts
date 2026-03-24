@@ -19,12 +19,11 @@ export async function loginOnCurrentPage(page: Page) {
 	const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
-	// Allow Svelte hydration to complete — even after networkidle, there may be a brief
-	// window where the button is visible but the click handler isn't attached yet.
-	await page.waitForTimeout(500);
+	// Allow full SvelteKit hydration to complete after networkidle.
+	// In CI, the dev server may not have fully hydrated before networkidle fires.
+	await page.waitForTimeout(2000);
 
-	// Use JS click to bypass Playwright's strict mode actionability checks, which can
-	// cause timing issues with SMUI menus. The JS click fires the event directly.
+	// Use JS click to bypass Playwright's strict mode actionability checks.
 	await connectBtn.click({ force: true });
 
 	// Wait for the dev-key-input to appear in the DOM.
