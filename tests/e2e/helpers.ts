@@ -19,28 +19,36 @@ export async function loginOnCurrentPage(page: Page) {
 	const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
-	// Allow SvelteKit hydration to complete. Use a combination approach:
-	// 1. Wait for the button to have a parent with a click handler (Svelte attaches event listeners to the root)
-	// 2. Then click via evaluate to bypass Playwright's actionability checks
+	// Allow SvelteKit hydration to complete.
 	await page.waitForTimeout(2000);
 
-	// Click via page.evaluate to ensure the click event is dispatched directly to the element,
-	// bypassing any Playwright/Svelte event delegation timing issues in CI.
-	await page.evaluate(() => {
-		const btns = document.querySelectorAll('header button');
-		for (const btn of btns) {
-			if (btn.textContent?.trim().includes('Connect')) {
-				btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-				break;
+	// Helper to click Connect and return true if menu opened
+	async function tryOpenMenu(page: Page): Promise<boolean> {
+		// Click via dispatchEvent
+		await page.evaluate(() => {
+			const btns = document.querySelectorAll('header button');
+			for (const btn of btns) {
+				if (btn.textContent?.trim().includes('Connect')) {
+					btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+					break;
+				}
 			}
-		}
-	});
+		});
+		// Wait for menu animation + reactive block render
+		await page.waitForTimeout(500);
+		return (await page.locator('.dev-key-input').count()) > 0;
+	}
 
-	// Wait for the dev-key-input to appear in the DOM.
-	await page.waitForFunction(
-		() => document.querySelector('.dev-key-input') !== null,
-		{ timeout: 15000 }
-	);
+	// Try to open menu, retry up to 3 times if it fails
+	let menuOpened = await tryOpenMenu(page);
+	for (let attempt = 1; attempt <= 3 && !menuOpened; attempt++) {
+		await page.waitForTimeout(1000);
+		menuOpened = await tryOpenMenu(page);
+	}
+
+	if (!menuOpened) {
+		throw new Error('Menu did not open after 4 click attempts');
+	}
 
 	// Now the element is in the DOM — wait for it to be visible (animation complete).
 	const keyInput = page.locator('.dev-key-input');
