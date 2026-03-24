@@ -17,7 +17,6 @@
 
 	let menu: Menu;
 	let toggleOpen = false;
-	let showDevKeyInput = false;
 	let devPrivateKey = '';
 
 	$: isTestnet = config.environment === 'test';
@@ -102,7 +101,6 @@
 
 			walletAddress.set(address);
 			devPrivateKey = '';
-			showDevKeyInput = false;
 			toggleMenu();
 		} catch (e) {
 			alertMessage.set("Couldn't connect with private key");
@@ -119,7 +117,6 @@
 			return sdk;
 		});
 
-		showDevKeyInput = false;
 		devPrivateKey = '';
 		return true;
 	}
@@ -127,10 +124,6 @@
 	function toggleMenu() {
 		toggleOpen = !toggleOpen;
 		menu.setOpen(toggleOpen);
-	}
-
-	function handleDevKeyClick() {
-		showDevKeyInput = !showDevKeyInput;
 	}
 
 	export let anchor: HTMLDivElement;
@@ -144,7 +137,6 @@
 	bind:this={menu}
 	on:SMUIMenuSurface:closed={() => {
 		toggleOpen = false;
-		showDevKeyInput = false;
 	}}
 	class="menu-floating-right"
 	anchor={true}
@@ -184,20 +176,16 @@
 			</Item>
 			{#if isTestnet}
 				<Separator />
-				<Item on:SMUI:action={handleDevKeyClick}>
-					<Text>
-						<div class="item">
-							<span class="dev-emoji">🐷</span>
-							<span>Dev Private Key</span>
-						</div>
-					</Text>
-				</Item>
-				{#if showDevKeyInput}
-					<li class="dev-key-input-row">
+				<li class="dev-key-section">
+					<div class="dev-key-label">
+						<span class="dev-emoji">🐷</span>
+						<span>Dev Private Key</span>
+					</div>
+					<div class="dev-key-input-row">
 						<input
 							class="dev-key-input"
 							type="password"
-							placeholder="Paste private key (64 chars)..."
+							placeholder="Private key (64 hex chars)..."
 							bind:value={devPrivateKey}
 							on:keydown={(e) => e.key === 'Enter' && connectWithPrivateKey()}
 							on:click|stopPropagation
@@ -210,8 +198,8 @@
 						>
 							Connect
 						</button>
-					</li>
-				{/if}
+					</div>
+				</li>
 			{/if}
 		{/if}
 	</List>
@@ -230,20 +218,31 @@
 		align-items: center;
 	}
 
+	.dev-key-section {
+		padding: 0.5rem 1rem;
+		list-style: none;
+	}
+
+	.dev-key-label {
+		display: flex;
+		align-items: center;
+		margin-bottom: 0.5rem;
+		font-size: 0.75rem;
+		color: #999;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
 	.dev-emoji {
-		font-size: 16pt;
-		margin-right: 0.8rem;
+		font-size: 12pt;
+		margin-right: 0.5rem;
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		width: 20pt;
-		height: 20pt;
 	}
 
 	.dev-key-input-row {
 		display: flex;
 		gap: 0.5rem;
-		padding: 0.5rem 1rem;
 		align-items: center;
 	}
 
