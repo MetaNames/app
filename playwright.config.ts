@@ -9,7 +9,11 @@ const config: PlaywrightTestConfig = {
 	testDir: 'tests',
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
 	retries: 3,
-	workers: 2
+	workers: 2,
+	use: {
+		screenshot: 'only-on-failure',
+		trace: 'on-first-retry'
+	}
 };
 
 export default config;

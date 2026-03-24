@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
+	import { config } from '$lib';
 
-	import List, { Item, Text } from '@smui/list';
+	import List, { Item, Separator, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
 	import metamaskLogo from '$lib/assets/images/metamask.png';
@@ -16,6 +17,10 @@
 
 	let menu: Menu;
 	let toggleOpen = false;
+	let showDevKeyInput = false;
+	let devPrivateKey = '';
+
+	$: isTestnet = config.environment === 'test';
 
 	async function connectWithMetaMaskWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
@@ -76,6 +81,35 @@
 		}
 	}
 
+	async function connectWithPrivateKey() {
+		if (!devPrivateKey || devPrivateKey.length !== 64) return;
+
+		const { metaNamesSdk } = await import('$lib/stores/sdk');
+		try {
+			const { privateKeyToAccountAddress } = await import(
+				'partisia-blockchain-applications-crypto/lib/main/wallet'
+			);
+			const address = await privateKeyToAccountAddress(devPrivateKey);
+			if (!address) {
+				alertMessage.set('Invalid private key');
+				return;
+			}
+
+			metaNamesSdk.update((sdk) => {
+				sdk.setSigningStrategy('privateKey', devPrivateKey);
+				return sdk;
+			});
+
+			walletAddress.set(address);
+			devPrivateKey = '';
+			showDevKeyInput = false;
+			toggleMenu();
+		} catch (e) {
+			alertMessage.set("Couldn't connect with private key");
+			console.log(e);
+		}
+	}
+
 	async function disconnectWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
 
@@ -85,12 +119,18 @@
 			return sdk;
 		});
 
+		showDevKeyInput = false;
+		devPrivateKey = '';
 		return true;
 	}
 
 	function toggleMenu() {
 		toggleOpen = !toggleOpen;
 		menu.setOpen(toggleOpen);
+	}
+
+	function handleDevKeyClick() {
+		showDevKeyInput = !showDevKeyInput;
 	}
 
 	export let anchor: HTMLDivElement;
@@ -102,7 +142,10 @@
 </Button>
 <Menu
 	bind:this={menu}
-	on:SMUIMenuSurface:closed={() => (toggleOpen = false)}
+	on:SMUIMenuSurface:closed={() => {
+		toggleOpen = false;
+		showDevKeyInput = false;
+	}}
 	class="menu-floating-right"
 	anchor={true}
 	bind:anchorElement={anchor}
@@ -139,6 +182,37 @@
 					</div>
 				</Text>
 			</Item>
+			{#if isTestnet}
+				<Separator />
+				<Item on:SMUI:action={handleDevKeyClick}>
+					<Text>
+						<div class="item">
+							<span class="dev-emoji">🐷</span>
+							<span>Dev Private Key</span>
+						</div>
+					</Text>
+				</Item>
+				{#if showDevKeyInput}
+					<li class="dev-key-input-row">
+						<input
+							class="dev-key-input"
+							type="password"
+							placeholder="Paste private key (64 chars)..."
+							bind:value={devPrivateKey}
+							on:keydown={(e) => e.key === 'Enter' && connectWithPrivateKey()}
+							on:click|stopPropagation
+							on:keydown|stopPropagation
+						/>
+						<button
+							class="dev-key-connect"
+							on:click|stopPropagation={connectWithPrivateKey}
+							disabled={devPrivateKey.length !== 64}
+						>
+							Connect
+						</button>
+					</li>
+				{/if}
+			{/if}
 		{/if}
 	</List>
 </Menu>
@@ -154,5 +228,55 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+	}
+
+	.dev-emoji {
+		font-size: 16pt;
+		margin-right: 0.8rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 20pt;
+		height: 20pt;
+	}
+
+	.dev-key-input-row {
+		display: flex;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		align-items: center;
+	}
+
+	.dev-key-input {
+		flex: 1;
+		padding: 0.4rem 0.5rem;
+		border: 1px solid #555;
+		border-radius: 0.25rem;
+		background: #1a1a2e;
+		color: white;
+		font-family: monospace;
+		font-size: 0.75rem;
+		min-width: 180px;
+
+		&::placeholder {
+			color: #777;
+		}
+	}
+
+	.dev-key-connect {
+		padding: 0.4rem 0.75rem;
+		background: #4ecdc4;
+		color: #1a1a2e;
+		border: none;
+		border-radius: 0.25rem;
+		cursor: pointer;
+		font-weight: bold;
+		font-size: 0.75rem;
+		white-space: nowrap;
+
+		&:disabled {
+			opacity: 0.4;
+			cursor: not-allowed;
+		}
 	}
 </style>

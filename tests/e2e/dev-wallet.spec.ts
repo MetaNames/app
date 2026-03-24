@@ -1,57 +1,77 @@
 import { test, expect } from '@playwright/test';
 import { TEST_PRIVATE_KEY, loginOnCurrentPage } from './helpers';
 
-test.describe('Feature: DevWalletPanel Private Key Login', () => {
-	test('should open dev wallet panel on testnet', async ({ page }) => {
+test.describe('Feature: Dev Private Key Login (Wallet Menu)', () => {
+	test('should show Dev Private Key option in wallet menu on testnet', async ({ page }) => {
 		await page.goto('/', { waitUntil: 'networkidle' });
-		const devWalletBtn = page.locator('.dev-toggle');
-		await expect(devWalletBtn).toBeVisible({ timeout: 15000 });
-		await devWalletBtn.click();
-		await expect(page.locator('.dev-panel')).toBeVisible({ timeout: 10000 });
+
+		// Open wallet connect menu
+		const connectBtn = page.locator('button:has-text("Connect Wallet"), button:has-text("Connect")').first();
+		await expect(connectBtn).toBeVisible({ timeout: 15000 });
+		await connectBtn.click();
+
+		// Dev Private Key option must be visible
+		const devKeyItem = page.locator('text=Dev Private Key');
+		await expect(devKeyItem).toBeVisible({ timeout: 5000 });
+	});
+
+	test('should expand private key input when clicking Dev Private Key', async ({ page }) => {
+		await page.goto('/', { waitUntil: 'networkidle' });
+
+		const connectBtn = page.locator('button:has-text("Connect Wallet"), button:has-text("Connect")').first();
+		await connectBtn.click();
+
+		const devKeyItem = page.locator('text=Dev Private Key');
+		await devKeyItem.click();
+
+		// Input field must appear
+		const keyInput = page.locator('.dev-key-input');
+		await expect(keyInput).toBeVisible({ timeout: 5000 });
+
+		// Connect button must be disabled (no key entered)
+		const devConnectBtn = page.locator('.dev-key-connect');
+		await expect(devConnectBtn).toBeDisabled();
 	});
 
 	test('should login with valid private key and show address', async ({ page }) => {
 		await page.goto('/', { waitUntil: 'networkidle' });
 		await loginOnCurrentPage(page);
 
-		// Must show a truncated address with "..." (e.g. "✅ 0012345678...abcdef")
-		const walletStatus = page.locator('.dev-panel .wallet-status');
-		await expect(walletStatus).toBeVisible({ timeout: 5000 });
-		await expect(walletStatus).toContainText('...');
-		// Must show the checkmark prefix
-		await expect(walletStatus).toContainText('✅');
+		// The wallet button should now show a truncated address with "..."
+		await expect(page.locator('button:has-text("...")')).toBeVisible({ timeout: 10000 });
 	});
 
-	test('should disconnect wallet and show input again', async ({ page }) => {
+	test('should disconnect wallet via menu', async ({ page }) => {
 		await page.goto('/', { waitUntil: 'networkidle' });
 		await loginOnCurrentPage(page);
 
-		// Verify connected first
-		await expect(page.locator('.dev-panel .wallet-status')).toBeVisible({ timeout: 5000 });
+		// Open menu again — should show Disconnect
+		const walletBtn = page.locator('button:has-text("...")');
+		await walletBtn.click();
 
-		// Click disconnect
-		await page.locator('.dev-panel .disconnect').click();
+		const disconnectItem = page.locator('text=Disconnect');
+		await expect(disconnectItem).toBeVisible({ timeout: 5000 });
+		await disconnectItem.click();
 
-		// Input must reappear (wallet disconnected)
-		await expect(page.locator('.dev-panel input[type="password"]')).toBeVisible({ timeout: 5000 });
-
-		// Wallet status must be gone
-		await expect(page.locator('.dev-panel .wallet-status')).not.toBeVisible();
+		// Should revert to "Connect Wallet" text
+		await expect(page.locator('button:has-text("Connect Wallet"), button:has-text("Connect")').first()).toBeVisible({ timeout: 5000 });
 	});
 
 	test('should reject invalid private key (wrong length)', async ({ page }) => {
 		await page.goto('/', { waitUntil: 'networkidle' });
-		const devWalletBtn = page.locator('.dev-toggle');
-		await devWalletBtn.click();
 
-		const devPanel = page.locator('.dev-panel');
-		await expect(devPanel).toBeVisible({ timeout: 5000 });
+		const connectBtn = page.locator('button:has-text("Connect Wallet"), button:has-text("Connect")').first();
+		await connectBtn.click();
+
+		const devKeyItem = page.locator('text=Dev Private Key');
+		await devKeyItem.click();
 
 		// Fill with too-short key
-		await devPanel.locator('input[type="password"]').fill('abc123');
+		const keyInput = page.locator('.dev-key-input');
+		await keyInput.fill('abc123');
 
 		// Connect button should be disabled (key !== 64 chars)
-		const connectBtn = devPanel.locator('button').filter({ hasText: 'Connect' });
-		await expect(connectBtn).toBeDisabled();
+		const devConnectBtn = page.locator('.dev-key-connect');
+		await expect(devConnectBtn).toBeDisabled();
 	});
 });
