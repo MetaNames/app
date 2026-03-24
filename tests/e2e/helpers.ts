@@ -18,11 +18,16 @@ export async function loginOnCurrentPage(page: Page) {
 	const topBar = page.locator('header').first();
 	const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
-	await connectBtn.click();
 
-	// Wait for the dev-key-input to appear in the DOM using a JS polling approach.
-	// This is more reliable than waitFor() for SMUI menus where the reactive {#if} block
-	// conditionally renders content based on toggleOpen state.
+	// Allow Svelte hydration to complete — even after networkidle, there may be a brief
+	// window where the button is visible but the click handler isn't attached yet.
+	await page.waitForTimeout(500);
+
+	// Use JS click to bypass Playwright's strict mode actionability checks, which can
+	// cause timing issues with SMUI menus. The JS click fires the event directly.
+	await connectBtn.click({ force: true });
+
+	// Wait for the dev-key-input to appear in the DOM.
 	await page.waitForFunction(
 		() => document.querySelector('.dev-key-input') !== null,
 		{ timeout: 15000 }
