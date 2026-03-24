@@ -14,16 +14,13 @@ const domainName = `t${Date.now().toString(36).slice(-7)}`;
 const fullDomain = `${domainName}.mpc`;
 
 test.describe.serial('Blockchain Operations (sequential)', () => {
-	test.describe.configure({ retries: 0 }); // No retries — state depends on previous test
+	test.describe.configure({ retries: 1 }); // Allow 1 retry — blockchain txns can be slow
 	test.setTimeout(120_000); // 2 min per test — blockchain txns are slow
 
 	test('B1 - Register a new domain', async ({ page }) => {
-		// Login at homepage first, then SPA-navigate to register page.
-		// This avoids issues with the ConnectionRequired overlay on /register
-		// interfering with the wallet menu interaction.
-		await loginAtHome(page);
-		await spaNavigate(page, `/register/${domainName}`);
+		await page.goto(`/register/${domainName}`, { waitUntil: 'networkidle' });
 		await expect(page.locator('.content.checkout')).toBeVisible({ timeout: 15000 });
+		await loginOnCurrentPage(page);
 
 		// Wait for fee data to load
 		await expect(page.locator('[data-testid="total-fees"]')).toBeVisible({ timeout: 30000 });
