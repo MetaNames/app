@@ -20,11 +20,16 @@ export async function loginOnCurrentPage(page: Page) {
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 	await connectBtn.click();
 
-	// Wait for the dev-key-input to appear in the DOM (menu must be open + isTestnet must be true).
-	// SMUI menu surfaces are always in DOM (hidden); only the menu content is conditionally rendered.
-	// Use 'attached' state first to wait for the element to exist, then wait for it to be visible.
+	// Wait for the dev-key-input to appear in the DOM using a JS polling approach.
+	// This is more reliable than waitFor() for SMUI menus where the reactive {#if} block
+	// conditionally renders content based on toggleOpen state.
+	await page.waitForFunction(
+		() => document.querySelector('.dev-key-input') !== null,
+		{ timeout: 15000 }
+	);
+
+	// Now the element is in the DOM — wait for it to be visible (animation complete).
 	const keyInput = page.locator('.dev-key-input');
-	await keyInput.waitFor({ state: 'attached', timeout: 15000 });
 	await expect(keyInput).toBeVisible({ timeout: 10000 });
 	await keyInput.fill(TEST_PRIVATE_KEY);
 

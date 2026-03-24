@@ -10,6 +10,11 @@ test.describe('Feature: Dev Private Key Login (Wallet Menu)', () => {
 		await expect(connectBtn).toBeVisible({ timeout: 15000 });
 		await connectBtn.click();
 
+		// Wait for the dev-key-input to be added to the DOM (SMUI {#if} block renders it when menu opens).
+		await page.waitForFunction(
+			() => document.querySelector('.dev-key-input') !== null,
+			{ timeout: 10000 }
+		);
 		await expect(page.locator('.dev-key-input').first()).toBeVisible({ timeout: 5000 });
 		await expect(page.locator('.dev-key-connect').first()).toBeVisible({ timeout: 5000 });
 	});
@@ -52,6 +57,11 @@ test.describe('Feature: Dev Private Key Login (Wallet Menu)', () => {
 		const topBar = page.locator('header').first();
 		topBar.locator('button', { hasText: /Connect/ }).first().click();
 
+		// Wait for the dev-key-input to be added to the DOM.
+		await page.waitForFunction(
+			() => document.querySelector('.dev-key-input') !== null,
+			{ timeout: 10000 }
+		);
 		const keyInput = page.locator('.dev-key-input').first();
 		await expect(keyInput).toBeVisible({ timeout: 5000 });
 		await keyInput.fill('abc123');
