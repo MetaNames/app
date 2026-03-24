@@ -21,12 +21,13 @@ export async function loginOnCurrentPage(page: Page) {
 	await connectBtn.click();
 
 	// Wait for the SMUI menu surface to open (it animates in asynchronously).
-	// The menu surface is rendered at the body level with class mdc-menu-surface.
-	// This ensures the menu is fully open before we look for the dev-key-input.
-	await page.locator('.mdc-menu-surface').waitFor({ state: 'visible', timeout: 10000 });
+	// SMUI renders menu surfaces at body level (not inside the header).
+	// There are multiple menus on the page. Get the first visible surface, then find the input inside it.
+	const openMenu = page.locator('.mdc-menu-surface').first();
+	await openMenu.waitFor({ state: 'visible', timeout: 15000 });
 
 	// Now find the dev-key-input inside the open menu.
-	const keyInput = page.locator('.mdc-menu-surface .dev-key-input');
+	const keyInput = openMenu.locator('.dev-key-input');
 	await expect(keyInput).toBeVisible({ timeout: 10000 });
 	await keyInput.fill(TEST_PRIVATE_KEY);
 
