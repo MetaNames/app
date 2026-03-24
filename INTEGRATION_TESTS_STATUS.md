@@ -1,6 +1,6 @@
 # MetaNames App - Integration Tests Status
 
-> Last updated: 2026-03-23 19:24 UTC
+> Last updated: 2026-03-24 13:01 UTC
 > Branch: `integration-tests`
 > CI: GitHub Actions (unit + integration tests)
 
@@ -24,7 +24,7 @@
 | TLD Page | ✅ Pass | 3 | Domain card, Whois, no settings tab |
 | DevWalletPanel | ✅ Pass | 4 | Open, login, disconnect, invalid key rejection |
 
-**Total:** 55 tests | **Passing:** 55 | **Failing:** 0
+**Total:** 56 tests | **Passing:** 56 | **Failing:** 0
 
 ---
 
