@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { loginOnCurrentPage } from './helpers';
+import { loginOnCurrentPage, loginAtHome, spaNavigate } from './helpers';
 
 /**
  * Blockchain operation tests: register domain, add/update/delete records.
@@ -18,11 +18,12 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 	test.setTimeout(120_000); // 2 min per test — blockchain txns are slow
 
 	test('B1 - Register a new domain', async ({ page }) => {
-		await page.goto(`/register/${domainName}`, { waitUntil: 'networkidle' });
+		// Login at homepage first, then SPA-navigate to register page.
+		// This avoids issues with the ConnectionRequired overlay on /register
+		// interfering with the wallet menu interaction.
+		await loginAtHome(page);
+		await spaNavigate(page, `/register/${domainName}`);
 		await expect(page.locator('.content.checkout')).toBeVisible({ timeout: 15000 });
-
-		// Login on registration page
-		await loginOnCurrentPage(page);
 
 		// Wait for fee data to load
 		await expect(page.locator('[data-testid="total-fees"]')).toBeVisible({ timeout: 30000 });
