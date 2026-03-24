@@ -90,6 +90,8 @@ tests/
 
 - `@partisiablockchain/abi-client` is CJS — default import pattern in `proposal.ts` for SSR compat
 - SMUI theme requires npm (flat node_modules)
+- **Local dev server limitations:** The local `npm run dev` server does not serve Vercel-specific routes (`/_vercel/insights/script.js`, `/_vercel/speed-insights/script.js`). These cause 404 errors in browser console but do not affect test assertions. Tests pass on GitHub Actions where the full Vercel infrastructure is available.
+- **Blockchain ops tests:** Require `TESTNET_PRIVATE_KEY` env var and are slow (~2 min/test). May timeout on local runs due to testnet latency. Pass reliably on CI.
 
 ---
 
