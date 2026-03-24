@@ -174,7 +174,7 @@
 					</div>
 				</Text>
 			</Item>
-			{#if isTestnet && toggleOpen}
+			{#if isTestnet}
 				<Separator />
 				<li class="dev-key-section">
 					<div class="dev-key-label">
