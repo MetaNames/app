@@ -6,38 +6,50 @@ export const TEST_PRIVATE_KEY = 'df4642ef258f9aef2adb6c148590208b20387fb067f2c09
  * Login via the top-bar wallet connect menu's "Dev Private Key" input.
  * The page must already be loaded. Works on any page with the top-bar.
  *
- * Strategy: The SMUI Menu renders as a child of the anchor div inside the header.
- * The dev-key input is always in the DOM on testnet but hidden when the menu
- * is closed (CSS visibility). We click the top-bar Connect button, then wait
- * for the dev-key-input to become visible.
+ * IMPORTANT: On pages with ConnectionRequired (e.g. /register, /domain/.../transfer),
+ * there are TWO "Connect" buttons — one in the header (top navbar) and one in the page
+ * body. Each has its own SMUI Menu anchor. We MUST click the header one specifically.
+ *
+ * Strategy: Target the button via the SMUI TopAppBar action-item CSS class
+ * (.mdc-top-app-bar__action-item) which only exists on the header button.
+ * This is more reliable than text matching since the button text changes
+ * after login (from "Connect Wallet" to "0033...8f2c").
  */
 export async function loginOnCurrentPage(page: Page) {
 	// Allow SvelteKit hydration to complete.
 	await page.waitForTimeout(3000);
 
-	// Use text filter to reliably find the Connect Wallet button in the header.
-	// SMUI TopAppBar renders as a div structure, not native <header>.
-	const topBar = page.locator('header').first();
-	const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
+	// The header button has .mdc-top-app-bar__action-item — unique to the TopAppBar.
+	// The ConnectionRequired body button does NOT have this class.
+	const connectBtn = page.locator('button.mdc-top-app-bar__action-item');
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
+
+	// Take screenshot before click for debugging
+	await page.screenshot({ path: 'test-results/login-01-before-click.png' }).catch(() => {});
 
 	// Click the Connect button.
 	await connectBtn.click();
 
+	// Take screenshot after click
+	await page.screenshot({ path: 'test-results/login-02-after-click.png' }).catch(() => {});
+
 	// Wait for the dev-key-input to appear and be visible.
-	// Use expect with toBeVisible which polls internally — more reliable than manual count checks.
-	// The element only appears when both: (1) menu is open AND (2) isTestnet is true.
+	// The SMUI Menu opens anchored to the header div — the dev-key-input appears inside it.
+	// On testnet, the dev-key section is always rendered when the menu is open.
 	const keyInput = page.locator('.dev-key-input');
 	await expect(keyInput).toBeVisible({ timeout: 15000 });
 	await keyInput.fill(TEST_PRIVATE_KEY);
 
-	// Click the Connect button next to the input
+	// Click the Connect button next to the input (inside the menu, not the header button)
 	const devConnectBtn = page.locator('.dev-key-connect').first();
 	await expect(devConnectBtn).toBeEnabled({ timeout: 5000 });
 	await devConnectBtn.click();
 
-	// Verify wallet is connected — the button text changes to a short address (e.g. "0033...8f2c")
-	await expect(topBar.locator('button', { hasText: /\d{4}\.\.\.[a-f0-9]{4}/ }).first()).toBeVisible({ timeout: 10000 });
+	// Verify wallet is connected — the header button text changes to a short address
+	await expect(connectBtn).toContainText('...', { timeout: 10000 });
+
+	// Take screenshot after login
+	await page.screenshot({ path: 'test-results/login-03-after-login.png' }).catch(() => {});
 }
 
 /**
