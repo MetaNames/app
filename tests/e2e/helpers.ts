@@ -12,13 +12,14 @@ export const TEST_PRIVATE_KEY = 'df4642ef258f9aef2adb6c148590208b20387fb067f2c09
  * for the dev-key-input to become visible.
  */
 export async function loginOnCurrentPage(page: Page) {
-	// Target the only button inside the header element — the wallet connect button in the top navbar.
-	// This avoids fragile text matching while staying scoped to the header.
-	const connectBtn = page.locator('header button');
-	await expect(connectBtn).toBeVisible({ timeout: 15000 });
-
 	// Allow SvelteKit hydration to complete.
 	await page.waitForTimeout(3000);
+
+	// Use text filter to reliably find the Connect Wallet button in the header.
+	// SMUI TopAppBar renders as a div structure, not native <header>.
+	const topBar = page.locator('header').first();
+	const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
+	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
 	// Click the Connect button.
 	await connectBtn.click();
@@ -35,8 +36,8 @@ export async function loginOnCurrentPage(page: Page) {
 	await expect(devConnectBtn).toBeEnabled({ timeout: 5000 });
 	await devConnectBtn.click();
 
-	// Verify wallet is connected — the button text changes to a short address containing "..."
-	await expect(page.locator('header button').locator('text=/\\.{3}/')).toBeVisible({ timeout: 10000 });
+	// Verify wallet is connected — the button text changes to a short address (e.g. "0033...8f2c")
+	await expect(topBar.locator('button', { hasText: /\d{4}\.\.\.[a-f0-9]{4}/ }).first()).toBeVisible({ timeout: 10000 });
 }
 
 /**
