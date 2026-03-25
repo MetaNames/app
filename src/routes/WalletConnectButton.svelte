@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
+	import { config } from '$lib';
 
-	import List, { Item, Text } from '@smui/list';
+	import List, { Item, Separator, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
 	import metamaskLogo from '$lib/assets/images/metamask.png';
@@ -16,6 +17,9 @@
 
 	let menu: Menu;
 	let toggleOpen = false;
+	let devPrivateKey = '';
+
+	$: isTestnet = config.environment === 'test';
 
 	async function connectWithMetaMaskWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
@@ -76,6 +80,34 @@
 		}
 	}
 
+	async function connectWithPrivateKey() {
+		if (!devPrivateKey || devPrivateKey.length !== 64) return;
+
+		const { metaNamesSdk } = await import('$lib/stores/sdk');
+		try {
+			const { privateKeyToAccountAddress } = await import(
+				'partisia-blockchain-applications-crypto/lib/main/wallet'
+			);
+			const address = await privateKeyToAccountAddress(devPrivateKey);
+			if (!address) {
+				alertMessage.set('Invalid private key');
+				return;
+			}
+
+			metaNamesSdk.update((sdk) => {
+				sdk.setSigningStrategy('privateKey', devPrivateKey);
+				return sdk;
+			});
+
+			walletAddress.set(address);
+			devPrivateKey = '';
+			toggleMenu();
+		} catch (e) {
+			alertMessage.set("Couldn't connect with private key");
+			console.log(e);
+		}
+	}
+
 	async function disconnectWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
 
@@ -85,6 +117,7 @@
 			return sdk;
 		});
 
+		devPrivateKey = '';
 		return true;
 	}
 
@@ -95,14 +128,17 @@
 
 	export let anchor: HTMLDivElement;
 	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
+	export let testid: string = '';
 </script>
 
-<Button variant={connectButtonVariant} on:click={toggleMenu}>
+<Button variant={connectButtonVariant} on:click={toggleMenu} {testid}>
 	<slot name="buttonLabel">Connect</slot>
 </Button>
 <Menu
 	bind:this={menu}
-	on:SMUIMenuSurface:closed={() => (toggleOpen = false)}
+	on:SMUIMenuSurface:closed={() => {
+		toggleOpen = false;
+	}}
 	class="menu-floating-right"
 	anchor={true}
 	bind:anchorElement={anchor}
@@ -139,6 +175,33 @@
 					</div>
 				</Text>
 			</Item>
+			{#if isTestnet && toggleOpen}
+				<Separator />
+				<li class="dev-key-section">
+					<div class="dev-key-label">
+						<span class="dev-emoji">🐷</span>
+						<span>Dev Private Key</span>
+					</div>
+					<div class="dev-key-input-row">
+						<input
+							class="dev-key-input"
+							type="password"
+							placeholder="Private key (64 hex chars)..."
+							bind:value={devPrivateKey}
+							on:keydown={(e) => e.key === 'Enter' && connectWithPrivateKey()}
+							on:click|stopPropagation
+							on:keydown|stopPropagation
+						/>
+						<button
+							class="dev-key-connect"
+							on:click|stopPropagation={connectWithPrivateKey}
+							disabled={devPrivateKey.length !== 64}
+						>
+							Connect
+						</button>
+					</div>
+				</li>
+			{/if}
 		{/if}
 	</List>
 </Menu>
@@ -154,5 +217,66 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+	}
+
+	.dev-key-section {
+		padding: 0.5rem 1rem;
+		list-style: none;
+	}
+
+	.dev-key-label {
+		display: flex;
+		align-items: center;
+		margin-bottom: 0.5rem;
+		font-size: 0.75rem;
+		color: #999;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.dev-emoji {
+		font-size: 12pt;
+		margin-right: 0.5rem;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.dev-key-input-row {
+		display: flex;
+		gap: 0.5rem;
+		align-items: center;
+	}
+
+	.dev-key-input {
+		flex: 1;
+		padding: 0.4rem 0.5rem;
+		border: 1px solid #555;
+		border-radius: 0.25rem;
+		background: #1a1a2e;
+		color: white;
+		font-family: monospace;
+		font-size: 0.75rem;
+		min-width: 180px;
+
+		&::placeholder {
+			color: #777;
+		}
+	}
+
+	.dev-key-connect {
+		padding: 0.4rem 0.75rem;
+		background: #4ecdc4;
+		color: #1a1a2e;
+		border: none;
+		border-radius: 0.25rem;
+		cursor: pointer;
+		font-weight: bold;
+		font-size: 0.75rem;
+		white-space: nowrap;
+
+		&:disabled {
+			opacity: 0.4;
+			cursor: not-allowed;
+		}
 	}
 </style>

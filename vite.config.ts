@@ -18,13 +18,6 @@ export default defineConfig({
 		}),
 		tsconfigPaths()
 	],
-	css: {
-		preprocessorOptions: {
-			sass: {
-				includePaths: ['./node_modules']
-			}
-		}
-	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}

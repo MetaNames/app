@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { alertTransactionAndFetchResult, bridgeUrl, getAccountBalance } from '$lib';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
@@ -30,9 +31,9 @@
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = fetchApiJson<DomainFeesResponse>(
-		`/api/register/${domainName}/fees/${$selectedCoin}`
-	);
+	$: loadFees = browser
+		? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${$selectedCoin}`)
+		: Promise.resolve(null);
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
@@ -115,18 +116,18 @@
 				</IconButton>
 			</div>
 
-			<div class="coin">
-				<p class="title text-center">Payment token</p>
+			<div class="coin" data-testid="payment-token-section">
+				<p class="title text-center" data-testid="payment-token-label">Payment token</p>
 				<div class="row centered">
-					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
+					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined" data-testid="payment-token-select">
 						{#each availableCoins as coin}
 							<Option value={coin.symbol}>{coin.symbol}</Option>
 						{/each}
 					</Select>
 				</div>
 			</div>
-			<div class="fees">
-				<p class="title text-center">Price breakdown</p>
+			<div class="fees" data-testid="price-breakdown-section">
+				<p class="title text-center" data-testid="price-breakdown-label">Price breakdown</p>
 				{#await loadFees}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 				{:then fees}

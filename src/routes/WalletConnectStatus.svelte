@@ -19,7 +19,7 @@
 	export let anchor: HTMLDivElement;
 </script>
 
-<WalletConnectButton connectButtonVariant="unelevated" {anchor}>
+<WalletConnectButton connectButtonVariant="unelevated" {anchor} testid="wallet-connect-btn">
 	<div class="wallet-connect" slot="buttonLabel">
 		<Icon icon="wallet" align="left" />
 		<Label>{buttonLabel}</Label>
