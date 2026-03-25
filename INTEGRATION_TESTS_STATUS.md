@@ -90,6 +90,7 @@ tests/
 ## Known Issues
 
 - `@partisiablockchain/abi-client` is CJS — default import pattern in `proposal.ts` for SSR compat
+- **Playwright browsers** must be installed before running tests: `npx playwright install chromium` (or `--with-deps` for system deps). Without this, all e2e tests fail with `Executable doesn't exist`.
 - SMUI theme requires npm (flat node_modules)
 
 ---
