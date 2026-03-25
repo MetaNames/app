@@ -16,22 +16,29 @@ export const TEST_PRIVATE_KEY = 'df4642ef258f9aef2adb6c148590208b20387fb067f2c09
  * after login (from "Connect Wallet" to "0033...8f2c").
  */
 export async function loginOnCurrentPage(page: Page) {
-	// Allow SvelteKit hydration to complete.
-	await page.waitForTimeout(3000);
+	// CI flakiness: the SvelteKit dev server can return 500 on cold start or be slow to hydrate.
+	// Wait for the page to be fully loaded and not showing an error page.
+	// If we see a 500 error page, wait and reload.
+	const errorIndicator = page.locator('text=Internal Error');
+	if (await errorIndicator.isVisible({ timeout: 1000 }).catch(() => false)) {
+		await page.waitForTimeout(2000);
+		await page.reload({ waitUntil: 'networkidle' });
+	}
 
 	// The header button has .mdc-top-app-bar__action-item — unique to the TopAppBar.
 	// The ConnectionRequired body button does NOT have this class.
 	const connectBtn = page.locator('button.mdc-top-app-bar__action-item');
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
-	// Take screenshot before click for debugging
-	await page.screenshot({ path: 'test-results/login-01-before-click.png' }).catch(() => {});
+	// Wait for SvelteKit hydration — the SMUI button needs JS to handle click events.
+	// Without this, clicking the button does nothing (no menu opens).
+	await page.waitForTimeout(2000);
+
+	// Wait for any loading spinners to disappear (page still fetching data)
+	await page.waitForLoadState('networkidle');
 
 	// Click the Connect button.
 	await connectBtn.click();
-
-	// Take screenshot after click
-	await page.screenshot({ path: 'test-results/login-02-after-click.png' }).catch(() => {});
 
 	// Wait for the dev-key-input to appear and be visible.
 	// The SMUI Menu opens anchored to the header div — the dev-key-input appears inside it.
@@ -47,9 +54,6 @@ export async function loginOnCurrentPage(page: Page) {
 
 	// Verify wallet is connected — the header button text changes to a short address
 	await expect(connectBtn).toContainText('...', { timeout: 10000 });
-
-	// Take screenshot after login
-	await page.screenshot({ path: 'test-results/login-03-after-login.png' }).catch(() => {});
 }
 
 /**
