@@ -12,18 +12,15 @@ export const TEST_PRIVATE_KEY = 'df4642ef258f9aef2adb6c148590208b20387fb067f2c09
  * for the dev-key-input to become visible.
  */
 export async function loginOnCurrentPage(page: Page) {
-	// The top-bar wallet button is inside a header element.
-	// On pages with ConnectionRequired (e.g. /register), there may be a second
-	// Connect button in the page body. We target the header's button.
-	const topBar = page.locator('header').first();
-	const connectBtn = topBar.locator('button', { hasText: /Connect/ }).first();
+	// Use testid on the button in the top navbar — reliable, no text matching needed.
+	const connectBtn = page.getByTestId('wallet-connect-btn');
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
 	// Allow SvelteKit hydration to complete.
 	await page.waitForTimeout(3000);
 
 	// Click the Connect button.
-	await connectBtn.click({ force: true });
+	await connectBtn.click();
 
 	// Wait for the dev-key-input to appear and be visible.
 	// Use expect with toBeVisible which polls internally — more reliable than manual count checks.
@@ -38,7 +35,7 @@ export async function loginOnCurrentPage(page: Page) {
 	await devConnectBtn.click();
 
 	// Verify wallet is connected — the button text changes to a short address containing "..."
-	await expect(topBar.locator('button', { hasText: '...' }).first()).toBeVisible({ timeout: 10000 });
+	await expect(page.getByTestId('wallet-connect-btn').locator('text=/\\.{3}/')).toBeVisible({ timeout: 10000 });
 }
 
 /**
