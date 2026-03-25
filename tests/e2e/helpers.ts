@@ -12,8 +12,9 @@ export const TEST_PRIVATE_KEY = 'df4642ef258f9aef2adb6c148590208b20387fb067f2c09
  * for the dev-key-input to become visible.
  */
 export async function loginOnCurrentPage(page: Page) {
-	// Use testid on the button in the top navbar — reliable, no text matching needed.
-	const connectBtn = page.getByTestId('wallet-connect-btn');
+	// Target the button inside the header's end-aligned toolbar section.
+	// This is the wallet connect button in the top navbar — no text matching needed.
+	const connectBtn = page.locator('header section[align="end"] button');
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
 	// Allow SvelteKit hydration to complete.
@@ -35,7 +36,7 @@ export async function loginOnCurrentPage(page: Page) {
 	await devConnectBtn.click();
 
 	// Verify wallet is connected — the button text changes to a short address containing "..."
-	await expect(page.getByTestId('wallet-connect-btn').locator('text=/\\.{3}/')).toBeVisible({ timeout: 10000 });
+	await expect(page.locator('header section[align="end"] button').locator('text=/\\.{3}/')).toBeVisible({ timeout: 10000 });
 }
 
 /**
