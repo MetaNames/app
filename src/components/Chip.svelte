@@ -4,13 +4,25 @@
 	import { goto } from '$app/navigation';
 	import { writable } from 'svelte/store';
 
-	export let label: string;
-	export let value: string;
-	export let href: string | undefined = undefined;
-	export let type: 'text' | 'url' = href ? 'url' : 'text';
-	export let ellipsis: boolean = false;
-	export let openInNewTab: boolean = true;
-	export let className: string | undefined = undefined;
+	interface Props {
+		label: string;
+		value: string;
+		href?: string | undefined;
+		type?: 'text' | 'url';
+		ellipsis?: boolean;
+		openInNewTab?: boolean;
+		class?: string | undefined;
+	}
+
+	let {
+		label,
+		value,
+		href = undefined,
+		type = href ? 'url' : 'text',
+		ellipsis = false,
+		openInNewTab = true,
+		class: className = undefined
+	}: Props = $props();
 
 	let icon = writable(type === 'url' ? 'open-in-new' : 'content-copy');
 
@@ -25,7 +37,7 @@
 		}
 	};
 
-	export { className as class };
+	
 </script>
 
 <Button onclick={action} variant="outlined" class={`chip ${className || ''}`}>

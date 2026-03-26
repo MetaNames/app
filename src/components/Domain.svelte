@@ -23,15 +23,19 @@
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import Button from '@smui/button';
 
-	export let domain: Domain;
-	export let isTld: boolean = false;
-	export let activeTab: DomainTab = DomainTab.details;
+	interface Props {
+		domain: Domain;
+		isTld?: boolean;
+		activeTab?: DomainTab;
+	}
 
-	$: domainAvatar = domain.name && toSvg(domain.name, 200);
-	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
-	$: hasSocialRecords = Object.keys(domain.records).some((v) => socialRecords.includes(v));
-	$: hasProfileRecords = Object.keys(domain.records).some((v) => profileRecords.includes(v));
-	$: ownerConnected = $walletAddress === domain.owner;
+	let { domain, isTld = false, activeTab = $bindable(DomainTab.details) }: Props = $props();
+
+	let domainAvatar = $derived(domain.name && toSvg(domain.name, 200));
+	let domainName = $derived(isTld ? domain.nameWithoutTLD : domain.name);
+	let hasSocialRecords = $derived(Object.keys(domain.records).some((v) => socialRecords.includes(v)));
+	let hasProfileRecords = $derived(Object.keys(domain.records).some((v) => profileRecords.includes(v)));
+	let ownerConnected = $derived($walletAddress === domain.owner);
 
 	const records = Object.fromEntries(
 		Object.entries(domain.records).map(([key, value]) => [key, String(value)])

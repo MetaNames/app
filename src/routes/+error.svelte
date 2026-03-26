@@ -1,14 +1,14 @@
 <script>
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
 </script>
 
 <svelte:head>
-	<title>{$page.status}</title>
+	<title>{page.status}</title>
 </svelte:head>
 
 <div class="content">
-	{#if $page.status === 404}
+	{#if page.status === 404}
 		<h2>Not found!</h2>
 		<GoBackButton />
 	{:else}

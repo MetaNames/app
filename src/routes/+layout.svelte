@@ -20,17 +20,22 @@
 	import favicon from '$lib/assets/images/favicon.png';
 
 	import 'src/styles/app.scss';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
 
-	let anchor: HTMLDivElement;
-	let anchorClasses: { [k: string]: boolean } = {};
+	let { children }: Props = $props();
 
-	let alertsSnackbar: Snackbar;
-	let transactionSnackbar: Snackbar;
-	let snackbarTransactionMessage: string;
-	let snackbarMessage: string;
+	let anchor: HTMLDivElement = $state();
+	let anchorClasses: { [k: string]: boolean } = $state({});
 
-	$: contractDisabled = config.contractDisabled;
-	$: isTestnet = config.environment === 'test';
+	let alertsSnackbar: Snackbar = $state();
+	let transactionSnackbar: Snackbar = $state();
+	let snackbarTransactionMessage: string = $state();
+	let snackbarMessage: string = $state();
+
+	let contractDisabled = $derived(config.contractDisabled);
+	let isTestnet = $derived(config.environment === 'test');
 
 	// Analytics
 	inject({ mode: dev ? 'development' : 'production' });
@@ -109,7 +114,7 @@
                 
             </Banner>
         {/if}
-		<slot />
+		{@render children?.()}
 	</main>
 
     <Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>

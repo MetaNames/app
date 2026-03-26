@@ -21,10 +21,10 @@
 
 	const nameParam = $page.params.name;
 
-	$: domainName = $analyzed?.name;
-	$: parentDomainName = $analyzed?.parentId;
-	$: pageName = domainName + ' | ';
-	$: tld = $analyzed?.tld;
+	let domainName = $derived($analyzed?.name);
+	let parentDomainName = $derived($analyzed?.parentId);
+	let pageName = $derived(domainName + ' | ');
+	let tld = $derived($analyzed?.tld);
 
 	async function payment(params: DomainPaymentParams) {
 		const transactionIntent = await $metaNamesSdk.domainRepository.register({

@@ -1,5 +1,9 @@
 <script lang="ts">
-	export let color: 'dark' | 'light' = 'light';
+	interface Props {
+		color?: 'dark' | 'light';
+	}
+
+	let { color = 'light' }: Props = $props();
 
 	const cssColor = color === 'dark' ? 'var(--mdc-theme-on-surface)' : 'var(--mdc-theme-on-primary)';
 

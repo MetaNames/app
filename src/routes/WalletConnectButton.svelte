@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { createBubbler, stopPropagation, handlers } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { config } from '$lib';
 
@@ -15,11 +18,11 @@
 	import 'src/styles/wallet-connect.scss';
 	import Button from '@smui/button';
 
-	let menu: Menu;
-	let toggleOpen = false;
-	let devPrivateKey = '';
+	let menu: Menu = $state();
+	let toggleOpen = $state(false);
+	let devPrivateKey = $state('');
 
-	$: isTestnet = config.environment === 'test';
+	let isTestnet = $derived(config.environment === 'test');
 
 	async function connectWithMetaMaskWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
@@ -125,13 +128,25 @@
 		menu.setOpen(toggleOpen);
 	}
 
-	export let anchor: HTMLDivElement;
-	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
-	export let testid: string = '';
+	interface Props {
+		anchor: HTMLDivElement;
+		connectButtonVariant?: 'raised' | 'unelevated' | 'outlined';
+		testid?: string;
+		buttonLabel?: import('svelte').Snippet;
+		connectedMenuIems?: import('svelte').Snippet;
+	}
+
+	let {
+		anchor = $bindable(),
+		connectButtonVariant = 'raised',
+		testid = '',
+		buttonLabel,
+		connectedMenuIems
+	}: Props = $props();
 </script>
 
 <Button variant={connectButtonVariant} onclick={toggleMenu} data-testid={testid}>
-	<slot name="buttonLabel">Connect</slot>
+	{#if buttonLabel}{@render buttonLabel()}{:else}Connect{/if}
 </Button>
 <Menu
 	bind:this={menu}
@@ -144,7 +159,7 @@
 >
 	<List>
 		{#if $walletConnected}
-			<slot name="connectedMenuIems" />
+			{@render connectedMenuIems?.()}
 			<Item onSMUIAction={async () => disconnectWallet().then(toggleMenu)}>
 				<Text>Disconnect</Text>
 			</Item>
@@ -186,13 +201,12 @@
 							type="password"
 							placeholder="Private key (64 hex chars)..."
 							bind:value={devPrivateKey}
-							on:keydown={(e) => e.key === 'Enter' && connectWithPrivateKey()}
-							on:click|stopPropagation
-							on:keydown|stopPropagation
+							onkeydown={handlers((e) => e.key === 'Enter' && connectWithPrivateKey(), stopPropagation(bubble('keydown')))}
+							onclick={stopPropagation(bubble('click'))}
 						/>
 						<button
 							class="dev-key-connect"
-							on:click|stopPropagation={connectWithPrivateKey}
+							onclick={stopPropagation(connectWithPrivateKey)}
 							disabled={devPrivateKey.length !== 64}
 						>
 							Connect

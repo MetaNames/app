@@ -10,7 +10,11 @@
 	import { onMount } from 'svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 
 	async function payment(params: DomainPaymentParams) {
 		const transactionIntent = await $metaNamesSdk.domainRepository.renew({

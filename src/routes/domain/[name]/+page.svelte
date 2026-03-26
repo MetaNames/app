@@ -14,7 +14,7 @@
 	let domain = writable<DomainModel | undefined>();
 	const domainName = $page.params.name;
 
-	$: pageName = $domain ? $domain.name + ' | ' : '';
+	let pageName = $derived($domain ? $domain.name + ' | ' : '');
 
 	refresh.subscribe((val) => {
 		if (val) {

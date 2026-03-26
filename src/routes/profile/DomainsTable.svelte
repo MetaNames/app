@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Domain } from '@metanames/sdk';
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue, Pagination } from '@smui/data-table';
 	import Icon from 'src/components/Icon.svelte';
@@ -7,25 +9,18 @@
 	import Button from '@smui/button';
 	import IconButton from '@smui/icon-button';
 
-	export let domains: Domain[] = [];
-	export let loaded = false;
+	interface Props {
+		domains?: Domain[];
+		loaded?: boolean;
+	}
 
-	let sort: keyof Domain = 'tokenId';
-	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
+	let { domains = $bindable([]), loaded = false }: Props = $props();
+
+	let sort: keyof Domain = $state('tokenId');
+	let sortDirection: Lowercase<keyof typeof SortValue> = $state('ascending');
 	let rowsPerPage = 5;
-	let currentPage = 0;
+	let currentPage = $state(0);
 
-	$: domainsLength = domains.length;
-	$: start = currentPage * rowsPerPage;
-	$: end = Math.min(start + rowsPerPage, domainsLength);
-	$: slice = domains.slice(start, end);
-	$: lastPage = Math.max(Math.ceil(domainsLength / rowsPerPage) - 1, 0);
-	$: if (currentPage > lastPage) {
-		currentPage = lastPage;
-	}
-	$: if (domainsLength > 0) {
-		handleSort();
-	}
 
 	function handleSort() {
 		domains.sort((a, b) => {
@@ -37,6 +32,21 @@
 		});
 		domains = domains;
 	}
+	let domainsLength = $derived(domains.length);
+	let lastPage = $derived(Math.max(Math.ceil(domainsLength / rowsPerPage) - 1, 0));
+	run(() => {
+		if (currentPage > lastPage) {
+			currentPage = lastPage;
+		}
+	});
+	let start = $derived(currentPage * rowsPerPage);
+	let end = $derived(Math.min(start + rowsPerPage, domainsLength));
+	let slice = $derived(domains.slice(start, end));
+	run(() => {
+		if (domainsLength > 0) {
+			handleSort();
+		}
+	});
 </script>
 
 <DataTable

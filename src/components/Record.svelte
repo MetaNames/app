@@ -11,26 +11,25 @@
 	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
 	import HelperText from '@smui/textfield/helper-text';
 
-	export let klass: string;
-	export let value: string;
-	export let repository: RecordRepository;
-	export let editMode = false;
+	interface Props {
+		klass: string;
+		value: string;
+		repository: RecordRepository;
+		editMode?: boolean;
+	}
 
-	let recordValue = String(value);
-	let dialogOpen = false;
+	let {
+		klass,
+		value,
+		repository,
+		editMode = false
+	}: Props = $props();
 
-	$: label = klass.toString();
-	$: recordClass = getRecordClassFrom(klass);
-	$: invalid = !validator.validate(
-		{ data: recordValue, class: recordClass },
-		{ raiseError: false }
-	);
-	$: errors = invalid ? validator.getErrors() : [];
-	$: disabled = !edit;
-	$: validator = getValidator(klass);
-	$: maxLength = 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
+	let recordValue = $state(String(value));
+	let dialogOpen = $state(false);
 
-	let edit = false;
+
+	let edit = $state(false);
 
 	function toggleEdit(restore = true) {
 		edit = !edit;
@@ -50,6 +49,16 @@
 		if (hasError) alertMessage.set('Failed to delete record.');
 		else refresh.set(true);
 	}
+	let label = $derived(klass.toString());
+	let recordClass = $derived(getRecordClassFrom(klass));
+	let validator = $derived(getValidator(klass));
+	let invalid = $derived(!validator.validate(
+		{ data: recordValue, class: recordClass },
+		{ raiseError: false }
+	));
+	let errors = $derived(invalid ? validator.getErrors() : []);
+	let disabled = $derived(!edit);
+	let maxLength = $derived('maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64);
 </script>
 
 <div class="record-container {editMode ? 'edit' : ''}">

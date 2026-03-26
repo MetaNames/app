@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { goto } from '$app/navigation';
 	import { track } from '@vercel/analytics';
 	import { alertTransactionAndFetchResult, validAddress } from 'src/lib';
@@ -14,18 +16,24 @@
 	import GoBackButton from 'src/components/GoBackButton.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
 
-	export let data: PageData;
-
-	let address = '';
-	let errors: string[] = [];
-
-	$: domainName = data.analyzed?.name;
-	$: invalid = errors.length > 0;
-	$: if (address) {
-		errors = [];
-		if (!address) errors.push('Address is required');
-		if (!validAddress(address)) errors.push('Address is invalid');
+	interface Props {
+		data: PageData;
 	}
+
+	let { data }: Props = $props();
+
+	let address = $state('');
+	let errors: string[] = $state([]);
+
+	let domainName = $derived(data.analyzed?.name);
+	let invalid = $derived(errors.length > 0);
+	run(() => {
+		if (address) {
+			errors = [];
+			if (!address) errors.push('Address is required');
+			if (!validAddress(address)) errors.push('Address is invalid');
+		}
+	});
 
 	async function transfer() {
 		if (!domainName) return;

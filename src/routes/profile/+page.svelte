@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Domain } from '@metanames/sdk';
 	import { walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
@@ -10,14 +12,11 @@
 	import Icon from 'src/components/Icon.svelte';
 	import Chip from 'src/components/Chip.svelte';
 
-	let domains: Domain[] = [];
-	let domainsFiltered: Domain[] = [];
-	let loaded = false;
-	let search = '';
+	let domains: Domain[] = $state([]);
+	let domainsFiltered: Domain[] = $state([]);
+	let loaded = $state(false);
+	let search = $state('');
 
-	$: if (search !== '') {
-		domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
-	}
 
 	walletAddress.subscribe(async (address) => {
 		if (!address) return;
@@ -41,6 +40,11 @@
 			return true;
 		else false;
 	}
+	run(() => {
+		if (search !== '') {
+			domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
+		}
+	});
 </script>
 
 <div class="profile content">

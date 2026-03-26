@@ -18,24 +18,33 @@
 	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
 	import { fetchApiJson } from 'src/lib/api';
 
-	export let domainName: string;
-	export let tld: string;
-	export let payment: (params: DomainPaymentParams) => Promise<void>;
-	export let paymentLabel: string;
+	interface Props {
+		domainName: string;
+		tld: string;
+		payment: (params: DomainPaymentParams) => Promise<void>;
+		paymentLabel: string;
+	}
 
-	let years = 1;
-	let feesApproved = false;
+	let {
+		domainName,
+		tld,
+		payment,
+		paymentLabel
+	}: Props = $props();
+
+	let years = $state(1);
+	let feesApproved = $state(false);
 	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
 
-	$: nameWithoutTLD = domainName.endsWith(`.${tld}`)
+	let nameWithoutTLD = $derived(domainName.endsWith(`.${tld}`)
 		? domainName.replace(`.${tld}`, '')
-		: domainName;
-	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = browser
+		: domainName);
+	let charsLabel = $derived(nameWithoutTLD.length > 1 ? 'chars' : 'char');
+	let loadFees = $derived(browser
 		? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${$selectedCoin}`)
-		: Promise.resolve(null);
-	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
-	$: yearsLabel = years === 1 ? 'year' : 'years';
+		: Promise.resolve(null));
+	let nameLength = $derived(nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length);
+	let yearsLabel = $derived(years === 1 ? 'year' : 'years');
 
 	const totalFees = writable(0);
 

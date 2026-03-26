@@ -6,10 +6,20 @@
 	import CircularProgress from '@smui/circular-progress';
 	import { onDestroy } from 'svelte';
 
-	let className = '';
-	export { className as class };
-	export let onClick: () => Promise<void>;
-	export let onError: (error: unknown) => Promise<void> = async (error) => {
+	
+	interface Props {
+		class?: string;
+		onClick: () => Promise<void>;
+		onError?: (error: unknown) => Promise<void>;
+		disabled?: boolean;
+		variant?: 'text' | 'raised' | 'unelevated' | 'outlined';
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		class: className = '',
+		onClick,
+		onError = async (error) => {
 		let message;
 		if (error && error instanceof Error) message = error.message;
 		else message = 'Something went wrong';
@@ -17,14 +27,15 @@
 		captureException(error);
 		console.error(error);
 		alertMessage.set(message);
-	};
-	export let disabled = false;
-	export let variant: 'text' | 'raised' | 'unelevated' | 'outlined' = 'raised';
+	},
+		disabled = false,
+		variant = 'raised',
+		children
+	}: Props = $props();
 
-	$: isDisabled = disabled || loading;
 
-	let loading: boolean | undefined;
-	let hasError = false;
+	let loading: boolean | undefined = $state();
+	let hasError = $state(false);
 	let resetTimeout: ReturnType<typeof setTimeout>;
 
 	onDestroy(() => {
@@ -54,6 +65,7 @@
 			}, 3000);
 		}
 	}
+	let isDisabled = $derived(disabled || loading);
 </script>
 
 <Button
@@ -63,7 +75,7 @@
 	{variant}
 	aria-busy={loading}
 >
-	<Label><slot /></Label>
+	<Label>{@render children?.()}</Label>
 	{#if loading}
 		<div class="loading" role="status" aria-label="Loading">
 			<CircularProgress style="height: 20px; width: 20px;" indeterminate />
