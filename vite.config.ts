@@ -18,13 +18,6 @@ export default defineConfig({
 		}),
 		tsconfigPaths()
 	],
-	css: {
-		preprocessorOptions: {
-			scss: {
-				api: 'modern'
-			}
-		}
-	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}

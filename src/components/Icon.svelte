@@ -19,9 +19,12 @@
 		...rest
 	}: Props = $props();
 
-	let alignClass = $derived(
-		align === 'right' ? 'align-icon-right' : align === 'left' ? 'align-icon-left' : ''
-	);
+	let alignClass = $state('');
+	if (align === 'right') {
+		alignClass = 'align-icon-right';
+	} else if (align === 'left') {
+		alignClass = 'align-icon-left';
+	}
 </script>
 
 <Icon class={alignClass} {icon} {height} {width} {color} {...rest} />

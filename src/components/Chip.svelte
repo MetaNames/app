@@ -23,13 +23,7 @@
 		class: className = undefined
 	}: Props = $props();
 
-	let iconName = $state('content-copy');
-	let showDone = $state(false);
-
-	// Sync icon when type prop changes from outside
-	$effect(() => {
-		iconName = type === 'url' ? 'open-in-new' : 'content-copy';
-	});
+	let iconName = $state(type === 'url' ? 'open-in-new' : 'content-copy');
 
 	function action() {
 		if (type === 'url') {
@@ -37,8 +31,8 @@
 			else goto(value);
 		} else {
 			navigator.clipboard.writeText(href ?? value);
-			showDone = true;
-			setTimeout(() => (showDone = false), 1000);
+			iconName = 'done';
+			setTimeout(() => (iconName = 'content-copy'), 1000);
 		}
 	}
 </script>
@@ -50,11 +44,11 @@
 			<span class="value" class:ellipsis>{value}</span>
 		</div>
 	</Label>
-	{#if showDone}
+	{#if iconName === 'done'}
 		<Icon icon="done" align="right" />
 	{:else if iconName === 'open-in-new'}
 		<Icon icon="open-in-new" align="right" />
-	{:else}
+	{:else if iconName === 'content-copy'}
 		<Icon icon="content-copy" align="right" />
 	{/if}
 </Button>
