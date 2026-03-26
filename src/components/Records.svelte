@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
 
 	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
-	import { walletAddress } from '$lib/stores/main';
+	import { refresh, walletAddress } from '$lib/stores/main';
 
 	import { Label } from '@smui/button';
 	import Select, { Option } from '@smui/select';
@@ -19,12 +20,11 @@
 		repository: RecordRepository;
 	}
 
-	let { ownerAddress, records = $bindable(), repository }: Props = $props();
+	let { ownerAddress, records, repository }: Props = $props();
 
 	let selectedRecordClass: string | undefined = $state();
 	let newRecordValue: string = $state('');
 	let newRecordSubmitted = $state(false);
-
 
 	async function createRecord() {
 		if (selectedRecordClass === undefined) selectedRecordClass = '';
@@ -37,26 +37,32 @@
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) throw new Error('Failed to create record.');
 		else {
-			records[selectedRecordClass] = newRecordValue;
 			selectedRecordClass = undefined;
 			newRecordValue = '';
 			newRecordSubmitted = false;
+			refresh.set(true);
 		}
 	}
 	let canEdit = $derived($walletAddress === ownerAddress);
 	let newRecordClass = $derived(selectedRecordClass && getRecordClassFrom(selectedRecordClass));
 	let existingRecordClasses = $derived(Object.keys(records));
-	let unusedRecordsClasses = $derived(Object.values(RecordClassEnum).filter(
-		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
-	));
+	let unusedRecordsClasses = $derived(
+		Object.values(RecordClassEnum).filter(
+			(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
+		)
+	);
 	let selectRecordInvalid = $derived(newRecordSubmitted && selectedRecordClass === '');
-	let validator = $derived(selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined);
-	let recordValueInvalid =
-		$derived(!!newRecordClass &&
-		!validator?.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false }));
+	let validator = $derived(
+		selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined
+	);
+	let recordValueInvalid = $derived(
+		!!newRecordClass &&
+			!validator?.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false })
+	);
 	let recordValueErrors = $derived(validator && recordValueInvalid ? validator.getErrors() : []);
-	let newRecordValueMaxLength =
-		$derived(validator && 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64);
+	let newRecordValueMaxLength = $derived(
+		validator && 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64
+	);
 </script>
 
 <div class="records">
@@ -94,12 +100,12 @@
 					bind:invalid={recordValueInvalid}
 					variant="outlined"
 				>
-							{#snippet helper()}
-								{#if recordValueErrors.length > 0}
-									<HelperText class="error">{recordValueErrors?.join(', ')}</HelperText>
-								{/if}
-							{/snippet}
-						</Textfield>
+					{#snippet helper()}
+						{#if recordValueErrors.length > 0}
+							<HelperText class="error">{recordValueErrors?.join(', ')}</HelperText>
+						{/if}
+					{/snippet}
+				</Textfield>
 			</div>
 			<LoadingButton
 				class="mobile--mt-1"

@@ -42,13 +42,15 @@
 	injectSpeedInsights();
 
 	// Snackbars
-	alertTransaction.subscribe((transaction) => {
+	$effect(() => {
+		const transaction = $alertTransaction;
 		if (!transaction) return;
 
 		snackbarTransactionMessage = 'New Transaction submitted';
 		transactionSnackbar?.open();
 	});
-	alertMessage.subscribe((message) => {
+	$effect(() => {
+		const message = $alertMessage;
 		if (!message) return;
 
 		if (typeof message === 'string') snackbarMessage = message;
@@ -79,7 +81,6 @@
 				removeClass: (className) => {
 					if (anchorClasses[className]) {
 						delete anchorClasses[className];
-						anchorClasses = anchorClasses;
 					}
 				}
 			}}

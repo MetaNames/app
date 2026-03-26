@@ -1,8 +1,5 @@
-<!-- @migration-task Error while migrating Svelte code: can't migrate `$: buttonLabel = $shortAddress ? $shortAddress : 'Connect Wallet';` to `$derived` because there's a variable named derived.
-     Rename the variable and try again or migrate by hand. -->
 <script lang="ts">
 	import { walletAddress } from '$lib/stores/main';
-	import { derived } from 'svelte/store';
 
 	import Icon from 'src/components/Icon.svelte';
 	import { Item, Text } from '@smui/list';
@@ -11,11 +8,10 @@
 	import { goto } from '$app/navigation';
 	import WalletConnectButton from 'src/routes/WalletConnectButton.svelte';
 
-	const shortAddress = derived(walletAddress, ($address) => {
-		if ($address) return $address.slice(0, 4) + '...' + $address.slice(-4);
-	});
-
-	let walletLabel = $derived($shortAddress ? $shortAddress : 'Connect Wallet');
+	let shortAddress = $derived(
+		$walletAddress ? $walletAddress.slice(0, 4) + '...' + $walletAddress.slice(-4) : undefined
+	);
+	let walletLabel = $derived(shortAddress ?? 'Connect Wallet');
 
 	interface Props {
 		anchor: HTMLDivElement;

@@ -20,7 +20,7 @@
 
 	let { domainName, parentDomainName }: Props = $props();
 
-	let parentDomain: DomainModel | null;
+	let parentDomain: DomainModel | null = $state();
 
 	let parentLink = $derived(`/domain/${parentDomainName}`);
 

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
@@ -20,13 +18,11 @@
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
 
-
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	function debounce(_domainName: string) {
 		clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
-
 
 	async function search(submit = false) {
 		if (invalid) return;
@@ -53,23 +49,31 @@
 	async function submit() {
 		await search(true);
 	}
-	let invalid = $derived(domainName !== '' && !validator.validate(domainName, { raiseError: false }));
+	let invalid = $derived(
+		domainName !== '' && !validator.validate(domainName, { raiseError: false })
+	);
 	let errors = $derived(invalid ? validator.getErrors() : []);
-	let nameSearchedLabel = $derived(nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null);
-	run(() => {
+	let nameSearchedLabel = $derived(
+		nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null
+	);
+	$effect(() => {
 		debounce(domainName);
 	});
 </script>
 
 <div class="search-container">
-	<form onsubmit={preventDefault(submit)}>
+	<form
+		onsubmit={(e) => {
+			e.preventDefault();
+			submit();
+		}}
+	>
 		<Textfield
 			class="domain-input"
 			variant="outlined"
 			bind:value={domainName}
 			bind:invalid
 			label="Domain name"
-			withTrailingIcon
 			autofocus
 		>
 			{#snippet trailingIcon()}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
 	import type { Domain } from '@metanames/sdk';
 	import { toSvg } from 'jdenticon';
 
@@ -19,7 +20,7 @@
 	import { DomainTab } from 'src/lib/types';
 	import Chip from 'src/components/Chip.svelte';
 	import Records from 'src/components/Records.svelte';
-	import { walletAddress } from 'src/lib/stores/main';
+	import { walletAddress } from '$lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import Button from '@smui/button';
 
@@ -29,21 +30,31 @@
 		activeTab?: DomainTab;
 	}
 
+	console.log('[Domain] MOUNTING', { domainName: domain?.name });
+
 	let { domain, isTld = false, activeTab = $bindable(DomainTab.details) }: Props = $props();
+
+	onDestroy(() => {
+		console.log('[Domain] ON_DESTROY - starting unmount');
+	});
 
 	let domainAvatar = $derived(domain.name && toSvg(domain.name, 200));
 	let domainName = $derived(isTld ? domain.nameWithoutTLD : domain.name);
-	let hasSocialRecords = $derived(Object.keys(domain.records).some((v) => socialRecords.includes(v)));
-	let hasProfileRecords = $derived(Object.keys(domain.records).some((v) => profileRecords.includes(v)));
+	let hasSocialRecords = $derived(
+		Object.keys(domain.records).some((v) => socialRecords.includes(v))
+	);
+	let hasProfileRecords = $derived(
+		Object.keys(domain.records).some((v) => profileRecords.includes(v))
+	);
 	let ownerConnected = $derived($walletAddress === domain.owner);
 
-	const records = Object.fromEntries(
-		Object.entries(domain.records).map(([key, value]) => [key, String(value)])
+	let records = $derived(
+		Object.fromEntries(Object.entries(domain.records).map(([key, value]) => [key, String(value)]))
 	);
-	const ownerBrowserUrl = explorerAddressUrl(domain.owner);
-
-	let tabs: Array<DomainTab> = [DomainTab.details];
-	if (!isTld) tabs.push(DomainTab.settings);
+	let ownerBrowserUrl = $derived(explorerAddressUrl(domain.owner));
+	let tabs = $derived<Array<DomainTab>>(
+		isTld ? [DomainTab.details] : [DomainTab.details, DomainTab.settings]
+	);
 </script>
 
 <Card class="domain-container">

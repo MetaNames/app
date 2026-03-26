@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Domain } from '@metanames/sdk';
 	import { walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
@@ -17,14 +15,16 @@
 	let loaded = $state(false);
 	let search = $state('');
 
-
-	walletAddress.subscribe(async (address) => {
+	$effect(() => {
+		const address = $walletAddress;
 		if (!address) return;
 
 		loaded = false;
-		domains = await $metaNamesSdk.domainRepository.findByOwner(address);
-		domainsFiltered = domains;
-		loaded = true;
+		(async () => {
+			domains = await $metaNamesSdk.domainRepository.findByOwner(address);
+			domainsFiltered = domains;
+			loaded = true;
+		})();
 	});
 
 	function cleanSearch() {
@@ -40,7 +40,7 @@
 			return true;
 		else false;
 	}
-	run(() => {
+	$effect(() => {
 		if (search !== '') {
 			domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
 		}
@@ -54,21 +54,21 @@
 			{#if $walletConnected}
 				<Chip label="Address" value={$walletAddress || ''} />
 				<h4 class="domains">Domains</h4>
-			<Textfield
-				class="my-1 search-bar"
-				label="Search"
-				bind:value={search}
-				variant="outlined"
-				withTrailingIcon
-			>
-				{#snippet trailingIcon()}
-					<div class="close-icon">
-						<IconButton onclick={cleanSearch} aria-label="cancel">
-							<Icon icon="cancel" />
-						</IconButton>
-					</div>
-				{/snippet}
-			</Textfield>
+				<Textfield
+					class="my-1 search-bar"
+					label="Search"
+					bind:value={search}
+					variant="outlined"
+					withTrailingIcon
+				>
+					{#snippet trailingIcon()}
+						<div class="close-icon">
+							<IconButton onclick={cleanSearch} aria-label="cancel">
+								<Icon icon="cancel" />
+							</IconButton>
+						</div>
+					{/snippet}
+				</Textfield>
 				<DomainsTable domains={domainsFiltered} {loaded} />
 			{:else}
 				<p>Connect your wallet to see your domains</p>

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Domain } from '@metanames/sdk';
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue, Pagination } from '@smui/data-table';
 	import Icon from 'src/components/Icon.svelte';
@@ -18,9 +16,8 @@
 
 	let sort: keyof Domain = $state('tokenId');
 	let sortDirection: Lowercase<keyof typeof SortValue> = $state('ascending');
-	let rowsPerPage = 5;
+	let rowsPerPage = $state(5);
 	let currentPage = $state(0);
-
 
 	function handleSort() {
 		domains.sort((a, b) => {
@@ -30,11 +27,10 @@
 			if (typeof aVal === 'string' && typeof bVal === 'string') return aVal.localeCompare(bVal);
 			return Number(aVal) - Number(bVal);
 		});
-		domains = domains;
 	}
 	let domainsLength = $derived(domains.length);
 	let lastPage = $derived(Math.max(Math.ceil(domainsLength / rowsPerPage) - 1, 0));
-	run(() => {
+	$effect(() => {
 		if (currentPage > lastPage) {
 			currentPage = lastPage;
 		}
@@ -42,7 +38,7 @@
 	let start = $derived(currentPage * rowsPerPage);
 	let end = $derived(Math.min(start + rowsPerPage, domainsLength));
 	let slice = $derived(domains.slice(start, end));
-	run(() => {
+	$effect(() => {
 		if (domainsLength > 0) {
 			handleSort();
 		}
@@ -107,57 +103,57 @@
 		{/if}
 	{/if}
 	{#snippet paginate()}
-	<Pagination>
-		{#snippet rowsPerPage()}
-			<Label>Rows Per Page</Label>
-			<Select variant="outlined" bind:value={rowsPerPage} noLabel>
-				<Option value={5}>5</Option>
-				<Option value={10}>10</Option>
-				<Option value={20}>20</Option>
-				<Option value={domainsLength}>Max</Option>
-			</Select>
-		{/snippet}
-		{#snippet total()}
-			{start + 1}-{end} of {domainsLength}
-		{/snippet}
+		<Pagination>
+			{#snippet rowsPerPageSelect()}
+				<Label>Rows Per Page</Label>
+				<Select variant="outlined" bind:value={rowsPerPage} noLabel>
+					<Option value={5}>5</Option>
+					<Option value={10}>10</Option>
+					<Option value={20}>20</Option>
+					<Option value={domainsLength}>Max</Option>
+				</Select>
+			{/snippet}
+			{#snippet total()}
+				{start + 1}-{end} of {domainsLength}
+			{/snippet}
 
-		<IconButton
-			action="first-page"
-			title="First page"
-			onclick={() => (currentPage = 0)}
-			disabled={currentPage === 0}
-			aria-label="first page"
-		>
-			<Icon icon="first-page" />
-		</IconButton>
-		<IconButton
-			action="prev-page"
-			title="Prev page"
-			onclick={() => currentPage--}
-			disabled={currentPage === 0}
-			aria-label="previous page"
-		>
-			<Icon icon="chevron-left" />
-		</IconButton>
-		<IconButton
-			action="next-page"
-			title="Next page"
-			onclick={() => currentPage++}
-			disabled={currentPage === lastPage}
-			aria-label="next page"
-		>
-			<Icon icon="chevron-right" />
-		</IconButton>
-		<IconButton
-			action="last-page"
-			title="Last page"
-			onclick={() => (currentPage = lastPage)}
-			disabled={currentPage === lastPage}
-			aria-label="last page"
-		>
-			<Icon icon="last-page" />
-		</IconButton>
-	</Pagination>
+			<IconButton
+				action="first-page"
+				title="First page"
+				onclick={() => (currentPage = 0)}
+				disabled={currentPage === 0}
+				aria-label="first page"
+			>
+				<Icon icon="first-page" />
+			</IconButton>
+			<IconButton
+				action="prev-page"
+				title="Prev page"
+				onclick={() => currentPage--}
+				disabled={currentPage === 0}
+				aria-label="previous page"
+			>
+				<Icon icon="chevron-left" />
+			</IconButton>
+			<IconButton
+				action="next-page"
+				title="Next page"
+				onclick={() => currentPage++}
+				disabled={currentPage === lastPage}
+				aria-label="next page"
+			>
+				<Icon icon="chevron-right" />
+			</IconButton>
+			<IconButton
+				action="last-page"
+				title="Last page"
+				onclick={() => (currentPage = lastPage)}
+				disabled={currentPage === lastPage}
+				aria-label="last page"
+			>
+				<Icon icon="last-page" />
+			</IconButton>
+		</Pagination>
 	{/snippet}
 	{#snippet progress()}
 		<LinearProgress closed={loaded} indeterminate aria-label="Data is being loaded..." />

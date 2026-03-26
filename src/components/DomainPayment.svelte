@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { onMount, onDestroy } from 'svelte';
 	import { alertTransactionAndFetchResult, bridgeUrl, getAccountBalance } from '$lib';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import type { BYOC } from '@metanames/sdk';
 	import { InsufficientBalanceError } from 'src/lib/error';
-	import { writable } from 'svelte/store';
 
 	import { Label } from '@smui/button';
 	import Icon from 'src/components/Icon.svelte';
@@ -27,9 +27,23 @@
 
 	let { domainName, tld, payment, paymentLabel }: Props = $props();
 
+	console.log('[DomainPayment] MOUNTING', { domainName, tld });
+
 	let years = $state(1);
 	let feesApproved = $state(false);
 	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
+	let localSelectedCoin = $state($selectedCoin);
+
+	onDestroy(() => {
+		console.log('[DomainPayment] ON_DESTROY - before SMUI cleanup');
+	});
+
+	onMount(() => {
+		console.log('[DomainPayment] ON_MOUNT complete');
+		return () => {
+			console.log('[DomainPayment] ON_MOUNT cleanup');
+		};
+	});
 
 	let nameWithoutTLD = $derived(
 		domainName.endsWith(`.${tld}`) ? domainName.replace(`.${tld}`, '') : domainName
@@ -43,12 +57,8 @@
 	let nameLength = $derived(nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length);
 	let yearsLabel = $derived(years === 1 ? 'year' : 'years');
 
-	const totalFees = writable(0);
-
 	const totalFeesLabel = (label: number, years: number) => {
 		const total = label * years;
-		totalFees.set(total);
-
 		return Math.ceil(total * 10000) / 10000;
 	};
 
@@ -80,7 +90,14 @@
 		const address = $walletAddress as string;
 		const account = await getAccountBalance(address);
 		const accountCoin = account.account.displayCoins.find((coin) => coin.symbol === $selectedCoin);
-		if (!accountCoin || Number(accountCoin.balance) < $totalFees)
+
+		const fees = loadFees;
+		const feesData = fees instanceof Promise ? await fees : fees;
+		if (
+			!accountCoin ||
+			!feesData ||
+			Number(accountCoin.balance) < totalFeesLabel(feesData.feesLabel, years)
+		)
 			throw new InsufficientBalanceError($selectedCoin);
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
@@ -126,7 +143,15 @@
 				<p class="title text-center" data-testid="payment-token-label">Payment token</p>
 				<div class="row centered">
 					<Select
-						bind:value={$selectedCoin}
+						bind:value={localSelectedCoin}
+						onSMUISelectChange={(e) => {
+							console.log('[DomainPayment] Select onSMUISelectChange', {
+								value: e.detail.value,
+								localSelectedCoin
+							});
+							selectedCoin.set(e.detail.value);
+							localSelectedCoin = e.detail.value;
+						}}
 						label="Select Token"
 						variant="outlined"
 						data-testid="payment-token-select"

@@ -18,18 +18,18 @@
 		editMode?: boolean;
 	}
 
-	let {
-		klass,
-		value,
-		repository,
-		editMode = false
-	}: Props = $props();
+	let { klass, value, repository, editMode = false }: Props = $props();
 
-	let recordValue = $state(String(value));
+	let recordValue = $state('');
 	let dialogOpen = $state(false);
-
-
 	let edit = $state(false);
+
+	// Sync with value prop when not in edit mode
+  //	$effect(() => {
+  //		if (!edit) {
+  //			recordValue = String(value);
+  //		}
+  //	});
 
 	function toggleEdit(restore = true) {
 		edit = !edit;
@@ -40,7 +40,10 @@
 		const transactionIntent = await repository.update({ class: recordClass, data: recordValue });
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) alertMessage.set('Failed to update record.');
-		else toggleEdit(false);
+		else {
+			refresh.set(true);
+			toggleEdit(false);
+		}
 	}
 
 	async function destroy() {
@@ -52,13 +55,14 @@
 	let label = $derived(klass.toString());
 	let recordClass = $derived(getRecordClassFrom(klass));
 	let validator = $derived(getValidator(klass));
-	let invalid = $derived(!validator.validate(
-		{ data: recordValue, class: recordClass },
-		{ raiseError: false }
-	));
+	let invalid = $derived(
+		!validator.validate({ data: recordValue, class: recordClass }, { raiseError: false })
+	);
 	let errors = $derived(invalid ? validator.getErrors() : []);
 	let disabled = $derived(!edit);
-	let maxLength = $derived('maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64);
+	let maxLength = $derived(
+		'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64
+	);
 </script>
 
 <div class="record-container {editMode ? 'edit' : ''}">

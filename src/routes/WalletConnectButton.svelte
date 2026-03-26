@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { createBubbler, stopPropagation } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { config } from '$lib';
 
@@ -205,12 +202,18 @@
 							type="password"
 							placeholder="Private key (64 hex chars)..."
 							bind:value={devPrivateKey}
-							onkeydown={(e) => stopPropagation(handleKeydown)(e)}
-							onclick={stopPropagation(bubble('click'))}
+							onkeydown={(e) => {
+								e.stopPropagation();
+								handleKeydown(e);
+							}}
+							onclick={(e) => e.stopPropagation()}
 						/>
 						<button
 							class="dev-key-connect"
-							onclick={stopPropagation(connectWithPrivateKey)}
+							onclick={(e) => {
+								e.stopPropagation();
+								connectWithPrivateKey();
+							}}
 							disabled={devPrivateKey.length !== 64}
 						>
 							Connect

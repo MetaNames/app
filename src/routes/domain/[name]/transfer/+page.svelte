@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { goto } from '$app/navigation';
 	import { track } from '@vercel/analytics';
 	import { alertTransactionAndFetchResult, validAddress } from 'src/lib';
@@ -27,7 +25,7 @@
 
 	let domainName = $derived(data.analyzed?.name);
 	let invalid = $derived(errors.length > 0);
-	run(() => {
+	$effect(() => {
 		if (address) {
 			errors = [];
 			if (!address) errors.push('Address is required');
@@ -77,19 +75,19 @@
 					<b>Verify the address is correct</b> before proceeding.
 				</p>
 				<div class="mt-2 mb-2">
-			<Textfield
-				class="w-100"
-				variant="outlined"
-				bind:value={address}
-				bind:invalid
-				label="Recipient address"
-				>
-				{#snippet helper()}
-					{#if errors.length > 0}
-						<HelperText>{errors.join(', ')}</HelperText>
-					{/if}
-				{/snippet}
-			</Textfield>
+					<Textfield
+						class="w-100"
+						variant="outlined"
+						bind:value={address}
+						bind:invalid
+						label="Recipient address"
+					>
+						{#snippet helper()}
+							{#if errors.length > 0}
+								<HelperText>{errors.join(', ')}</HelperText>
+							{/if}
+						{/snippet}
+					</Textfield>
 				</div>
 				<ConnectionRequired>
 					<LoadingButton disabled={invalid} onClick={transfer} variant="raised"

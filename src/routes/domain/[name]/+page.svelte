@@ -7,18 +7,17 @@
 	import CircularProgress from '@smui/circular-progress';
 	import Domain from 'src/components/Domain.svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
-	import { writable } from 'svelte/store';
 	import { alertMessage, refresh } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 
-	let domain = writable<DomainModel | undefined>();
+	let domain: DomainModel | undefined = $state();
 	const domainName = $page.params.name ?? '';
 
-	let pageName = $derived($domain ? $domain.name + ' | ' : '');
+	let pageName = $derived(domain ? domain.name + ' | ' : '');
 
-	refresh.subscribe((val) => {
-		if (val) {
-			domain.set(undefined);
+	$effect(() => {
+		if ($refresh) {
+			domain = undefined;
 			loadDomain();
 			refresh.set(false);
 		}
@@ -26,7 +25,7 @@
 
 	async function loadDomain() {
 		const domainResponse = await $metaNamesSdk.domainRepository.find(domainName);
-		if (domainResponse) domain.set(domainResponse);
+		if (domainResponse) domain = domainResponse;
 		else {
 			alertMessage.set('Domain not found. Register it now!');
 			goto(`/register/${domainName}`, { replaceState: true });
@@ -47,10 +46,10 @@
 </svelte:head>
 
 <div class="content domain">
-	{#if !$domain}
+	{#if !domain}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-	{:else if $domain}
-		<Domain domain={$domain} />
+	{:else if domain}
+		<Domain {domain} />
 		<br />
 		<GoBackButton />
 	{/if}
