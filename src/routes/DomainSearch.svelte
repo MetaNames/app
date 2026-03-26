@@ -1,9 +1,45 @@
+<script context="module" lang="ts">
+	import type { Domain as DomainModel } from '@metanames/sdk';
+
+	const MAX_CACHE_SIZE = 100;
+	const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+	interface CacheEntry {
+		result: DomainModel | null;
+		timestamp: number;
+	}
+
+	const searchCache = new Map<string, CacheEntry>();
+
+	export function getCachedResult(domainName: string): CacheEntry | undefined {
+		const entry = searchCache.get(domainName);
+		if (entry) {
+			if (Date.now() - entry.timestamp > CACHE_TTL) {
+				searchCache.delete(domainName);
+				return undefined;
+			}
+			return entry;
+		}
+		return undefined;
+	}
+
+	export function setCachedResult(domainName: string, result: DomainModel | null) {
+		if (searchCache.size >= MAX_CACHE_SIZE) {
+			const firstKey = searchCache.keys().next().value;
+			if (firstKey) {
+				searchCache.delete(firstKey);
+			}
+		}
+		searchCache.set(domainName, { result, timestamp: Date.now() });
+	}
+</script>
+
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from '@metanames/sdk';
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
@@ -30,6 +66,10 @@
 
 	$: debounce(domainName);
 
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
+
 	async function search(submit = false) {
 		if (invalid) return;
 
@@ -42,6 +82,14 @@
 
 		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		const cachedResult = getCachedResult(nameSearched);
+		if (cachedResult) {
+			domain = cachedResult.result;
+			isLoading = false;
+			return;
+		}
+
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
@@ -49,6 +97,7 @@
 		if (currentRequestId === requestId) {
 			domain = result;
 			isLoading = false;
+			setCachedResult(nameSearched, result);
 		}
 	}
 
