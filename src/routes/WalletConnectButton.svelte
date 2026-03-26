@@ -134,7 +134,7 @@
 			<Item on:SMUI:action={connectWithLedgerWallet}>
 				<Text>
 					<div class="item">
-						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
+						<img class="logo" src={ledgerWalletLogo} alt="ledger wallet logo" />
 						<span>Ledger</span>
 					</div>
 				</Text>
