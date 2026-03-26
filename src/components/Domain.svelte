@@ -33,17 +33,21 @@
 
 	let domainAvatar = $derived(domain.name && toSvg(domain.name, 200));
 	let domainName = $derived(isTld ? domain.nameWithoutTLD : domain.name);
-	let hasSocialRecords = $derived(Object.keys(domain.records).some((v) => socialRecords.includes(v)));
-	let hasProfileRecords = $derived(Object.keys(domain.records).some((v) => profileRecords.includes(v)));
+	let hasSocialRecords = $derived(
+		Object.keys(domain.records).some((v) => socialRecords.includes(v))
+	);
+	let hasProfileRecords = $derived(
+		Object.keys(domain.records).some((v) => profileRecords.includes(v))
+	);
 	let ownerConnected = $derived($walletAddress === domain.owner);
 
-	const records = Object.fromEntries(
-		Object.entries(domain.records).map(([key, value]) => [key, String(value)])
+	let records = $derived(
+		Object.fromEntries(Object.entries(domain.records).map(([key, value]) => [key, String(value)]))
 	);
-	const ownerBrowserUrl = explorerAddressUrl(domain.owner);
-
-	let tabs: Array<DomainTab> = [DomainTab.details];
-	if (!isTld) tabs.push(DomainTab.settings);
+	let ownerBrowserUrl = $derived(explorerAddressUrl(domain.owner));
+	let tabs = $derived<Array<DomainTab>>(
+		isTld ? [DomainTab.details] : [DomainTab.details, DomainTab.settings]
+	);
 </script>
 
 <Card class="domain-container">
