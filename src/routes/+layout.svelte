@@ -26,13 +26,13 @@
 
 	let { children }: Props = $props();
 
-	let anchor: HTMLDivElement = $state();
+	let anchor: HTMLDivElement | undefined = $state(undefined);
 	let anchorClasses: { [k: string]: boolean } = $state({});
 
-	let alertsSnackbar: Snackbar = $state();
-	let transactionSnackbar: Snackbar = $state();
-	let snackbarTransactionMessage: string = $state();
-	let snackbarMessage: string = $state();
+	let alertsSnackbar: Snackbar | undefined = $state();
+	let transactionSnackbar: Snackbar | undefined = $state();
+	let snackbarTransactionMessage: string = $state('');
+	let snackbarMessage: string = $state('');
 
 	let contractDisabled = $derived(config.contractDisabled);
 	let isTestnet = $derived(config.environment === 'test');
@@ -99,29 +99,35 @@
 				</Section>
 
 				<Section align="end" toolbar>
-					<WalletConnect {anchor} />
+					<WalletConnect anchor={anchor!} />
 				</Section>
 			</Row>
 		</div>
 	</TopAppBar>
 
 	<main>
-        {#if contractDisabled}
-            <Banner open={true} centered={true} mobileStacked={true}>
-                {#snippet icon()}<div class="icon-center"><Icon icon="system-update" width="25px" height="25px" color="white" /></div>{/snippet}
-                {#snippet label()}<Label>Contract is temporarily disabled for updates</Label>{/snippet}
-                {#snippet actions()}<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>{/snippet}
-                
-            </Banner>
-        {/if}
+		{#if contractDisabled}
+			<Banner open={true} centered={true} mobileStacked={true}>
+				{#snippet icon()}<div class="icon-center">
+						<Icon icon="system-update" width="25px" height="25px" color="white" />
+					</div>{/snippet}
+				{#snippet label()}<Label>Contract is temporarily disabled for updates</Label>{/snippet}
+				{#snippet actions()}<Button href="https://t.me/mpc_metanames" target="_blank"
+						>Check status</Button
+					>{/snippet}
+			</Banner>
+		{/if}
 		{@render children?.()}
 	</main>
 
-    <Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
+	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
 		<Label>{snackbarTransactionMessage}</Label>
 		<Actions>
-            <Button onclick={() =>
-                    $alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}>View</Button>
+			<Button
+				onclick={() =>
+					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+				>View</Button
+			>
 			<IconButton title="Dismiss" aria-label="close">
 				<Icon icon="close" />
 			</IconButton>
@@ -129,10 +135,10 @@
 	</Snackbar>
 	<Snackbar bind:this={alertsSnackbar}>
 		<Label>{snackbarMessage}</Label>
-        <Actions>
-            {#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
-                <Button onclick={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
-            {/if}
+		<Actions>
+			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
+				<Button onclick={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
+			{/if}
 			<IconButton title="Dismiss" aria-label="close">
 				<Icon icon="close" />
 			</IconButton>

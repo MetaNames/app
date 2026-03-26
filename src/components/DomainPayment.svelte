@@ -25,24 +25,21 @@
 		paymentLabel: string;
 	}
 
-	let {
-		domainName,
-		tld,
-		payment,
-		paymentLabel
-	}: Props = $props();
+	let { domainName, tld, payment, paymentLabel }: Props = $props();
 
 	let years = $state(1);
 	let feesApproved = $state(false);
 	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
 
-	let nameWithoutTLD = $derived(domainName.endsWith(`.${tld}`)
-		? domainName.replace(`.${tld}`, '')
-		: domainName);
+	let nameWithoutTLD = $derived(
+		domainName.endsWith(`.${tld}`) ? domainName.replace(`.${tld}`, '') : domainName
+	);
 	let charsLabel = $derived(nameWithoutTLD.length > 1 ? 'chars' : 'char');
-	let loadFees = $derived(browser
-		? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${$selectedCoin}`)
-		: Promise.resolve(null));
+	let loadFees = $derived(
+		browser
+			? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${$selectedCoin}`)
+			: Promise.resolve(null)
+	);
 	let nameLength = $derived(nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length);
 	let yearsLabel = $derived(years === 1 ? 'year' : 'years');
 
@@ -61,7 +58,7 @@
 		years += amount;
 	}
 
-	async function handleApproveError(error: Error) {
+	async function handleApproveError(error: unknown) {
 		let message;
 		if (error instanceof InsufficientBalanceError)
 			message = {
@@ -112,23 +109,28 @@
 			<h4>{domainName}</h4>
 
 			<div class="years">
-			<IconButton
-				onclick={() => addYears(-1)}
-				disabled={years === 1 || feesApproved}
-				aria-label="remove-year"
-			>
+				<IconButton
+					onclick={() => addYears(-1)}
+					disabled={years === 1 || feesApproved}
+					aria-label="remove-year"
+				>
 					<Icon icon="remove" />
 				</IconButton>
 				<span>{years} {yearsLabel}</span>
-			<IconButton onclick={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
-				<Icon icon="add" />
-			</IconButton>
+				<IconButton onclick={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+					<Icon icon="add" />
+				</IconButton>
 			</div>
 
 			<div class="coin" data-testid="payment-token-section">
 				<p class="title text-center" data-testid="payment-token-label">Payment token</p>
 				<div class="row centered">
-					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined" data-testid="payment-token-select">
+					<Select
+						bind:value={$selectedCoin}
+						label="Select Token"
+						variant="outlined"
+						data-testid="payment-token-select"
+					>
 						{#each availableCoins as coin}
 							<Option value={coin.symbol}>{coin.symbol}</Option>
 						{/each}
@@ -140,7 +142,7 @@
 				{#await loadFees}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 				{:then fees}
-					{#if 'symbol' in fees}
+					{#if fees && 'symbol' in fees}
 						<div class="row">
 							<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
 							<span>{fees.feesLabel} {fees.symbol}</span>

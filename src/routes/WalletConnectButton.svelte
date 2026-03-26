@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createBubbler, stopPropagation, handlers } from 'svelte/legacy';
+	import { createBubbler, stopPropagation } from 'svelte/legacy';
 
 	const bubble = createBubbler();
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
@@ -18,7 +18,7 @@
 	import 'src/styles/wallet-connect.scss';
 	import Button from '@smui/button';
 
-	let menu: Menu = $state();
+	let menu: Menu | undefined = $state();
 	let toggleOpen = $state(false);
 	let devPrivateKey = $state('');
 
@@ -125,28 +125,32 @@
 
 	function toggleMenu() {
 		toggleOpen = !toggleOpen;
-		menu.setOpen(toggleOpen);
+		menu?.setOpen(toggleOpen);
 	}
 
 	interface Props {
 		anchor: HTMLDivElement;
 		connectButtonVariant?: 'raised' | 'unelevated' | 'outlined';
 		testid?: string;
-		buttonLabel?: import('svelte').Snippet;
-		connectedMenuIems?: import('svelte').Snippet;
+		buttonLabelContent?: import('svelte').Snippet;
+		connectedMenuItems?: import('svelte').Snippet;
 	}
 
 	let {
 		anchor = $bindable(),
 		connectButtonVariant = 'raised',
 		testid = '',
-		buttonLabel,
-		connectedMenuIems
+		buttonLabelContent,
+		connectedMenuItems
 	}: Props = $props();
+
+	function handleKeydown(e: Event) {
+		if (e instanceof KeyboardEvent && e.key === 'Enter') connectWithPrivateKey();
+	}
 </script>
 
 <Button variant={connectButtonVariant} onclick={toggleMenu} data-testid={testid}>
-	{#if buttonLabel}{@render buttonLabel()}{:else}Connect{/if}
+	{#if buttonLabelContent}{@render buttonLabelContent()}{:else}Connect{/if}
 </Button>
 <Menu
 	bind:this={menu}
@@ -159,7 +163,7 @@
 >
 	<List>
 		{#if $walletConnected}
-			{@render connectedMenuIems?.()}
+			{@render connectedMenuItems?.()}
 			<Item onSMUIAction={async () => disconnectWallet().then(toggleMenu)}>
 				<Text>Disconnect</Text>
 			</Item>
@@ -201,7 +205,7 @@
 							type="password"
 							placeholder="Private key (64 hex chars)..."
 							bind:value={devPrivateKey}
-							onkeydown={handlers((e) => e.key === 'Enter' && connectWithPrivateKey(), stopPropagation(bubble('keydown')))}
+							onkeydown={(e) => stopPropagation(handleKeydown)(e)}
 							onclick={stopPropagation(bubble('click'))}
 						/>
 						<button

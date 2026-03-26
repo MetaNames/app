@@ -5,7 +5,6 @@
 	import { derived } from 'svelte/store';
 
 	import Icon from 'src/components/Icon.svelte';
-	import { Label } from '@smui/button';
 	import { Item, Text } from '@smui/list';
 
 	import 'src/styles/wallet-connect.scss';
@@ -16,21 +15,27 @@
 		if ($address) return $address.slice(0, 4) + '...' + $address.slice(-4);
 	});
 
-	$: buttonLabel = $shortAddress ? $shortAddress : 'Connect Wallet';
+	let walletLabel = $derived($shortAddress ? $shortAddress : 'Connect Wallet');
 
-	export let anchor: HTMLDivElement;
+	interface Props {
+		anchor: HTMLDivElement;
+	}
+
+	let { anchor }: Props = $props();
 </script>
 
 <WalletConnectButton connectButtonVariant="unelevated" {anchor} testid="wallet-connect-btn">
-	<div class="wallet-connect" slot="buttonLabel">
-		<Icon icon="wallet" align="left" />
-		<Label>{buttonLabel}</Label>
-	</div>
-	<div slot="connectedMenuIems">
-        <Item onSMUIAction={() => goto('/profile')}>
+	{#snippet buttonLabelContent()}
+		<div class="wallet-connect">
+			<Icon icon="wallet" align="left" />
+			<span>{walletLabel}</span>
+		</div>
+	{/snippet}
+	{#snippet connectedMenuItems()}
+		<Item onSMUIAction={() => goto('/profile')}>
 			<Text>Profile</Text>
 		</Item>
-	</div>
+	{/snippet}
 </WalletConnectButton>
 
 <style lang="scss">

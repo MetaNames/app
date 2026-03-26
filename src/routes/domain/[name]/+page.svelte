@@ -12,7 +12,7 @@
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 
 	let domain = writable<DomainModel | undefined>();
-	const domainName = $page.params.name;
+	const domainName = $page.params.name ?? '';
 
 	let pageName = $derived($domain ? $domain.name + ' | ' : '');
 

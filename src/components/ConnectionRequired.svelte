@@ -3,7 +3,6 @@
 
 	import WalletConnectButton from 'src/routes/WalletConnectButton.svelte';
 
-	let anchor: HTMLDivElement = $state();
 	interface Props {
 		class?: string;
 		children?: import('svelte').Snippet;
@@ -11,7 +10,7 @@
 
 	let { class: className = '', children }: Props = $props();
 
-	
+	let anchor: HTMLDivElement | undefined = $state(undefined);
 </script>
 
 <div class={className}>
@@ -20,7 +19,7 @@
 	{:else}
 		<div class="connect-container">
 			<div class="connect" bind:this={anchor}>
-				<WalletConnectButton {anchor} />
+				<WalletConnectButton anchor={anchor!} />
 			</div>
 		</div>
 	{/if}
