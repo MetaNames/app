@@ -101,28 +101,22 @@
 	</TopAppBar>
 
 	<main>
-		{#if contractDisabled}
-			<Banner open={true} centered={true} mobileStacked={true}>
-				<div class="icon-center" slot="icon">
-					<Icon icon="system-update" width="25px" height="25px" color="white" />
-				</div>
-				<Label slot="label">Contract is temporarily disabled for updates</Label>
-				<svelte:fragment slot="actions">
-					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
-				</svelte:fragment>
-			</Banner>
-		{/if}
+        {#if contractDisabled}
+            <Banner open={true} centered={true} mobileStacked={true}>
+                {#snippet icon()}<div class="icon-center"><Icon icon="system-update" width="25px" height="25px" color="white" /></div>{/snippet}
+                {#snippet label()}<Label>Contract is temporarily disabled for updates</Label>{/snippet}
+                {#snippet actions()}<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>{/snippet}
+                
+            </Banner>
+        {/if}
 		<slot />
 	</main>
 
-	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
+    <Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
 		<Label>{snackbarTransactionMessage}</Label>
 		<Actions>
-			<Button
-				on:click={() =>
-					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
-				>View</Button
-			>
+            <Button onclick={() =>
+                    $alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}>View</Button>
 			<IconButton title="Dismiss" aria-label="close">
 				<Icon icon="close" />
 			</IconButton>
@@ -130,10 +124,10 @@
 	</Snackbar>
 	<Snackbar bind:this={alertsSnackbar}>
 		<Label>{snackbarMessage}</Label>
-		<Actions>
-			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
-				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
-			{/if}
+        <Actions>
+            {#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
+                <Button onclick={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
+            {/if}
 			<IconButton title="Dismiss" aria-label="close">
 				<Icon icon="close" />
 			</IconButton>

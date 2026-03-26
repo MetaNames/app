@@ -43,7 +43,7 @@
 	sortable
 	bind:sort
 	bind:sortDirection
-	on:SMUIDataTable:sorted={handleSort}
+	onSMUIDataTableSorted={handleSort}
 	table$aria-label="Domain list"
 	class="w-100"
 >
@@ -96,8 +96,9 @@
 			</Body>
 		{/if}
 	{/if}
-	<Pagination slot="paginate">
-		<svelte:fragment slot="rowsPerPage">
+	{#snippet paginate()}
+	<Pagination>
+		{#snippet rowsPerPage()}
 			<Label>Rows Per Page</Label>
 			<Select variant="outlined" bind:value={rowsPerPage} noLabel>
 				<Option value={5}>5</Option>
@@ -105,15 +106,15 @@
 				<Option value={20}>20</Option>
 				<Option value={domainsLength}>Max</Option>
 			</Select>
-		</svelte:fragment>
-		<svelte:fragment slot="total">
+		{/snippet}
+		{#snippet total()}
 			{start + 1}-{end} of {domainsLength}
-		</svelte:fragment>
+		{/snippet}
 
 		<IconButton
 			action="first-page"
 			title="First page"
-			on:click={() => (currentPage = 0)}
+			onclick={() => (currentPage = 0)}
 			disabled={currentPage === 0}
 			aria-label="first page"
 		>
@@ -122,7 +123,7 @@
 		<IconButton
 			action="prev-page"
 			title="Prev page"
-			on:click={() => currentPage--}
+			onclick={() => currentPage--}
 			disabled={currentPage === 0}
 			aria-label="previous page"
 		>
@@ -131,7 +132,7 @@
 		<IconButton
 			action="next-page"
 			title="Next page"
-			on:click={() => currentPage++}
+			onclick={() => currentPage++}
 			disabled={currentPage === lastPage}
 			aria-label="next page"
 		>
@@ -140,17 +141,15 @@
 		<IconButton
 			action="last-page"
 			title="Last page"
-			on:click={() => (currentPage = lastPage)}
+			onclick={() => (currentPage = lastPage)}
 			disabled={currentPage === lastPage}
 			aria-label="last page"
 		>
 			<Icon icon="last-page" />
 		</IconButton>
 	</Pagination>
-	<LinearProgress
-		closed={loaded}
-		indeterminate
-		aria-label="Data is being loaded..."
-		slot="progress"
-	/>
+	{/snippet}
+	{#snippet progress()}
+		<LinearProgress closed={loaded} indeterminate aria-label="Data is being loaded..." />
+	{/snippet}
 </DataTable>

@@ -68,18 +68,18 @@
 			withTrailingIcon
 			autofocus
 		>
-			<svelte:fragment slot="trailingIcon">
+			{#snippet trailingIcon()}
 				<div class="submit">
 					<IconButton aria-label="search">
 						<Icon icon="search" />
 					</IconButton>
 				</div>
-			</svelte:fragment>
-			<svelte:fragment slot="helper">
+			{/snippet}
+			{#snippet helper()}
 				{#if errors.length > 0}
-					<HelperText slot="helper">{errors.join(', ')}</HelperText>
+					<HelperText>{errors.join(', ')}</HelperText>
 				{/if}
-			</svelte:fragment>
+			{/snippet}
 		</Textfield>
 	</form>
 	{#if isLoading}

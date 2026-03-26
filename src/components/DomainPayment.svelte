@@ -103,17 +103,17 @@
 			<h4>{domainName}</h4>
 
 			<div class="years">
-				<IconButton
-					on:click={() => addYears(-1)}
-					disabled={years === 1 || feesApproved}
-					aria-label="remove-year"
-				>
+			<IconButton
+				onclick={() => addYears(-1)}
+				disabled={years === 1 || feesApproved}
+				aria-label="remove-year"
+			>
 					<Icon icon="remove" />
 				</IconButton>
 				<span>{years} {yearsLabel}</span>
-				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
-					<Icon icon="add" />
-				</IconButton>
+			<IconButton onclick={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+				<Icon icon="add" />
+			</IconButton>
 			</div>
 
 			<div class="coin" data-testid="payment-token-section">

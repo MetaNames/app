@@ -59,7 +59,7 @@
 <Button
 	class={className}
 	disabled={isDisabled}
-	on:click={handleClick}
+	onclick={handleClick}
 	{variant}
 	aria-busy={loading}
 >

@@ -85,9 +85,8 @@
 
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
 		try {
-			const { privateKeyToAccountAddress } = await import(
-				'partisia-blockchain-applications-crypto/lib/main/wallet'
-			);
+			const { privateKeyToAccountAddress } =
+				await import('partisia-blockchain-applications-crypto/lib/main/wallet');
 			const address = await privateKeyToAccountAddress(devPrivateKey);
 			if (!address) {
 				alertMessage.set('Invalid private key');
@@ -131,27 +130,26 @@
 	export let testid: string = '';
 </script>
 
-<Button variant={connectButtonVariant} on:click={toggleMenu} {testid}>
+<Button variant={connectButtonVariant} onclick={toggleMenu} data-testid={testid}>
 	<slot name="buttonLabel">Connect</slot>
 </Button>
 <Menu
 	bind:this={menu}
-	on:SMUIMenuSurface:closed={() => {
+	onSMUIMenuSurfaceClosed={() => {
 		toggleOpen = false;
 	}}
 	class="menu-floating-right"
-	anchor={true}
 	bind:anchorElement={anchor}
 	anchorCorner="BOTTOM_LEFT"
 >
 	<List>
 		{#if $walletConnected}
 			<slot name="connectedMenuIems" />
-			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
+			<Item onSMUIAction={async () => disconnectWallet().then(toggleMenu)}>
 				<Text>Disconnect</Text>
 			</Item>
 		{:else}
-			<Item on:SMUI:action={connectWithMetaMaskWallet}>
+			<Item onSMUIAction={connectWithMetaMaskWallet}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
@@ -159,7 +157,7 @@
 					</div>
 				</Text>
 			</Item>
-			<Item on:SMUI:action={connectWithPartisiaWallet}>
+			<Item onSMUIAction={connectWithPartisiaWallet}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
@@ -167,7 +165,7 @@
 					</div>
 				</Text>
 			</Item>
-			<Item on:SMUI:action={connectWithLedgerWallet}>
+			<Item onSMUIAction={connectWithLedgerWallet}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />

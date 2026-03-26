@@ -52,10 +52,12 @@
 		<h5 class="domain">{domainName}</h5>
 
 		{#if ownerConnected}
-			<TabBar {tabs} let:tab bind:active={activeTab}>
-				<Tab {tab}>
-					<Label>{tab}</Label>
-				</Tab>
+			<TabBar {tabs} bind:active={activeTab}>
+				{#snippet tab(tabItem)}
+					<Tab tab={tabItem}>
+						<Label>{tabItem}</Label>
+					</Tab>
+				{/snippet}
 			</TabBar>
 		{/if}
 

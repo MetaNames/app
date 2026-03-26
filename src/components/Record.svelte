@@ -64,7 +64,7 @@
 			<Button>
 				<Label>No</Label>
 			</Button>
-			<Button on:click={destroy}>
+			<Button onclick={destroy}>
 				<Label>Yes</Label>
 			</Button>
 		</Actions>
@@ -80,34 +80,34 @@
 			textarea
 			{disabled}
 		>
-			<svelte:fragment slot="helper">
+			{#snippet helper()}
 				{#if errors.length > 0}
-					<HelperText slot="helper">{errors.join(', ')}</HelperText>
+					<HelperText>{errors.join(', ')}</HelperText>
 				{/if}
-			</svelte:fragment>
-			<CharacterCounter slot="internalCounter">0 / {maxLength}</CharacterCounter>
+			{/snippet}
+			{#snippet internalCounter()}<CharacterCounter>0 / {maxLength}</CharacterCounter>{/snippet}
 		</Textfield>
 	</div>
 	{#if edit}
 		<div class="actions">
-			<IconButton on:click={save} aria-label="save-record">
+			<IconButton onclick={save} aria-label="save-record">
 				<Icon icon="save" />
 			</IconButton>
-			<IconButton on:click={() => toggleEdit()} aria-label="cancel-edit">
+			<IconButton onclick={() => toggleEdit()} aria-label="cancel-edit">
 				<Icon icon="cancel" />
 			</IconButton>
 		</div>
 	{:else if editMode}
 		<div class="actions">
 			<IconButton
-				on:click={() => toggleEdit()}
+				onclick={() => toggleEdit()}
 				disabled={!$walletConnected}
 				aria-label="edit-record"
 			>
 				<Icon icon="edit" />
 			</IconButton>
 			<IconButton
-				on:click={() => (dialogOpen = true)}
+				onclick={() => (dialogOpen = true)}
 				disabled={!$walletConnected}
 				aria-label="delete-record"
 			>

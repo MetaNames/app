@@ -28,7 +28,7 @@
 	export { className as class };
 </script>
 
-<Button on:click={action} variant="outlined" class={`chip ${className || ''}`}>
+<Button onclick={action} variant="outlined" class={`chip ${className || ''}`}>
 	<Label>
 		<div class="container">
 			<span class="label">{label}</span>

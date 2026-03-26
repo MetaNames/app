@@ -50,21 +50,21 @@
 			{#if $walletConnected}
 				<Chip label="Address" value={$walletAddress || ''} />
 				<h4 class="domains">Domains</h4>
-				<Textfield
-					class="my-1 search-bar"
-					label="Search"
-					bind:value={search}
-					variant="outlined"
-					withTrailingIcon
-				>
-					<svelte:fragment slot="trailingIcon">
-						<div class="close-icon">
-							<IconButton on:click={cleanSearch} aria-label="cancel">
-								<Icon icon="cancel" />
-							</IconButton>
-						</div>
-					</svelte:fragment>
-				</Textfield>
+			<Textfield
+				class="my-1 search-bar"
+				label="Search"
+				bind:value={search}
+				variant="outlined"
+				withTrailingIcon
+			>
+				{#snippet trailingIcon()}
+					<div class="close-icon">
+						<IconButton onclick={cleanSearch} aria-label="cancel">
+							<Icon icon="cancel" />
+						</IconButton>
+					</div>
+				{/snippet}
+			</Textfield>
 				<DomainsTable domains={domainsFiltered} {loaded} />
 			{:else}
 				<p>Connect your wallet to see your domains</p>

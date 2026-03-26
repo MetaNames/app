@@ -69,19 +69,19 @@
 					<b>Verify the address is correct</b> before proceeding.
 				</p>
 				<div class="mt-2 mb-2">
-					<Textfield
-						class="w-100"
-						variant="outlined"
-						bind:value={address}
-						bind:invalid
-						label="Recipient address"
-					>
-						<svelte:fragment slot="helper">
-							{#if errors.length > 0}
-								<HelperText slot="helper">{errors.join(', ')}</HelperText>
-							{/if}
-						</svelte:fragment>
-					</Textfield>
+			<Textfield
+				class="w-100"
+				variant="outlined"
+				bind:value={address}
+				bind:invalid
+				label="Recipient address"
+				>
+				{#snippet helper()}
+					{#if errors.length > 0}
+						<HelperText>{errors.join(', ')}</HelperText>
+					{/if}
+				{/snippet}
+			</Textfield>
 				</div>
 				<ConnectionRequired>
 					<LoadingButton disabled={invalid} onClick={transfer} variant="raised"

@@ -90,12 +90,12 @@
 					bind:invalid={recordValueInvalid}
 					variant="outlined"
 				>
-					<svelte:fragment slot="helper">
-						{#if recordValueErrors.length > 0}
-							<HelperText class="error" slot="helper">{recordValueErrors?.join(', ')}</HelperText>
-						{/if}
-					</svelte:fragment>
-				</Textfield>
+							{#snippet helper()}
+								{#if recordValueErrors.length > 0}
+									<HelperText class="error">{recordValueErrors?.join(', ')}</HelperText>
+								{/if}
+							{/snippet}
+						</Textfield>
 			</div>
 			<LoadingButton
 				class="mobile--mt-1"

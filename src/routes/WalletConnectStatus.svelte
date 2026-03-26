@@ -25,7 +25,7 @@
 		<Label>{buttonLabel}</Label>
 	</div>
 	<div slot="connectedMenuIems">
-		<Item on:SMUI:action={() => goto('/profile')}>
+        <Item onSMUIAction={() => goto('/profile')}>
 			<Text>Profile</Text>
 		</Item>
 	</div>
