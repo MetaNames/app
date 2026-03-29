@@ -5,19 +5,20 @@ vi.mock('@sentry/sveltekit', () => ({
 	captureException: vi.fn()
 }));
 
-// Mock the SDK
-vi.mock('@metanames/sdk', () => {
+// Use vi.hoisted to ensure mocks are properly set up
+const { MockMetaNamesSdk, mockDomainRepository, mockConfig } = vi.hoisted(() => {
 	const mockAnalyze = vi.fn((name: string) => ({
 		parentId: name.includes('.') ? name.split('.')[1] : name + '.mns',
 		tld: 'mns'
 	}));
 
 	const mockFind = vi.fn();
-	const mockDomainValidator = {
-		validate: vi.fn((name: string) => name.length >= 3),
-		normalize: vi.fn((name: string) => name.toLowerCase()),
-		getErrors: vi.fn(() => [])
-	};
+
+	class MockDomainValidator {
+		validate = vi.fn((name: string) => name.length >= 3);
+		normalize = vi.fn((name: string) => name.toLowerCase());
+		getErrors = vi.fn(() => []);
+	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const mockCalculateMintFees = vi.fn((_domain: string, _coin: string) => ({
@@ -26,36 +27,48 @@ vi.mock('@metanames/sdk', () => {
 		storage: '50000'
 	}));
 
-	const mockDomainRepository = {
+	const domainRepository = {
 		analyze: mockAnalyze,
 		find: mockFind,
-		domainValidator: mockDomainValidator,
+		domainValidator: new MockDomainValidator(),
 		calculateMintFees: mockCalculateMintFees,
 		getAll: vi.fn().mockResolvedValue([]),
 		count: vi.fn().mockResolvedValue(100),
 		getOwners: vi.fn().mockResolvedValue(['0xabc', '0xdef'])
 	};
 
-	const mockConfig = {
+	const config = {
 		byoc: [{ symbol: 'BTC' }, { symbol: 'ETH' }, { symbol: 'USDT' }],
 		tld: 'mns'
 	};
 
+	class MockMetaNamesSdk {
+		domainRepository = domainRepository;
+		config = config;
+	}
+
 	return {
-		MetaNamesSdk: vi.fn().mockImplementation(() => ({
-			domainRepository: mockDomainRepository,
-			config: mockConfig
-		})),
-		metaNamesSdkFactory: vi.fn(() => ({
-			domainRepository: mockDomainRepository,
-			config: mockConfig
-		})),
-		DomainValidator: vi.fn().mockImplementation(() => mockDomainValidator),
-		Enviroment: { testnet: 'testnet', mainnet: 'mainnet' },
-		RecordClassEnum: { Twitter: 0, Discord: 1, Github: 2, Telegram: 3, Website: 4 },
-		BYOCSymbol: ['BTC', 'ETH', 'USDT']
+		MockMetaNamesSdk,
+		mockDomainRepository: domainRepository,
+		mockConfig: config
 	};
 });
+
+// Mock the SDK
+vi.mock('@metanames/sdk', () => ({
+	MetaNamesSdk: MockMetaNamesSdk,
+	metaNamesSdkFactory: () => ({
+		domainRepository: mockDomainRepository,
+		config: mockConfig
+	}),
+	DomainValidator: class MockDomainValidator {
+		validate = vi.fn((name: string) => name.length >= 3);
+		getErrors = vi.fn(() => []);
+	},
+	Enviroment: { testnet: 'testnet', mainnet: 'mainnet' },
+	RecordClassEnum: { Twitter: 0, Discord: 1, Github: 2, Telegram: 3, Website: 4 },
+	BYOCSymbol: ['BTC', 'ETH', 'USDT']
+}));
 
 // Import after mocking
 import { handleError, apiError, getStats } from '$lib/server';
@@ -143,14 +156,10 @@ describe('API Endpoints', () => {
 				{ name: 'domain2', createdAt: new Date('2026-01-02') }
 			];
 
-			// Get the mocked SDK
-			const { metaNamesSdkFactory } = await import('@metanames/sdk');
-			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
-
 			// Override the mocks for this test
-			sdk.domainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
-			sdk.domainRepository.count = vi.fn().mockResolvedValue(42);
-			sdk.domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1', '0x2', '0x3']);
+			mockDomainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
+			mockDomainRepository.count = vi.fn().mockResolvedValue(42);
+			mockDomainRepository.getOwners = vi.fn().mockResolvedValue(['0x1', '0x2', '0x3']);
 
 			const stats = await getStats();
 
@@ -160,11 +169,8 @@ describe('API Endpoints', () => {
 		});
 
 		it('should handle getAll errors gracefully', async () => {
-			const { metaNamesSdkFactory } = await import('@metanames/sdk');
-			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
-
 			// Only getAll has catch handler, so it should return empty array
-			sdk.domainRepository.getAll = vi.fn().mockRejectedValue(new Error('DB error'));
+			mockDomainRepository.getAll = vi.fn().mockRejectedValue(new Error('DB error'));
 
 			const stats = await getStats();
 
@@ -173,18 +179,15 @@ describe('API Endpoints', () => {
 		});
 
 		it('should sort recent domains by creation date descending', async () => {
-			const { metaNamesSdkFactory } = await import('@metanames/sdk');
-			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
-
 			const mockDomains = [
 				{ name: 'old', createdAt: new Date('2026-01-01') },
 				{ name: 'new', createdAt: new Date('2026-03-01') },
 				{ name: 'middle', createdAt: new Date('2026-02-01') }
 			];
 
-			sdk.domainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
-			sdk.domainRepository.count = vi.fn().mockResolvedValue(3);
-			sdk.domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1']);
+			mockDomainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
+			mockDomainRepository.count = vi.fn().mockResolvedValue(3);
+			mockDomainRepository.getOwners = vi.fn().mockResolvedValue(['0x1']);
 
 			const stats = await getStats();
 

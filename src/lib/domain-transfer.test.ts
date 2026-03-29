@@ -1,33 +1,33 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock the SDK module
-vi.mock('@metanames/sdk', async () => {
-	const mockTransfer = vi.fn().mockResolvedValue({
-		transactionHash: '0xabc123',
-		fetchResult: Promise.resolve({
-			transactionHash: '0xabc123',
-			hasError: false,
-			eventTrace: []
-		})
-	});
+vi.mock('@metanames/sdk', () => {
+	class MockMetaNamesSdk {
+		domainRepository = {
+			find: vi.fn(),
+			analyze: vi.fn(),
+			getAll: vi.fn(),
+			findByOwner: vi.fn(),
+			transfer: vi.fn().mockResolvedValue({
+				transactionHash: '0xabc123',
+				fetchResult: Promise.resolve({
+					transactionHash: '0xabc123',
+					hasError: false,
+					eventTrace: []
+				})
+			})
+		};
+		config = { tld: 'test' };
+	}
 
-	const mockDomainRepository = {
-		find: vi.fn(),
-		analyze: vi.fn(),
-		getAll: vi.fn(),
-		findByOwner: vi.fn(),
-		transfer: mockTransfer
-	};
+	class MockDomainValidator {
+		validate = vi.fn((name: string) => name.length >= 3);
+		getErrors = vi.fn(() => []);
+	}
 
 	return {
-		MetaNamesSdk: vi.fn().mockImplementation(() => ({
-			domainRepository: mockDomainRepository,
-			config: { tld: 'test' }
-		})),
-		DomainValidator: vi.fn().mockImplementation(() => ({
-			validate: vi.fn((name: string) => name.length >= 3),
-			getErrors: vi.fn(() => [])
-		})),
+		MetaNamesSdk: MockMetaNamesSdk,
+		DomainValidator: MockDomainValidator,
 		Enviroment: { testnet: 'testnet', mainnet: 'mainnet' }
 	};
 });
@@ -94,7 +94,6 @@ describe('Domain Transfer', () => {
 
 			const sdk = new MetaNamesSdk();
 
-			// Should work with valid domain
 			await expect(
 				sdk.domainRepository.transfer({
 					domain: 'validname',
@@ -171,11 +170,10 @@ describe('Domain Transfer', () => {
 			const sdk = new MetaNamesSdk();
 			sdk.domainRepository.transfer = mockTransfer;
 
-			// Cancelling is essentially initiating a transfer back to original owner
 			const result = await sdk.domainRepository.transfer({
 				domain: 'canceldomain',
 				from: '0x1234567890abcdef1234567890abcdef12345678',
-				to: '0x1234567890abcdef1234567890abcdef12345678' // transfer back to self
+				to: '0x1234567890abcdef1234567890abcdef12345678'
 			});
 
 			expect(result.transactionHash).toBe('0xcancel123');
@@ -315,7 +313,6 @@ describe('Domain Transfer', () => {
 
 			const sdk = new MetaNamesSdk();
 
-			// Verify the transfer function accepts the expected params
 			expect(sdk.domainRepository.transfer).toBeDefined();
 			expect(typeof sdk.domainRepository.transfer).toBe('function');
 		});
@@ -328,7 +325,6 @@ describe('Domain Transfer', () => {
 			const sdk = new MetaNamesSdk();
 			sdk.domainRepository.transfer = mockTransfer;
 
-			// Call without domain - should still attempt (SDK handles validation)
 			try {
 				await sdk.domainRepository.transfer({
 					domain: '',
@@ -339,7 +335,6 @@ describe('Domain Transfer', () => {
 				// Expected to fail
 			}
 
-			// The SDK should have been called (even if it fails internally)
 			expect(mockTransfer).toHaveBeenCalled();
 		});
 	});

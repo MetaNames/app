@@ -1,32 +1,37 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock the SDK module
-vi.mock('@metanames/sdk', async () => {
-	const mockDomainValidator = {
-		validate: vi.fn((name: string) => {
+// Use vi.hoisted to ensure mocks are properly set up
+const { MockDomainValidator, MockMetaNamesSdk } = vi.hoisted(() => {
+	class MockDomainValidator {
+		validate = vi.fn((name: string) => {
 			if (!name || name.length < 3) return false;
 			if (name.startsWith('-') || name.endsWith('-')) return false;
 			if (/[^a-z0-9-]/.test(name)) return false;
 			return true;
-		}),
-		getErrors: vi.fn(() => []),
-		rules: { minLength: 3, maxLength: 64 }
-	};
+		});
+		getErrors = vi.fn(() => []);
+		rules = { minLength: 3, maxLength: 64 };
+	}
 
-	const mockDomainRepository = {
-		domainValidator: mockDomainValidator,
-		find: vi.fn(),
-		analyze: vi.fn(),
-		getAll: vi.fn(),
-		findByOwner: vi.fn()
-	};
+	class MockMetaNamesSdk {
+		domainRepository = {
+			domainValidator: new MockDomainValidator(),
+			find: vi.fn(),
+			analyze: vi.fn(),
+			getAll: vi.fn(),
+			findByOwner: vi.fn()
+		};
+		config = { tld: 'test' };
+	}
 
+	return { MockDomainValidator, MockMetaNamesSdk };
+});
+
+// Mock the SDK module
+vi.mock('@metanames/sdk', () => {
 	return {
-		DomainValidator: vi.fn().mockImplementation(() => mockDomainValidator),
-		MetaNamesSdk: vi.fn().mockImplementation(() => ({
-			domainRepository: mockDomainRepository,
-			config: { tld: 'test' }
-		})),
+		DomainValidator: MockDomainValidator,
+		MetaNamesSdk: MockMetaNamesSdk,
 		Enviroment: { testnet: 'testnet', mainnet: 'mainnet' }
 	};
 });
@@ -38,22 +43,12 @@ describe('Domain Search', () => {
 
 	describe('domain availability check', () => {
 		it('should return null for available domain', async () => {
-			// Import after mocking
-			await import('@metanames/sdk');
-
-			// Create a simple mock for the test
 			const mockFind = vi.fn().mockResolvedValue(null);
 
-			const mockRepo = {
-				domainValidator: {
-					validate: vi.fn((name: string) => name.length >= 3),
-					getErrors: vi.fn(() => [])
-				},
-				find: mockFind
-			};
+			const sdk = new MockMetaNamesSdk();
+			sdk.domainRepository.find = mockFind;
 
-			// Simulate search for an available domain
-			const result = await mockRepo.find('availabledomain');
+			const result = await sdk.domainRepository.find('availabledomain');
 			expect(result).toBeNull();
 		});
 
@@ -67,15 +62,10 @@ describe('Domain Search', () => {
 
 			const mockFind = vi.fn().mockResolvedValue(mockDomain);
 
-			const mockRepo = {
-				domainValidator: {
-					validate: vi.fn((name: string) => name.length >= 3),
-					getErrors: vi.fn(() => [])
-				},
-				find: mockFind
-			};
+			const sdk = new MockMetaNamesSdk();
+			sdk.domainRepository.find = mockFind;
 
-			const result = await mockRepo.find('registered');
+			const result = await sdk.domainRepository.find('registered');
 			expect(result).not.toBeNull();
 			expect(result?.name).toBe('registered');
 		});
@@ -83,33 +73,25 @@ describe('Domain Search', () => {
 
 	describe('domain name validation', () => {
 		it('should validate domain names correctly', async () => {
-			const { DomainValidator } = await import('@metanames/sdk');
+			const validator = new MockDomainValidator();
 
-			const validator = new DomainValidator('test');
+			expect(validator.validate('valid')).toBe(true);
+			expect(validator.validate('abc')).toBe(true);
+			expect(validator.validate('hello-world')).toBe(true);
 
-			// Valid names
-			expect(validator.validate('valid', { raiseError: false })).toBe(true);
-			expect(validator.validate('abc', { raiseError: false })).toBe(true);
-			expect(validator.validate('hello-world', { raiseError: false })).toBe(true);
-
-			// Invalid names
-			expect(validator.validate('', { raiseError: false })).toBe(false);
-			expect(validator.validate('ab', { raiseError: false })).toBe(false);
-			expect(validator.validate('-start', { raiseError: false })).toBe(false);
-			expect(validator.validate('end-', { raiseError: false })).toBe(false);
-			expect(validator.validate('in valid', { raiseError: false })).toBe(false);
+			expect(validator.validate('')).toBe(false);
+			expect(validator.validate('ab')).toBe(false);
+			expect(validator.validate('-start')).toBe(false);
+			expect(validator.validate('end-')).toBe(false);
+			expect(validator.validate('in valid')).toBe(false);
 		});
 	});
 
 	describe('domain analysis', () => {
 		it('should analyze domain without checking contract', async () => {
-			// This tests the analyze function which validates locally
-			const { DomainValidator } = await import('@metanames/sdk');
+			const validator = new MockDomainValidator();
 
-			const validator = new DomainValidator('test');
-
-			// Valid domain should pass analysis
-			const isValid = validator.validate('testdomain', { raiseError: false });
+			const isValid = validator.validate('testdomain');
 			expect(isValid).toBe(true);
 		});
 	});
