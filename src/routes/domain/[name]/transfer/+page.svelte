@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { track } from '@vercel/analytics';
 	import { alertTransactionAndFetchResult, validAddress } from 'src/lib';
 	import { alertMessage, walletAddress } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
@@ -45,7 +44,6 @@
 		});
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (!hasError) {
-			track('domain_transfer', { domain: domainName });
 			alertMessage.set('Domain transferred successfully');
 			goto(`/domain/${domainName}`);
 		}

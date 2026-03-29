@@ -12,7 +12,6 @@
 
 	import DomainPayment from 'src/components/DomainPayment.svelte';
 	import { alertTransactionAndFetchResult } from 'src/lib';
-	import { track } from '@vercel/analytics';
 	import { page } from '$app/stores';
 
 	let isDomainPresent: boolean | undefined = $state();
@@ -41,12 +40,6 @@
 				message: 'Domain registered successfully!',
 				action: { label: 'Go to profile', callback: () => goto('/profile') }
 			});
-
-		track('domain_registered', {
-			domain: domainName,
-			years: params.years,
-			byoc: params.byocSymbol
-		});
 
 		return goto(`/domain/${domainName}`);
 	}
