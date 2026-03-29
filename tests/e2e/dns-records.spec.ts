@@ -70,9 +70,7 @@ test.describe('Feature 7: DNS Records & Settings', () => {
 			});
 		});
 
-		test('7.6 - Clicking edit shows save/cancel, cancel restores edit button', async ({
-			page
-		}) => {
+		test('7.6 - Clicking edit shows save/cancel, cancel restores edit button', async ({ page }) => {
 			await page.locator('button:has-text("settings")').click();
 			await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });
 

@@ -81,7 +81,7 @@ describe('Error Classes', () => {
 			// Test the error class structure
 			const coin = 'PARTI' as any;
 			const errorMessage = `Insufficient balance for ${coin}`;
-			
+
 			expect(errorMessage).toBe('Insufficient balance for PARTI');
 		});
 
@@ -92,7 +92,7 @@ describe('Error Classes', () => {
 
 		it('should format message for different coins', () => {
 			const coins = ['PARTI', 'ETH', 'BTC', 'USDT'];
-			
+
 			coins.forEach((coin) => {
 				const message = `Insufficient balance for ${coin}`;
 				expect(message).toContain(coin);
@@ -121,7 +121,7 @@ describe('Interface Types', () => {
 					callback: () => {}
 				}
 			};
-			
+
 			expect(alert.message).toBe('Test message');
 			expect(alert.action?.label).toBe('Click me');
 			expect(typeof alert.action?.callback).toBe('function');
@@ -131,7 +131,7 @@ describe('Interface Types', () => {
 			const alert: any = {
 				message: 'Simple message'
 			};
-			
+
 			expect(alert.message).toBe('Simple message');
 			expect(alert.action).toBeUndefined();
 		});
@@ -152,7 +152,7 @@ describe('Interface Types', () => {
 					]
 				}
 			};
-			
+
 			expect(account.id).toBe('123');
 			expect(account.account.displayCoins.length).toBe(1);
 			expect(account.account.displayCoins[0].symbol).toBe('PARTI');
@@ -165,7 +165,7 @@ describe('Interface Types', () => {
 				domainPresent: true,
 				parentPresent: false
 			};
-			
+
 			expect(response.domainPresent).toBe(true);
 			expect(response.parentPresent).toBe(false);
 		});
@@ -175,7 +175,7 @@ describe('Interface Types', () => {
 				domainPresent: false,
 				parentPresent: true
 			};
-			
+
 			expect(response.domainPresent).toBe(false);
 			expect(response.parentPresent).toBe(true);
 		});
@@ -189,7 +189,7 @@ describe('Interface Types', () => {
 				years: 1,
 				address: '0x1234567890abcdef'
 			};
-			
+
 			expect(params.domainName).toBe('testdomain');
 			expect(params.byocSymbol).toBe('PARTI');
 			expect(params.years).toBe(1);
@@ -205,7 +205,7 @@ describe('Interface Types', () => {
 				symbol: 'PARTI',
 				address: '0xabcdef1234567890'
 			};
-			
+
 			expect(response.feesLabel).toBe(100);
 			expect(response.fees).toBe('1000');
 			expect(response.symbol).toBe('PARTI');
@@ -220,18 +220,13 @@ describe('API Error Handling', () => {
 			const apiError: any = {
 				error: 'Something went wrong'
 			};
-			
+
 			expect(apiError.error).toBe('Something went wrong');
 		});
 
 		it('should handle different error messages', () => {
-			const errors = [
-				'Domain not found',
-				'Invalid address',
-				'Network error',
-				'Insufficient funds'
-			];
-			
+			const errors = ['Domain not found', 'Invalid address', 'Network error', 'Insufficient funds'];
+
 			errors.forEach((errorMsg) => {
 				const apiError: any = { error: errorMsg };
 				expect(apiError.error).toBe(errorMsg);

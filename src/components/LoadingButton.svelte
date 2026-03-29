@@ -6,7 +6,6 @@
 	import CircularProgress from '@smui/circular-progress';
 	import { onDestroy } from 'svelte';
 
-	
 	interface Props {
 		class?: string;
 		onClick: () => Promise<void>;
@@ -20,19 +19,18 @@
 		class: className = '',
 		onClick,
 		onError = async (error) => {
-		let message;
-		if (error && error instanceof Error) message = error.message;
-		else message = 'Something went wrong';
+			let message;
+			if (error && error instanceof Error) message = error.message;
+			else message = 'Something went wrong';
 
-		captureException(error);
-		console.error(error);
-		alertMessage.set(message);
-	},
+			captureException(error);
+			console.error(error);
+			alertMessage.set(message);
+		},
 		disabled = false,
 		variant = 'raised',
 		children
 	}: Props = $props();
-
 
 	let loading: boolean | undefined = $state();
 	let hasError = $state(false);
@@ -68,13 +66,7 @@
 	let isDisabled = $derived(disabled || loading);
 </script>
 
-<Button
-	class={className}
-	disabled={isDisabled}
-	onclick={handleClick}
-	{variant}
-	aria-busy={loading}
->
+<Button class={className} disabled={isDisabled} onclick={handleClick} {variant} aria-busy={loading}>
 	<Label>{@render children?.()}</Label>
 	{#if loading}
 		<div class="loading" role="status" aria-label="Loading">

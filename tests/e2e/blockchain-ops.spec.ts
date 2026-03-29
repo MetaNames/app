@@ -73,7 +73,9 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		await page.locator('.mdc-deprecated-list-item', { hasText: 'Bio' }).click();
 
 		// Fill record value
-		const valueInput = page.locator('.add-record .value input, .add-record .value textarea').first();
+		const valueInput = page
+			.locator('.add-record .value input, .add-record .value textarea')
+			.first();
 		await valueInput.fill('Integration test bio');
 
 		// Click "Add record"
@@ -90,7 +92,9 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		// Record should appear (Bio with our value inside disabled textbox)
 		await expect(page.locator('.record-container').first()).toBeVisible({ timeout: 15000 });
 		// Use toHaveValue on the disabled textbox directly (text= doesn't search disabled inputs)
-		await expect(page.locator('.record-container textarea[disabled]')).toHaveValue('Integration test bio');
+		await expect(page.locator('.record-container textarea[disabled]')).toHaveValue(
+			'Integration test bio'
+		);
 	});
 
 	test('B3 - Edit the DNS record', async ({ page }) => {
@@ -125,10 +129,14 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		await page.waitForTimeout(3000);
 
 		// Edit button should reappear (back to view mode)
-		await expect(page.locator('[aria-label="edit-record"]').first()).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('[aria-label="edit-record"]').first()).toBeVisible({
+			timeout: 15000
+		});
 
 		// Value should be updated (check the disabled textarea)
-		await expect(page.locator('.record-container textarea[disabled]')).toHaveValue('Updated bio value');
+		await expect(page.locator('.record-container textarea[disabled]')).toHaveValue(
+			'Updated bio value'
+		);
 	});
 
 	test('B4 - Delete the DNS record', async ({ page }) => {

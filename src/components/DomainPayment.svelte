@@ -12,7 +12,7 @@
 	import CircularProgress from '@smui/circular-progress';
 	import IconButton from '@smui/icon-button';
 	import Select, { Option } from '@smui/select';
-  import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
+	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
 	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
 	import { fetchApiJson } from 'src/lib/api';
@@ -29,7 +29,7 @@
 	let years = $state(1);
 	let feesApproved = $state(false);
 	const availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
-  const initialCoinSymbol = availableCoins[0].symbol
+	const initialCoinSymbol = availableCoins[0].symbol;
 	let localSelectedCoin = $state(initialCoinSymbol);
 
 	let nameWithoutTLD = $derived(
@@ -76,7 +76,9 @@
 
 		const address = $walletAddress as string;
 		const account = await getAccountBalance(address);
-		const accountCoin = account.account.displayCoins.find((coin) => coin.symbol === localSelectedCoin);
+		const accountCoin = account.account.displayCoins.find(
+			(coin) => coin.symbol === localSelectedCoin
+		);
 
 		const fees = loadFees;
 		const feesData = fees instanceof Promise ? await fees : fees;
@@ -158,26 +160,25 @@
 					{/if}
 				{/await}
 			</div>
-
 		</div>
 
-    <ConnectionRequired class="mt-1">
-                               <div class="submit">
-                                       <LoadingButton
-                                               disabled={feesApproved}
-                                               onClick={approveFees}
-                                               onError={handleApproveError}
-                                               variant="raised"
-                                       >
-                                               <Label>Approve fees</Label>
-                                       </LoadingButton>
-                               </div>
-                               <div class="submit mt-1">
-                                       <LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
-                                               <Label>{paymentLabel}</Label>
-                                       </LoadingButton>
-                               </div>
-                       </ConnectionRequired>
+		<ConnectionRequired class="mt-1">
+			<div class="submit">
+				<LoadingButton
+					disabled={feesApproved}
+					onClick={approveFees}
+					onError={handleApproveError}
+					variant="raised"
+				>
+					<Label>Approve fees</Label>
+				</LoadingButton>
+			</div>
+			<div class="submit mt-1">
+				<LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
+					<Label>{paymentLabel}</Label>
+				</LoadingButton>
+			</div>
+		</ConnectionRequired>
 	</Content>
 </Card>
 

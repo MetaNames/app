@@ -11,7 +11,12 @@ const headerBtnSelector = 'button.mdc-top-app-bar__action-item';
 async function gotoHomeReliably(page: import('@playwright/test').Page) {
 	await page.goto('/', { waitUntil: 'networkidle' });
 	// CI: SvelteKit dev server can 500 on cold start. Detect and retry.
-	if (await page.locator('text=Internal Error').isVisible({ timeout: 1000 }).catch(() => false)) {
+	if (
+		await page
+			.locator('text=Internal Error')
+			.isVisible({ timeout: 1000 })
+			.catch(() => false)
+	) {
 		await page.waitForTimeout(2000);
 		await page.reload({ waitUntil: 'networkidle' });
 	}

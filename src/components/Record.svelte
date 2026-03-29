@@ -25,11 +25,11 @@
 	let edit = $state(false);
 
 	// Sync with value prop when not in edit mode
-  //	$effect(() => {
-  //		if (!edit) {
-  //			recordValue = String(value);
-  //		}
-  //	});
+	//	$effect(() => {
+	//		if (!edit) {
+	//			recordValue = String(value);
+	//		}
+	//	});
 
 	function toggleEdit(restore = true) {
 		edit = !edit;

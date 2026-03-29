@@ -23,7 +23,7 @@ describe('API', () => {
 
 		it('should return data on successful response', async () => {
 			const mockData = { domain: 'mars', available: true };
-			
+
 			global.fetch = vi.fn().mockResolvedValue({
 				ok: true,
 				json: async () => mockData

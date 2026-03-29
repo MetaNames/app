@@ -41,8 +41,8 @@ test.describe('Feature 1: Domain Search & Validation', () => {
 		await page.keyboard.type(randomDomain, { delay: 20 });
 
 		// Wait for either "Available" or "Registered" chip (blockchain response ~5s)
-		await expect(
-			page.locator('.chip.available, .chip.registered').first()
-		).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('.chip.available, .chip.registered').first()).toBeVisible({
+			timeout: 15000
+		});
 	});
 });

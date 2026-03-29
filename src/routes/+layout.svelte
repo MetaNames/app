@@ -10,7 +10,7 @@
 
 	import { config, explorerTransactionUrl } from '$lib';
 	import { alertMessage, alertTransaction } from '$lib/stores/main';
-  import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
+	import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
 	import Logo from 'src/routes/Logo.svelte';
 	import Footer from 'src/routes/Footer.svelte';
 	import favicon from '$lib/assets/images/favicon.png';
@@ -31,26 +31,26 @@
 	let isTestnet = $derived(config.environment === 'test');
 
 	// Snackbars
-  $effect(() => {
-    const transaction = $alertTransaction;
-    if (!transaction) return;
+	$effect(() => {
+		const transaction = $alertTransaction;
+		if (!transaction) return;
 
-    snackbarTransactionMessage = 'New Transaction submitted';
-    try {
-      transactionSnackbar?.open();
-    } catch {}
-  });
-  $effect(() => {
-    const message = $alertMessage;
-    if (!message) return;
+		snackbarTransactionMessage = 'New Transaction submitted';
+		try {
+			transactionSnackbar?.open();
+		} catch {}
+	});
+	$effect(() => {
+		const message = $alertMessage;
+		if (!message) return;
 
-    if (typeof message === 'string') snackbarMessage = message;
-    else snackbarMessage = message.message;
+		if (typeof message === 'string') snackbarMessage = message;
+		else snackbarMessage = message.message;
 
-    try {
-      alertsSnackbar?.open();
-    } catch {}
-  });
+		try {
+			alertsSnackbar?.open();
+		} catch {}
+	});
 </script>
 
 <svelte:head>
@@ -73,7 +73,7 @@
 			</Section>
 
 			<Section align="end" toolbar>
-        <WalletConnect />
+				<WalletConnect />
 			</Section>
 		</Row>
 	</TopAppBar>
