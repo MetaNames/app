@@ -13,7 +13,8 @@
 	import { PartisiaLedgerClient } from '@metanames/sdk/dist/transactions/ledger';
 
 	import 'src/styles/wallet-connect.scss';
-	import Button from '@smui/button';
+	import Button, { Label } from '@smui/button';
+	import Textfield from '@smui/textfield';
 
 	let menu: Menu | undefined = $state();
 	let toggleOpen = $state(false);
@@ -100,7 +101,6 @@
 
 			walletAddress.set(address);
 			devPrivateKey = '';
-			toggleMenu();
 		} catch (e) {
 			alertMessage.set("Couldn't connect with private key");
 			console.log(e);
@@ -126,7 +126,6 @@
 	}
 
 	interface Props {
-		anchor: HTMLDivElement;
 		connectButtonVariant?: 'raised' | 'unelevated' | 'outlined';
 		testid?: string;
 		buttonLabelContent?: import('svelte').Snippet;
@@ -134,16 +133,11 @@
 	}
 
 	let {
-		anchor = $bindable(),
 		connectButtonVariant = 'raised',
 		testid = '',
 		buttonLabelContent,
 		connectedMenuItems
 	}: Props = $props();
-
-	function handleKeydown(e: Event) {
-		if (e instanceof KeyboardEvent && e.key === 'Enter') connectWithPrivateKey();
-	}
 </script>
 
 <Button variant={connectButtonVariant} onclick={toggleMenu} data-testid={testid}>
@@ -155,7 +149,6 @@
 		toggleOpen = false;
 	}}
 	class="menu-floating-right"
-	bind:anchorElement={anchor}
 	anchorCorner="BOTTOM_LEFT"
 >
 	<List>
@@ -197,27 +190,24 @@
 						<span>Dev Private Key</span>
 					</div>
 					<div class="dev-key-input-row">
-						<input
+						<Textfield
 							class="dev-key-input"
 							type="password"
 							placeholder="Private key (64 hex chars)..."
 							bind:value={devPrivateKey}
-							onkeydown={(e) => {
-								e.stopPropagation();
-								handleKeydown(e);
-							}}
-							onclick={(e) => e.stopPropagation()}
+							variant="outlined"
 						/>
-						<button
+						<Button
 							class="dev-key-connect"
+							variant="raised"
 							onclick={(e) => {
 								e.stopPropagation();
 								connectWithPrivateKey();
 							}}
 							disabled={devPrivateKey.length !== 64}
 						>
-							Connect
-						</button>
+							<Label>Connect</Label>
+						</Button>
 					</div>
 				</li>
 			{/if}
@@ -264,38 +254,5 @@
 		display: flex;
 		gap: 0.5rem;
 		align-items: center;
-	}
-
-	.dev-key-input {
-		flex: 1;
-		padding: 0.4rem 0.5rem;
-		border: 1px solid #555;
-		border-radius: 0.25rem;
-		background: #1a1a2e;
-		color: white;
-		font-family: monospace;
-		font-size: 0.75rem;
-		min-width: 180px;
-
-		&::placeholder {
-			color: #777;
-		}
-	}
-
-	.dev-key-connect {
-		padding: 0.4rem 0.75rem;
-		background: #4ecdc4;
-		color: #1a1a2e;
-		border: none;
-		border-radius: 0.25rem;
-		cursor: pointer;
-		font-weight: bold;
-		font-size: 0.75rem;
-		white-space: nowrap;
-
-		&:disabled {
-			opacity: 0.4;
-			cursor: not-allowed;
-		}
 	}
 </style>

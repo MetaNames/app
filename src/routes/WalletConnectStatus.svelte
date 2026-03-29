@@ -12,15 +12,9 @@
 		$walletAddress ? $walletAddress.slice(0, 4) + '...' + $walletAddress.slice(-4) : undefined
 	);
 	let walletLabel = $derived(shortAddress ?? 'Connect Wallet');
-
-	interface Props {
-		anchor: HTMLDivElement;
-	}
-
-	let { anchor }: Props = $props();
 </script>
 
-<WalletConnectButton connectButtonVariant="unelevated" {anchor} testid="wallet-connect-btn">
+<WalletConnectButton connectButtonVariant="unelevated" testid="wallet-connect-btn">
 	{#snippet buttonLabelContent()}
 		<div class="wallet-connect">
 			<Icon icon="wallet" align="left" />

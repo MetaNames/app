@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
 	import type { Domain } from '@metanames/sdk';
 	import { toSvg } from 'jdenticon';
 
@@ -33,10 +32,6 @@
 	console.log('[Domain] MOUNTING', { domainName: domain?.name });
 
 	let { domain, isTld = false, activeTab = $bindable(DomainTab.details) }: Props = $props();
-
-	onDestroy(() => {
-		console.log('[Domain] ON_DESTROY - starting unmount');
-	});
 
 	let domainAvatar = $derived(domain.name && toSvg(domain.name, 200));
 	let domainName = $derived(isTld ? domain.nameWithoutTLD : domain.name);

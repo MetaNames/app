@@ -9,8 +9,6 @@
 	}
 
 	let { class: className = '', children }: Props = $props();
-
-	let anchor: HTMLDivElement | undefined = $state(undefined);
 </script>
 
 <div class={className}>
@@ -18,9 +16,7 @@
 		{@render children?.()}
 	{:else}
 		<div class="connect-container">
-			<div class="connect" bind:this={anchor}>
-				<WalletConnectButton anchor={anchor!} />
-			</div>
+			<WalletConnectButton />
 		</div>
 	{/if}
 </div>

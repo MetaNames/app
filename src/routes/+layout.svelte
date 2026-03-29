@@ -10,11 +10,10 @@
 	import IconButton from '@smui/icon-button';
 	import Snackbar, { Actions, Label } from '@smui/snackbar';
 	import TopAppBar, { Row, Title, Section } from '@smui/top-app-bar';
-	import { Anchor } from '@smui/menu-surface';
 
 	import { config, explorerTransactionUrl } from '$lib';
 	import { alertMessage, alertTransaction } from '$lib/stores/main';
-	import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
+  import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
 	import Logo from 'src/routes/Logo.svelte';
 	import Footer from 'src/routes/Footer.svelte';
 	import favicon from '$lib/assets/images/favicon.png';
@@ -25,9 +24,6 @@
 	}
 
 	let { children }: Props = $props();
-
-	let anchor: HTMLDivElement | undefined = $state(undefined);
-	let anchorClasses: { [k: string]: boolean } = $state({});
 
 	let alertsSnackbar: Snackbar | undefined = $state();
 	let transactionSnackbar: Snackbar | undefined = $state();
@@ -42,26 +38,26 @@
 	injectSpeedInsights();
 
 	// Snackbars
-	$effect(() => {
-		const transaction = $alertTransaction;
-		if (!transaction) return;
+  $effect(() => {
+    const transaction = $alertTransaction;
+    if (!transaction) return;
 
-		snackbarTransactionMessage = 'New Transaction submitted';
-		transactionSnackbar?.open();
-	});
-	$effect(() => {
-		const message = $alertMessage;
-		if (!message) return;
+    snackbarTransactionMessage = 'New Transaction submitted';
+    try {
+      transactionSnackbar?.open();
+    } catch {}
+  });
+  $effect(() => {
+    const message = $alertMessage;
+    if (!message) return;
 
-		if (typeof message === 'string') snackbarMessage = message;
-		else snackbarMessage = message.message;
+    if (typeof message === 'string') snackbarMessage = message;
+    else snackbarMessage = message.message;
 
-		alertsSnackbar?.open();
-
-		setTimeout(() => {
-			alertsSnackbar?.close();
-		}, 5000);
-	});
+    try {
+      alertsSnackbar?.open();
+    } catch {}
+  });
 </script>
 
 <svelte:head>
@@ -70,40 +66,23 @@
 
 <div class="container">
 	<TopAppBar variant="static">
-		<div
-			class={Object.keys(anchorClasses).join(' ')}
-			use:Anchor={{
-				addClass: (className) => {
-					if (!anchorClasses[className]) {
-						anchorClasses[className] = true;
-					}
-				},
-				removeClass: (className) => {
-					if (anchorClasses[className]) {
-						delete anchorClasses[className];
-					}
-				}
-			}}
-			bind:this={anchor}
-		>
-			<Row>
-				<Section>
-					<Title>
-						<a class="link-logo" href="/">
-							<Logo />
-							<span>Meta Names</span>
-							{#if isTestnet}
-								<span class="testnet">TESTNET</span>
-							{/if}
-						</a>
-					</Title>
-				</Section>
+		<Row>
+			<Section>
+				<Title>
+					<a class="link-logo" href="/">
+						<Logo />
+						<span>Meta Names</span>
+						{#if isTestnet}
+							<span class="testnet">TESTNET</span>
+						{/if}
+					</a>
+				</Title>
+			</Section>
 
-				<Section align="end" toolbar>
-					<WalletConnect anchor={anchor!} />
-				</Section>
-			</Row>
-		</div>
+			<Section align="end" toolbar>
+        <WalletConnect />
+			</Section>
+		</Row>
 	</TopAppBar>
 
 	<main>
@@ -121,30 +100,6 @@
 		{@render children?.()}
 	</main>
 
-	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
-		<Label>{snackbarTransactionMessage}</Label>
-		<Actions>
-			<Button
-				onclick={() =>
-					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
-				>View</Button
-			>
-			<IconButton title="Dismiss" aria-label="close">
-				<Icon icon="close" />
-			</IconButton>
-		</Actions>
-	</Snackbar>
-	<Snackbar bind:this={alertsSnackbar}>
-		<Label>{snackbarMessage}</Label>
-		<Actions>
-			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
-				<Button onclick={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
-			{/if}
-			<IconButton title="Dismiss" aria-label="close">
-				<Icon icon="close" />
-			</IconButton>
-		</Actions>
-	</Snackbar>
 	<Footer />
 </div>
 
