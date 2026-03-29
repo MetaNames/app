@@ -28,12 +28,15 @@
 	}
 
 	function handleSort() {
+		// Optimization: calculate multiplier once to avoid array allocation in sort loop
+		const multiplier = sortDirection === 'ascending' ? 1 : -1;
 		domains.sort((a, b) => {
-			const [aVal, bVal] = [a[sort], b[sort]][
-				sortDirection === 'ascending' ? 'slice' : 'reverse'
-			]();
-			if (typeof aVal === 'string' && typeof bVal === 'string') return aVal.localeCompare(bVal);
-			return Number(aVal) - Number(bVal);
+			const aVal = a[sort];
+			const bVal = b[sort];
+			if (typeof aVal === 'string' && typeof bVal === 'string') {
+				return aVal.localeCompare(bVal) * multiplier;
+			}
+			return (Number(aVal) - Number(bVal)) * multiplier;
 		});
 		domains = domains;
 	}
