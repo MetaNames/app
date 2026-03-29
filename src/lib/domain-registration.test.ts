@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { Mock } from 'vitest';
 import { fetchApiJson } from './api';
 import type { DomainFeesResponse, DomainPaymentParams, ApiError } from './types';
 
@@ -16,7 +17,7 @@ describe('Domain Registration - API Functions', () => {
 				address: '0x1234567890123456789012345678901234567890'
 			};
 
-			(global.fetch as any).mockResolvedValueOnce({
+			(global.fetch as unknown as Mock).mockResolvedValueOnce({
 				ok: true,
 				json: async () => mockData
 			});
@@ -27,7 +28,7 @@ describe('Domain Registration - API Functions', () => {
 		});
 
 		it('should return ApiError on non-ok response with error message', async () => {
-			(global.fetch as any).mockResolvedValueOnce({
+			(global.fetch as unknown as Mock).mockResolvedValueOnce({
 				ok: false,
 				json: async () => ({ error: 'Domain not available' })
 			});
@@ -38,7 +39,7 @@ describe('Domain Registration - API Functions', () => {
 		});
 
 		it('should return default error message when no error details provided', async () => {
-			(global.fetch as any).mockResolvedValueOnce({
+			(global.fetch as unknown as Mock).mockResolvedValueOnce({
 				ok: false,
 				json: async () => ({})
 			});
@@ -49,7 +50,7 @@ describe('Domain Registration - API Functions', () => {
 		});
 
 		it('should return ApiError on network failure', async () => {
-			(global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
+			(global.fetch as unknown as Mock).mockRejectedValueOnce(new Error('Network error'));
 
 			const result = await fetchApiJson<DomainFeesResponse>('/api/register/test/fees/ETH');
 

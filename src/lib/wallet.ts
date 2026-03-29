@@ -3,7 +3,7 @@ import type { MetaMaskSdk } from '@metanames/sdk';
 import type { AccountData } from './types';
 import { backendBrowserUrl } from './url';
 
-export type OptionalWalletClient = any | undefined | null;
+export type OptionalWalletClient = unknown | undefined | null;
 
 const metaMaskSnapId = 'npm:@partisiablockchain/snap';
 
@@ -13,7 +13,7 @@ export const connectPartisia = async () => {
 
 	await sdk.connect({
 		chainId: config.chainId,
-		permissions: config.permissions as any,
+		permissions: config.permissions as object,
 		dappName: config.dAppName
 	});
 

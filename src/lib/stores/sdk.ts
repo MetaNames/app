@@ -1,5 +1,5 @@
 import { config, metaNamesSdkFactory } from '$lib';
-import type { BYOC, BYOCSymbol } from '@metanames/sdk';
+import type { BYOC } from '@metanames/sdk';
 import { get, writable } from 'svelte/store';
 
 export const metaNamesSdk = writable(metaNamesSdkFactory());

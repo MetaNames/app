@@ -68,7 +68,7 @@
 			if (!client.connection) throw new Error('Connection failed');
 
 			metaNamesSdk.update((sdk) => {
-				// @ts-ignore
+				// @ts-expect-error SDK type mismatch
 				sdk.setSigningStrategy('partisiaSdk', client);
 				return sdk;
 			});

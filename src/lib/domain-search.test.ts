@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Mock the SDK module
 vi.mock('@metanames/sdk', async () => {
 	const mockDomainValidator = {
-		validate: vi.fn((name: string, options?: { raiseError: boolean }) => {
+		validate: vi.fn((name: string) => {
 			if (!name || name.length < 3) return false;
 			if (name.startsWith('-') || name.endsWith('-')) return false;
 			if (/[^a-z0-9-]/.test(name)) return false;
@@ -11,13 +11,6 @@ vi.mock('@metanames/sdk', async () => {
 		}),
 		getErrors: vi.fn(() => []),
 		rules: { minLength: 3, maxLength: 64 }
-	};
-
-	const mockDomain = {
-		name: 'testdomain',
-		owner: '0x1234567890abcdef1234567890abcdef12345678',
-		expiration: new Date('2027-01-01'),
-		tokenId: '1'
 	};
 
 	const mockDomainRepository = {
@@ -46,7 +39,7 @@ describe('Domain Search', () => {
 	describe('domain availability check', () => {
 		it('should return null for available domain', async () => {
 			// Import after mocking
-			const { MetaNamesSdk, Enviroment } = await import('@metanames/sdk');
+			await import('@metanames/sdk');
 
 			// Create a simple mock for the test
 			const mockFind = vi.fn().mockResolvedValue(null);
@@ -57,11 +50,6 @@ describe('Domain Search', () => {
 					getErrors: vi.fn(() => [])
 				},
 				find: mockFind
-			};
-
-			const sdk = {
-				domainRepository: mockRepo,
-				config: { tld: 'test' }
 			};
 
 			// Simulate search for an available domain

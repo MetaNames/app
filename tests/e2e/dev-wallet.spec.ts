@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { TEST_PRIVATE_KEY, loginOnCurrentPage } from './helpers';
+import { loginOnCurrentPage } from './helpers';
 
 // Use the .mdc-top-app-bar__action-item class to target the header button specifically.
 // This avoids matching the ConnectionRequired body button on protected pages.

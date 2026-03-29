@@ -1,5 +1,5 @@
-import { test, expect, type Page } from '@playwright/test';
-import { loginOnCurrentPage, loginAtHome, spaNavigate } from './helpers';
+import { test, expect } from '@playwright/test';
+import { loginOnCurrentPage } from './helpers';
 
 /**
  * Blockchain operation tests: register domain, add/update/delete records.

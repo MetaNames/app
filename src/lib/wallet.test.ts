@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { Mock } from 'vitest';
 
 // Mock the config module
 vi.mock('$lib/config', () => ({
@@ -115,7 +116,7 @@ describe('Wallet Connection', () => {
 				}
 			};
 
-			(global.fetch as any).mockResolvedValue({
+			(global.fetch as unknown as Mock).mockResolvedValue({
 				json: vi.fn().mockResolvedValue(mockResponse)
 			});
 
@@ -128,7 +129,7 @@ describe('Wallet Connection', () => {
 		});
 
 		it('should handle API errors gracefully', async () => {
-			(global.fetch as any).mockRejectedValue(new Error('Network error'));
+			(global.fetch as unknown as Mock).mockRejectedValue(new Error('Network error'));
 
 			const { getAccountBalance } = await import('$lib/wallet');
 

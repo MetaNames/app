@@ -1,14 +1,11 @@
 <script lang="ts">
-	import { dev } from '$app/environment';
-
 	import Button from '@smui/button';
 	import Banner from '@smui/banner';
 	import Icon from 'src/components/Icon.svelte';
-	import IconButton from '@smui/icon-button';
-	import Snackbar, { Actions, Label } from '@smui/snackbar';
+	import Snackbar, { Label } from '@smui/snackbar';
 	import TopAppBar, { Row, Title, Section } from '@smui/top-app-bar';
 
-	import { config, explorerTransactionUrl } from '$lib';
+	import { config } from '$lib';
 	import { alertMessage, alertTransaction } from '$lib/stores/main';
 	import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
 	import Logo from 'src/routes/Logo.svelte';
@@ -24,8 +21,6 @@
 
 	let alertsSnackbar: Snackbar | undefined = $state();
 	let transactionSnackbar: Snackbar | undefined = $state();
-	let snackbarTransactionMessage: string = $state('');
-	let snackbarMessage: string = $state('');
 
 	let contractDisabled = $derived(config.contractDisabled);
 	let isTestnet = $derived(config.environment === 'test');
@@ -35,7 +30,6 @@
 		const transaction = $alertTransaction;
 		if (!transaction) return;
 
-		snackbarTransactionMessage = 'New Transaction submitted';
 		try {
 			transactionSnackbar?.open();
 		} catch {}
@@ -43,9 +37,6 @@
 	$effect(() => {
 		const message = $alertMessage;
 		if (!message) return;
-
-		if (typeof message === 'string') snackbarMessage = message;
-		else snackbarMessage = message.message;
 
 		try {
 			alertsSnackbar?.open();

@@ -7,7 +7,7 @@
 		width?: string;
 		height?: string;
 		color?: string | undefined;
-		[key: string]: any;
+		[key: string]: unknown;
 	}
 
 	let {

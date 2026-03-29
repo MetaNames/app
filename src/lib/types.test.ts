@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // Import the functions to test
 // Note: We need to test them in isolation since they depend on config
 describe('URL Helpers', () => {
@@ -79,7 +81,7 @@ describe('Error Classes', () => {
 	describe('InsufficientBalanceError', () => {
 		it('should create error with correct coin information', () => {
 			// Test the error class structure
-			const coin = 'PARTI' as any;
+			const coin = 'PARTI' as unknown;
 			const errorMessage = `Insufficient balance for ${coin}`;
 
 			expect(errorMessage).toBe('Insufficient balance for PARTI');

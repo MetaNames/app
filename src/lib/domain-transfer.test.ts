@@ -187,7 +187,7 @@ describe('Domain Transfer', () => {
 			const originalOwner = '0xoriginalowneroriginalowneroriginalowner';
 			let transferToAddress = '';
 
-			const mockTransfer = vi.fn().mockImplementation((params: any) => {
+			const mockTransfer = vi.fn().mockImplementation((params: { to: string }) => {
 				transferToAddress = params.to;
 				return Promise.resolve({
 					transactionHash: '0xbacktoorigin',
@@ -335,7 +335,7 @@ describe('Domain Transfer', () => {
 					from: '0x1234567890abcdef1234567890abcdef12345678',
 					to: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
 				});
-			} catch (e) {
+			} catch {
 				// Expected to fail
 			}
 

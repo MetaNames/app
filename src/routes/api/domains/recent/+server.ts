@@ -1,7 +1,7 @@
-import { getRecentDomains, handleError, type DomainProjection } from '$lib/server';
+import { getRecentDomains, handleError } from '$lib/server';
 import { json } from '@sveltejs/kit';
 
-export async function GET({ url }) {
+export async function GET() {
 	return handleError(async () => {
 		const recentDomains = await getRecentDomains();
 

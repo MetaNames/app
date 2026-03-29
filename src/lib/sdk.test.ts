@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
 	getRecordClassFrom,
 	metaNamesSdkFactory,
@@ -28,6 +28,7 @@ vi.mock('@metanames/sdk', () => {
 	class MockMetaNamesSdk {
 		config: typeof mockConfig;
 
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		constructor(_env: unknown, _override?: unknown) {
 			this.config = mockConfig;
 		}
@@ -36,9 +37,12 @@ vi.mock('@metanames/sdk', () => {
 	return {
 		RecordClassEnum,
 		MetaNamesSdk: MockMetaNamesSdk,
-		getRecordValidator: vi.fn((klass: string) => ({
-			validate: (value: unknown) => value !== null
-		})),
+		getRecordValidator: vi.fn(
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			(_klass: string) => ({
+				validate: (value: unknown) => value !== null
+			})
+		),
 		Enviroment: {
 			testnet: 'testnet',
 			mainnet: 'mainnet'
