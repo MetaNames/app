@@ -10,21 +10,22 @@
 	import Icon from 'src/components/Icon.svelte';
 	import Chip from 'src/components/Chip.svelte';
 
-	let domains: Domain[] = $state([]);
-	let domainsFiltered: Domain[] = $state([]);
-	let loaded = $state(false);
-	let search = $state('');
+	let domains: Domain[] = [];
+	let domainsFiltered: Domain[] = [];
+	let loaded = false;
+	let search = '';
 
-	$effect(() => {
-		const address = $walletAddress;
+	$: if (search !== '') {
+		domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
+	}
+
+	walletAddress.subscribe(async (address) => {
 		if (!address) return;
 
 		loaded = false;
-		(async () => {
-			domains = await $metaNamesSdk.domainRepository.findByOwner(address);
-			domainsFiltered = domains;
-			loaded = true;
-		})();
+		domains = await $metaNamesSdk.domainRepository.findByOwner(address);
+		domainsFiltered = domains;
+		loaded = true;
 	});
 
 	function cleanSearch() {
@@ -38,13 +39,8 @@
 
 		if (trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch))
 			return true;
-		return false;
+		else false;
 	}
-	$effect(() => {
-		if (search !== '') {
-			domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
-		}
-	});
 </script>
 
 <div class="profile content">
@@ -61,13 +57,13 @@
 					variant="outlined"
 					withTrailingIcon
 				>
-					{#snippet trailingIcon()}
+					<svelte:fragment slot="trailingIcon">
 						<div class="close-icon">
-							<IconButton onclick={cleanSearch} aria-label="cancel">
+							<IconButton on:click={cleanSearch} aria-label="cancel">
 								<Icon icon="cancel" />
 							</IconButton>
 						</div>
-					{/snippet}
+					</svelte:fragment>
 				</Textfield>
 				<DomainsTable domains={domainsFiltered} {loaded} />
 			{:else}

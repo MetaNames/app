@@ -3,20 +3,20 @@
 
 	import WalletConnectButton from 'src/routes/WalletConnectButton.svelte';
 
-	interface Props {
-		class?: string;
-		children?: import('svelte').Snippet;
-	}
+	let anchor: HTMLDivElement;
+	let className: string = '';
 
-	let { class: className = '', children }: Props = $props();
+	export { className as class };
 </script>
 
 <div class={className}>
 	{#if $walletConnected}
-		{@render children?.()}
+		<slot />
 	{:else}
 		<div class="connect-container">
-			<WalletConnectButton />
+			<div class="connect" bind:this={anchor}>
+				<WalletConnectButton {anchor} />
+			</div>
 		</div>
 	{/if}
 </div>

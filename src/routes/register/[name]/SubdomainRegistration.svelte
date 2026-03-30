@@ -13,16 +13,12 @@
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
 
-	interface Props {
-		domainName: string;
-		parentDomainName: string;
-	}
+	export let domainName: string;
+	export let parentDomainName: string;
 
-	let { domainName, parentDomainName }: Props = $props();
+	let parentDomain: DomainModel | null;
 
-	let parentDomain: DomainModel | null = $state();
-
-	let parentLink = $derived(`/domain/${parentDomainName}`);
+	$: parentLink = `/domain/${parentDomainName}`;
 
 	onMount(async () => {
 		parentDomain = await $metaNamesSdk.domainRepository.find(parentDomainName);

@@ -1,46 +1,60 @@
 <script lang="ts">
+	import { dev } from '$app/environment';
+
+	import { inject } from '@vercel/analytics';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+
 	import Button from '@smui/button';
 	import Banner from '@smui/banner';
 	import Icon from 'src/components/Icon.svelte';
-	import Snackbar, { Label } from '@smui/snackbar';
+	import IconButton from '@smui/icon-button';
+	import Snackbar, { Actions, Label } from '@smui/snackbar';
 	import TopAppBar, { Row, Title, Section } from '@smui/top-app-bar';
+	import { Anchor } from '@smui/menu-surface';
 
-	import { config } from '$lib';
+	import { config, explorerTransactionUrl } from '$lib';
 	import { alertMessage, alertTransaction } from '$lib/stores/main';
 	import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
 	import Logo from 'src/routes/Logo.svelte';
 	import Footer from 'src/routes/Footer.svelte';
+
 	import favicon from '$lib/assets/images/favicon.png';
 
 	import 'src/styles/app.scss';
-	interface Props {
-		children?: import('svelte').Snippet;
-	}
 
-	let { children }: Props = $props();
+	let anchor: HTMLDivElement;
+	let anchorClasses: { [k: string]: boolean } = {};
 
-	let alertsSnackbar: Snackbar | undefined = $state();
-	let transactionSnackbar: Snackbar | undefined = $state();
+	let alertsSnackbar: Snackbar;
+	let transactionSnackbar: Snackbar;
+	let snackbarTransactionMessage: string;
+	let snackbarMessage: string;
 
-	let contractDisabled = $derived(config.contractDisabled);
-	let isTestnet = $derived(config.environment === 'test');
+	$: contractDisabled = config.contractDisabled;
+	$: isTestnet = config.environment === 'test';
+
+	// Analytics
+	inject({ mode: dev ? 'development' : 'production' });
+	injectSpeedInsights();
 
 	// Snackbars
-	$effect(() => {
-		const transaction = $alertTransaction;
+	alertTransaction.subscribe((transaction) => {
 		if (!transaction) return;
 
-		try {
-			transactionSnackbar?.open();
-		} catch {}
+		snackbarTransactionMessage = 'New Transaction submitted';
+		transactionSnackbar?.open();
 	});
-	$effect(() => {
-		const message = $alertMessage;
+	alertMessage.subscribe((message) => {
 		if (!message) return;
 
-		try {
-			alertsSnackbar?.open();
-		} catch {}
+		if (typeof message === 'string') snackbarMessage = message;
+		else snackbarMessage = message.message;
+
+		alertsSnackbar?.open();
+
+		setTimeout(() => {
+			alertsSnackbar?.close();
+		}, 5000);
 	});
 </script>
 
@@ -50,40 +64,82 @@
 
 <div class="container">
 	<TopAppBar variant="static">
-		<Row>
-			<Section>
-				<Title>
-					<a class="link-logo" href="/">
-						<Logo />
-						<span>Meta Names</span>
-						{#if isTestnet}
-							<span class="testnet">TESTNET</span>
-						{/if}
-					</a>
-				</Title>
-			</Section>
+		<div
+			class={Object.keys(anchorClasses).join(' ')}
+			use:Anchor={{
+				addClass: (className) => {
+					if (!anchorClasses[className]) {
+						anchorClasses[className] = true;
+					}
+				},
+				removeClass: (className) => {
+					if (anchorClasses[className]) {
+						delete anchorClasses[className];
+						anchorClasses = anchorClasses;
+					}
+				}
+			}}
+			bind:this={anchor}
+		>
+			<Row>
+				<Section>
+					<Title>
+						<a class="link-logo" href="/">
+							<Logo />
+							<span>Meta Names</span>
+							{#if isTestnet}
+								<span class="testnet">TESTNET</span>
+							{/if}
+						</a>
+					</Title>
+				</Section>
 
-			<Section align="end" toolbar>
-				<WalletConnect />
-			</Section>
-		</Row>
+				<Section align="end" toolbar>
+					<WalletConnect {anchor} />
+				</Section>
+			</Row>
+		</div>
 	</TopAppBar>
 
 	<main>
 		{#if contractDisabled}
 			<Banner open={true} centered={true} mobileStacked={true}>
-				{#snippet icon()}<div class="icon-center">
-						<Icon icon="system-update" width="25px" height="25px" color="white" />
-					</div>{/snippet}
-				{#snippet label()}<Label>Contract is temporarily disabled for updates</Label>{/snippet}
-				{#snippet actions()}<Button href="https://t.me/mpc_metanames" target="_blank"
-						>Check status</Button
-					>{/snippet}
+				<div class="icon-center" slot="icon">
+					<Icon icon="system-update" width="25px" height="25px" color="white" />
+				</div>
+				<Label slot="label">Contract is temporarily disabled for updates</Label>
+				<svelte:fragment slot="actions">
+					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
+				</svelte:fragment>
 			</Banner>
 		{/if}
-		{@render children?.()}
+		<slot />
 	</main>
 
+	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
+		<Label>{snackbarTransactionMessage}</Label>
+		<Actions>
+			<Button
+				on:click={() =>
+					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+				>View</Button
+			>
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+		</Actions>
+	</Snackbar>
+	<Snackbar bind:this={alertsSnackbar}>
+		<Label>{snackbarMessage}</Label>
+		<Actions>
+			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
+				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
+			{/if}
+			<IconButton title="Dismiss" aria-label="close">
+				<Icon icon="close" />
+			</IconButton>
+		</Actions>
+	</Snackbar>
 	<Footer />
 </div>
 

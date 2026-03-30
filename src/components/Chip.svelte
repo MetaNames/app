@@ -2,59 +2,44 @@
 	import Icon from 'src/components/Icon.svelte';
 	import Button, { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
+	import { writable } from 'svelte/store';
 
-	interface Props {
-		label: string;
-		value: string;
-		href?: string | undefined;
-		type?: 'text' | 'url';
-		ellipsis?: boolean;
-		openInNewTab?: boolean;
-		class?: string | undefined;
-	}
+	export let label: string;
+	export let value: string;
+	export let href: string | undefined = undefined;
+	export let type: 'text' | 'url' = href ? 'url' : 'text';
+	export let ellipsis: boolean = false;
+	export let openInNewTab: boolean = true;
+	export let className: string | undefined = undefined;
 
-	let {
-		label,
-		value,
-		href = undefined,
-		type = href ? 'url' : 'text',
-		ellipsis = false,
-		openInNewTab = true,
-		class: className = undefined
-	}: Props = $props();
+	let icon = writable(type === 'url' ? 'open-in-new' : 'content-copy');
 
-	let iconName = $state('content-copy');
-	let showDone = $state(false);
-
-	// Sync icon when type prop changes
-	$effect(() => {
-		iconName = type === 'url' ? 'open-in-new' : 'content-copy';
-	});
-
-	function action() {
+	const action = () => {
 		if (type === 'url') {
 			if (openInNewTab) window.open(href, '_blank');
 			else goto(value);
 		} else {
 			navigator.clipboard.writeText(href ?? value);
-			showDone = true;
-			setTimeout(() => (showDone = false), 1000);
+			icon.set('done');
+			setTimeout(() => icon.set('content-copy'), 1000);
 		}
-	}
+	};
+
+	export { className as class };
 </script>
 
-<Button onclick={action} variant="outlined" class={`chip ${className || ''}`}>
+<Button on:click={action} variant="outlined" class={`chip ${className || ''}`}>
 	<Label>
 		<div class="container">
 			<span class="label">{label}</span>
 			<span class="value" class:ellipsis>{value}</span>
 		</div>
 	</Label>
-	{#if showDone}
+	{#if $icon === 'done'}
 		<Icon icon="done" align="right" />
-	{:else if iconName === 'open-in-new'}
+	{:else if $icon === 'open-in-new'}
 		<Icon icon="open-in-new" align="right" />
-	{:else}
+	{:else if $icon === 'content-copy'}
 		<Icon icon="content-copy" align="right" />
 	{/if}
 </Button>

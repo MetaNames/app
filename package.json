@@ -73,6 +73,8 @@
 		"@metanames/sdk": "^6.3.1",
 		"@secata-public/bitmanipulation-ts": "^3.2.0",
 		"@sentry/sveltekit": "^10.0.0",
+		"@vercel/analytics": "^1.5.0",
+		"@vercel/speed-insights": "^1.1.0",
 		"chart.js": "^4.4.5",
 		"date-fns": "^4.1.0",
 		"jdenticon": "^3.3.0",

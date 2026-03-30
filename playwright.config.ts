@@ -2,18 +2,11 @@ import type { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
 	webServer: {
-		command: 'npm run dev -- --port 4173',
-		port: 4173,
-		reuseExistingServer: true
+		command: 'npm run build && npm run preview',
+		port: 4173
 	},
 	testDir: 'tests',
-	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
-	retries: 3,
-	workers: 2,
-	use: {
-		screenshot: 'only-on-failure',
-		trace: 'on-first-retry'
-	}
+	testMatch: /(.+\.)?(test|spec)\.[jt]s/
 };
 
 export default config;

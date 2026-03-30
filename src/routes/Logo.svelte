@@ -1,14 +1,9 @@
 <script lang="ts">
-	interface Props {
-		color?: 'dark' | 'light';
-	}
+	export let color: 'dark' | 'light' = 'light';
 
-	let { color = 'light' }: Props = $props();
+	const cssColor = color === 'dark' ? 'var(--mdc-theme-on-surface)' : 'var(--mdc-theme-on-primary)';
 
-	let cssColor = $derived(
-		color === 'dark' ? 'var(--mdc-theme-on-surface)' : 'var(--mdc-theme-on-primary)'
-	);
-	let style = $derived(`fill: ${cssColor};`);
+	const style = `fill: ${cssColor};`;
 </script>
 
 <svg

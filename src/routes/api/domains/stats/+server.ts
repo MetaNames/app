@@ -1,7 +1,7 @@
 import { getStats, handleError } from '$lib/server';
 import { json } from '@sveltejs/kit';
 
-export async function GET() {
+export async function GET({ url }) {
 	return handleError(async () => {
 		const stats = await getStats();
 

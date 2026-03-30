@@ -1,31 +1,25 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	interface Props {
-		align?: 'left' | 'right' | undefined;
-		icon: string;
-		width?: string;
-		height?: string;
-		color?: string | undefined;
-		[key: string]: unknown;
+	let align: 'left' | 'right' | undefined = undefined;
+	let key: string;
+
+	const icon = `ic:baseline-${key}`;
+	let width = '1.125rem';
+	let height = '1.125rem';
+	let color: string | undefined = undefined;
+
+	let alignClass = '';
+	if (align === 'right') {
+		alignClass = 'align-icon-right';
+	} else if (align === 'left') {
+		alignClass = 'align-icon-left';
 	}
 
-	let {
-		align = undefined,
-		icon,
-		width = '1.125rem',
-		height = '1.125rem',
-		color = undefined,
-		...rest
-	}: Props = $props();
-
-	let fullIcon = $derived(`ic:baseline-${icon}`);
-	let alignClass = $derived(
-		align === 'right' ? 'align-icon-right' : align === 'left' ? 'align-icon-left' : ''
-	);
+	export { key as icon, align, width, height, color };
 </script>
 
-<Icon class={alignClass} icon={fullIcon} {height} {width} {color} {...rest} />
+<Icon class={alignClass} {icon} {height} {width} {color} {...$$restProps} />
 
 <style>
 	:global(.align-icon-right) {

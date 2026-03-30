@@ -2,28 +2,29 @@
 	import { goto } from '$app/navigation';
 	import { alertMessage } from '$lib/stores/main';
 	import { fetchApiJson } from 'src/lib/api';
-	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import type { DomainCheckResponse, DomainPaymentParams } from 'src/lib/types';
+	import { writable } from 'svelte/store';
 
 	import type { IDomainAnalyzed } from '@metanames/sdk';
 	import CircularProgress from '@smui/circular-progress';
 	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
 	import { onMount } from 'svelte';
-
 	import DomainPayment from 'src/components/DomainPayment.svelte';
 	import { alertTransactionAndFetchResult } from 'src/lib';
+	import { track } from '@vercel/analytics';
 	import { page } from '$app/stores';
 
-	let isDomainPresent: boolean | undefined = $state();
-	let isParentPresent: boolean | undefined = $state();
-	let analyzed: IDomainAnalyzed | undefined = $state();
+	const isDomainPresent = writable<boolean>();
+	const isParentPresent = writable<boolean>();
+	const analyzed = writable<IDomainAnalyzed>();
 
-	const nameParam = $page.params.name ?? '';
+	const nameParam = $page.params.name;
 
-	let domainName = $derived(analyzed?.name);
-	let parentDomainName = $derived(analyzed?.parentId);
-	let pageName = $derived(domainName + ' | ');
-	let tld = $derived(analyzed?.tld);
+	$: domainName = $analyzed?.name;
+	$: parentDomainName = $analyzed?.parentId;
+	$: pageName = domainName + ' | ';
+	$: tld = $analyzed?.tld;
 
 	async function payment(params: DomainPaymentParams) {
 		const transactionIntent = await $metaNamesSdk.domainRepository.register({
@@ -41,13 +42,19 @@
 				action: { label: 'Go to profile', callback: () => goto('/profile') }
 			});
 
+		track('domain_registered', {
+			domain: domainName,
+			years: params.years,
+			byoc: params.byocSymbol
+		});
+
 		return goto(`/domain/${domainName}`);
 	}
 
 	onMount(async () => {
 		try {
 			const domainAnalysis = $metaNamesSdk.domainRepository.analyze(nameParam);
-			analyzed = domainAnalysis;
+			analyzed.set(domainAnalysis);
 		} catch (error) {
 			let errorMessage = 'Failed to analyze domain.';
 			if (error instanceof Error) errorMessage = error.message;
@@ -56,23 +63,23 @@
 			return goto('/', { replaceState: true });
 		}
 
-		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${analyzed?.name}/check`);
+		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${$analyzed.name}/check`);
 
 		if ('error' in check) {
 			alertMessage.set(check.error);
 			return goto(`/`, { replaceState: true });
 		}
 
-		isDomainPresent = check.domainPresent;
-		if (isDomainPresent) {
+		isDomainPresent.set(check.domainPresent);
+		if ($isDomainPresent) {
 			alertMessage.set('Domain already registered.');
-			return goto(`/domain/${analyzed?.name}`, { replaceState: true });
+			return goto(`/domain/${domainName}`, { replaceState: true });
 		}
 
-		isParentPresent = check.parentPresent;
-		if (analyzed?.parentId && !isParentPresent) {
+		isParentPresent.set(check.parentPresent);
+		if (parentDomainName && !$isParentPresent) {
 			alertMessage.set('Parent domain not found, please register it first.');
-			return goto(`/register/${analyzed?.parentId}`, { replaceState: true });
+			return goto(`/register/${parentDomainName}`, { replaceState: true });
 		}
 	});
 </script>
@@ -81,12 +88,12 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content checkout" data-testid="checkout-content">
-	{#if isDomainPresent === undefined}
+<div class="content checkout">
+	{#if $isDomainPresent === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}
 		<h2 class="mt-0">Register</h2>
-		{#if isParentPresent && parentDomainName}
+		{#if $isParentPresent && parentDomainName}
 			<SubdomainRegistration {domainName} {parentDomainName} />
 		{:else}
 			<DomainPayment {domainName} {tld} paymentLabel="Register domain" {payment} />

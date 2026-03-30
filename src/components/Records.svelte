@@ -3,7 +3,7 @@
 	import { RecordClassEnum } from '@metanames/sdk';
 
 	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
-	import { refresh, walletAddress } from '$lib/stores/main';
+	import { walletAddress } from '$lib/stores/main';
 
 	import { Label } from '@smui/button';
 	import Select, { Option } from '@smui/select';
@@ -13,17 +13,28 @@
 	import RecordComponent from 'src/components/Record.svelte';
 	import HelperText from '@smui/textfield/helper-text';
 
-	interface Props {
-		ownerAddress: string;
-		records: Record<string, string>;
-		repository: RecordRepository;
-	}
+	export let ownerAddress: string;
+	export let records: Record<string, string>;
+	export let repository: RecordRepository;
 
-	let { ownerAddress, records, repository }: Props = $props();
+	let selectedRecordClass: string | undefined;
+	let newRecordValue: string = '';
+	let newRecordSubmitted = false;
 
-	let selectedRecordClass: string | undefined = $state();
-	let newRecordValue: string = $state('');
-	let newRecordSubmitted = $state(false);
+	$: canEdit = $walletAddress === ownerAddress;
+	$: newRecordClass = selectedRecordClass && getRecordClassFrom(selectedRecordClass);
+	$: existingRecordClasses = Object.keys(records);
+	$: unusedRecordsClasses = Object.values(RecordClassEnum).filter(
+		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
+	);
+	$: selectRecordInvalid = newRecordSubmitted && selectedRecordClass === '';
+	$: recordValueInvalid =
+		!!newRecordClass &&
+		!validator?.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false });
+	$: recordValueErrors = validator && recordValueInvalid ? validator.getErrors() : [];
+	$: validator = selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined;
+	$: newRecordValueMaxLength =
+		validator && 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
 
 	async function createRecord() {
 		if (selectedRecordClass === undefined) selectedRecordClass = '';
@@ -36,32 +47,12 @@
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) throw new Error('Failed to create record.');
 		else {
+			records[selectedRecordClass] = newRecordValue;
 			selectedRecordClass = undefined;
 			newRecordValue = '';
 			newRecordSubmitted = false;
-			refresh.set(true);
 		}
 	}
-	let canEdit = $derived($walletAddress === ownerAddress);
-	let newRecordClass = $derived(selectedRecordClass && getRecordClassFrom(selectedRecordClass));
-	let existingRecordClasses = $derived(Object.keys(records));
-	let unusedRecordsClasses = $derived(
-		Object.values(RecordClassEnum).filter(
-			(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
-		)
-	);
-	let selectRecordInvalid = $derived(newRecordSubmitted && selectedRecordClass === '');
-	let validator = $derived(
-		selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined
-	);
-	let recordValueInvalid = $derived(
-		!!newRecordClass &&
-			!validator?.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false })
-	);
-	let recordValueErrors = $derived(validator && recordValueInvalid ? validator.getErrors() : []);
-	let newRecordValueMaxLength = $derived(
-		validator && 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64
-	);
 </script>
 
 <div class="records">
@@ -99,11 +90,11 @@
 					bind:invalid={recordValueInvalid}
 					variant="outlined"
 				>
-					{#snippet helper()}
+					<svelte:fragment slot="helper">
 						{#if recordValueErrors.length > 0}
-							<HelperText class="error">{recordValueErrors?.join(', ')}</HelperText>
+							<HelperText class="error" slot="helper">{recordValueErrors?.join(', ')}</HelperText>
 						{/if}
-					{/snippet}
+					</svelte:fragment>
 				</Textfield>
 			</div>
 			<LoadingButton

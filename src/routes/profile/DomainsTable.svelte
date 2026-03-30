@@ -7,17 +7,25 @@
 	import Button from '@smui/button';
 	import IconButton from '@smui/icon-button';
 
-	interface Props {
-		domains?: Domain[];
-		loaded?: boolean;
+	export let domains: Domain[] = [];
+	export let loaded = false;
+
+	let sort: keyof Domain = 'tokenId';
+	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
+	let rowsPerPage = 5;
+	let currentPage = 0;
+
+	$: domainsLength = domains.length;
+	$: start = currentPage * rowsPerPage;
+	$: end = Math.min(start + rowsPerPage, domainsLength);
+	$: slice = domains.slice(start, end);
+	$: lastPage = Math.max(Math.ceil(domainsLength / rowsPerPage) - 1, 0);
+	$: if (currentPage > lastPage) {
+		currentPage = lastPage;
 	}
-
-	let { domains = $bindable([]), loaded = false }: Props = $props();
-
-	let sort: keyof Domain = $state('tokenId');
-	let sortDirection: Lowercase<keyof typeof SortValue> = $state('ascending');
-	let rowsPerPage = $state(5);
-	let currentPage = $state(0);
+	$: if (domainsLength > 0) {
+		handleSort();
+	}
 
 	function handleSort() {
 		domains.sort((a, b) => {
@@ -27,29 +35,15 @@
 			if (typeof aVal === 'string' && typeof bVal === 'string') return aVal.localeCompare(bVal);
 			return Number(aVal) - Number(bVal);
 		});
+		domains = domains;
 	}
-	let domainsLength = $derived(domains.length);
-	let lastPage = $derived(Math.max(Math.ceil(domainsLength / rowsPerPage) - 1, 0));
-	$effect(() => {
-		if (currentPage > lastPage) {
-			currentPage = lastPage;
-		}
-	});
-	let start = $derived(currentPage * rowsPerPage);
-	let end = $derived(Math.min(start + rowsPerPage, domainsLength));
-	let slice = $derived(domains.slice(start, end));
-	$effect(() => {
-		if (domainsLength > 0) {
-			handleSort();
-		}
-	});
 </script>
 
 <DataTable
 	sortable
 	bind:sort
 	bind:sortDirection
-	onSMUIDataTableSorted={handleSort}
+	on:SMUIDataTable:sorted={handleSort}
 	table$aria-label="Domain list"
 	class="w-100"
 >
@@ -102,60 +96,61 @@
 			</Body>
 		{/if}
 	{/if}
-	{#snippet paginate()}
-		<Pagination>
-			{#snippet rowsPerPageSelect()}
-				<Label>Rows Per Page</Label>
-				<Select variant="outlined" bind:value={rowsPerPage} noLabel>
-					<Option value={5}>5</Option>
-					<Option value={10}>10</Option>
-					<Option value={20}>20</Option>
-					<Option value={domainsLength}>Max</Option>
-				</Select>
-			{/snippet}
-			{#snippet total()}
-				{start + 1}-{end} of {domainsLength}
-			{/snippet}
+	<Pagination slot="paginate">
+		<svelte:fragment slot="rowsPerPage">
+			<Label>Rows Per Page</Label>
+			<Select variant="outlined" bind:value={rowsPerPage} noLabel>
+				<Option value={5}>5</Option>
+				<Option value={10}>10</Option>
+				<Option value={20}>20</Option>
+				<Option value={domainsLength}>Max</Option>
+			</Select>
+		</svelte:fragment>
+		<svelte:fragment slot="total">
+			{start + 1}-{end} of {domainsLength}
+		</svelte:fragment>
 
-			<IconButton
-				action="first-page"
-				title="First page"
-				onclick={() => (currentPage = 0)}
-				disabled={currentPage === 0}
-				aria-label="first page"
-			>
-				<Icon icon="first-page" />
-			</IconButton>
-			<IconButton
-				action="prev-page"
-				title="Prev page"
-				onclick={() => currentPage--}
-				disabled={currentPage === 0}
-				aria-label="previous page"
-			>
-				<Icon icon="chevron-left" />
-			</IconButton>
-			<IconButton
-				action="next-page"
-				title="Next page"
-				onclick={() => currentPage++}
-				disabled={currentPage === lastPage}
-				aria-label="next page"
-			>
-				<Icon icon="chevron-right" />
-			</IconButton>
-			<IconButton
-				action="last-page"
-				title="Last page"
-				onclick={() => (currentPage = lastPage)}
-				disabled={currentPage === lastPage}
-				aria-label="last page"
-			>
-				<Icon icon="last-page" />
-			</IconButton>
-		</Pagination>
-	{/snippet}
-	{#snippet progress()}
-		<LinearProgress closed={loaded} indeterminate aria-label="Data is being loaded..." />
-	{/snippet}
+		<IconButton
+			action="first-page"
+			title="First page"
+			on:click={() => (currentPage = 0)}
+			disabled={currentPage === 0}
+			aria-label="first page"
+		>
+			<Icon icon="first-page" />
+		</IconButton>
+		<IconButton
+			action="prev-page"
+			title="Prev page"
+			on:click={() => currentPage--}
+			disabled={currentPage === 0}
+			aria-label="previous page"
+		>
+			<Icon icon="chevron-left" />
+		</IconButton>
+		<IconButton
+			action="next-page"
+			title="Next page"
+			on:click={() => currentPage++}
+			disabled={currentPage === lastPage}
+			aria-label="next page"
+		>
+			<Icon icon="chevron-right" />
+		</IconButton>
+		<IconButton
+			action="last-page"
+			title="Last page"
+			on:click={() => (currentPage = lastPage)}
+			disabled={currentPage === lastPage}
+			aria-label="last page"
+		>
+			<Icon icon="last-page" />
+		</IconButton>
+	</Pagination>
+	<LinearProgress
+		closed={loaded}
+		indeterminate
+		aria-label="Data is being loaded..."
+		slot="progress"
+	/>
 </DataTable>

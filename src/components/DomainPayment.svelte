@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { alertTransactionAndFetchResult, bridgeUrl, getAccountBalance } from '$lib';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
-	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import type { BYOC } from '@metanames/sdk';
 	import { InsufficientBalanceError } from 'src/lib/error';
+	import { writable } from 'svelte/store';
 
 	import { Label } from '@smui/button';
 	import Icon from 'src/components/Icon.svelte';
@@ -17,35 +17,31 @@
 	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
 	import { fetchApiJson } from 'src/lib/api';
 
-	interface Props {
-		domainName: string;
-		tld: string;
-		payment: (params: DomainPaymentParams) => Promise<void>;
-		paymentLabel: string;
-	}
+	export let domainName: string;
+	export let tld: string;
+	export let payment: (params: DomainPaymentParams) => Promise<void>;
+	export let paymentLabel: string;
 
-	let { domainName, tld, payment, paymentLabel }: Props = $props();
+	let years = 1;
+	let feesApproved = false;
+	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
 
-	let years = $state(1);
-	let feesApproved = $state(false);
-	const availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
-	const initialCoinSymbol = availableCoins[0].symbol;
-	let localSelectedCoin = $state(initialCoinSymbol);
-
-	let nameWithoutTLD = $derived(
-		domainName.endsWith(`.${tld}`) ? domainName.replace(`.${tld}`, '') : domainName
+	$: nameWithoutTLD = domainName.endsWith(`.${tld}`)
+		? domainName.replace(`.${tld}`, '')
+		: domainName;
+	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
+	$: loadFees = fetchApiJson<DomainFeesResponse>(
+		`/api/register/${domainName}/fees/${$selectedCoin}`
 	);
-	let charsLabel = $derived(nameWithoutTLD.length > 1 ? 'chars' : 'char');
-	let loadFees = $derived(
-		browser
-			? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${localSelectedCoin}`)
-			: Promise.resolve(null)
-	);
-	let nameLength = $derived(nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length);
-	let yearsLabel = $derived(years === 1 ? 'year' : 'years');
+	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
+	$: yearsLabel = years === 1 ? 'year' : 'years';
+
+	const totalFees = writable(0);
 
 	const totalFeesLabel = (label: number, years: number) => {
 		const total = label * years;
+		totalFees.set(total);
+
 		return Math.ceil(total * 10000) / 10000;
 	};
 
@@ -55,7 +51,7 @@
 		years += amount;
 	}
 
-	async function handleApproveError(error: unknown) {
+	async function handleApproveError(error: Error) {
 		let message;
 		if (error instanceof InsufficientBalanceError)
 			message = {
@@ -76,22 +72,13 @@
 
 		const address = $walletAddress as string;
 		const account = await getAccountBalance(address);
-		const accountCoin = account.account.displayCoins.find(
-			(coin) => coin.symbol === localSelectedCoin
-		);
-
-		const fees = loadFees;
-		const feesData = fees instanceof Promise ? await fees : fees;
-		if (
-			!accountCoin ||
-			!feesData ||
-			Number(accountCoin.balance) < totalFeesLabel(feesData.feesLabel, years)
-		)
-			throw new InsufficientBalanceError(localSelectedCoin);
+		const accountCoin = account.account.displayCoins.find((coin) => coin.symbol === $selectedCoin);
+		if (!accountCoin || Number(accountCoin.balance) < $totalFees)
+			throw new InsufficientBalanceError($selectedCoin);
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
 			domainName,
-			localSelectedCoin,
+			$selectedCoin,
 			years
 		);
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
@@ -105,7 +92,7 @@
 
 		if (!feesApproved) throw new Error('Fees not approved');
 
-		await payment({ domainName, address, byocSymbol: localSelectedCoin, years });
+		await payment({ domainName, address, byocSymbol: $selectedCoin, years });
 	}
 </script>
 
@@ -116,39 +103,34 @@
 
 			<div class="years">
 				<IconButton
-					onclick={() => addYears(-1)}
+					on:click={() => addYears(-1)}
 					disabled={years === 1 || feesApproved}
 					aria-label="remove-year"
 				>
 					<Icon icon="remove" />
 				</IconButton>
 				<span>{years} {yearsLabel}</span>
-				<IconButton onclick={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
 					<Icon icon="add" />
 				</IconButton>
 			</div>
 
-			<div class="coin" data-testid="payment-token-section">
-				<p class="title text-center" data-testid="payment-token-label">Payment token</p>
+			<div class="coin">
+				<p class="title text-center">Payment token</p>
 				<div class="row centered">
-					<Select
-						bind:value={localSelectedCoin}
-						label="Select Token"
-						variant="outlined"
-						data-testid="payment-token-select"
-					>
+					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined">
 						{#each availableCoins as coin}
 							<Option value={coin.symbol}>{coin.symbol}</Option>
 						{/each}
 					</Select>
 				</div>
 			</div>
-			<div class="fees" data-testid="price-breakdown-section">
-				<p class="title text-center" data-testid="price-breakdown-label">Price breakdown</p>
+			<div class="fees">
+				<p class="title text-center">Price breakdown</p>
 				{#await loadFees}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 				{:then fees}
-					{#if fees && 'symbol' in fees}
+					{#if 'symbol' in fees}
 						<div class="row">
 							<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
 							<span>{fees.feesLabel} {fees.symbol}</span>
@@ -160,25 +142,25 @@
 					{/if}
 				{/await}
 			</div>
-		</div>
 
-		<ConnectionRequired class="mt-1">
-			<div class="submit">
-				<LoadingButton
-					disabled={feesApproved}
-					onClick={approveFees}
-					onError={handleApproveError}
-					variant="raised"
-				>
-					<Label>Approve fees</Label>
-				</LoadingButton>
-			</div>
-			<div class="submit mt-1">
-				<LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
-					<Label>{paymentLabel}</Label>
-				</LoadingButton>
-			</div>
-		</ConnectionRequired>
+			<ConnectionRequired class="mt-1">
+				<div class="submit">
+					<LoadingButton
+						disabled={feesApproved}
+						onClick={approveFees}
+						onError={handleApproveError}
+						variant="raised"
+					>
+						<Label>Approve fees</Label>
+					</LoadingButton>
+				</div>
+				<div class="submit mt-1">
+					<LoadingButton disabled={!feesApproved} onClick={pay} variant="raised">
+						<Label>{paymentLabel}</Label>
+					</LoadingButton>
+				</div>
+			</ConnectionRequired>
+		</div>
 	</Content>
 </Card>
 

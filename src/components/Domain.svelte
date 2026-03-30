@@ -19,37 +19,27 @@
 	import { DomainTab } from 'src/lib/types';
 	import Chip from 'src/components/Chip.svelte';
 	import Records from 'src/components/Records.svelte';
-	import { walletAddress } from '$lib/stores/main';
+	import { walletAddress } from 'src/lib/stores/main';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import Button from '@smui/button';
 
-	interface Props {
-		domain: Domain;
-		isTld?: boolean;
-		activeTab?: DomainTab;
-	}
+	export let domain: Domain;
+	export let isTld: boolean = false;
+	export let activeTab: DomainTab = DomainTab.details;
 
-	console.log('[Domain] MOUNTING', { domainName: domain?.name });
+	$: domainAvatar = domain.name && toSvg(domain.name, 200);
+	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
+	$: hasSocialRecords = Object.keys(domain.records).some((v) => socialRecords.includes(v));
+	$: hasProfileRecords = Object.keys(domain.records).some((v) => profileRecords.includes(v));
+	$: ownerConnected = $walletAddress === domain.owner;
 
-	let { domain, isTld = false, activeTab = $bindable(DomainTab.details) }: Props = $props();
+	const records = Object.fromEntries(
+		Object.entries(domain.records).map(([key, value]) => [key, String(value)])
+	);
+	const ownerBrowserUrl = explorerAddressUrl(domain.owner);
 
-	let domainAvatar = $derived(domain.name && toSvg(domain.name, 200));
-	let domainName = $derived(isTld ? domain.nameWithoutTLD : domain.name);
-	let hasSocialRecords = $derived(
-		Object.keys(domain.records).some((v) => socialRecords.includes(v))
-	);
-	let hasProfileRecords = $derived(
-		Object.keys(domain.records).some((v) => profileRecords.includes(v))
-	);
-	let ownerConnected = $derived($walletAddress === domain.owner);
-
-	let records = $derived(
-		Object.fromEntries(Object.entries(domain.records).map(([key, value]) => [key, String(value)]))
-	);
-	let ownerBrowserUrl = $derived(explorerAddressUrl(domain.owner));
-	let tabs = $derived<Array<DomainTab>>(
-		isTld ? [DomainTab.details] : [DomainTab.details, DomainTab.settings]
-	);
+	let tabs: Array<DomainTab> = [DomainTab.details];
+	if (!isTld) tabs.push(DomainTab.settings);
 </script>
 
 <Card class="domain-container">
@@ -62,12 +52,10 @@
 		<h5 class="domain">{domainName}</h5>
 
 		{#if ownerConnected}
-			<TabBar {tabs} bind:active={activeTab}>
-				{#snippet tab(tabItem)}
-					<Tab tab={tabItem}>
-						<Label>{tabItem}</Label>
-					</Tab>
-				{/snippet}
+			<TabBar {tabs} let:tab bind:active={activeTab}>
+				<Tab {tab}>
+					<Label>{tab}</Label>
+				</Tab>
 			</TabBar>
 		{/if}
 

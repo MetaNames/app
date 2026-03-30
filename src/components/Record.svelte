@@ -11,25 +11,26 @@
 	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
 	import HelperText from '@smui/textfield/helper-text';
 
-	interface Props {
-		klass: string;
-		value: string;
-		repository: RecordRepository;
-		editMode?: boolean;
-	}
+	export let klass: string;
+	export let value: string;
+	export let repository: RecordRepository;
+	export let editMode = false;
 
-	let { klass, value, repository, editMode = false }: Props = $props();
+	let recordValue = String(value);
+	let dialogOpen = false;
 
-	let recordValue = $state('');
-	let dialogOpen = $state(false);
-	let edit = $state(false);
+	$: label = klass.toString();
+	$: recordClass = getRecordClassFrom(klass);
+	$: invalid = !validator.validate(
+		{ data: recordValue, class: recordClass },
+		{ raiseError: false }
+	);
+	$: errors = invalid ? validator.getErrors() : [];
+	$: disabled = !edit;
+	$: validator = getValidator(klass);
+	$: maxLength = 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
 
-	// Sync with value prop when not in edit mode
-	//	$effect(() => {
-	//		if (!edit) {
-	//			recordValue = String(value);
-	//		}
-	//	});
+	let edit = false;
 
 	function toggleEdit(restore = true) {
 		edit = !edit;
@@ -40,10 +41,7 @@
 		const transactionIntent = await repository.update({ class: recordClass, data: recordValue });
 		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
 		if (hasError) alertMessage.set('Failed to update record.');
-		else {
-			refresh.set(true);
-			toggleEdit(false);
-		}
+		else toggleEdit(false);
 	}
 
 	async function destroy() {
@@ -52,17 +50,6 @@
 		if (hasError) alertMessage.set('Failed to delete record.');
 		else refresh.set(true);
 	}
-	let label = $derived(klass.toString());
-	let recordClass = $derived(getRecordClassFrom(klass));
-	let validator = $derived(getValidator(klass));
-	let invalid = $derived(
-		!validator.validate({ data: recordValue, class: recordClass }, { raiseError: false })
-	);
-	let errors = $derived(invalid ? validator.getErrors() : []);
-	let disabled = $derived(!edit);
-	let maxLength = $derived(
-		'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64
-	);
 </script>
 
 <div class="record-container {editMode ? 'edit' : ''}">
@@ -77,7 +64,7 @@
 			<Button>
 				<Label>No</Label>
 			</Button>
-			<Button onclick={destroy}>
+			<Button on:click={destroy}>
 				<Label>Yes</Label>
 			</Button>
 		</Actions>
@@ -93,34 +80,34 @@
 			textarea
 			{disabled}
 		>
-			{#snippet helper()}
+			<svelte:fragment slot="helper">
 				{#if errors.length > 0}
-					<HelperText>{errors.join(', ')}</HelperText>
+					<HelperText slot="helper">{errors.join(', ')}</HelperText>
 				{/if}
-			{/snippet}
-			{#snippet internalCounter()}<CharacterCounter>0 / {maxLength}</CharacterCounter>{/snippet}
+			</svelte:fragment>
+			<CharacterCounter slot="internalCounter">0 / {maxLength}</CharacterCounter>
 		</Textfield>
 	</div>
 	{#if edit}
 		<div class="actions">
-			<IconButton onclick={save} aria-label="save-record">
+			<IconButton on:click={save} aria-label="save-record">
 				<Icon icon="save" />
 			</IconButton>
-			<IconButton onclick={() => toggleEdit()} aria-label="cancel-edit">
+			<IconButton on:click={() => toggleEdit()} aria-label="cancel-edit">
 				<Icon icon="cancel" />
 			</IconButton>
 		</div>
 	{:else if editMode}
 		<div class="actions">
 			<IconButton
-				onclick={() => toggleEdit()}
+				on:click={() => toggleEdit()}
 				disabled={!$walletConnected}
 				aria-label="edit-record"
 			>
 				<Icon icon="edit" />
 			</IconButton>
 			<IconButton
-				onclick={() => (dialogOpen = true)}
+				on:click={() => (dialogOpen = true)}
 				disabled={!$walletConnected}
 				aria-label="delete-record"
 			>
