@@ -16,9 +16,11 @@
 	import Button, { Label } from '@smui/button';
 	import Textfield from '@smui/textfield';
 
-	let menu: Menu | undefined;
-	let toggleOpen = false;
-	let devPrivateKey = '';
+	let menu: Menu | undefined = $state();
+	let toggleOpen = $state(false);
+	let devPrivateKey = $state('');
+
+	let isTestnet = $derived(config.environment === 'test');
 
 	async function connectWithMetaMaskWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
@@ -114,6 +116,7 @@
 			return sdk;
 		});
 
+		devPrivateKey = '';
 		return true;
 	}
 
@@ -122,35 +125,40 @@
 		menu?.setOpen(toggleOpen);
 	}
 
-	function handleKeydown(e: Event) {
-		if (e instanceof KeyboardEvent && e.key === 'Enter') connectWithPrivateKey();
+	interface Props {
+		connectButtonVariant?: 'raised' | 'unelevated' | 'outlined';
+		testid?: string;
+		buttonLabelContent?: import('svelte').Snippet;
+		connectedMenuItems?: import('svelte').Snippet;
 	}
 
-	let isTestnet = config.environment === 'test';
-
-	export let anchor: HTMLDivElement;
-	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
+	let {
+		connectButtonVariant = 'raised',
+		testid = '',
+		buttonLabelContent,
+		connectedMenuItems
+	}: Props = $props();
 </script>
 
-<Button variant={connectButtonVariant} on:click={toggleMenu}>
-	<slot name="buttonLabel">Connect</slot>
+<Button variant={connectButtonVariant} onclick={toggleMenu} data-testid={testid}>
+	{#if buttonLabelContent}{@render buttonLabelContent()}{:else}Connect{/if}
 </Button>
 <Menu
 	bind:this={menu}
-	on:SMUIMenuSurface:closed={() => (toggleOpen = false)}
+	onSMUIMenuSurfaceClosed={() => {
+		toggleOpen = false;
+	}}
 	class="menu-floating-right"
-	anchor={true}
-	bind:anchorElement={anchor}
 	anchorCorner="BOTTOM_LEFT"
 >
 	<List>
 		{#if $walletConnected}
-			<slot name="connectedMenuIems" />
-			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
+			{@render connectedMenuItems?.()}
+			<Item onSMUIAction={async () => disconnectWallet().then(toggleMenu)}>
 				<Text>Disconnect</Text>
 			</Item>
 		{:else}
-			<Item on:SMUI:action={connectWithMetaMaskWallet}>
+			<Item onSMUIAction={connectWithMetaMaskWallet}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
@@ -158,7 +166,7 @@
 					</div>
 				</Text>
 			</Item>
-			<Item on:SMUI:action={connectWithPartisiaWallet}>
+			<Item onSMUIAction={connectWithPartisiaWallet}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
@@ -166,7 +174,7 @@
 					</div>
 				</Text>
 			</Item>
-			<Item on:SMUI:action={connectWithLedgerWallet}>
+			<Item onSMUIAction={connectWithLedgerWallet}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
@@ -187,11 +195,6 @@
 							type="password"
 							placeholder="Private key (64 hex chars)..."
 							bind:value={devPrivateKey}
-							onkeydown={(e) => {
-								e.stopPropagation();
-								handleKeydown(e);
-							}}
-							onclick={(e) => e.stopPropagation()}
 							variant="outlined"
 						/>
 						<Button

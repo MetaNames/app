@@ -1,34 +1,31 @@
 <script lang="ts">
 	import { walletAddress } from '$lib/stores/main';
-	import { derived } from 'svelte/store';
 
 	import Icon from 'src/components/Icon.svelte';
-	import { Label } from '@smui/button';
 	import { Item, Text } from '@smui/list';
 
 	import 'src/styles/wallet-connect.scss';
 	import { goto } from '$app/navigation';
 	import WalletConnectButton from 'src/routes/WalletConnectButton.svelte';
 
-	const shortAddress = derived(walletAddress, ($address) => {
-		if ($address) return $address.slice(0, 4) + '...' + $address.slice(-4);
-	});
-
-	$: buttonLabel = $shortAddress ? $shortAddress : 'Connect Wallet';
-
-	export let anchor: HTMLDivElement;
+	let shortAddress = $derived(
+		$walletAddress ? $walletAddress.slice(0, 4) + '...' + $walletAddress.slice(-4) : undefined
+	);
+	let walletLabel = $derived(shortAddress ?? 'Connect Wallet');
 </script>
 
-<WalletConnectButton connectButtonVariant="unelevated" {anchor}>
-	<div class="wallet-connect" slot="buttonLabel">
-		<Icon icon="wallet" align="left" />
-		<Label>{buttonLabel}</Label>
-	</div>
-	<div slot="connectedMenuIems">
-		<Item on:SMUI:action={() => goto('/profile')}>
+<WalletConnectButton connectButtonVariant="unelevated" testid="wallet-connect-btn">
+	{#snippet buttonLabelContent()}
+		<div class="wallet-connect">
+			<Icon icon="wallet" align="left" />
+			<span>{walletLabel}</span>
+		</div>
+	{/snippet}
+	{#snippet connectedMenuItems()}
+		<Item onSMUIAction={() => goto('/profile')}>
 			<Text>Profile</Text>
 		</Item>
-	</div>
+	{/snippet}
 </WalletConnectButton>
 
 <style lang="scss">

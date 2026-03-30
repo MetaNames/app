@@ -25,9 +25,9 @@ export async function loginOnCurrentPage(page: Page) {
 		await page.reload({ waitUntil: 'networkidle' });
 	}
 
-	// The header button has .mdc-top-app-bar__action-item — unique to the TopAppBar.
-	// The ConnectionRequired body button does NOT have this class.
-	const connectBtn = page.locator('button.mdc-top-app-bar__action-item');
+	// Use data-testid which is unique to the header wallet connect button.
+	// WalletConnectStatus passes testid="wallet-connect-btn" to WalletConnectButton.
+	const connectBtn = page.locator('[data-testid="wallet-connect-btn"]');
 	await expect(connectBtn).toBeVisible({ timeout: 15000 });
 
 	// Wait for SvelteKit hydration — the SMUI button needs JS to handle click events.
