@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
+	import { config } from '$lib';
 
-	import List, { Item, Text } from '@smui/list';
+	import List, { Item, Separator, Text } from '@smui/list';
 	import Menu from '@smui/menu';
 
 	import metamaskLogo from '$lib/assets/images/metamask.png';
@@ -12,10 +13,12 @@
 	import { PartisiaLedgerClient } from '@metanames/sdk/dist/transactions/ledger';
 
 	import 'src/styles/wallet-connect.scss';
-	import Button from '@smui/button';
+	import Button, { Label } from '@smui/button';
+	import Textfield from '@smui/textfield';
 
-	let menu: Menu;
+	let menu: Menu | undefined;
 	let toggleOpen = false;
+	let devPrivateKey = '';
 
 	async function connectWithMetaMaskWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
@@ -76,6 +79,32 @@
 		}
 	}
 
+	async function connectWithPrivateKey() {
+		if (!devPrivateKey || devPrivateKey.length !== 64) return;
+
+		const { metaNamesSdk } = await import('$lib/stores/sdk');
+		try {
+			const { privateKeyToAccountAddress } =
+				await import('partisia-blockchain-applications-crypto/lib/main/wallet');
+			const address = await privateKeyToAccountAddress(devPrivateKey);
+			if (!address) {
+				alertMessage.set('Invalid private key');
+				return;
+			}
+
+			metaNamesSdk.update((sdk) => {
+				sdk.setSigningStrategy('privateKey', devPrivateKey);
+				return sdk;
+			});
+
+			walletAddress.set(address);
+			devPrivateKey = '';
+		} catch (e) {
+			alertMessage.set("Couldn't connect with private key");
+			console.log(e);
+		}
+	}
+
 	async function disconnectWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
 
@@ -90,8 +119,14 @@
 
 	function toggleMenu() {
 		toggleOpen = !toggleOpen;
-		menu.setOpen(toggleOpen);
+		menu?.setOpen(toggleOpen);
 	}
+
+	function handleKeydown(e: Event) {
+		if (e instanceof KeyboardEvent && e.key === 'Enter') connectWithPrivateKey();
+	}
+
+	let isTestnet = config.environment === 'test';
 
 	export let anchor: HTMLDivElement;
 	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
@@ -139,6 +174,40 @@
 					</div>
 				</Text>
 			</Item>
+			{#if isTestnet && toggleOpen}
+				<Separator />
+				<li class="dev-key-section">
+					<div class="dev-key-label">
+						<span class="dev-emoji">🐷</span>
+						<span>Dev Private Key</span>
+					</div>
+					<div class="dev-key-input-row">
+						<Textfield
+							class="dev-key-input"
+							type="password"
+							placeholder="Private key (64 hex chars)..."
+							bind:value={devPrivateKey}
+							onkeydown={(e) => {
+								e.stopPropagation();
+								handleKeydown(e);
+							}}
+							onclick={(e) => e.stopPropagation()}
+							variant="outlined"
+						/>
+						<Button
+							class="dev-key-connect"
+							variant="raised"
+							onclick={(e) => {
+								e.stopPropagation();
+								connectWithPrivateKey();
+							}}
+							disabled={devPrivateKey.length !== 64}
+						>
+							<Label>Connect</Label>
+						</Button>
+					</div>
+				</li>
+			{/if}
 		{/if}
 	</List>
 </Menu>
@@ -153,6 +222,34 @@
 	.item {
 		display: flex;
 		flex-direction: row;
+		align-items: center;
+	}
+
+	.dev-key-section {
+		padding: 0.5rem 1rem;
+		list-style: none;
+	}
+
+	.dev-key-label {
+		display: flex;
+		align-items: center;
+		margin-bottom: 0.5rem;
+		font-size: 0.75rem;
+		color: #999;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.dev-emoji {
+		font-size: 12pt;
+		margin-right: 0.5rem;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.dev-key-input-row {
+		display: flex;
+		gap: 0.5rem;
 		align-items: center;
 	}
 </style>
