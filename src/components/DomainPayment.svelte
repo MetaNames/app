@@ -103,14 +103,14 @@
 
 			<div class="years">
 				<IconButton
-					on:click={() => addYears(-1)}
+					onclick={() => addYears(-1)}
 					disabled={years === 1 || feesApproved}
 					aria-label="remove-year"
 				>
 					<Icon icon="remove" />
 				</IconButton>
-				<span>{years} {yearsLabel}</span>
-				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+				<span data-testid="year-count">{years} {yearsLabel}</span>
+				<IconButton onclick={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
 					<Icon icon="add" />
 				</IconButton>
 			</div>

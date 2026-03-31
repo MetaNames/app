@@ -49,15 +49,15 @@
 				{@html domainAvatar}
 			</div>
 		</div>
-		<h5 class="domain">{domainName}</h5>
+		<h5 class="domain" data-testid="domain-title">{domainName}</h5>
 
 		{#if ownerConnected}
 			<TabBar {tabs} bind:active={activeTab}>
-        {#snippet tab(tab)}
-          <Tab {tab}>
-            <Label>{tab}</Label>
-          </Tab>
-        {/snippet}
+				{#snippet tab(tab)}
+					<Tab {tab}>
+						<Label>{tab}</Label>
+					</Tab>
+				{/snippet}
 			</TabBar>
 		{/if}
 

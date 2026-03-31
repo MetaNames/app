@@ -90,26 +90,28 @@
 	</div>
 	{#if edit}
 		<div class="actions">
-			<IconButton on:click={save} aria-label="save-record">
+			<IconButton onclick={save} aria-label="save-record" data-testid="save-record">
 				<Icon icon="save" />
 			</IconButton>
-			<IconButton on:click={() => toggleEdit()} aria-label="cancel-edit">
+			<IconButton onclick={() => toggleEdit()} aria-label="cancel-edit" data-testid="cancel-edit">
 				<Icon icon="cancel" />
 			</IconButton>
 		</div>
 	{:else if editMode}
 		<div class="actions">
 			<IconButton
-				on:click={() => toggleEdit()}
+				onclick={() => toggleEdit()}
 				disabled={!$walletConnected}
 				aria-label="edit-record"
+				data-testid="edit-record"
 			>
 				<Icon icon="edit" />
 			</IconButton>
 			<IconButton
-				on:click={() => (dialogOpen = true)}
+				onclick={() => (dialogOpen = true)}
 				disabled={!$walletConnected}
 				aria-label="delete-record"
+				data-testid="delete-record"
 			>
 				<Icon icon="delete" />
 			</IconButton>

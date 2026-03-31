@@ -32,7 +32,9 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		await approveBtn.click();
 
 		// Wait for transaction to complete — snackbar appears
-		await expect(page.locator('text=New Transaction submitted')).toBeVisible({ timeout: 60000 });
+		await expect(page.locator('[data-testid="transaction-submitted"]')).toBeVisible({
+			timeout: 60000
+		});
 
 		// "Register domain" button should now be enabled
 		const registerBtn = page.locator('button:has-text("Register domain")');
@@ -48,12 +50,12 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 			timeout: 60000
 		});
 		await page.waitForURL(/\/domain\//, { timeout: 30000 });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('[data-testid="domain-title"]')).toBeVisible({ timeout: 15000 });
 	});
 
 	test('B2 - Add a DNS record to the new domain', async ({ page }) => {
 		await page.goto(`/domain/${fullDomain}`, { waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('[data-testid="domain-title"]')).toBeVisible({ timeout: 15000 });
 
 		await loginOnCurrentPage(page);
 
@@ -84,7 +86,9 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		await addBtn.click();
 
 		// Wait for transaction
-		await expect(page.locator('text=New Transaction submitted')).toBeVisible({ timeout: 60000 });
+		await expect(page.locator('[data-testid="transaction-submitted"]')).toBeVisible({
+			timeout: 60000
+		});
 
 		// Wait for testnet confirmation
 		await page.waitForTimeout(3000);
@@ -99,7 +103,7 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 
 	test('B3 - Edit the DNS record', async ({ page }) => {
 		await page.goto(`/domain/${fullDomain}`, { waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('[data-testid="domain-title"]')).toBeVisible({ timeout: 15000 });
 
 		await loginOnCurrentPage(page);
 
@@ -108,28 +112,32 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });
 
 		// Click edit on the Bio record
-		const editBtn = page.locator('[aria-label="edit-record"]').first();
+		const editBtn = page.locator('[data-testid="edit-record"]').first();
 		await expect(editBtn).toBeVisible({ timeout: 5000 });
 		await editBtn.click();
 
 		// Save and cancel buttons should appear
-		await expect(page.locator('[aria-label="save-record"]').first()).toBeVisible({ timeout: 5000 });
+		await expect(page.locator('[data-testid="save-record"]').first()).toBeVisible({
+			timeout: 5000
+		});
 
 		// Clear and type new value
 		const textarea = page.locator('.record-container textarea').first();
 		await textarea.fill('Updated bio value');
 
 		// Click save
-		await page.locator('[aria-label="save-record"]').first().click();
+		await page.locator('[data-testid="save-record"]').first().click();
 
 		// Wait for transaction
-		await expect(page.locator('text=New Transaction submitted')).toBeVisible({ timeout: 60000 });
+		await expect(page.locator('[data-testid="transaction-submitted"]')).toBeVisible({
+			timeout: 60000
+		});
 
 		// Wait for testnet confirmation
 		await page.waitForTimeout(3000);
 
 		// Edit button should reappear (back to view mode)
-		await expect(page.locator('[aria-label="edit-record"]').first()).toBeVisible({
+		await expect(page.locator('[data-testid="edit-record"]').first()).toBeVisible({
 			timeout: 15000
 		});
 
@@ -141,7 +149,7 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 
 	test('B4 - Delete the DNS record', async ({ page }) => {
 		await page.goto(`/domain/${fullDomain}`, { waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('[data-testid="domain-title"]')).toBeVisible({ timeout: 15000 });
 
 		await loginOnCurrentPage(page);
 
@@ -153,7 +161,7 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		await expect(page.locator('.record-container').first()).toBeVisible({ timeout: 5000 });
 
 		// Click delete
-		const deleteBtn = page.locator('[aria-label="delete-record"]').first();
+		const deleteBtn = page.locator('[data-testid="delete-record"]').first();
 		await expect(deleteBtn).toBeVisible({ timeout: 5000 });
 		await deleteBtn.click();
 
@@ -166,14 +174,16 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 		await page.locator('.mdc-dialog button:has-text("Yes")').click();
 
 		// Wait for transaction
-		await expect(page.locator('text=New Transaction submitted')).toBeVisible({ timeout: 60000 });
+		await expect(page.locator('[data-testid="transaction-submitted"]')).toBeVisible({
+			timeout: 60000
+		});
 
 		// Wait for testnet confirmation + page refresh
 		await page.waitForTimeout(3000);
 
 		// Reload and click settings tab to ensure we're on the right tab
 		await page.reload({ waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('[data-testid="domain-title"]')).toBeVisible({ timeout: 15000 });
 		await loginOnCurrentPage(page);
 		await page.locator('role=tab[name="settings"]').click();
 		await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });

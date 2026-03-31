@@ -108,7 +108,7 @@
 	</main>
 
 	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
-		<Label>{snackbarTransactionMessage}</Label>
+		<Label data-testid="transaction-submitted">{snackbarTransactionMessage}</Label>
 		<Actions>
 			<Button
 				on:click={() =>
