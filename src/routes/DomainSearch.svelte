@@ -26,13 +26,13 @@
 		nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null
 	);
 
-	function debounce(_domainName: string) {
+	function debounce() {
 		clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 
 	$effect(() => {
-		debounce(domainName);
+		debounce();
 	});
 
 	async function search(submit = false) {
