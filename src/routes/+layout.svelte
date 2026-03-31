@@ -1,9 +1,4 @@
 <script lang="ts">
-	import { dev } from '$app/environment';
-
-	import { inject } from '@vercel/analytics';
-	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
-
 	import Button from '@smui/button';
 	import Banner from '@smui/banner';
 	import Icon from 'src/components/Icon.svelte';
@@ -32,10 +27,6 @@
 
 	$: contractDisabled = config.contractDisabled;
 	$: isTestnet = config.environment === 'test';
-
-	// Analytics
-	inject({ mode: dev ? 'development' : 'production' });
-	injectSpeedInsights();
 
 	// Snackbars
 	alertTransaction.subscribe((transaction) => {
