@@ -1,9 +1,37 @@
+<script context="module" lang="ts">
+	import type { Domain as DomainModel } from '@metanames/sdk';
+
+	const searchCache = new Map<string, { domain: DomainModel | null; expiresAt: number }>();
+	const MAX_CACHE_SIZE = 100;
+	const CACHE_TTL = 60000; // 1 minute
+
+	function getCachedDomain(name: string): DomainModel | null | undefined {
+		const cached = searchCache.get(name);
+		if (cached && cached.expiresAt > Date.now()) {
+			return cached.domain;
+		}
+		if (cached) {
+			searchCache.delete(name); // Remove stale entry
+		}
+		return undefined;
+	}
+
+	function setCachedDomain(name: string, domain: DomainModel | null) {
+		if (searchCache.size >= MAX_CACHE_SIZE) {
+			// FIFO eviction: remove the first item
+			const firstKey = searchCache.keys().next().value;
+			if (firstKey !== undefined) searchCache.delete(firstKey);
+		}
+		searchCache.set(name, { domain, expiresAt: Date.now() + CACHE_TTL });
+	}
+</script>
+
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from '@metanames/sdk';
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
@@ -30,6 +58,10 @@
 
 	$: debounce(domainName);
 
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
+
 	async function search(submit = false) {
 		if (invalid) return;
 
@@ -42,12 +74,23 @@
 
 		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		const cachedResult = getCachedDomain(nameSearched);
+		if (cachedResult !== undefined) {
+			if (currentRequestId === requestId) {
+				domain = cachedResult;
+				isLoading = false;
+			}
+			return;
+		}
+
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
 			domain = result;
+			setCachedDomain(nameSearched, result);
 			isLoading = false;
 		}
 	}
