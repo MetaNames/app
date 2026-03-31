@@ -9,7 +9,6 @@
 	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.png';
 	import ledgerWalletLogo from '$lib/assets/images/ledger-wallet-white.png';
 
-	import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 	import { PartisiaLedgerClient } from '@metanames/sdk/dist/transactions/ledger';
 
 	import 'src/styles/wallet-connect.scss';
@@ -44,6 +43,7 @@
 	async function connectWithLedgerWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
 		try {
+			const { default: TransportWebUSB } = await import('@ledgerhq/hw-transport-webusb');
 			const transport = await TransportWebUSB.create();
 
 			metaNamesSdk.update((sdk) => {

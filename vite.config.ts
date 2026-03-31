@@ -21,13 +21,7 @@ export default defineConfig({
 		})
 	],
 	resolve: {
-		tsconfigPaths: true,
-		alias: {
-			'@ledgerhq/hw-transport-webusb': path.resolve(
-				__dirname,
-				'node_modules/@ledgerhq/hw-transport-webusb/lib/TransportWebUSB.js'
-			)
-		}
+		tsconfigPaths: true
 	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
