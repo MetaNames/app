@@ -11,26 +11,33 @@
 	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
 	import HelperText from '@smui/textfield/helper-text';
 
-	export let klass: string;
-	export let value: string;
-	export let repository: RecordRepository;
-	export let editMode = false;
+	let {
+		klass,
+		value,
+		repository,
+		editMode = false
+	}: {
+		klass: string;
+		value: string;
+		repository: RecordRepository;
+		editMode?: boolean;
+	} = $props();
 
-	let recordValue = String(value);
-	let dialogOpen = false;
+	let recordValue = $state(String(value));
+	let dialogOpen = $state(false);
+	let edit = $state(false);
 
-	$: label = klass.toString();
-	$: recordClass = getRecordClassFrom(klass);
-	$: invalid = !validator.validate(
-		{ data: recordValue, class: recordClass },
-		{ raiseError: false }
+	let label = $derived(klass.toString());
+	let recordClass = $derived(getRecordClassFrom(klass));
+	let validator = $derived(getValidator(klass));
+	let maxLength = $derived(
+		'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64
 	);
-	$: errors = invalid ? validator.getErrors() : [];
-	$: disabled = !edit;
-	$: validator = getValidator(klass);
-	$: maxLength = 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
-
-	let edit = false;
+	let invalid = $derived(
+		!validator.validate({ data: recordValue, class: recordClass }, { raiseError: false })
+	);
+	let errors = $derived(invalid ? validator.getErrors() : []);
+	let disabled = $derived(!edit);
 
 	function toggleEdit(restore = true) {
 		edit = !edit;
@@ -64,7 +71,7 @@
 			<Button>
 				<Label>No</Label>
 			</Button>
-			<Button on:click={destroy}>
+			<Button onclick={destroy}>
 				<Label>Yes</Label>
 			</Button>
 		</Actions>

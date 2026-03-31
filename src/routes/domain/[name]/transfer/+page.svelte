@@ -13,18 +13,21 @@
 	import GoBackButton from 'src/components/GoBackButton.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	let address = '';
-	let errors: string[] = [];
+	let address = $state('');
+	let errors: string[] = $state([]);
 
-	$: domainName = data.analyzed?.name;
-	$: invalid = errors.length > 0;
-	$: if (address) {
-		errors = [];
-		if (!address) errors.push('Address is required');
-		if (!validAddress(address)) errors.push('Address is invalid');
-	}
+	let domainName = $derived(data.analyzed?.name);
+	let invalid = $derived(errors.length > 0);
+
+	$effect(() => {
+		if (address) {
+			errors = [];
+			if (!address) errors.push('Address is required');
+			if (!validAddress(address)) errors.push('Address is invalid');
+		}
+	});
 
 	async function transfer() {
 		if (!domainName) return;

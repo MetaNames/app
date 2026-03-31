@@ -13,28 +13,40 @@
 	import RecordComponent from 'src/components/Record.svelte';
 	import HelperText from '@smui/textfield/helper-text';
 
-	export let ownerAddress: string;
-	export let records: Record<string, string>;
-	export let repository: RecordRepository;
+	let {
+		ownerAddress,
+		records,
+		repository
+	}: {
+		ownerAddress: string;
+		records: Record<string, string>;
+		repository: RecordRepository;
+	} = $props();
 
-	let selectedRecordClass: string | undefined;
-	let newRecordValue: string = '';
-	let newRecordSubmitted = false;
+	let selectedRecordClass: string | undefined = $state();
+	let newRecordValue: string = $state('');
+	let newRecordSubmitted = $state(false);
 
-	$: canEdit = $walletAddress === ownerAddress;
-	$: newRecordClass = selectedRecordClass && getRecordClassFrom(selectedRecordClass);
-	$: existingRecordClasses = Object.keys(records);
-	$: unusedRecordsClasses = Object.values(RecordClassEnum).filter(
-		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
+	let canEdit = $derived($walletAddress === ownerAddress);
+	let newRecordClass = $derived(selectedRecordClass && getRecordClassFrom(selectedRecordClass));
+	let existingRecordClasses = $derived(Object.keys(records));
+	let unusedRecordsClasses = $derived(
+		Object.values(RecordClassEnum).filter(
+			(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
+		)
 	);
-	$: selectRecordInvalid = newRecordSubmitted && selectedRecordClass === '';
-	$: recordValueInvalid =
+	let validator = $derived(
+		selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined
+	);
+	let selectRecordInvalid = $derived(newRecordSubmitted && selectedRecordClass === '');
+	let recordValueInvalid = $derived(
 		!!newRecordClass &&
-		!validator?.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false });
-	$: recordValueErrors = validator && recordValueInvalid ? validator.getErrors() : [];
-	$: validator = selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined;
-	$: newRecordValueMaxLength =
-		validator && 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
+			!validator?.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false })
+	);
+	let recordValueErrors = $derived(validator && recordValueInvalid ? validator.getErrors() : []);
+	let newRecordValueMaxLength = $derived(
+		validator && 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64
+	);
 
 	async function createRecord() {
 		if (selectedRecordClass === undefined) selectedRecordClass = '';

@@ -14,27 +14,39 @@
 	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
-	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
+	import type { DomainFeesResponse, DomainPaymentParams, ApiError } from 'src/lib/types';
 	import { fetchApiJson } from 'src/lib/api';
 
-	export let domainName: string;
-	export let tld: string;
-	export let payment: (params: DomainPaymentParams) => Promise<void>;
-	export let paymentLabel: string;
+	let {
+		domainName,
+		tld,
+		payment,
+		paymentLabel
+	}: {
+		domainName: string;
+		tld: string;
+		payment: (params: DomainPaymentParams) => Promise<void>;
+		paymentLabel: string;
+	} = $props();
 
-	let years = 1;
-	let feesApproved = false;
+	let years = $state(1);
+	let feesApproved = $state(false);
 	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
 
-	$: nameWithoutTLD = domainName.endsWith(`.${tld}`)
-		? domainName.replace(`.${tld}`, '')
-		: domainName;
-	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = fetchApiJson<DomainFeesResponse>(
-		`/api/register/${domainName}/fees/${$selectedCoin}`
+	let nameWithoutTLD = $derived(
+		domainName.endsWith(`.${tld}`) ? domainName.replace(`.${tld}`, '') : domainName
 	);
-	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
-	$: yearsLabel = years === 1 ? 'year' : 'years';
+	let charsLabel = $derived(nameWithoutTLD.length > 1 ? 'chars' : 'char');
+	let nameLength = $derived(nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length);
+	let yearsLabel = $derived(years === 1 ? 'year' : 'years');
+
+	let loadFees: Promise<DomainFeesResponse | ApiError | null> = $state(Promise.resolve(null));
+
+	$effect.pre(() => {
+		loadFees = fetchApiJson<DomainFeesResponse>(
+			`/api/register/${domainName}/fees/${$selectedCoin}`
+		);
+	});
 
 	const totalFees = writable(0);
 

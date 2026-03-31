@@ -17,18 +17,19 @@
 
 	import 'src/styles/app.scss';
 
+	let { children } = $props();
+
 	let anchor: HTMLDivElement;
-	let anchorClasses: { [k: string]: boolean } = {};
+	let anchorClasses: { [k: string]: boolean } = $state({});
 
 	let alertsSnackbar: Snackbar;
 	let transactionSnackbar: Snackbar;
 	let snackbarTransactionMessage: string;
 	let snackbarMessage: string;
 
-	$: contractDisabled = config.contractDisabled;
-	$: isTestnet = config.environment === 'test';
+	let contractDisabled = $derived(config.contractDisabled);
+	let isTestnet = $derived(config.environment === 'test');
 
-	// Snackbars
 	alertTransaction.subscribe((transaction) => {
 		if (!transaction) return;
 
@@ -104,14 +105,14 @@
 				</svelte:fragment>
 			</Banner>
 		{/if}
-		<slot />
+		{@render children()}
 	</main>
 
 	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
 		<Label data-testid="transaction-submitted">{snackbarTransactionMessage}</Label>
 		<Actions>
 			<Button
-				on:click={() =>
+				onclick={() =>
 					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
 				>View</Button
 			>
@@ -124,7 +125,7 @@
 		<Label>{snackbarMessage}</Label>
 		<Actions>
 			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
-				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
+				<Button onclick={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
 			{/if}
 			<IconButton title="Dismiss" aria-label="close">
 				<Icon icon="close" />
