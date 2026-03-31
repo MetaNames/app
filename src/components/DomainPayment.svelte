@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { alertTransactionAndFetchResult, bridgeUrl, getAccountBalance } from '$lib';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
@@ -15,27 +14,39 @@
 	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
-	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
+	import type { DomainFeesResponse, DomainPaymentParams, ApiError } from 'src/lib/types';
 	import { fetchApiJson } from 'src/lib/api';
 
-	export let domainName: string;
-	export let tld: string;
-	export let payment: (params: DomainPaymentParams) => Promise<void>;
-	export let paymentLabel: string;
+	let {
+		domainName,
+		tld,
+		payment,
+		paymentLabel
+	}: {
+		domainName: string;
+		tld: string;
+		payment: (params: DomainPaymentParams) => Promise<void>;
+		paymentLabel: string;
+	} = $props();
 
-	let years = 1;
-	let feesApproved = false;
+	let years = $state(1);
+	let feesApproved = $state(false);
 	let availableCoins: BYOC[] = $metaNamesSdk.config.byoc;
 
-	$: nameWithoutTLD = domainName.endsWith(`.${tld}`)
-		? domainName.replace(`.${tld}`, '')
-		: domainName;
-	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = browser
-		? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${$selectedCoin}`)
-		: Promise.resolve(null);
-	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
-	$: yearsLabel = years === 1 ? 'year' : 'years';
+	let nameWithoutTLD = $derived(
+		domainName.endsWith(`.${tld}`) ? domainName.replace(`.${tld}`, '') : domainName
+	);
+	let charsLabel = $derived(nameWithoutTLD.length > 1 ? 'chars' : 'char');
+	let nameLength = $derived(nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length);
+	let yearsLabel = $derived(years === 1 ? 'year' : 'years');
+
+	let loadFees: Promise<DomainFeesResponse | ApiError | null> = $state(Promise.resolve(null));
+
+	$effect.pre(() => {
+		loadFees = fetchApiJson<DomainFeesResponse>(
+			`/api/register/${domainName}/fees/${$selectedCoin}`
+		);
+	});
 
 	const totalFees = writable(0);
 
@@ -104,22 +115,27 @@
 
 			<div class="years">
 				<IconButton
-					on:click={() => addYears(-1)}
+					onclick={() => addYears(-1)}
 					disabled={years === 1 || feesApproved}
 					aria-label="remove-year"
 				>
 					<Icon icon="remove" />
 				</IconButton>
-				<span>{years} {yearsLabel}</span>
-				<IconButton on:click={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
+				<span data-testid="year-count">{years} {yearsLabel}</span>
+				<IconButton onclick={() => addYears(1)} disabled={feesApproved} aria-label="add-year">
 					<Icon icon="add" />
 				</IconButton>
 			</div>
 
 			<div class="coin" data-testid="payment-token-section">
-				<p class="title text-center" data-testid="payment-token-label">Payment token</p>
+				<p class="title text-center">Payment token</p>
 				<div class="row centered">
-					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined" data-testid="payment-token-select">
+					<Select
+						bind:value={$selectedCoin}
+						label="Select Token"
+						variant="outlined"
+						data-testid="payment-token-select"
+					>
 						{#each availableCoins as coin}
 							<Option value={coin.symbol}>{coin.symbol}</Option>
 						{/each}
@@ -127,7 +143,7 @@
 				</div>
 			</div>
 			<div class="fees" data-testid="price-breakdown-section">
-				<p class="title text-center" data-testid="price-breakdown-label">Price breakdown</p>
+				<p class="title text-center">Price breakdown</p>
 				{#await loadFees}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 				{:then fees}

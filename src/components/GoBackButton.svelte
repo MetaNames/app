@@ -6,4 +6,4 @@
 	}
 </script>
 
-<Button variant="raised" on:click={goBackInHistory}>Go back</Button>
+<Button variant="raised" onclick={goBackInHistory}>Go back</Button>

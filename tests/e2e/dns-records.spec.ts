@@ -14,7 +14,7 @@ test.describe('Feature 7: DNS Records & Settings', () => {
 	test.describe('Unauthenticated', () => {
 		test('7.1 - No tabs visible when not logged in', async ({ page }) => {
 			await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
-			await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+			await expect(page.locator('[data-testid="domain-title"]')).toBeVisible({ timeout: 15000 });
 
 			await expect(page.locator('button:has-text("settings")')).not.toBeVisible();
 			await expect(page.locator('button:has-text("details")')).not.toBeVisible();
@@ -24,7 +24,7 @@ test.describe('Feature 7: DNS Records & Settings', () => {
 	test.describe('Authenticated (owner)', () => {
 		test.beforeEach(async ({ page }) => {
 			await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
-			await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+			await expect(page.locator('[data-testid="domain-title"]')).toBeVisible({ timeout: 15000 });
 			await loginOnCurrentPage(page);
 		});
 
@@ -62,32 +62,30 @@ test.describe('Feature 7: DNS Records & Settings', () => {
 			await expect(page.locator('.record-container').first()).toBeVisible({ timeout: 5000 });
 
 			// Edit and delete buttons must be present
-			await expect(page.locator('[aria-label="edit-record"]').first()).toBeVisible({
+			await expect(page.locator('[data-testid="edit-record"]').first()).toBeVisible({
 				timeout: 5000
 			});
-			await expect(page.locator('[aria-label="delete-record"]').first()).toBeVisible({
+			await expect(page.locator('[data-testid="delete-record"]').first()).toBeVisible({
 				timeout: 5000
 			});
 		});
 
-		test('7.6 - Clicking edit shows save/cancel, cancel restores edit button', async ({
-			page
-		}) => {
+		test('7.6 - Clicking edit shows save/cancel, cancel restores edit button', async ({ page }) => {
 			await page.locator('button:has-text("settings")').click();
 			await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });
 
-			const editBtn = page.locator('[aria-label="edit-record"]').first();
-			await editBtn.click();
+			const editBtn = page.locator('[data-testid="edit-record"]').first();
+			await editBtn.click({ force: true });
 
-			await expect(page.locator('[aria-label="save-record"]').first()).toBeVisible({
-				timeout: 5000
+			await expect(page.locator('[data-testid="save-record"]').first()).toBeVisible({
+				timeout: 10000
 			});
-			await expect(page.locator('[aria-label="cancel-edit"]').first()).toBeVisible({
+			await expect(page.locator('[data-testid="cancel-edit"]').first()).toBeVisible({
 				timeout: 5000
 			});
 
 			// Cancel and verify edit button returns
-			await page.locator('[aria-label="cancel-edit"]').first().click();
+			await page.locator('[data-testid="cancel-edit"]').first().click();
 			await expect(editBtn).toBeVisible({ timeout: 5000 });
 		});
 

@@ -7,25 +7,36 @@
 	import Button from '@smui/button';
 	import IconButton from '@smui/icon-button';
 
-	export let domains: Domain[] = [];
-	export let loaded = false;
+	let {
+		domains = [],
+		loaded = false
+	}: {
+		domains?: Domain[];
+		loaded?: boolean;
+	} = $props();
 
-	let sort: keyof Domain = 'tokenId';
-	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
-	let rowsPerPage = 5;
-	let currentPage = 0;
+	let sort: keyof Domain = $state('tokenId');
+	let sortDirection: Lowercase<keyof typeof SortValue> = $state('ascending');
+	let rowsPerPage = $state(5);
+	let currentPage = $state(0);
 
-	$: domainsLength = domains.length;
-	$: start = currentPage * rowsPerPage;
-	$: end = Math.min(start + rowsPerPage, domainsLength);
-	$: slice = domains.slice(start, end);
-	$: lastPage = Math.max(Math.ceil(domainsLength / rowsPerPage) - 1, 0);
-	$: if (currentPage > lastPage) {
-		currentPage = lastPage;
-	}
-	$: if (domainsLength > 0) {
-		handleSort();
-	}
+	let domainsLength = $derived(domains.length);
+	let start = $derived(currentPage * rowsPerPage);
+	let end = $derived(Math.min(start + rowsPerPage, domainsLength));
+	let slice = $derived(domains.slice(start, end));
+	let lastPage = $derived(Math.max(Math.ceil(domainsLength / rowsPerPage) - 1, 0));
+
+	$effect(() => {
+		if (currentPage > lastPage) {
+			currentPage = lastPage;
+		}
+	});
+
+	$effect(() => {
+		if (domainsLength > 0) {
+			handleSort();
+		}
+	});
 
 	function handleSort() {
 		domains.sort((a, b) => {
@@ -43,7 +54,7 @@
 	sortable
 	bind:sort
 	bind:sortDirection
-	on:SMUIDataTable:sorted={handleSort}
+	onSMUIDataTableSorted={handleSort}
 	table$aria-label="Domain list"
 	class="w-100"
 >
@@ -113,7 +124,7 @@
 		<IconButton
 			action="first-page"
 			title="First page"
-			on:click={() => (currentPage = 0)}
+			onclick={() => (currentPage = 0)}
 			disabled={currentPage === 0}
 			aria-label="first page"
 		>
@@ -122,7 +133,7 @@
 		<IconButton
 			action="prev-page"
 			title="Prev page"
-			on:click={() => currentPage--}
+			onclick={() => currentPage--}
 			disabled={currentPage === 0}
 			aria-label="previous page"
 		>
@@ -131,7 +142,7 @@
 		<IconButton
 			action="next-page"
 			title="Next page"
-			on:click={() => currentPage++}
+			onclick={() => currentPage++}
 			disabled={currentPage === lastPage}
 			aria-label="next page"
 		>
@@ -140,7 +151,7 @@
 		<IconButton
 			action="last-page"
 			title="Last page"
-			on:click={() => (currentPage = lastPage)}
+			onclick={() => (currentPage = lastPage)}
 			disabled={currentPage === lastPage}
 			aria-label="last page"
 		>

@@ -4,18 +4,30 @@
 	import { goto } from '$app/navigation';
 	import { writable } from 'svelte/store';
 
-	export let label: string;
-	export let value: string;
-	export let href: string | undefined = undefined;
-	export let type: 'text' | 'url' = href ? 'url' : 'text';
-	export let ellipsis: boolean = false;
-	export let openInNewTab: boolean = true;
-	export let className: string | undefined = undefined;
+	let {
+		label,
+		value,
+		href = undefined,
+		type: explicitType = undefined,
+		ellipsis = false,
+		openInNewTab = true,
+		class: className = undefined
+	}: {
+		label: string;
+		value: string;
+		href?: string | undefined;
+		type?: 'text' | 'url';
+		ellipsis?: boolean;
+		openInNewTab?: boolean;
+		class?: string | undefined;
+	} = $props();
 
-	let icon = writable(type === 'url' ? 'open-in-new' : 'content-copy');
+	let computedType = $derived(explicitType ?? (href ? 'url' : 'text'));
+
+	let icon = writable(computedType === 'url' ? 'open-in-new' : 'content-copy');
 
 	const action = () => {
-		if (type === 'url') {
+		if (computedType === 'url') {
 			if (openInNewTab) window.open(href, '_blank');
 			else goto(value);
 		} else {
@@ -24,11 +36,9 @@
 			setTimeout(() => icon.set('content-copy'), 1000);
 		}
 	};
-
-	export { className as class };
 </script>
 
-<Button on:click={action} variant="outlined" class={`chip ${className || ''}`}>
+<Button onclick={action} variant="outlined" class={`chip ${className || ''}`}>
 	<Label>
 		<div class="container">
 			<span class="label">{label}</span>

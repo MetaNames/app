@@ -12,7 +12,7 @@ $text-color: #d5ccff;
 );
 @use '@material/theme/styles';
 
-@import '../typography';
+@use '../typography' as *;
 
 html,
 body {

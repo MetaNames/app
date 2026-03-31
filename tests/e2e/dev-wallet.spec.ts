@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { TEST_PRIVATE_KEY, loginOnCurrentPage } from './helpers';
+import { loginOnCurrentPage } from './helpers';
 
 // Use the .mdc-top-app-bar__action-item class to target the header button specifically.
 // This avoids matching the ConnectionRequired body button on protected pages.
@@ -11,7 +11,12 @@ const headerBtnSelector = 'button.mdc-top-app-bar__action-item';
 async function gotoHomeReliably(page: import('@playwright/test').Page) {
 	await page.goto('/', { waitUntil: 'networkidle' });
 	// CI: SvelteKit dev server can 500 on cold start. Detect and retry.
-	if (await page.locator('text=Internal Error').isVisible({ timeout: 1000 }).catch(() => false)) {
+	if (
+		await page
+			.locator('text=Internal Error')
+			.isVisible({ timeout: 1000 })
+			.catch(() => false)
+	) {
 		await page.waitForTimeout(2000);
 		await page.reload({ waitUntil: 'networkidle' });
 	}

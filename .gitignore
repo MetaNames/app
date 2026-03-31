@@ -18,5 +18,5 @@ vite.config.ts.timestamp-*
 
 # Sentry Config File
 .sentryclirc
-coverage/
+coverage/*
 test-results/

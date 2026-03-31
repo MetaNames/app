@@ -10,7 +10,7 @@
 );
 @use '@material/theme/styles';
 
-@import './typography';
+@use './typography' as *;
 
 html,
 body {

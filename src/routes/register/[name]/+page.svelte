@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { alertMessage } from '$lib/stores/main';
 	import { fetchApiJson } from 'src/lib/api';
-	import { metaNamesSdk } from 'src/lib/stores/sdk';
+	import { metaNamesSdk } from '$lib/stores/sdk';
 	import type { DomainCheckResponse, DomainPaymentParams } from 'src/lib/types';
 	import { writable } from 'svelte/store';
 
@@ -12,19 +12,18 @@
 	import { onMount } from 'svelte';
 	import DomainPayment from 'src/components/DomainPayment.svelte';
 	import { alertTransactionAndFetchResult } from 'src/lib';
-	import { track } from '@vercel/analytics';
 	import { page } from '$app/stores';
 
 	const isDomainPresent = writable<boolean>();
 	const isParentPresent = writable<boolean>();
 	const analyzed = writable<IDomainAnalyzed>();
 
-	const nameParam = $page.params.name;
+	const nameParam = $page.params.name as string;
 
-	$: domainName = $analyzed?.name;
-	$: parentDomainName = $analyzed?.parentId;
-	$: pageName = domainName + ' | ';
-	$: tld = $analyzed?.tld;
+	let domainName = $derived($analyzed?.name);
+	let parentDomainName = $derived($analyzed?.parentId);
+	let pageName = $derived(domainName + ' | ');
+	let tld = $derived($analyzed?.tld);
 
 	async function payment(params: DomainPaymentParams) {
 		const transactionIntent = await $metaNamesSdk.domainRepository.register({
@@ -41,12 +40,6 @@
 				message: 'Domain registered successfully!',
 				action: { label: 'Go to profile', callback: () => goto('/profile') }
 			});
-
-		track('domain_registered', {
-			domain: domainName,
-			years: params.years,
-			byoc: params.byocSymbol
-		});
 
 		return goto(`/domain/${domainName}`);
 	}
@@ -88,7 +81,7 @@
 	<title>{pageName}Meta Names</title>
 </svelte:head>
 
-<div class="content checkout" data-testid="checkout-content">
+<div class="content checkout">
 	{#if $isDomainPresent === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}

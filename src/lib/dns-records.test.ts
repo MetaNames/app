@@ -110,7 +110,9 @@ describe('SDK - DNS Records', () => {
 		});
 
 		it('should contain valid RecordClassEnum values when mapped', () => {
-			const enumValues = socialRecords.map((r) => RecordClassEnum[r as keyof typeof RecordClassEnum]);
+			const enumValues = socialRecords.map(
+				(r) => RecordClassEnum[r as keyof typeof RecordClassEnum]
+			);
 			expect(enumValues).toContain(RecordClassEnum.Twitter);
 			expect(enumValues).toContain(RecordClassEnum.Discord);
 		});
@@ -130,7 +132,9 @@ describe('SDK - DNS Records', () => {
 		});
 
 		it('should contain valid RecordClassEnum values when mapped', () => {
-			const enumValues = profileRecords.map((r) => RecordClassEnum[r as keyof typeof RecordClassEnum]);
+			const enumValues = profileRecords.map(
+				(r) => RecordClassEnum[r as keyof typeof RecordClassEnum]
+			);
 			expect(enumValues).toContain(RecordClassEnum.Bio);
 			expect(enumValues).toContain(RecordClassEnum.Email);
 			expect(enumValues).toContain(RecordClassEnum.Uri);

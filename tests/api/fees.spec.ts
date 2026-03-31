@@ -19,10 +19,9 @@ test.describe('Feature 9: API Endpoints - Fees', () => {
 			const domainName = `testfees${Date.now()}`;
 
 			// Give blockchain time to respond on testnet
-			const response = await request.get(
-				`${baseUrl}/api/register/${domainName}/fees/TEST_COIN`,
-				{ timeout: 30000 }
-			);
+			const response = await request.get(`${baseUrl}/api/register/${domainName}/fees/TEST_COIN`, {
+				timeout: 30000
+			});
 
 			expect(response.ok()).toBeTruthy();
 			const data = await response.json();

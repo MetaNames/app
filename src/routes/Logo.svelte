@@ -1,9 +1,11 @@
 <script lang="ts">
-	export let color: 'dark' | 'light' = 'light';
+	let { color = 'light' }: { color?: 'dark' | 'light' } = $props();
 
-	const cssColor = color === 'dark' ? 'var(--mdc-theme-on-surface)' : 'var(--mdc-theme-on-primary)';
+	let cssColor = $derived(
+		color === 'dark' ? 'var(--mdc-theme-on-surface)' : 'var(--mdc-theme-on-primary)'
+	);
 
-	const style = `fill: ${cssColor};`;
+	let style = $derived(`fill: ${cssColor};`);
 </script>
 
 <svg

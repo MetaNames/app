@@ -11,24 +11,29 @@
 
 	const validator = $metaNamesSdk.domainRepository.domainValidator;
 
-	let domain: DomainModel | null | undefined;
-	let domainName: string = '';
-	let nameSearched: string = '';
-	let isLoading: boolean = false;
+	let domain: DomainModel | null | undefined = $state();
+	let domainName: string = $state('');
+	let nameSearched: string = $state('');
+	let isLoading: boolean = $state(false);
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let requestId = 0;
 
-	$: errors = invalid ? validator.getErrors() : [];
-	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
-	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
+	let invalid = $derived(
+		domainName !== '' && !validator.validate(domainName, { raiseError: false })
+	);
+	let errors = $derived(invalid ? validator.getErrors() : []);
+	let nameSearchedLabel = $derived(
+		nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null
+	);
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	function debounce(_domainName: string) {
+	function debounce() {
 		clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 
-	$: debounce(domainName);
+	$effect(() => {
+		debounce();
+	});
 
 	async function search(submit = false) {
 		if (invalid) return;
@@ -52,13 +57,14 @@
 		}
 	}
 
-	async function submit() {
+	async function submit(event: Event) {
+		event.preventDefault();
 		await search(true);
 	}
 </script>
 
 <div class="search-container">
-	<form on:submit|preventDefault={submit}>
+	<form onsubmit={submit}>
 		<Textfield
 			class="domain-input"
 			variant="outlined"
@@ -97,23 +103,23 @@
 			</CardContent>
 		</Card>
 	{:else if domain}
-		<a class="domain-link" href={`/domain/${domain.name}`} data-testid="domain-result-registered">
+		<a class="domain-link" href={`/domain/${domain.name}`}>
 			<Card>
 				<CardContent>
 					<div class="card-content">
 						<span>{nameSearchedLabel}</span>
-						<span class="chip registered" data-testid="domain-status-registered">Registered</span>
+						<span class="chip registered">Registered</span>
 					</div>
 				</CardContent>
 			</Card>
 		</a>
 	{:else if domain === null}
-		<a class="domain-link" href={`/register/${nameSearched}`} data-testid="domain-result-available">
+		<a class="domain-link" href={`/register/${nameSearched}`}>
 			<Card>
 				<CardContent>
 					<div class="card-content">
 						<span>{nameSearchedLabel}</span>
-						<span class="chip available" data-testid="domain-status-available">Available</span>
+						<span class="chip available">Available</span>
 					</div>
 				</CardContent>
 			</Card>

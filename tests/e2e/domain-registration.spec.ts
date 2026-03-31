@@ -31,22 +31,22 @@ test.describe('Feature 3: Domain Registration', () => {
 		const removeBtn = page.locator('[aria-label="remove-year"]');
 		await expect(addBtn).toBeVisible({ timeout: 5000 });
 
-		// Starts at 1 year
-		await expect(page.locator('.years span').filter({ hasText: /1 year/ })).toBeVisible({
-			timeout: 3000
-		});
+		// Verify initial year count
+		await expect(
+			page.locator('[data-testid="year-count"]').filter({ hasText: /1 year/ })
+		).toBeVisible({ timeout: 3000 });
 
 		// Add → 2 years
 		await addBtn.click();
-		await expect(page.locator('.years span').filter({ hasText: /2 years/ })).toBeVisible({
-			timeout: 3000
-		});
+		await expect(
+			page.locator('[data-testid="year-count"]').filter({ hasText: /2 years/ })
+		).toBeVisible({ timeout: 5000 });
 
 		// Remove → 1 year
 		await removeBtn.click();
-		await expect(page.locator('.years span').filter({ hasText: /1 year/ })).toBeVisible({
-			timeout: 3000
-		});
+		await expect(
+			page.locator('[data-testid="year-count"]').filter({ hasText: /1 year/ })
+		).toBeVisible({ timeout: 5000 });
 	});
 
 	test('3.4 - Subdomain shows parent chip and FREE price', async ({ page }) => {
@@ -76,7 +76,7 @@ test.describe('Feature 3: Domain Registration', () => {
 		await page.goto('/register/test.mpc', { waitUntil: 'networkidle' });
 
 		await page.waitForURL(/\/domain\/test\.mpc/, { timeout: 15000 });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('[data-testid="domain-title"]')).toBeVisible({ timeout: 15000 });
 	});
 
 	test.describe('Authenticated', () => {

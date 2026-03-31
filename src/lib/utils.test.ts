@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 // Mock Sentry
 vi.mock('@sentry/sveltekit', () => ({
@@ -23,7 +23,13 @@ vi.mock('date-fns', () => ({
 	})
 }));
 
-import { formatDate, isValidURL, validAddress, removeHTTPIfPresent, formatDateToRelativeDate } from './utils';
+import {
+	formatDate,
+	isValidURL,
+	validAddress,
+	removeHTTPIfPresent,
+	formatDateToRelativeDate
+} from './utils';
 
 describe('Utils', () => {
 	describe('formatDate', () => {
@@ -85,7 +91,9 @@ describe('Utils', () => {
 	describe('removeHTTPIfPresent', () => {
 		it('should remove https:// prefix', () => {
 			expect(removeHTTPIfPresent('https://example.com')).toBe('example.com');
-			expect(removeHTTPIfPresent('https://subdomain.example.com/path')).toBe('subdomain.example.com/path');
+			expect(removeHTTPIfPresent('https://subdomain.example.com/path')).toBe(
+				'subdomain.example.com/path'
+			);
 		});
 
 		it('should remove http:// prefix', () => {

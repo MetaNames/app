@@ -9,17 +9,17 @@
 	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.png';
 	import ledgerWalletLogo from '$lib/assets/images/ledger-wallet-white.png';
 
-	import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 	import { PartisiaLedgerClient } from '@metanames/sdk/dist/transactions/ledger';
 
 	import 'src/styles/wallet-connect.scss';
-	import Button from '@smui/button';
+	import Button, { Label } from '@smui/button';
+	import Textfield from '@smui/textfield';
 
-	let menu: Menu;
-	let toggleOpen = false;
-	let devPrivateKey = '';
+	let menu: Menu | undefined = $state();
+	let toggleOpen = $state(false);
+	let devPrivateKey = $state('');
 
-	$: isTestnet = config.environment === 'test';
+	let isTestnet = $derived(config.environment === 'test');
 
 	async function connectWithMetaMaskWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
@@ -43,6 +43,7 @@
 	async function connectWithLedgerWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
 		try {
+			const { default: TransportWebUSB } = await import('@ledgerhq/hw-transport-webusb');
 			const transport = await TransportWebUSB.create();
 
 			metaNamesSdk.update((sdk) => {
@@ -67,7 +68,7 @@
 			if (!client.connection) throw new Error('Connection failed');
 
 			metaNamesSdk.update((sdk) => {
-				// @ts-ignore
+				// @ts-expect-error SDK type mismatch
 				sdk.setSigningStrategy('partisiaSdk', client);
 				return sdk;
 			});
@@ -85,9 +86,8 @@
 
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
 		try {
-			const { privateKeyToAccountAddress } = await import(
-				'partisia-blockchain-applications-crypto/lib/main/wallet'
-			);
+			const { privateKeyToAccountAddress } =
+				await import('partisia-blockchain-applications-crypto/lib/main/wallet');
 			const address = await privateKeyToAccountAddress(devPrivateKey);
 			if (!address) {
 				alertMessage.set('Invalid private key');
@@ -101,7 +101,6 @@
 
 			walletAddress.set(address);
 			devPrivateKey = '';
-			toggleMenu();
 		} catch (e) {
 			alertMessage.set("Couldn't connect with private key");
 			console.log(e);
@@ -123,35 +122,43 @@
 
 	function toggleMenu() {
 		toggleOpen = !toggleOpen;
-		menu.setOpen(toggleOpen);
+		menu?.setOpen(toggleOpen);
 	}
 
-	export let anchor: HTMLDivElement;
-	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
-	export let testid: string = '';
+	interface Props {
+		connectButtonVariant?: 'raised' | 'unelevated' | 'outlined';
+		testid?: string;
+		buttonLabelContent?: import('svelte').Snippet;
+		connectedMenuItems?: import('svelte').Snippet;
+	}
+
+	let {
+		connectButtonVariant = 'raised',
+		testid = '',
+		buttonLabelContent,
+		connectedMenuItems
+	}: Props = $props();
 </script>
 
-<Button variant={connectButtonVariant} on:click={toggleMenu} {testid}>
-	<slot name="buttonLabel">Connect</slot>
+<Button variant={connectButtonVariant} onclick={toggleMenu} data-testid={testid}>
+	{#if buttonLabelContent}{@render buttonLabelContent()}{:else}Connect{/if}
 </Button>
 <Menu
 	bind:this={menu}
-	on:SMUIMenuSurface:closed={() => {
+	onSMUIMenuSurfaceClosed={() => {
 		toggleOpen = false;
 	}}
 	class="menu-floating-right"
-	anchor={true}
-	bind:anchorElement={anchor}
 	anchorCorner="BOTTOM_LEFT"
 >
 	<List>
 		{#if $walletConnected}
-			<slot name="connectedMenuIems" />
-			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
+			{@render connectedMenuItems?.()}
+			<Item onSMUIAction={async () => disconnectWallet().then(toggleMenu)}>
 				<Text>Disconnect</Text>
 			</Item>
 		{:else}
-			<Item on:SMUI:action={connectWithMetaMaskWallet}>
+			<Item onSMUIAction={connectWithMetaMaskWallet}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
@@ -159,7 +166,7 @@
 					</div>
 				</Text>
 			</Item>
-			<Item on:SMUI:action={connectWithPartisiaWallet}>
+			<Item onSMUIAction={connectWithPartisiaWallet}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
@@ -167,7 +174,7 @@
 					</div>
 				</Text>
 			</Item>
-			<Item on:SMUI:action={connectWithLedgerWallet}>
+			<Item onSMUIAction={connectWithLedgerWallet}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
@@ -183,22 +190,24 @@
 						<span>Dev Private Key</span>
 					</div>
 					<div class="dev-key-input-row">
-						<input
+						<Textfield
 							class="dev-key-input"
 							type="password"
 							placeholder="Private key (64 hex chars)..."
 							bind:value={devPrivateKey}
-							on:keydown={(e) => e.key === 'Enter' && connectWithPrivateKey()}
-							on:click|stopPropagation
-							on:keydown|stopPropagation
+							variant="outlined"
 						/>
-						<button
+						<Button
 							class="dev-key-connect"
-							on:click|stopPropagation={connectWithPrivateKey}
+							variant="raised"
+							onclick={(e) => {
+								e.stopPropagation();
+								connectWithPrivateKey();
+							}}
 							disabled={devPrivateKey.length !== 64}
 						>
-							Connect
-						</button>
+							<Label>Connect</Label>
+						</Button>
 					</div>
 				</li>
 			{/if}
@@ -245,38 +254,5 @@
 		display: flex;
 		gap: 0.5rem;
 		align-items: center;
-	}
-
-	.dev-key-input {
-		flex: 1;
-		padding: 0.4rem 0.5rem;
-		border: 1px solid #555;
-		border-radius: 0.25rem;
-		background: #1a1a2e;
-		color: white;
-		font-family: monospace;
-		font-size: 0.75rem;
-		min-width: 180px;
-
-		&::placeholder {
-			color: #777;
-		}
-	}
-
-	.dev-key-connect {
-		padding: 0.4rem 0.75rem;
-		background: #4ecdc4;
-		color: #1a1a2e;
-		border: none;
-		border-radius: 0.25rem;
-		cursor: pointer;
-		font-weight: bold;
-		font-size: 0.75rem;
-		white-space: nowrap;
-
-		&:disabled {
-			opacity: 0.4;
-			cursor: not-allowed;
-		}
 	}
 </style>

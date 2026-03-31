@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock Sentry
 vi.mock('@sentry/sveltekit', () => ({
@@ -23,7 +23,7 @@ describe('API', () => {
 
 		it('should return data on successful response', async () => {
 			const mockData = { domain: 'mars', available: true };
-			
+
 			global.fetch = vi.fn().mockResolvedValue({
 				ok: true,
 				json: async () => mockData

@@ -23,23 +23,35 @@
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
 	import Button from '@smui/button';
 
-	export let domain: Domain;
-	export let isTld: boolean = false;
-	export let activeTab: DomainTab = DomainTab.details;
+	let {
+		domain,
+		isTld = false,
+		activeTab = DomainTab.details
+	}: {
+		domain: Domain;
+		isTld?: boolean;
+		activeTab?: DomainTab;
+	} = $props();
 
-	$: domainAvatar = domain.name && toSvg(domain.name, 200);
-	$: domainName = isTld ? domain.nameWithoutTLD : domain.name;
-	$: hasSocialRecords = Object.keys(domain.records).some((v) => socialRecords.includes(v));
-	$: hasProfileRecords = Object.keys(domain.records).some((v) => profileRecords.includes(v));
-	$: ownerConnected = $walletAddress === domain.owner;
+	let domainAvatar = $derived(domain.name && toSvg(domain.name, 200));
+	let domainName = $derived(isTld ? domain.nameWithoutTLD : domain.name);
+	let hasSocialRecords = $derived(
+		Object.keys(domain.records).some((v) => socialRecords.includes(v))
+	);
+	let hasProfileRecords = $derived(
+		Object.keys(domain.records).some((v) => profileRecords.includes(v))
+	);
+	let ownerConnected = $derived($walletAddress === domain.owner);
 
 	const records = Object.fromEntries(
 		Object.entries(domain.records).map(([key, value]) => [key, String(value)])
 	);
 	const ownerBrowserUrl = explorerAddressUrl(domain.owner);
 
-	let tabs: Array<DomainTab> = [DomainTab.details];
-	if (!isTld) tabs.push(DomainTab.settings);
+	let tabs = $derived<Array<DomainTab>>([
+		DomainTab.details,
+		...(isTld ? [] : [DomainTab.settings])
+	]);
 </script>
 
 <Card class="domain-container">
@@ -49,13 +61,15 @@
 				{@html domainAvatar}
 			</div>
 		</div>
-		<h5 class="domain">{domainName}</h5>
+		<h5 class="domain" data-testid="domain-title">{domainName}</h5>
 
 		{#if ownerConnected}
-			<TabBar {tabs} let:tab bind:active={activeTab}>
-				<Tab {tab}>
-					<Label>{tab}</Label>
-				</Tab>
+			<TabBar {tabs} bind:active={activeTab}>
+				{#snippet tab(tab)}
+					<Tab {tab}>
+						<Label>{tab}</Label>
+					</Tab>
+				{/snippet}
 			</TabBar>
 		{/if}
 

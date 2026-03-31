@@ -10,14 +10,16 @@
 	import Icon from 'src/components/Icon.svelte';
 	import Chip from 'src/components/Chip.svelte';
 
-	let domains: Domain[] = [];
-	let domainsFiltered: Domain[] = [];
-	let loaded = false;
-	let search = '';
+	let domains: Domain[] = $state([]);
+	let domainsFiltered: Domain[] = $state([]);
+	let loaded = $state(false);
+	let search = $state('');
 
-	$: if (search !== '') {
-		domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
-	}
+	$effect(() => {
+		if (search !== '') {
+			domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
+		}
+	});
 
 	walletAddress.subscribe(async (address) => {
 		if (!address) return;
@@ -39,7 +41,7 @@
 
 		if (trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch))
 			return true;
-		else false;
+		return false;
 	}
 </script>
 
@@ -59,7 +61,7 @@
 				>
 					<svelte:fragment slot="trailingIcon">
 						<div class="close-icon">
-							<IconButton on:click={cleanSearch} aria-label="cancel">
+							<IconButton onclick={cleanSearch} aria-label="cancel">
 								<Icon icon="cancel" />
 							</IconButton>
 						</div>
