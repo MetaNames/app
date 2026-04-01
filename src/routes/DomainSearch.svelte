@@ -1,4 +1,41 @@
+<script context="module" lang="ts">
+	import type { Domain as SDKDomainModel } from '@metanames/sdk';
+
+	interface CacheEntry {
+		result: SDKDomainModel | null | undefined;
+		timestamp: number;
+	}
+
+	const searchCache = new Map<string, CacheEntry>();
+	const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+	const MAX_CACHE_SIZE = 100;
+
+	export function getCachedResult(domainName: string): SDKDomainModel | null | undefined {
+		const entry = searchCache.get(domainName);
+		if (entry) {
+			if (Date.now() - entry.timestamp < CACHE_TTL) {
+				return entry.result;
+			}
+			searchCache.delete(domainName);
+		}
+		return undefined;
+	}
+
+	export function setCachedResult(
+		domainName: string,
+		result: DomainModel | null | undefined
+	): void {
+		if (searchCache.size >= MAX_CACHE_SIZE) {
+			// FIFO eviction
+			const firstKey = searchCache.keys().next().value;
+			if (firstKey) searchCache.delete(firstKey);
+		}
+		searchCache.set(domainName, { result, timestamp: Date.now() });
+	}
+</script>
+
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
@@ -30,6 +67,10 @@
 
 	$: debounce(domainName);
 
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
+
 	async function search(submit = false) {
 		if (invalid) return;
 
@@ -42,12 +83,20 @@
 
 		const currentRequestId = ++requestId;
 		nameSearched = domainName.toLocaleLowerCase();
+
+		const cachedResult = getCachedResult(nameSearched);
+		if (cachedResult !== undefined) {
+			domain = cachedResult;
+			return;
+		}
+
 		isLoading = true;
 
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
 			domain = result;
+			setCachedResult(nameSearched, result);
 			isLoading = false;
 		}
 	}
