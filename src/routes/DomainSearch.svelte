@@ -1,9 +1,17 @@
+<script context="module" lang="ts">
+	import type { Domain as DomainModel } from '@metanames/sdk';
+
+	const MAX_CACHE_SIZE = 100;
+	const CACHE_TTL_MS = 60000;
+	const searchCache = new Map<string, { data: DomainModel | null; timestamp: number }>();
+</script>
+
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
 	import HelperText from '@smui/textfield/helper-text';
-	import type { Domain as DomainModel } from '@metanames/sdk';
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { goto } from '$app/navigation';
@@ -30,6 +38,10 @@
 
 	$: debounce(domainName);
 
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
+
 	async function search(submit = false) {
 		if (invalid) return;
 
@@ -44,7 +56,25 @@
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
-		const result = await $metaNamesSdk.domainRepository.find(domainName);
+		let result: DomainModel | null | undefined;
+		const now = Date.now();
+		const cached = searchCache.get(nameSearched);
+
+		if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+			result = cached.data;
+		} else {
+			result = await $metaNamesSdk.domainRepository.find(domainName);
+
+			if (result !== undefined) {
+				if (searchCache.size >= MAX_CACHE_SIZE) {
+					const firstKey = searchCache.keys().next().value;
+					if (firstKey !== undefined) {
+						searchCache.delete(firstKey);
+					}
+				}
+				searchCache.set(nameSearched, { data: result, timestamp: now });
+			}
+		}
 
 		if (currentRequestId === requestId) {
 			domain = result;
