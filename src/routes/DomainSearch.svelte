@@ -1,4 +1,13 @@
+<script context="module" lang="ts">
+	// TTL Cache for domain search results to prevent duplicate network requests
+	// Map key: domainName.toLowerCase(), value: { data: DomainModel | null, timestamp: number }
+	const domainCache = new Map<string, { data: import('@metanames/sdk').Domain | null; timestamp: number }>();
+	const CACHE_TTL = 60 * 1000; // 60 seconds
+	const MAX_CACHE_SIZE = 100; // Prevent unbounded memory growth
+</script>
+
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import Card, { Content as CardContent } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
 	import Textfield from '@smui/textfield';
@@ -44,13 +53,33 @@
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
+		// Check cache first
+		const cachedResult = domainCache.get(nameSearched);
+		if (cachedResult && Date.now() - cachedResult.timestamp < CACHE_TTL) {
+			domain = cachedResult.data;
+			isLoading = false;
+			return;
+		}
+
 		const result = await $metaNamesSdk.domainRepository.find(domainName);
 
 		if (currentRequestId === requestId) {
 			domain = result;
 			isLoading = false;
 		}
+
+		// Update cache even if we navigated away, to benefit future searches
+		if (domainCache.size >= MAX_CACHE_SIZE) {
+			// FIFO eviction: remove the oldest entry (first item in Map iteration order)
+			const firstKey = domainCache.keys().next().value;
+			if (firstKey) domainCache.delete(firstKey);
+		}
+		domainCache.set(nameSearched, { data: result, timestamp: Date.now() });
 	}
+
+	onDestroy(() => {
+		clearTimeout(debounceTimer);
+	});
 
 	async function submit() {
 		await search(true);
