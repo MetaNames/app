@@ -28,7 +28,12 @@
 	export { className as class };
 </script>
 
-<Button on:click={action} variant="outlined" class={`chip ${className || ''}`}>
+<Button
+	on:click={action}
+	variant="outlined"
+	class={`chip ${className || ''}`}
+	aria-label={type === 'url' ? 'Open link ' + label : 'Copy ' + label}
+>
 	<Label>
 		<div class="container">
 			<span class="label">{label}</span>
