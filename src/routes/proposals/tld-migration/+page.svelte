@@ -37,11 +37,11 @@
 		resposive: true,
 		plugins: {
 			legend: {
-				position: 'bottom' as 'bottom',
+				position: 'bottom' as const,
 				labels: {
 					color: '#ffffff',
 					font: {
-						weight: 'bold' as 'bold'
+						weight: 'bold' as const
 					}
 				}
 			}
