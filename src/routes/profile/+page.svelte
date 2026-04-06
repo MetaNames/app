@@ -59,9 +59,15 @@
 				>
 					<svelte:fragment slot="trailingIcon">
 						<div class="close-icon">
-							<IconButton on:click={cleanSearch} aria-label="cancel">
-								<Icon icon="cancel" />
-							</IconButton>
+							{#if search === ''}
+								<IconButton disabled aria-label="search">
+									<Icon icon="search" />
+								</IconButton>
+							{:else}
+								<IconButton on:click={cleanSearch} aria-label="clear search">
+									<Icon icon="cancel" />
+								</IconButton>
+							{/if}
 						</div>
 					</svelte:fragment>
 				</Textfield>
