@@ -1,3 +1,3 @@
-## 2024-10-24 - Accessible Icon Props and Loading Button State
-**Learning:** Svelte wrapper components (like `Icon.svelte`) must spread `$$restProps` to allow passing accessibility attributes (e.g., `aria-label`) from parent components. Without this, icons remain inaccessible to screen readers. Also, persistent "Success" states on buttons can be confusing; auto-resetting them after a timeout improves clarity.
-**Action:** Always include `{...$$restProps}` in wrapper components and implement auto-reset logic for temporary success states in interactive elements.
+## 2024-05-18 - Search Input Affordance
+**Learning:** Having a persistent "cancel" icon in search inputs when they are empty creates false affordances and confuses screen readers when labeled improperly.
+**Action:** Replace the cancel icon with a disabled "search" icon on empty state, and only show the cancel icon (with aria-label="clear search") when text is present.
