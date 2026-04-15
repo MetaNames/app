@@ -12,7 +12,9 @@ export const actionAddVotersPayload = (contractAbi: ContractAbi, voters: string[
 
 	const rpc = new FnRpcBuilder('add_voters', contractAbi);
 	const addresses = rpc.addVec();
-	voters.map((voter) => addresses.addAddress(Buffer.from(voter, 'hex')));
+	for (const voter of voters) {
+		addresses.addAddress(Buffer.from(voter, 'hex'));
+	}
 
 	return builderToBytesBe(rpc);
 };
@@ -23,7 +25,9 @@ export const actionRemoveVotersPayload = (contractAbi: ContractAbi, voters: stri
 
 	const rpc = new FnRpcBuilder('remove_voters', contractAbi);
 	const addresses = rpc.addVec();
-	voters.map((voter) => addresses.addAddress(Buffer.from(voter, 'hex')));
+	for (const voter of voters) {
+		addresses.addAddress(Buffer.from(voter, 'hex'));
+	}
 
 	return builderToBytesBe(rpc);
 };
