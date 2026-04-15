@@ -58,11 +58,19 @@
 					withTrailingIcon
 				>
 					<svelte:fragment slot="trailingIcon">
-						<div class="close-icon">
-							<IconButton on:click={cleanSearch} aria-label="cancel">
-								<Icon icon="cancel" />
-							</IconButton>
-						</div>
+						{#if search.length > 0}
+							<div class="close-icon">
+								<IconButton on:click={cleanSearch} aria-label="Clear search">
+									<Icon icon="cancel" />
+								</IconButton>
+							</div>
+						{:else}
+							<div class="search-icon">
+								<IconButton disabled aria-label="search">
+									<Icon icon="search" />
+								</IconButton>
+							</div>
+						{/if}
 					</svelte:fragment>
 				</Textfield>
 				<DomainsTable domains={domainsFiltered} {loaded} />
@@ -88,7 +96,8 @@
 		min-width: 50%;
 	}
 
-	.close-icon {
+	.close-icon,
+	.search-icon {
 		align-self: center;
 		opacity: 0.7;
 	}
