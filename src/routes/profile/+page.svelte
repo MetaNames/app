@@ -17,6 +17,8 @@
 
 	$: if (search !== '') {
 		domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
+	} else {
+		domainsFiltered = domains;
 	}
 
 	walletAddress.subscribe(async (address) => {
@@ -59,9 +61,15 @@
 				>
 					<svelte:fragment slot="trailingIcon">
 						<div class="close-icon">
-							<IconButton on:click={cleanSearch} aria-label="cancel">
-								<Icon icon="cancel" />
-							</IconButton>
+							{#if search === ''}
+								<IconButton aria-label="search" disabled>
+									<Icon icon="search" />
+								</IconButton>
+							{:else}
+								<IconButton on:click={cleanSearch} aria-label="clear search">
+									<Icon icon="cancel" />
+								</IconButton>
+							{/if}
 						</div>
 					</svelte:fragment>
 				</Textfield>
