@@ -17,6 +17,8 @@
 
 	$: if (search !== '') {
 		domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
+	} else {
+		domainsFiltered = domains;
 	}
 
 	walletAddress.subscribe(async (address) => {
@@ -39,7 +41,7 @@
 
 		if (trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch))
 			return true;
-		else false;
+		else return false;
 	}
 </script>
 
