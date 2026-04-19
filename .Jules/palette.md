@@ -2,3 +2,4 @@
 
 **Learning:** Async buttons that handle errors often fail to reset their error state on subsequent attempts. This leads to a confusing UX where a successful retry still displays the error icon, making the user believe the action failed again.
 **Action:** Always ensure that error flags (e.g., `hasError`) are reset at the _start_ of the async operation, not just set in the `catch` block.
+## 2026-04-19 - Textfield conditional Trailing Icon\n**Learning:** When conditionally rendering a trailing icon inside an SMUI `Textfield` component, the `withTrailingIcon` property must also be dynamically bound to the same condition (e.g. `withTrailingIcon={search !== ''}`) rather than a static boolean. If left static, the input's CSS padding will reserve space for the icon even when the icon is not rendered, resulting in awkward whitespace.\n**Action:** Ensure both the `{#if}` block around the icon and the `withTrailingIcon` prop share the exact same boolean expression.
