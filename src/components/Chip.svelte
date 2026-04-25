@@ -36,11 +36,11 @@
 		</div>
 	</Label>
 	{#if $icon === 'done'}
-		<Icon icon="done" align="right" />
+		<span role="img" aria-label="Copied"><Icon icon="done" align="right" /></span>
 	{:else if $icon === 'open-in-new'}
-		<Icon icon="open-in-new" align="right" />
+		<span role="img" aria-label="Open in new tab"><Icon icon="open-in-new" align="right" /></span>
 	{:else if $icon === 'content-copy'}
-		<Icon icon="content-copy" align="right" />
+		<span role="img" aria-label="Copy"><Icon icon="content-copy" align="right" /></span>
 	{/if}
 </Button>
 
