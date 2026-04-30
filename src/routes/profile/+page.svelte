@@ -17,6 +17,8 @@
 
 	$: if (search !== '') {
 		domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
+	} else {
+		domainsFiltered = domains;
 	}
 
 	walletAddress.subscribe(async (address) => {
@@ -37,9 +39,7 @@
 		const trimmedDomain = domain.trim().toLowerCase();
 		const trimmedSearch = search.trim().toLowerCase();
 
-		if (trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch))
-			return true;
-		else false;
+		return trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch);
 	}
 </script>
 
@@ -55,14 +55,16 @@
 					label="Search"
 					bind:value={search}
 					variant="outlined"
-					withTrailingIcon
+					withTrailingIcon={search !== ''}
 				>
 					<svelte:fragment slot="trailingIcon">
-						<div class="close-icon">
-							<IconButton on:click={cleanSearch} aria-label="cancel">
-								<Icon icon="cancel" />
-							</IconButton>
-						</div>
+						{#if search !== ''}
+							<div class="close-icon">
+								<IconButton on:click={cleanSearch} aria-label="Clear search input">
+									<Icon icon="cancel" />
+								</IconButton>
+							</div>
+						{/if}
 					</svelte:fragment>
 				</Textfield>
 				<DomainsTable domains={domainsFiltered} {loaded} />
