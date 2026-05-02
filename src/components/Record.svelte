@@ -5,6 +5,7 @@
 	import CharacterCounter from '@smui/textfield/character-counter';
 	import Textfield from '@smui/textfield';
 	import Icon from 'src/components/Icon.svelte';
+	import { onMount } from 'svelte';
 
 	import type { RecordRepository } from '@metanames/sdk';
 	import { alertMessage, refresh, walletConnected } from '$lib/stores/main';
@@ -18,6 +19,11 @@
 
 	let recordValue = String(value);
 	let dialogOpen = false;
+	let dialogId = '';
+
+	onMount(() => {
+		dialogId = Math.random().toString(36).substring(2, 9);
+	});
 
 	$: label = klass.toString();
 	$: recordClass = getRecordClassFrom(klass);
@@ -55,11 +61,11 @@
 <div class="record-container {editMode ? 'edit' : ''}">
 	<Dialog
 		bind:open={dialogOpen}
-		aria-labelledby="confirmation-title"
-		aria-describedby="confirmation-content"
+		aria-labelledby="confirmation-title-{dialogId}"
+		aria-describedby="confirmation-content-{dialogId}"
 	>
-		<Title id="simple-title">Confirm action</Title>
-		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Title id="confirmation-title-{dialogId}">Confirm action</Title>
+		<Content id="confirmation-content-{dialogId}">Do you really want to remove the record?</Content>
 		<Actions>
 			<Button>
 				<Label>No</Label>
