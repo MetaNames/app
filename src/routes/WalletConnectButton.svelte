@@ -97,51 +97,57 @@
 	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
 </script>
 
-<Button variant={connectButtonVariant} on:click={toggleMenu}>
-	<slot name="buttonLabel">Connect</slot>
-</Button>
-<Menu
-	bind:this={menu}
-	on:SMUIMenuSurface:closed={() => (toggleOpen = false)}
-	class="menu-floating-right"
-	anchor={true}
-	bind:anchorElement={anchor}
-	anchorCorner="BOTTOM_LEFT"
->
-	<List>
-		{#if $walletConnected}
-			<slot name="connectedMenuIems" />
-			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
-				<Text>Disconnect</Text>
-			</Item>
-		{:else}
-			<Item on:SMUI:action={connectWithMetaMaskWallet}>
-				<Text>
-					<div class="item">
-						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
-						<span>Meta Mask Wallet</span>
-					</div>
-				</Text>
-			</Item>
-			<Item on:SMUI:action={connectWithPartisiaWallet}>
-				<Text>
-					<div class="item">
-						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
-						<span>Partisia Wallet</span>
-					</div>
-				</Text>
-			</Item>
-			<Item on:SMUI:action={connectWithLedgerWallet}>
-				<Text>
-					<div class="item">
-						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
-						<span>Ledger</span>
-					</div>
-				</Text>
-			</Item>
-		{/if}
-	</List>
-</Menu>
+<div class="mdc-menu-surface--anchor" bind:this={anchor}>
+	<Button
+		variant={connectButtonVariant}
+		on:click={toggleMenu}
+		aria-haspopup="listbox"
+		aria-expanded={toggleOpen}
+	>
+		<slot name="buttonLabel">Connect</slot>
+	</Button>
+	<Menu
+		bind:this={menu}
+		on:SMUIMenuSurface:closed={() => (toggleOpen = false)}
+		anchor={true}
+		bind:anchorElement={anchor}
+		anchorCorner="BOTTOM_END"
+	>
+		<List>
+			{#if $walletConnected}
+				<slot name="connectedMenuIems" />
+				<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
+					<Text>Disconnect</Text>
+				</Item>
+			{:else}
+				<Item on:SMUI:action={connectWithMetaMaskWallet}>
+					<Text>
+						<div class="item">
+							<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
+							<span>Meta Mask Wallet</span>
+						</div>
+					</Text>
+				</Item>
+				<Item on:SMUI:action={connectWithPartisiaWallet}>
+					<Text>
+						<div class="item">
+							<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
+							<span>Partisia Wallet</span>
+						</div>
+					</Text>
+				</Item>
+				<Item on:SMUI:action={connectWithLedgerWallet}>
+					<Text>
+						<div class="item">
+							<img class="logo" src={ledgerWalletLogo} alt="ledger wallet logo" />
+							<span>Ledger</span>
+						</div>
+					</Text>
+				</Item>
+			{/if}
+		</List>
+	</Menu>
+</div>
 
 <style lang="scss">
 	.logo {
