@@ -1,11 +1,3 @@
-# Bolt's Journal
-
-## 2024-05-22 - Async Race Conditions
-
-**Learning:** Asynchronous typeahead searches must implement a request ID mechanism. Without it, stale responses can overwrite newer ones, leading to correct search terms displaying incorrect results.
-**Action:** Always use a request ID or cancellation token pattern when implementing async search/filter operations.
-
-## 2024-10-25 - Svelte Input Debouncing
-
-**Learning:** Using `on:keyup` for search input debouncing triggers unnecessary API calls on navigation keys (arrows, home, end) and misses changes from paste/cut. Svelte's reactive statements `$: debounce(value)` provide a robust, declarative way to trigger debouncing only when the value actually changes.
-**Action:** Replace `on:keyup` handlers with reactive statements for input debouncing to improve performance and correctness.
+## 2023-11-20 - Set Lookup and Early Exit Optimization
+**Learning:** In scenarios with list management such as fetching entries to be added or removed by cross-referencing two arrays and taking a limited slice (e.g. `owners.filter(owner => !voters.includes(owner)).slice(0, 50)`), using `.includes` inside a `.filter` results in O(N * M) complexity. Furthermore, `.filter` iterates over the entire array, even when we only need the first 50 results.
+**Action:** When filtering one array based on the contents of another and slicing the result, always convert the lookup array into a `Set` for O(1) lookups, and use a `for...of` loop with an early exit (`break`) once the slice limit is reached. This drops complexity to O(N + M) and minimizes loop iterations.
