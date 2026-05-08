@@ -25,7 +25,19 @@ export async function GET() {
 			?.setValue()
 			.values.map((voter) => voter.addressValue().value.toString('hex')) ?? [];
 
-	const votersToRemove = voters.filter((voter) => !owners.includes(voter)).slice(0, 50);
+	// Optimization: Convert the lookup array into a Set for O(1) lookup complexity.
+	const ownersSet = new Set(owners);
+
+	const votersToRemove = [];
+	// Optimization: Using a for loop instead of .filter().slice() allows for early exit
+	// as soon as we reach the 50 item limit, saving unnecessary iterations.
+	for (const voter of voters) {
+		if (!ownersSet.has(voter)) {
+			votersToRemove.push(voter);
+			if (votersToRemove.length === 50) break;
+		}
+	}
+
 	if (votersToRemove.length === 0) return json({ newVoters: votersToRemove }, { status: 200 });
 
 	const votingContract = await metaNamesSdk.contractRepository.getContract({
