@@ -9,3 +9,6 @@
 
 **Learning:** Using `on:keyup` for search input debouncing triggers unnecessary API calls on navigation keys (arrows, home, end) and misses changes from paste/cut. Svelte's reactive statements `$: debounce(value)` provide a robust, declarative way to trigger debouncing only when the value actually changes.
 **Action:** Replace `on:keyup` handlers with reactive statements for input debouncing to improve performance and correctness.
+## 2024-06-25 - Symmetric Endpoint Optimization
+**Learning:** When applying performance optimizations (like Set-based lookups) to API endpoints that manage symmetric actions (e.g., `voters/add` and `voters/remove`), it's crucial to identify and optimize both endpoints simultaneously to maintain consistent codebase efficiency. The SvelteKit endpoints for contract interactions often mirror logic.
+**Action:** Always `grep` for similar file names or endpoint patterns when identifying a bottleneck to see if the same logic is duplicated in a counterpart endpoint.
