@@ -9,3 +9,6 @@
 
 **Learning:** Using `on:keyup` for search input debouncing triggers unnecessary API calls on navigation keys (arrows, home, end) and misses changes from paste/cut. Svelte's reactive statements `$: debounce(value)` provide a robust, declarative way to trigger debouncing only when the value actually changes.
 **Action:** Replace `on:keyup` handlers with reactive statements for input debouncing to improve performance and correctness.
+## 2026-05-11 - Optimize Array Lookups with Sets
+**Learning:** When filtering large arrays against other arrays (like removing existing owners from a voter list), using `Array.includes` results in O(N*M) complexity. Converting the lookup array to a Set first reduces this to O(N).
+**Action:** Always convert lookup arrays to Sets before iterating or filtering over large datasets to prevent exponential performance degradation.
