@@ -23,7 +23,8 @@ export async function GET() {
 			?.setValue()
 			.values.map((voter) => voter.addressValue().value.toString('hex')) ?? [];
 
-	const newVoters = owners.filter((owner) => !voters.includes(owner)).slice(0, 50);
+	const votersSet = new Set(voters);
+	const newVoters = owners.filter((owner) => !votersSet.has(owner)).slice(0, 50);
 	if (newVoters.length === 0) return json({ newVoters }, { status: 200 });
 
 	const votingContract = await metaNamesSdk.contractRepository.getContract({
