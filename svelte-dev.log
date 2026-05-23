@@ -1,0 +1,83 @@
+
+> meta-names-app@1.0.0 dev /app
+> vite dev
+
+
+  VITE v5.4.21  ready in 2335 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+Internal server error: Error while preprocessing /app/src/routes/+layout.svelte - Cannot find module '/app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/transformers/typescript' imported from /app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/autoProcess.js
+  Plugin: vite-plugin-svelte
+  File: /app/src/routes/+layout.svelte
+      at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+      at moduleResolve (node:internal/modules/esm/resolve:861:10)
+      at defaultResolve (node:internal/modules/esm/resolve:985:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+      at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+      at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+      at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+      at TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+      at ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+      at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:235:31)
+Error [ERR_MODULE_NOT_FOUND]: Error while preprocessing /app/src/routes/+layout.svelte - Cannot find module '/app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/transformers/typescript' imported from /app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/autoProcess.js
+    at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+    at defaultResolve (node:internal/modules/esm/resolve:985:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+    at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+    at TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+    at ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+    at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:235:31)
+Internal server error: Error while preprocessing /app/src/routes/profile/+page.svelte - Cannot find module '/app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/transformers/typescript' imported from /app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/autoProcess.js
+  Plugin: vite-plugin-svelte
+  File: /app/src/routes/profile/+page.svelte
+      at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+      at moduleResolve (node:internal/modules/esm/resolve:861:10)
+      at defaultResolve (node:internal/modules/esm/resolve:985:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+      at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+      at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+      at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+      at TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+      at ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+      at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:235:31)
+Internal server error: Error while preprocessing /app/src/routes/+layout.svelte - Cannot find module '/app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/transformers/typescript' imported from /app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/autoProcess.js
+  Plugin: vite-plugin-svelte
+  File: /app/src/routes/+layout.svelte
+      at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+      at moduleResolve (node:internal/modules/esm/resolve:861:10)
+      at defaultResolve (node:internal/modules/esm/resolve:985:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+      at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+      at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+      at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+      at TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+      at ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+      at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:235:31)
+Error [ERR_MODULE_NOT_FOUND]: Error while preprocessing /app/src/routes/+layout.svelte - Cannot find module '/app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/transformers/typescript' imported from /app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/autoProcess.js
+    at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+    at defaultResolve (node:internal/modules/esm/resolve:985:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+    at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+    at TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+    at ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+    at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:235:31)
+7:47:27 PM [vite] Pre-transform error: Error while preprocessing /app/src/components/GoBackButton.svelte - Cannot find module '/app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/transformers/typescript' imported from /app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/autoProcess.js
+7:47:27 PM [vite] Error when evaluating SSR module /src/routes/+error.svelte:
+|- Error [ERR_MODULE_NOT_FOUND]: Error while preprocessing /app/src/components/GoBackButton.svelte - Cannot find module '/app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/transformers/typescript' imported from /app/node_modules/.pnpm/svelte-preprocess@6.0.4_@babel+core@7.29.0_postcss-load-config@3.1.4_postcss@8.5.15__po_dc3791a84fd2dc09149e6ff60390e8c1/node_modules/svelte-preprocess/dist/autoProcess.js
+    at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+    at defaultResolve (node:internal/modules/esm/resolve:985:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+    at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+    at TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+    at ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+    at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:235:31)
