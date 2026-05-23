@@ -22,8 +22,9 @@ export async function GET() {
 			.get('voters')
 			?.setValue()
 			.values.map((voter) => voter.addressValue().value.toString('hex')) ?? [];
+	const votersSet = new Set(voters); // ⚡ Bolt: Convert array to Set for O(1) lookup during filtering
 
-	const newVoters = owners.filter((owner) => !voters.includes(owner)).slice(0, 50);
+	const newVoters = owners.filter((owner) => !votersSet.has(owner)).slice(0, 50);
 	if (newVoters.length === 0) return json({ newVoters }, { status: 200 });
 
 	const votingContract = await metaNamesSdk.contractRepository.getContract({
