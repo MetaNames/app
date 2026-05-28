@@ -25,6 +25,16 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	function debounce(_domainName: string) {
 		clearTimeout(debounceTimer);
+
+		// ⚡ Bolt Optimization: Early return on empty or invalid input.
+		// Avoids scheduling unnecessary timers, prevents redundant API requests,
+		// and instantly clears stale domain and loading states to improve perceived performance.
+		if (_domainName === '' || invalid) {
+			domain = undefined;
+			isLoading = false;
+			requestId++;
+			return;
+		}
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 

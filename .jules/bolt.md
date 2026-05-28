@@ -9,3 +9,6 @@
 
 **Learning:** Using `on:keyup` for search input debouncing triggers unnecessary API calls on navigation keys (arrows, home, end) and misses changes from paste/cut. Svelte's reactive statements `$: debounce(value)` provide a robust, declarative way to trigger debouncing only when the value actually changes.
 **Action:** Replace `on:keyup` handlers with reactive statements for input debouncing to improve performance and correctness.
+## 2025-02-27 - Svelte Debounce Early Return
+**Learning:** In Svelte input debouncing using `setTimeout`, failing to immediately reset stale results and loading state when the input becomes empty or invalid leads to unneccessary timeouts and a sluggish UI feel.
+**Action:** Always implement an early return in the debounce function to instantly clear the timer, reset state, and prevent redundant API fetches when the input is invalid or cleared.
