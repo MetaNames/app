@@ -11,3 +11,7 @@ node_modules
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+static/
+.Jules/palette.md
+.jules/palette.md
+.jules/bolt.md
