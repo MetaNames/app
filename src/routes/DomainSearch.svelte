@@ -22,9 +22,19 @@
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
 	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	function debounce(_domainName: string) {
 		clearTimeout(debounceTimer);
+
+		// Performance optimization: Reset state and skip scheduling a search API call if the input is empty or invalid.
+		// This prevents stale network requests and unnecessary UI loading states.
+		if (_domainName === '' || invalid) {
+			domain = undefined;
+			nameSearched = '';
+			isLoading = false;
+			requestId++;
+			return;
+		}
+
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 
