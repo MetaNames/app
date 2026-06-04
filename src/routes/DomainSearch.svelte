@@ -25,6 +25,16 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	function debounce(_domainName: string) {
 		clearTimeout(debounceTimer);
+
+		// Performance optimization: when input is cleared, immediately reset
+		// state and cancel any in-flight searches via requestId.
+		if (_domainName === '') {
+			domain = undefined;
+			isLoading = false;
+			requestId++;
+			return;
+		}
+
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 
