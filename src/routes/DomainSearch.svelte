@@ -23,12 +23,19 @@
 	$: nameSearchedLabel = nameSearched ? `${nameSearched}.${$metaNamesSdk.config.tld}` : null;
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	function debounce(_domainName: string) {
+	function debounce(_domainName: string, _invalid: boolean) {
 		clearTimeout(debounceTimer);
+		if (_domainName === '' || _invalid) {
+			domain = undefined;
+			isLoading = false;
+			nameSearched = '';
+			requestId++;
+			return;
+		}
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 
-	$: debounce(domainName);
+	$: debounce(domainName, invalid);
 
 	async function search(submit = false) {
 		if (invalid) return;
