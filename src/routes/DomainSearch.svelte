@@ -25,6 +25,13 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	function debounce(_domainName: string) {
 		clearTimeout(debounceTimer);
+		if (_domainName === '') {
+			domain = undefined;
+			nameSearched = '';
+			isLoading = false;
+			requestId++;
+			return;
+		}
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 
@@ -70,7 +77,7 @@
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
-					<IconButton aria-label="search">
+					<IconButton on:click={submit} aria-label="search">
 						<Icon icon="search" />
 					</IconButton>
 				</div>
