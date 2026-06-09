@@ -25,6 +25,12 @@
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	function debounce(_domainName: string) {
 		clearTimeout(debounceTimer);
+		if (_domainName === '') {
+			domain = undefined;
+			nameSearched = '';
+			isLoading = false;
+			return;
+		}
 		debounceTimer = setTimeout(async () => await search(), 400);
 	}
 
@@ -65,15 +71,17 @@
 			bind:value={domainName}
 			bind:invalid
 			label="Domain name"
-			withTrailingIcon
+			withTrailingIcon={domainName !== ''}
 			autofocus
 		>
 			<svelte:fragment slot="trailingIcon">
-				<div class="submit">
-					<IconButton aria-label="search">
-						<Icon icon="search" />
-					</IconButton>
-				</div>
+				{#if domainName !== ''}
+					<div class="submit">
+						<IconButton aria-label="clear search" on:click={() => (domainName = '')}>
+							<Icon icon="clear" />
+						</IconButton>
+					</div>
+				{/if}
 			</svelte:fragment>
 			<svelte:fragment slot="helper">
 				{#if errors.length > 0}
