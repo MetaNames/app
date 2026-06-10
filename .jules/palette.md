@@ -1,3 +1,7 @@
 ## 2024-10-24 - Accessible Icon Props and Loading Button State
 **Learning:** Svelte wrapper components (like `Icon.svelte`) must spread `$$restProps` to allow passing accessibility attributes (e.g., `aria-label`) from parent components. Without this, icons remain inaccessible to screen readers. Also, persistent "Success" states on buttons can be confusing; auto-resetting them after a timeout improves clarity.
 **Action:** Always include `{...$$restProps}` in wrapper components and implement auto-reset logic for temporary success states in interactive elements.
+
+## 2024-10-24 - Search Input Trailing Icons and State Resets
+**Learning:** When using SMUI `Textfield` components with a trailing clear icon, binding the icon's visibility solely via conditionally rendering the nested `<IconButton>` isn't enough; the parent `Textfield`'s `withTrailingIcon` prop must also be dynamically bound (e.g., `withTrailingIcon={search !== ''}`) to ensure proper layout updates. Additionally, when using Svelte reactive statements to filter lists based on search input, failing to explicitly handle the empty state (via an `else` block) leaves the list permanently filtered even after the search is cleared.
+**Action:** Always dynamically bind `withTrailingIcon` to the same condition used to render the trailing icon, and ensure reactive filtering logic includes an explicit fallback to reset state when inputs become empty.
