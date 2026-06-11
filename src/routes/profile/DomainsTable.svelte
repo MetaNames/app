@@ -29,11 +29,15 @@
 
 	function handleSort() {
 		domains.sort((a, b) => {
-			const [aVal, bVal] = [a[sort], b[sort]][
-				sortDirection === 'ascending' ? 'slice' : 'reverse'
-			]();
-			if (typeof aVal === 'string' && typeof bVal === 'string') return aVal.localeCompare(bVal);
-			return Number(aVal) - Number(bVal);
+			// Bolt: Avoid temporary array and destructuring to reduce GC overhead
+			const modifier = sortDirection === 'ascending' ? 1 : -1;
+			const aVal = a[sort];
+			const bVal = b[sort];
+
+			if (typeof aVal === 'string' && typeof bVal === 'string') {
+				return aVal.localeCompare(bVal) * modifier;
+			}
+			return (Number(aVal) - Number(bVal)) * modifier;
 		});
 		domains = domains;
 	}
