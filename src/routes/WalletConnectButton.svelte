@@ -97,7 +97,12 @@
 	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
 </script>
 
-<Button variant={connectButtonVariant} on:click={toggleMenu}>
+<Button
+	variant={connectButtonVariant}
+	on:click={toggleMenu}
+	aria-haspopup="menu"
+	aria-expanded={toggleOpen}
+>
 	<slot name="buttonLabel">Connect</slot>
 </Button>
 <Menu
