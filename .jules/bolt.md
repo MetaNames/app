@@ -9,3 +9,8 @@
 
 **Learning:** Using `on:keyup` for search input debouncing triggers unnecessary API calls on navigation keys (arrows, home, end) and misses changes from paste/cut. Svelte's reactive statements `$: debounce(value)` provide a robust, declarative way to trigger debouncing only when the value actually changes.
 **Action:** Replace `on:keyup` handlers with reactive statements for input debouncing to improve performance and correctness.
+
+## 2024-05-24 - Array Intersection Complexity
+
+**Learning:** When filtering or comparing elements between two potentially large arrays (e.g., `owners.filter(owner => !voters.includes(owner))`), `Array.prototype.includes()` nested inside an array iteration method creates O(N\*M) time complexity.
+**Action:** Always convert the second array to a `Set` before the loop (e.g., `const votersSet = new Set(voters)`) to enable O(1) lookups via `Set.prototype.has()`, reducing the overall time complexity to O(N+M).
