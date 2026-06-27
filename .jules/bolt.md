@@ -9,3 +9,7 @@
 
 **Learning:** Using `on:keyup` for search input debouncing triggers unnecessary API calls on navigation keys (arrows, home, end) and misses changes from paste/cut. Svelte's reactive statements `$: debounce(value)` provide a robust, declarative way to trigger debouncing only when the value actually changes.
 **Action:** Replace `on:keyup` handlers with reactive statements for input debouncing to improve performance and correctness.
+
+## 2026-06-27 - O(N*M) Array Filtering and Static Mappings
+**Learning:** Using `Array.prototype.includes()` inside `Array.prototype.filter()` introduces O(N*M) complexity which is detrimental for large datasets (e.g. comparing `owners` against `voters`). Additionally, static configurations like `metaNamesSdk.config.byoc` should be mapped at the module level rather than on every request.
+**Action:** Precompute an O(1) `Set` before filtering to optimize array comparisons to O(N). Move static module configurations to module-level sets or constants.
