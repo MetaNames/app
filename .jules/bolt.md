@@ -9,3 +9,8 @@
 
 **Learning:** Using `on:keyup` for search input debouncing triggers unnecessary API calls on navigation keys (arrows, home, end) and misses changes from paste/cut. Svelte's reactive statements `$: debounce(value)` provide a robust, declarative way to trigger debouncing only when the value actually changes.
 **Action:** Replace `on:keyup` handlers with reactive statements for input debouncing to improve performance and correctness.
+
+## 2024-10-25 - Static configuration caching
+
+**Learning:** In request handlers like `GET` in SvelteKit `+server.ts` files, deriving values from static configurations (like `metaNamesSdk.config.byoc.map`) on every request causes unnecessary overhead.
+**Action:** Move static mapping logic out of the request handler and compute it once at module initialization, preferably storing it in a `Set` for O(1) lookup.
