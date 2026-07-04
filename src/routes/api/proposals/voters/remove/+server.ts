@@ -25,7 +25,9 @@ export async function GET() {
 			?.setValue()
 			.values.map((voter) => voter.addressValue().value.toString('hex')) ?? [];
 
-	const votersToRemove = voters.filter((voter) => !owners.includes(voter)).slice(0, 50);
+	// ⚡ Bolt: Use Set for O(1) lookup to avoid O(N*M) complexity in large arrays
+	const ownersSet = new Set(owners);
+	const votersToRemove = voters.filter((voter) => !ownersSet.has(voter)).slice(0, 50);
 	if (votersToRemove.length === 0) return json({ newVoters: votersToRemove }, { status: 200 });
 
 	const votingContract = await metaNamesSdk.contractRepository.getContract({

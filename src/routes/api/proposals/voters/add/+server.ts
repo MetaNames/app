@@ -23,7 +23,9 @@ export async function GET() {
 			?.setValue()
 			.values.map((voter) => voter.addressValue().value.toString('hex')) ?? [];
 
-	const newVoters = owners.filter((owner) => !voters.includes(owner)).slice(0, 50);
+	// ⚡ Bolt: Use Set for O(1) lookup to avoid O(N*M) complexity in large arrays
+	const votersSet = new Set(voters);
+	const newVoters = owners.filter((owner) => !votersSet.has(owner)).slice(0, 50);
 	if (newVoters.length === 0) return json({ newVoters }, { status: 200 });
 
 	const votingContract = await metaNamesSdk.contractRepository.getContract({
