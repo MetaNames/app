@@ -15,7 +15,13 @@ const config = {
 		alias: {
 			'src/*': './src/*',
 			$lib: './src/lib',
-			'$lib/*': './src/lib/*'
+			'$lib/*': './src/lib/*',
+			// `@smui/banner` points its `types` at `src/index.d.ts`, which pulls the uncompiled
+			// `src/Banner.types.ts` into the typecheck; that file re-exports ambient const enums
+			// from `@material/banner`, which `verbatimModuleSyntax` forbids. Point at the published
+			// `dist` entry — the same one the package's `svelte` export condition resolves to — so
+			// the check reads `dist/*.d.ts` and `skipLibCheck` covers it.
+			'@smui/banner': './node_modules/@smui/banner/dist'
 		}
 	}
 };

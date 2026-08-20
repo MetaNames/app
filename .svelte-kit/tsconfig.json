@@ -10,6 +10,12 @@
 			"$lib/*": [
 				"../src/lib/*"
 			],
+			"@smui/banner": [
+				"../node_modules/@smui/banner/dist"
+			],
+			"@smui/banner/*": [
+				"../node_modules/@smui/banner/dist/*"
+			],
 			"$app/types": [
 				"./types/index.d.ts"
 			]
@@ -32,6 +38,7 @@
 	},
 	"include": [
 		"ambient.d.ts",
+		"env.d.ts",
 		"non-ambient.d.ts",
 		"./types/**/$types.d.ts",
 		"../vite.config.js",
