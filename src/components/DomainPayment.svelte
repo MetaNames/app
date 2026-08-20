@@ -119,7 +119,12 @@
 			<div class="coin" data-testid="payment-token-section">
 				<p class="title text-center" data-testid="payment-token-label">Payment token</p>
 				<div class="row centered">
-					<Select bind:value={$selectedCoin} label="Select Token" variant="outlined" data-testid="payment-token-select">
+					<Select
+						bind:value={$selectedCoin}
+						label="Select Token"
+						variant="outlined"
+						data-testid="payment-token-select"
+					>
 						{#each availableCoins as coin}
 							<Option value={coin.symbol}>{coin.symbol}</Option>
 						{/each}

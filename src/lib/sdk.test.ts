@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getRecordClassFrom, metaNamesSdkFactory, socialRecords, profileRecords, getValidator } from './sdk';
+import {
+	getRecordClassFrom,
+	metaNamesSdkFactory,
+	socialRecords,
+	profileRecords,
+	getValidator
+} from './sdk';
 
 // Mock the @metanames/sdk module
 vi.mock('@metanames/sdk', () => {

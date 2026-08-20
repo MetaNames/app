@@ -114,9 +114,7 @@ describe('Domain Transfer', () => {
 				fetchResult: Promise.resolve({
 					transactionHash: '0xaccept123',
 					hasError: false,
-					eventTrace: [
-						{ name: 'TransferAccepted', data: { newOwner: '0xnewowner' } }
-					]
+					eventTrace: [{ name: 'TransferAccepted', data: { newOwner: '0xnewowner' } }]
 				})
 			});
 

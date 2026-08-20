@@ -43,7 +43,7 @@ describe('Wallet Connection', () => {
 				connect: vi.fn().mockResolvedValue(undefined),
 				connection: null
 			};
-			
+
 			// This simulates what happens when connection fails
 			expect(() => {
 				if (!mockSdk.connection) throw new Error('Connection failed');
@@ -132,9 +132,9 @@ describe('Wallet Connection', () => {
 
 			const { getAccountBalance } = await import('$lib/wallet');
 
-			await expect(
-				getAccountBalance('0x1234567890abcdef1234567890abcdef12345678')
-			).rejects.toThrow('Network error');
+			await expect(getAccountBalance('0x1234567890abcdef1234567890abcdef12345678')).rejects.toThrow(
+				'Network error'
+			);
 		});
 	});
 });

@@ -85,9 +85,8 @@
 
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
 		try {
-			const { privateKeyToAccountAddress } = await import(
-				'partisia-blockchain-applications-crypto/lib/main/wallet'
-			);
+			const { privateKeyToAccountAddress } =
+				await import('partisia-blockchain-applications-crypto/lib/main/wallet');
 			const address = await privateKeyToAccountAddress(devPrivateKey);
 			if (!address) {
 				alertMessage.set('Invalid private key');

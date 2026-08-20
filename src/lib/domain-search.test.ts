@@ -47,10 +47,10 @@ describe('Domain Search', () => {
 		it('should return null for available domain', async () => {
 			// Import after mocking
 			const { MetaNamesSdk, Enviroment } = await import('@metanames/sdk');
-			
+
 			// Create a simple mock for the test
 			const mockFind = vi.fn().mockResolvedValue(null);
-			
+
 			const mockRepo = {
 				domainValidator: {
 					validate: vi.fn((name: string) => name.length >= 3),
@@ -78,7 +78,7 @@ describe('Domain Search', () => {
 			};
 
 			const mockFind = vi.fn().mockResolvedValue(mockDomain);
-			
+
 			const mockRepo = {
 				domainValidator: {
 					validate: vi.fn((name: string) => name.length >= 3),
@@ -96,14 +96,14 @@ describe('Domain Search', () => {
 	describe('domain name validation', () => {
 		it('should validate domain names correctly', async () => {
 			const { DomainValidator } = await import('@metanames/sdk');
-			
+
 			const validator = new DomainValidator('test');
-			
+
 			// Valid names
 			expect(validator.validate('valid', { raiseError: false })).toBe(true);
 			expect(validator.validate('abc', { raiseError: false })).toBe(true);
 			expect(validator.validate('hello-world', { raiseError: false })).toBe(true);
-			
+
 			// Invalid names
 			expect(validator.validate('', { raiseError: false })).toBe(false);
 			expect(validator.validate('ab', { raiseError: false })).toBe(false);
@@ -117,9 +117,9 @@ describe('Domain Search', () => {
 		it('should analyze domain without checking contract', async () => {
 			// This tests the analyze function which validates locally
 			const { DomainValidator } = await import('@metanames/sdk');
-			
+
 			const validator = new DomainValidator('test');
-			
+
 			// Valid domain should pass analysis
 			const isValid = validator.validate('testdomain', { raiseError: false });
 			expect(isValid).toBe(true);

@@ -36,11 +36,7 @@ vi.mock('@metanames/sdk', () => {
 	};
 
 	const mockConfig = {
-		byoc: [
-			{ symbol: 'BTC' },
-			{ symbol: 'ETH' },
-			{ symbol: 'USDT' }
-		],
+		byoc: [{ symbol: 'BTC' }, { symbol: 'ETH' }, { symbol: 'USDT' }],
 		tld: 'mns'
 	};
 
@@ -92,7 +88,7 @@ describe('API Endpoints', () => {
 			const fn = vi.fn().mockRejectedValue(error);
 
 			const result = await handleError(fn);
-			
+
 			const resultJson = await result.json();
 			expect(resultJson).toHaveProperty('error');
 			expect(result.status).toBe(400);
@@ -104,7 +100,7 @@ describe('API Endpoints', () => {
 
 			const result = await handleError(fn);
 			const resultJson = await result.json();
-			
+
 			expect(resultJson.error).toBe(customMessage);
 		});
 
@@ -113,8 +109,10 @@ describe('API Endpoints', () => {
 
 			const result = await handleError(fn);
 			const resultJson = await result.json();
-			
-			expect(resultJson.error).toBe('Cannot handle your request at the moment. Please try again later.');
+
+			expect(resultJson.error).toBe(
+				'Cannot handle your request at the moment. Please try again later.'
+			);
 		});
 	});
 
@@ -122,15 +120,15 @@ describe('API Endpoints', () => {
 		it('should return error response with custom status', () => {
 			const message = 'Invalid request';
 			const status = 422;
-			
+
 			const result = apiError(message, status);
-			
+
 			expect(result.status).toBe(status);
 		});
 
 		it('should return error response with default status 400', () => {
 			const result = apiError('Bad request');
-			
+
 			expect(result.status).toBe(400);
 		});
 
@@ -138,7 +136,7 @@ describe('API Endpoints', () => {
 			const message = 'Test error';
 			const result = apiError(message);
 			const body = await result.json();
-			
+
 			expect(body.error).toBe(message);
 		});
 	});
@@ -153,14 +151,14 @@ describe('API Endpoints', () => {
 			// Get the mocked SDK
 			const { metaNamesSdkFactory } = await import('@metanames/sdk');
 			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
-			
+
 			// Override the mocks for this test
 			sdk.domainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
 			sdk.domainRepository.count = vi.fn().mockResolvedValue(42);
 			sdk.domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1', '0x2', '0x3']);
 
 			const stats = await getStats();
-			
+
 			expect(stats.domainCount).toBe(42);
 			expect(stats.ownerCount).toBe(3);
 			expect(stats.recentDomains).toHaveLength(2);
@@ -169,12 +167,12 @@ describe('API Endpoints', () => {
 		it('should handle getAll errors gracefully', async () => {
 			const { metaNamesSdkFactory } = await import('@metanames/sdk');
 			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
-			
+
 			// Only getAll has catch handler, so it should return empty array
 			sdk.domainRepository.getAll = vi.fn().mockRejectedValue(new Error('DB error'));
 
 			const stats = await getStats();
-			
+
 			// getAll error should be caught and return empty array
 			expect(stats.recentDomains).toEqual([]);
 		});
@@ -182,7 +180,7 @@ describe('API Endpoints', () => {
 		it('should sort recent domains by creation date descending', async () => {
 			const { metaNamesSdkFactory } = await import('@metanames/sdk');
 			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
-			
+
 			const mockDomains = [
 				{ name: 'old', createdAt: new Date('2026-01-01') },
 				{ name: 'new', createdAt: new Date('2026-03-01') },
@@ -194,7 +192,7 @@ describe('API Endpoints', () => {
 			sdk.domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1']);
 
 			const stats = await getStats();
-			
+
 			expect(stats.recentDomains[0].name).toBe('new');
 			expect(stats.recentDomains[1].name).toBe('middle');
 			expect(stats.recentDomains[2].name).toBe('old');
