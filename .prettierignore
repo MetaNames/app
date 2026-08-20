@@ -11,3 +11,11 @@ node_modules
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+
+# Agent journals
+.jules
+.Jules
+
+# Vendored third-party CSS
+static/~@fontsource
+static/~normalize.css
