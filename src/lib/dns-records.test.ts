@@ -12,7 +12,6 @@ vi.mock('./config', () => ({
 		dAppName: 'Meta Names',
 		permissions: ['sign'],
 		landingUrl: 'https://metanames.io',
-		tldMigrationProposalContractAddress: '021e68773e9bd5fc28381802c4b24899499f039ea9',
 		websiteUrl: 'https://metanames.io'
 	}
 }));

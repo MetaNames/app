@@ -11,7 +11,6 @@ type Config = {
 	sdkEnvironment: Enviroment;
 	permissions: PermissionType[];
 	landingUrl: string;
-	tldMigrationProposalContractAddress: string;
 	websiteUrl: string;
 };
 
@@ -24,13 +23,6 @@ const landingUrl = `${import.meta.env.VITE_LANDING_URL}`;
 const websiteUrl = `${import.meta.env.VITE_WEBSITE_URL}`;
 const contractDisabled = `${import.meta.env.VITE_CONTRACT_DISABLED}` == 'true';
 
-const tldMigrationProposal = {
-	mainnet: '02fba7fc0463c34c55a68b05550f24755629cdccd0',
-	testnet: '021e68773e9bd5fc28381802c4b24899499f039ea9'
-};
-const tldMigrationProposalContractAddress =
-	environment === 'prod' ? tldMigrationProposal.mainnet : tldMigrationProposal.testnet;
-
 export const config: Config = {
 	browserUrl,
 	chainId,
@@ -40,6 +32,5 @@ export const config: Config = {
 	sdkEnvironment,
 	permissions: ['sign'] as PermissionType[],
 	landingUrl,
-	tldMigrationProposalContractAddress,
 	websiteUrl
 };
