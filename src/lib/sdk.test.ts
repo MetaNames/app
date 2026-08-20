@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import type { IRecord } from '@metanames/sdk';
 import {
 	getRecordClassFrom,
 	metaNamesSdkFactory,
@@ -83,7 +84,7 @@ describe('SDK - getRecordClassFrom', () => {
 	});
 
 	it('should return undefined for unknown record class string', () => {
-		const result = getRecordClassFrom('UnknownClass' as keyof typeof RecordClassEnum);
+		const result = getRecordClassFrom('UnknownClass');
 		expect(result).toBeUndefined();
 	});
 });
@@ -167,7 +168,7 @@ describe('SDK - getValidator', () => {
 
 	it('should return a validator that can validate values', () => {
 		const validator = getValidator('Twitter');
-		expect(validator.validate('someValue')).toBe(true);
-		expect(validator.validate(null)).toBe(false);
+		expect(validator.validate({ class: 0, data: 'someValue' } as unknown as IRecord)).toBe(true);
+		expect(validator.validate(null as unknown as IRecord)).toBe(false);
 	});
 });
