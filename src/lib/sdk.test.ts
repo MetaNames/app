@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
 	getRecordClassFrom,
 	metaNamesSdkFactory,
@@ -28,7 +28,7 @@ vi.mock('@metanames/sdk', () => {
 	class MockMetaNamesSdk {
 		config: typeof mockConfig;
 
-		constructor(_env: unknown, _override?: unknown) {
+		constructor() {
 			this.config = mockConfig;
 		}
 	}
@@ -36,7 +36,7 @@ vi.mock('@metanames/sdk', () => {
 	return {
 		RecordClassEnum,
 		MetaNamesSdk: MockMetaNamesSdk,
-		getRecordValidator: vi.fn((klass: string) => ({
+		getRecordValidator: vi.fn(() => ({
 			validate: (value: unknown) => value !== null
 		})),
 		Enviroment: {

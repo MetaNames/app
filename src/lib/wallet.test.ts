@@ -115,7 +115,7 @@ describe('Wallet Connection', () => {
 				}
 			};
 
-			(global.fetch as any).mockResolvedValue({
+			global.fetch = vi.fn().mockResolvedValue({
 				json: vi.fn().mockResolvedValue(mockResponse)
 			});
 
@@ -128,7 +128,7 @@ describe('Wallet Connection', () => {
 		});
 
 		it('should handle API errors gracefully', async () => {
-			(global.fetch as any).mockRejectedValue(new Error('Network error'));
+			global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
 
 			const { getAccountBalance } = await import('$lib/wallet');
 

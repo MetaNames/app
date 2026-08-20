@@ -187,17 +187,19 @@ describe('Domain Transfer', () => {
 			const originalOwner = '0xoriginalowneroriginalowneroriginalowner';
 			let transferToAddress = '';
 
-			const mockTransfer = vi.fn().mockImplementation((params: any) => {
-				transferToAddress = params.to;
-				return Promise.resolve({
-					transactionHash: '0xbacktoorigin',
-					fetchResult: Promise.resolve({
+			const mockTransfer = vi
+				.fn()
+				.mockImplementation((params: { domain: string; from: string; to: string }) => {
+					transferToAddress = params.to;
+					return Promise.resolve({
 						transactionHash: '0xbacktoorigin',
-						hasError: false,
-						eventTrace: []
-					})
+						fetchResult: Promise.resolve({
+							transactionHash: '0xbacktoorigin',
+							hasError: false,
+							eventTrace: []
+						})
+					});
 				});
-			});
 
 			const sdk = new MetaNamesSdk();
 			sdk.domainRepository.transfer = mockTransfer;
@@ -335,7 +337,7 @@ describe('Domain Transfer', () => {
 					from: '0x1234567890abcdef1234567890abcdef12345678',
 					to: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
 				});
-			} catch (e) {
+			} catch {
 				// Expected to fail
 			}
 

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock @sentry/sveltekit
 vi.mock('@sentry/sveltekit', () => ({
@@ -19,7 +19,7 @@ vi.mock('@metanames/sdk', () => {
 		getErrors: vi.fn(() => [])
 	};
 
-	const mockCalculateMintFees = vi.fn((domain: string, coin: string) => ({
+	const mockCalculateMintFees = vi.fn(() => ({
 		fees: { gas: '100000', storage: '50000' },
 		gas: '100000',
 		storage: '50000'
@@ -58,12 +58,6 @@ vi.mock('@metanames/sdk', () => {
 
 // Import after mocking
 import { handleError, apiError, getStats } from '$lib/server';
-
-// Helper to create a mock request context
-const createMockParams = (params: Record<string, string>) => ({
-	params,
-	url: new URL('https://test.com')
-});
 
 // Re-import with mocks applied
 describe('API Endpoints', () => {
