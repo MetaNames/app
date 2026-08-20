@@ -46,6 +46,7 @@
 	<CardContent>
 		<div class="avatar">
 			<div class="svg">
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -- jdenticon's toSvg renders a hash of the name, never the name itself -->
 				{@html domainAvatar}
 			</div>
 		</div>

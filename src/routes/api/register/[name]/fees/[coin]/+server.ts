@@ -1,7 +1,6 @@
 import { apiError, handleError, metaNamesSdk } from '$lib/server';
 import type { BYOCSymbol } from '@metanames/sdk';
 import { json } from '@sveltejs/kit';
-import type { DomainFeesResponse } from 'src/lib/types';
 
 export async function GET({ params: { name, coin } }) {
 	return handleError(async () => {

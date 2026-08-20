@@ -3,6 +3,7 @@ import type { MetaMaskSdk } from '@metanames/sdk';
 import type { AccountData } from './types';
 import { backendBrowserUrl } from './url';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- widening to `object` breaks the `wallet.connection` / `wallet.request` probes in getAddress; typing both wallet clients honestly is its own task
 export type OptionalWalletClient = any | undefined | null;
 
 const metaMaskSnapId = 'npm:@partisiablockchain/snap';
@@ -13,6 +14,7 @@ export const connectPartisia = async () => {
 
 	await sdk.connect({
 		chainId: config.chainId,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- connect() wants PartisiaSdk's internal PermissionTypes enum, which the package does not export
 		permissions: config.permissions as any,
 		dappName: config.dAppName
 	});

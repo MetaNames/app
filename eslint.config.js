@@ -41,6 +41,12 @@ export default [
 		rules: { ...tsPlugin.configs.recommended.rules }
 	},
 	{
+		// typescript-eslint's documented guidance: no-undef cannot see type-only globals
+		// (e.g. `RequestInit`) and duplicates what tsc already checks, so it is off for TS.
+		files: ['**/*.ts', '**/*.svelte'],
+		rules: { 'no-undef': 'off' }
+	},
+	{
 		files: ['**/*.svelte'],
 		languageOptions: {
 			parser: svelteParser,
