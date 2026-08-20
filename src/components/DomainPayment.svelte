@@ -136,7 +136,7 @@
 				{#await loadFees}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 				{:then fees}
-					{#if 'symbol' in fees}
+					{#if fees && 'symbol' in fees}
 						<div class="row">
 							<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
 							<span>{fees.feesLabel} {fees.symbol}</span>
