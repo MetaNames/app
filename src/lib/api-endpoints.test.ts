@@ -59,6 +59,15 @@ vi.mock('@metanames/sdk', () => {
 // Import after mocking
 import { handleError, apiError, getStats } from '$lib/server';
 
+const mockedDomainRepository = async () => {
+	const { metaNamesSdkFactory } = await import('./sdk');
+
+	return metaNamesSdkFactory({ cache_ttl: 0 }).domainRepository as unknown as Record<
+		string,
+		ReturnType<typeof vi.fn>
+	>;
+};
+
 // Re-import with mocks applied
 describe('API Endpoints', () => {
 	beforeEach(() => {
@@ -143,13 +152,12 @@ describe('API Endpoints', () => {
 			];
 
 			// Get the mocked SDK
-			const { metaNamesSdkFactory } = await import('@metanames/sdk');
-			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
+			const domainRepository = await mockedDomainRepository();
 
 			// Override the mocks for this test
-			sdk.domainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
-			sdk.domainRepository.count = vi.fn().mockResolvedValue(42);
-			sdk.domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1', '0x2', '0x3']);
+			domainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
+			domainRepository.count = vi.fn().mockResolvedValue(42);
+			domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1', '0x2', '0x3']);
 
 			const stats = await getStats();
 
@@ -159,11 +167,10 @@ describe('API Endpoints', () => {
 		});
 
 		it('should handle getAll errors gracefully', async () => {
-			const { metaNamesSdkFactory } = await import('@metanames/sdk');
-			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
+			const domainRepository = await mockedDomainRepository();
 
 			// Only getAll has catch handler, so it should return empty array
-			sdk.domainRepository.getAll = vi.fn().mockRejectedValue(new Error('DB error'));
+			domainRepository.getAll = vi.fn().mockRejectedValue(new Error('DB error'));
 
 			const stats = await getStats();
 
@@ -172,8 +179,7 @@ describe('API Endpoints', () => {
 		});
 
 		it('should sort recent domains by creation date descending', async () => {
-			const { metaNamesSdkFactory } = await import('@metanames/sdk');
-			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
+			const domainRepository = await mockedDomainRepository();
 
 			const mockDomains = [
 				{ name: 'old', createdAt: new Date('2026-01-01') },
@@ -181,9 +187,9 @@ describe('API Endpoints', () => {
 				{ name: 'middle', createdAt: new Date('2026-02-01') }
 			];
 
-			sdk.domainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
-			sdk.domainRepository.count = vi.fn().mockResolvedValue(3);
-			sdk.domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1']);
+			domainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
+			domainRepository.count = vi.fn().mockResolvedValue(3);
+			domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1']);
 
 			const stats = await getStats();
 
