@@ -126,10 +126,10 @@
 
 	export let anchor: HTMLDivElement;
 	export let connectButtonVariant: 'raised' | 'unelevated' | 'outlined' = 'raised';
-	export let testid: string = '';
+	export let testid: string | undefined = undefined;
 </script>
 
-<Button variant={connectButtonVariant} on:click={toggleMenu} {testid}>
+<Button variant={connectButtonVariant} on:click={toggleMenu} data-testid={testid}>
 	<slot name="buttonLabel">Connect</slot>
 </Button>
 <Menu
