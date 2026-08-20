@@ -52,7 +52,7 @@
 		years += amount;
 	}
 
-	async function handleApproveError(error: Error) {
+	async function handleApproveError(error: unknown) {
 		let message;
 		if (error instanceof InsufficientBalanceError)
 			message = {
