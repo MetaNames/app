@@ -10,13 +10,16 @@
 		"build": "npm run generate:themes && vite build",
 		"build:themes": "npm run generate:themes",
 		"preview": "vite preview",
-		"test": "npm run test:integration && npm run test:unit",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"test": "npm run test:unit && npm run test:integration",
+		"typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check": "npm run typecheck",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin prettier-plugin-svelte --check . && eslint .",
 		"format": "prettier --plugin prettier-plugin-svelte --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest run",
+		"test:unit:watch": "vitest",
+		"test:coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.39.5",
