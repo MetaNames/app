@@ -19,6 +19,7 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
+		"@eslint/js": "^9.39.5",
 		"@iconify/svelte": "^4.0.2",
 		"@material/typography": "^14.0.0",
 		"@playwright/test": "^1.58.2",
@@ -53,6 +54,7 @@
 		"eslint": "^9.13.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.45.1",
+		"globals": "^14.0.0",
 		"jsdom": "^29.0.0",
 		"playwright": "^1.58.2",
 		"prettier": "^3.3.3",
