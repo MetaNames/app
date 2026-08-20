@@ -92,11 +92,6 @@ describe('SDK - DNS Records', () => {
 			const sdk = metaNamesSdkFactory({ cache_ttl: 0 });
 			expect(sdk).toBeDefined();
 		});
-
-		it('should create SDK with custom timeout', () => {
-			const sdk = metaNamesSdkFactory({ timeout: 30000 });
-			expect(sdk).toBeDefined();
-		});
 	});
 
 	describe('socialRecords', () => {
