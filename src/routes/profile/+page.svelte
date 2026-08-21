@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk';
+	import { onMount } from 'svelte';
 	import { filterDomainsByName } from '$lib/filter';
 	import { walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
@@ -18,13 +19,15 @@
 
 	$: domainsFiltered = filterDomainsByName(domains, search);
 
-	walletAddress.subscribe(async (address) => {
-		if (!address) return;
+	onMount(() =>
+		walletAddress.subscribe(async (address) => {
+			if (!address) return;
 
-		loaded = false;
-		domains = await $metaNamesSdk.domainRepository.findByOwner(address);
-		loaded = true;
-	});
+			loaded = false;
+			domains = await $metaNamesSdk.domainRepository.findByOwner(address);
+			loaded = true;
+		})
+	);
 
 	function cleanSearch() {
 		search = '';
