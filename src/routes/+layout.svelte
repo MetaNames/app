@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { dev } from '$app/environment';
+	import { onDestroy } from 'svelte';
 
 	import { inject } from '@vercel/analytics';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
@@ -28,6 +29,7 @@
 	let transactionSnackbar: Snackbar;
 	let snackbarTransactionMessage: string;
 	let snackbarMessage: string;
+	let alertsTimeout: ReturnType<typeof setTimeout>;
 
 	$: contractDisabled = config.contractDisabled;
 	$: isTestnet = config.environment === 'test';
@@ -37,13 +39,13 @@
 	injectSpeedInsights();
 
 	// Snackbars
-	alertTransaction.subscribe((transaction) => {
+	const unsubscribeAlertTransaction = alertTransaction.subscribe((transaction) => {
 		if (!transaction) return;
 
 		snackbarTransactionMessage = 'New Transaction submitted';
 		transactionSnackbar?.open();
 	});
-	alertMessage.subscribe((message) => {
+	const unsubscribeAlertMessage = alertMessage.subscribe((message) => {
 		if (!message) return;
 
 		if (typeof message === 'string') snackbarMessage = message;
@@ -51,9 +53,18 @@
 
 		alertsSnackbar?.open();
 
-		setTimeout(() => {
+		// One timer, restarted per message: two alerts less than 5s apart used to leave the
+		// first one's timer running, so it closed the second one early.
+		clearTimeout(alertsTimeout);
+		alertsTimeout = setTimeout(() => {
 			alertsSnackbar?.close();
 		}, 5000);
+	});
+
+	onDestroy(() => {
+		clearTimeout(alertsTimeout);
+		unsubscribeAlertTransaction();
+		unsubscribeAlertMessage();
 	});
 </script>
 
@@ -184,17 +195,6 @@
 
 		text-decoration: none;
 		color: inherit;
-	}
-
-	.separator {
-		width: 1px;
-		height: 1.5rem;
-		background-color: var(--mdc-theme-on-primary);
-		margin: 0 1rem;
-	}
-
-	.logo {
-		color: white;
 	}
 
 	.icon-center {

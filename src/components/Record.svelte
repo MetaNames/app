@@ -20,6 +20,7 @@
 	let dialogOpen = false;
 
 	$: label = klass.toString();
+	$: inputId = `record-${label}`;
 	$: recordClass = getRecordClassFrom(klass);
 	$: invalid = !validator.validate(
 		{ data: recordValue, class: recordClass },
@@ -69,10 +70,10 @@
 			</Button>
 		</Actions>
 	</Dialog>
-	<label for={label}>{label}</label>
+	<label for={inputId}>{label}</label>
 	<div class="value">
 		<Textfield
-			for={label}
+			input$id={inputId}
 			input$maxlength={maxLength}
 			bind:value={recordValue}
 			bind:invalid

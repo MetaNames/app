@@ -58,7 +58,7 @@
 		{#if !records || Object.keys(records).length === 0}
 			<p class="no-records">No records found</p>
 		{:else}
-			{#each Object.keys(records) as key}
+			{#each Object.keys(records) as key (key)}
 				<div class="mt-1">
 					<RecordComponent {repository} klass={key} value={records[key]} editMode={true} />
 				</div>
