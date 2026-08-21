@@ -21,7 +21,10 @@ export async function fetchApiJson<T>(
 	} catch (error) {
 		console.error(error);
 
-		captureException(error, { extra: { url, options, response } });
+		// Only the request shape, never `options` — it can carry an auth header or a body.
+		captureException(error, {
+			extra: { url, method: options.method ?? 'GET', status: response?.status }
+		});
 
 		return { error: 'Something went wrong' };
 	}

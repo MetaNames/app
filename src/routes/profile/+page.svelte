@@ -16,6 +16,7 @@
 	let domainsFiltered: Domain[] = [];
 	let loaded = false;
 	let search = '';
+	let requestId = 0;
 
 	$: domainsFiltered = filterDomainsByName(domains, search);
 
@@ -23,8 +24,15 @@
 		walletAddress.subscribe(async (address) => {
 			if (!address) return;
 
+			// Switching wallets starts a second lookup while the first is in flight; without
+			// this guard a slower earlier response overwrites the newer owner's domains.
+			const currentRequestId = ++requestId;
 			loaded = false;
-			domains = await $metaNamesSdk.domainRepository.findByOwner(address);
+
+			const owned = await $metaNamesSdk.domainRepository.findByOwner(address);
+			if (currentRequestId !== requestId) return;
+
+			domains = owned;
 			loaded = true;
 		})
 	);

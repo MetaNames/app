@@ -4,13 +4,13 @@ The Meta Names app. Let you interact with the Smart Contract on Partisia Blockch
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've installed dependencies with `npm install`, start a development server:
 
 ```bash
-yarn run dev
+npm run dev
 
 # or start the server and open the app in a new browser tab
-yarn run dev -- --open
+npm run dev -- --open
 ```
 
 ## Quality gates
@@ -31,7 +31,7 @@ is shadowed by Yarn's built-in dependency checker so it never runs svelte-check.
 To create a production version of your app:
 
 ```bash
-yarn run build
+npm run build
 ```
 
-You can preview the production build with `yarn run preview`.
+You can preview the production build with `npm run preview`.
