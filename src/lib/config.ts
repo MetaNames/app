@@ -1,5 +1,7 @@
 import { Enviroment } from '@metanames/sdk';
 
+import { optionalEnv } from './env';
+
 type PermissionType = 'sign' | 'private_key';
 
 type Config = {
@@ -19,8 +21,8 @@ const browserUrl = `https://browser${environment === 'test' ? '.testnet' : ''}.p
 const chainId = `Partisia Blockchain${environment === 'test' ? ' Testnet' : ''}`;
 
 const sdkEnvironment = environment === 'test' ? Enviroment.testnet : Enviroment.mainnet;
-const landingUrl = `${import.meta.env.VITE_LANDING_URL}`;
-const websiteUrl = `${import.meta.env.VITE_WEBSITE_URL}`;
+const landingUrl = optionalEnv(import.meta.env.VITE_LANDING_URL, 'https://metanames.app');
+const websiteUrl = optionalEnv(import.meta.env.VITE_WEBSITE_URL, 'https://app.metanames.app/');
 const contractDisabled = `${import.meta.env.VITE_CONTRACT_DISABLED}` == 'true';
 
 export const config: Config = {
