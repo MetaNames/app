@@ -50,6 +50,14 @@ export const validAddress = (address: string) => {
 	return address.length === 42 && alphanumeric.test(address);
 };
 
+export const recipientAddressErrors = (address: string) => {
+	const errors: string[] = [];
+	if (address.trim() === '') errors.push('Address is required');
+	else if (!validAddress(address)) errors.push('Address is invalid');
+
+	return errors;
+};
+
 export const removeHTTPIfPresent = (url: string) => {
 	if (url.startsWith('https://')) return url.slice(8);
 	if (url.startsWith('http://')) return url.slice(7);

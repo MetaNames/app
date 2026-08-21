@@ -27,6 +27,7 @@ import {
 	formatDate,
 	isValidURL,
 	validAddress,
+	recipientAddressErrors,
 	removeHTTPIfPresent,
 	formatDateToRelativeDate
 } from './utils';
@@ -95,6 +96,30 @@ describe('Utils', () => {
 			// It allows g because regex /^[a-z0-9]+$/i matches any letter
 			expect(validAddress('0x1234567890abcdef1234567890abcdef1234567-')).toBe(false);
 			expect(validAddress('0x1234567890abcdef1234567890abcdef1234567 ')).toBe(false);
+		});
+	});
+
+	describe('recipientAddressErrors', () => {
+		const valid = '00abcdefabcdefabcdefabcdefabcdefabcdefabcd';
+
+		it('should return no errors for a valid address', () => {
+			expect(recipientAddressErrors(valid)).toEqual([]);
+		});
+
+		it('should require an address', () => {
+			expect(recipientAddressErrors('')).toEqual(['Address is required']);
+			expect(recipientAddressErrors('   ')).toEqual(['Address is required']);
+		});
+
+		it('should reject a malformed address', () => {
+			expect(recipientAddressErrors('0x123')).toEqual(['Address is invalid']);
+		});
+
+		it('should still report an error after a valid address is cleared', () => {
+			// Regression: the transfer page only re-validated on a truthy value, so clearing a
+			// valid recipient left `errors` empty and enabled the submit button on an empty field.
+			expect(recipientAddressErrors(valid)).toEqual([]);
+			expect(recipientAddressErrors('')).not.toEqual([]);
 		});
 	});
 

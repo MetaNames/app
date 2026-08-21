@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { track } from '@vercel/analytics';
-	import { alertTransactionAndFetchResult, validAddress } from '$lib';
+	import { alertTransactionAndFetchResult, recipientAddressErrors } from '$lib';
 	import { alertMessage, walletAddress } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { onMount } from 'svelte';
@@ -17,15 +17,12 @@
 	export let data: PageData;
 
 	let address = '';
-	let errors: string[] = [];
 
 	$: domainName = data.analyzed?.name;
-	$: invalid = errors.length > 0;
-	$: if (address) {
-		errors = [];
-		if (!address) errors.push('Address is required');
-		if (!validAddress(address)) errors.push('Address is invalid');
-	}
+	$: errors = recipientAddressErrors(address);
+	// An empty recipient is never submittable, but don't paint a pristine field red:
+	// `invalid` only drives the visual/helper state, `errors` gates the button.
+	$: invalid = address !== '' && errors.length > 0;
 
 	async function transfer() {
 		if (!domainName) return;
@@ -77,14 +74,14 @@
 						label="Recipient address"
 					>
 						<svelte:fragment slot="helper">
-							{#if errors.length > 0}
+							{#if invalid}
 								<HelperText slot="helper">{errors.join(', ')}</HelperText>
 							{/if}
 						</svelte:fragment>
 					</Textfield>
 				</div>
 				<ConnectionRequired>
-					<LoadingButton disabled={invalid} onClick={transfer} variant="raised"
+					<LoadingButton disabled={errors.length > 0} onClick={transfer} variant="raised"
 						>Transfer domain</LoadingButton
 					>
 				</ConnectionRequired>
