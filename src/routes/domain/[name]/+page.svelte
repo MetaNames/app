@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { Domain as DomainModel } from '@metanames/sdk';
@@ -14,21 +13,26 @@
 
 	let domain = writable<DomainModel | undefined>();
 	let requestId = 0;
+	let mounted = false;
 
 	// SvelteKit reuses this component when only `[name]` changes, so the name has to be read
 	// reactively — a value captured once goes stale on the very redirect below.
 	$: domainName = $page.params.name ?? '';
 	$: pageName = $domain ? $domain.name + ' | ' : '';
-	$: if (browser) showDomain(domainName);
+	// Gated on `mounted` rather than `browser` so the first run still happens after mount, as
+	// it did before, and never calls `goto` mid-hydration.
+	$: if (mounted) showDomain(domainName);
 
-	onMount(() =>
-		refresh.subscribe((val) => {
+	onMount(() => {
+		mounted = true;
+
+		return refresh.subscribe((val) => {
 			if (!val) return;
 
 			loadDomain(domainName);
 			refresh.set(false);
-		})
-	);
+		});
+	});
 
 	async function showDomain(name: string) {
 		const loweredName = name.toLocaleLowerCase();
