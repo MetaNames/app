@@ -8,8 +8,8 @@
 	import Domain from 'src/components/Domain.svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
 	import { writable } from 'svelte/store';
-	import { alertMessage, refresh } from 'src/lib/stores/main';
-	import { metaNamesSdk } from 'src/lib/stores/sdk';
+	import { alertMessage, refresh } from '$lib/stores/main';
+	import { metaNamesSdk } from '$lib/stores/sdk';
 
 	let domain = writable<DomainModel | undefined>();
 	const domainName = $page.params.name ?? '';

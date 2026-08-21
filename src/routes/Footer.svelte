@@ -1,5 +1,5 @@
 <script>
-	import { config } from 'src/lib';
+	import { config } from '$lib';
 	import Logo from 'src/routes/Logo.svelte';
 </script>
 

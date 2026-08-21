@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { alertMessage } from '$lib/stores/main';
-	import { fetchApiJson } from 'src/lib/api';
-	import { metaNamesSdk } from 'src/lib/stores/sdk';
-	import type { DomainCheckResponse, DomainPaymentParams } from 'src/lib/types';
+	import { fetchApiJson } from '$lib/api';
+	import { metaNamesSdk } from '$lib/stores/sdk';
+	import type { DomainCheckResponse, DomainPaymentParams } from '$lib/types';
 	import { writable } from 'svelte/store';
 
 	import type { IDomainAnalyzed } from '@metanames/sdk';

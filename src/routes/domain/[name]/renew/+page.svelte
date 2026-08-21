@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
-	import { alertMessage } from 'src/lib/stores/main';
+	import { alertMessage } from '$lib/stores/main';
 	import DomainPayment from 'src/components/DomainPayment.svelte';
-	import type { DomainPaymentParams } from 'src/lib/types';
-	import { metaNamesSdk } from 'src/lib/stores/sdk';
+	import type { DomainPaymentParams } from '$lib/types';
+	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { runTransaction } from '$lib/transaction';
 	import { track } from '@vercel/analytics';
 	import { onMount } from 'svelte';

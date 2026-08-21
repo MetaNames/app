@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { track } from '@vercel/analytics';
-	import { alertTransactionAndFetchResult, validAddress } from 'src/lib';
-	import { alertMessage, walletAddress } from 'src/lib/stores/main';
-	import { metaNamesSdk } from 'src/lib/stores/sdk';
+	import { alertTransactionAndFetchResult, validAddress } from '$lib';
+	import { alertMessage, walletAddress } from '$lib/stores/main';
+	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
