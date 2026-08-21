@@ -18,14 +18,18 @@ type Config = {
 	sentryTracesSampleRate: number;
 };
 
-const environment = import.meta.env.VITE_ENV ?? 'test';
+// Anything that is not explicitly "test" selects mainnet, so a blank or literally
+// "undefined" VITE_ENV must not fall through to it: `??` only guards against `undefined`,
+// which left an empty VITE_ENV pointing the app at mainnet.
+const environment: Config['environment'] =
+	optionalEnv(import.meta.env.VITE_ENV, 'test') === 'test' ? 'test' : 'prod';
 const browserUrl = `https://browser${environment === 'test' ? '.testnet' : ''}.partisiablockchain.com`;
 const chainId = `Partisia Blockchain${environment === 'test' ? ' Testnet' : ''}`;
 
 const sdkEnvironment = environment === 'test' ? Enviroment.testnet : Enviroment.mainnet;
 const landingUrl = optionalEnv(import.meta.env.VITE_LANDING_URL, 'https://metanames.app');
 const websiteUrl = optionalEnv(import.meta.env.VITE_WEBSITE_URL, 'https://app.metanames.app/');
-const contractDisabled = `${import.meta.env.VITE_CONTRACT_DISABLED}` == 'true';
+const contractDisabled = optionalEnv(import.meta.env.VITE_CONTRACT_DISABLED, 'false') === 'true';
 const sentryDsn = optionalEnv(
 	import.meta.env.VITE_SENTRY_DSN,
 	'https://a3030e6b43e234337425afcedb4bc727@o4506739278544896.ingest.us.sentry.io/4506739280183296'
