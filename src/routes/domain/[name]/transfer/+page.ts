@@ -1,11 +1,5 @@
-import { metaNamesSdkFactory } from 'src/lib/sdk.js';
+import { analyzeDomain } from '$lib/loaders';
 
 export function load({ params: { name } }) {
-	try {
-		const analyzed = metaNamesSdkFactory().domainRepository.analyze(name);
-		return { analyzed };
-	} catch (e) {
-		if (e instanceof Error) return { error: e.message };
-		else return { error: 'Something went wrong' };
-	}
+	return analyzeDomain(name);
 }
