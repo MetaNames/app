@@ -9,11 +9,11 @@
 		<span>Meta Names</span>
 	</div>
 	<div class="links">
-		<a href={config.landingUrl} target="_blank">Landing</a>
-		<a href="https://docs.metanames.app" target="_blank">Docs</a>
-		<a href="https://t.me/mpc_metanames" target="_blank">Telegram</a>
-		<a href="https://x.com/metanames_" target="_blank">Twitter</a>
-		<a href="https://github.com/metanames" target="_blank">GitHub</a>
+		<a href={config.landingUrl} target="_blank" rel="noopener noreferrer">Landing</a>
+		<a href="https://docs.metanames.app" target="_blank" rel="noopener noreferrer">Docs</a>
+		<a href="https://t.me/mpc_metanames" target="_blank" rel="noopener noreferrer">Telegram</a>
+		<a href="https://x.com/metanames_" target="_blank" rel="noopener noreferrer">Twitter</a>
+		<a href="https://github.com/metanames" target="_blank" rel="noopener noreferrer">GitHub</a>
 	</div>
 </footer>
 

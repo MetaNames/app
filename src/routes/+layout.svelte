@@ -108,7 +108,9 @@
 				</div>
 				<Label slot="label">Contract is temporarily disabled for updates</Label>
 				<svelte:fragment slot="actions">
-					<Button href="https://t.me/mpc_metanames" target="_blank">Check status</Button>
+					<Button href="https://t.me/mpc_metanames" target="_blank" rel="noopener noreferrer"
+						>Check status</Button
+					>
 				</svelte:fragment>
 			</Banner>
 		{/if}
@@ -120,7 +122,8 @@
 		<Actions>
 			<Button
 				on:click={() =>
-					$alertTransaction && window.open(explorerTransactionUrl($alertTransaction), '_blank')}
+					$alertTransaction &&
+					window.open(explorerTransactionUrl($alertTransaction), '_blank', 'noopener,noreferrer')}
 				>View</Button
 			>
 			<IconButton title="Dismiss" aria-label="close">

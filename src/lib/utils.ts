@@ -31,10 +31,14 @@ export const alertTransactionAndFetchResult = async (
 	});
 };
 
+// Domain records are attacker-controlled: anyone who owns a domain can set its `Uri`
+// record to whatever they like. `new URL()` happily parses `javascript:` and `data:`,
+// so anything we are willing to turn into a clickable link has to be scheme-checked.
+const linkableProtocols = ['http:', 'https:'];
+
 export const isValidURL = (url: string) => {
 	try {
-		new URL(url);
-		return true;
+		return linkableProtocols.includes(new URL(url).protocol);
 	} catch {
 		return false;
 	}

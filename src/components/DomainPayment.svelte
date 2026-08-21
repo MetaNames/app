@@ -60,7 +60,7 @@
 				message: `Insufficient balance for ${error.coin}`,
 				action: {
 					label: 'Add funds',
-					callback: () => window.open(bridgeUrl, '_blank')
+					callback: () => window.open(bridgeUrl, '_blank', 'noopener,noreferrer')
 				}
 			};
 		else if (error && error instanceof Error) message = error.message;

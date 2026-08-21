@@ -16,7 +16,7 @@
 
 	const action = () => {
 		if (type === 'url') {
-			if (openInNewTab) window.open(href, '_blank');
+			if (openInNewTab) window.open(href, '_blank', 'noopener,noreferrer');
 			else goto(value);
 		} else {
 			navigator.clipboard.writeText(href ?? value);

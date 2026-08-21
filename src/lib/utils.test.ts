@@ -63,8 +63,18 @@ describe('Utils', () => {
 		it('should return false for invalid URLs', () => {
 			expect(isValidURL('not-a-url')).toBe(false);
 			expect(isValidURL('')).toBe(false);
-			// URL constructor accepts ftp:// and other protocols
-			expect(isValidURL('ftp://example.com')).toBe(true);
+		});
+
+		it('should return false for script-bearing protocols', () => {
+			expect(isValidURL('javascript:alert(1)')).toBe(false);
+			expect(isValidURL('JavaScript:alert(1)')).toBe(false);
+			expect(isValidURL('data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==')).toBe(false);
+			expect(isValidURL('vbscript:msgbox(1)')).toBe(false);
+		});
+
+		it('should return false for non-web protocols', () => {
+			expect(isValidURL('ftp://example.com')).toBe(false);
+			expect(isValidURL('file:///etc/passwd')).toBe(false);
 		});
 	});
 
