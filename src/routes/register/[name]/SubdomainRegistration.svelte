@@ -8,7 +8,7 @@
 	import Card, { Content } from '@smui/card';
 	import { onMount } from 'svelte';
 
-	import { alertTransactionAndFetchResult } from '$lib';
+	import { runTransaction } from '$lib/transaction';
 	import Chip from 'src/components/Chip.svelte';
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
@@ -36,10 +36,8 @@
 			to: address,
 			byocSymbol: 'TEST_COIN'
 		});
-		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
-
-		if (hasError) throw new Error('Failed to register domain.');
-		else alertMessage.set('Domain registered successfully!');
+		await runTransaction(transactionIntent, 'Failed to register domain.');
+		alertMessage.set('Domain registered successfully!');
 
 		goto(`/domain/${domainName}`);
 	}

@@ -2,7 +2,8 @@
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
 
-	import { alertTransactionAndFetchResult, getRecordClassFrom, getValidator } from '$lib';
+	import { getRecordClassFrom, getValidator } from '$lib';
+	import { runTransaction } from '$lib/transaction';
 	import { walletAddress } from '$lib/stores/main';
 
 	import { Label } from '@smui/button';
@@ -44,14 +45,11 @@
 
 		const recordClass = getRecordClassFrom(selectedRecordClass);
 		const transactionIntent = await repository.create({ class: recordClass, data: newRecordValue });
-		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
-		if (hasError) throw new Error('Failed to create record.');
-		else {
-			records[selectedRecordClass] = newRecordValue;
-			selectedRecordClass = undefined;
-			newRecordValue = '';
-			newRecordSubmitted = false;
-		}
+		await runTransaction(transactionIntent, 'Failed to create record.');
+		records[selectedRecordClass] = newRecordValue;
+		selectedRecordClass = undefined;
+		newRecordValue = '';
+		newRecordSubmitted = false;
 	}
 </script>
 

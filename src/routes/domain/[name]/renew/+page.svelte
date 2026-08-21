@@ -5,7 +5,7 @@
 	import DomainPayment from 'src/components/DomainPayment.svelte';
 	import type { DomainPaymentParams } from 'src/lib/types';
 	import { metaNamesSdk } from 'src/lib/stores/sdk';
-	import { alertTransactionAndFetchResult } from 'src/lib';
+	import { runTransaction } from '$lib/transaction';
 	import { track } from '@vercel/analytics';
 	import { onMount } from 'svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
@@ -20,9 +20,8 @@
 			subscriptionYears: params.years
 		});
 
-		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
-		if (hasError) throw new Error('Failed to renew domain.');
-		else alertMessage.set('Domain renewed successfully!');
+		await runTransaction(transactionIntent, 'Failed to renew domain.');
+		alertMessage.set('Domain renewed successfully!');
 
 		track('domain_renewed', {
 			domain: params.domainName,

@@ -11,7 +11,7 @@
 	import SubdomainRegistration from 'src/routes/register/[name]/SubdomainRegistration.svelte';
 	import { onMount } from 'svelte';
 	import DomainPayment from 'src/components/DomainPayment.svelte';
-	import { alertTransactionAndFetchResult } from 'src/lib';
+	import { runTransaction } from '$lib/transaction';
 	import { track } from '@vercel/analytics';
 	import { page } from '$app/stores';
 
@@ -34,13 +34,11 @@
 			byocSymbol: params.byocSymbol
 		});
 
-		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
-		if (hasError) throw new Error('Failed to register domain.');
-		else
-			alertMessage.set({
-				message: 'Domain registered successfully!',
-				action: { label: 'Go to profile', callback: () => goto('/profile') }
-			});
+		await runTransaction(transactionIntent, 'Failed to register domain.');
+		alertMessage.set({
+			message: 'Domain registered successfully!',
+			action: { label: 'Go to profile', callback: () => goto('/profile') }
+		});
 
 		track('domain_registered', {
 			domain: domainName,

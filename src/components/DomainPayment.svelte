@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { alertTransactionAndFetchResult, bridgeUrl, getAccountBalance } from '$lib';
+	import { bridgeUrl, getAccountBalance } from '$lib';
+	import { runTransaction } from '$lib/transaction';
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import type { BYOC } from '@metanames/sdk';
@@ -82,9 +83,8 @@
 			$selectedCoin,
 			years
 		);
-		const { hasError } = await alertTransactionAndFetchResult(transactionIntent);
-		if (hasError) throw new Error('Failed to approve mint fees.');
-		else feesApproved = true;
+		await runTransaction(transactionIntent, 'Failed to approve mint fees.');
+		feesApproved = true;
 	}
 
 	async function pay() {
