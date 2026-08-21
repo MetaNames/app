@@ -31,4 +31,10 @@ describe('compareByKey', () => {
 
 		expect(sorted.map((row) => row.tokenId)).toEqual([3, 2, 1]);
 	});
+
+	it('treats the other direction the same as descending, as the table does today', () => {
+		const sorted = [...rows].sort(compareByKey('tokenId', 'other'));
+
+		expect(sorted.map((row) => row.tokenId)).toEqual([3, 2, 1]);
+	});
 });

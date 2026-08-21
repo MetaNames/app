@@ -6,6 +6,7 @@
 	import Select, { Option } from '@smui/select';
 	import Button from '@smui/button';
 	import IconButton from '@smui/icon-button';
+	import { compareByKey } from '$lib/sort';
 
 	export let domains: Domain[] = [];
 	export let loaded = false;
@@ -28,13 +29,7 @@
 	}
 
 	function handleSort() {
-		domains.sort((a, b) => {
-			const [aVal, bVal] = [a[sort], b[sort]][
-				sortDirection === 'ascending' ? 'slice' : 'reverse'
-			]();
-			if (typeof aVal === 'string' && typeof bVal === 'string') return aVal.localeCompare(bVal);
-			return Number(aVal) - Number(bVal);
-		});
+		domains.sort(compareByKey(sort, sortDirection));
 		domains = domains;
 	}
 </script>
