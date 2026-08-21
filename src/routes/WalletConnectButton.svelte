@@ -9,8 +9,7 @@
 	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.png';
 	import ledgerWalletLogo from '$lib/assets/images/ledger-wallet-white.png';
 
-	import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
-	import { PartisiaLedgerClient } from '@metanames/sdk/dist/transactions/ledger';
+	import { captureException } from '@sentry/sveltekit';
 
 	import 'src/styles/wallet-connect.scss';
 	import Button from '@smui/button';
@@ -20,6 +19,12 @@
 	let devPrivateKey = '';
 
 	$: isTestnet = config.environment === 'test';
+
+	function reportConnectionFailure(wallet: string, error: unknown) {
+		console.error(`Failed to connect the ${wallet} wallet`, error);
+		captureException(error, { extra: { wallet } });
+		alertMessage.set(`Couldn't connect to ${wallet} wallet`);
+	}
 
 	async function connectWithMetaMaskWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
@@ -35,14 +40,19 @@
 			const address = await getAddress(metamask);
 			walletAddress.set(address);
 		} catch (e) {
-			alertMessage.set("Couldn't connect to MetaMask wallet");
-			console.log(e);
+			reportConnectionFailure('MetaMask', e);
 		}
 	}
 
 	async function connectWithLedgerWallet() {
 		const { metaNamesSdk } = await import('$lib/stores/sdk');
 		try {
+			// Loaded on demand: the Ledger transport and its `@ledgerhq/errors` dependency are
+			// browser-only WebUSB code, and a static import pulls them into the root layout
+			// chunk — and into the SSR module graph — for every visitor who never uses Ledger.
+			const { default: TransportWebUSB } = await import('@ledgerhq/hw-transport-webusb');
+			const { PartisiaLedgerClient } = await import('@metanames/sdk/dist/transactions/ledger');
+
 			const transport = await TransportWebUSB.create();
 
 			metaNamesSdk.update((sdk) => {
@@ -54,8 +64,7 @@
 			const address = await client.getAddress();
 			walletAddress.set(address);
 		} catch (e) {
-			alertMessage.set("Couldn't connect to Ledger wallet");
-			console.log(e);
+			reportConnectionFailure('Ledger', e);
 		}
 	}
 
@@ -74,8 +83,7 @@
 			const address = await getAddress(client);
 			walletAddress.set(address);
 		} catch (e) {
-			alertMessage.set("Couldn't connect to Partisia wallet");
-			console.log(e);
+			reportConnectionFailure('Partisia', e);
 		}
 	}
 
@@ -101,8 +109,9 @@
 			devPrivateKey = '';
 			toggleMenu();
 		} catch (e) {
+			// Deliberately not sent to Sentry: the failure context would carry the dev key.
+			console.error('Failed to connect with a private key', e);
 			alertMessage.set("Couldn't connect with private key");
-			console.log(e);
 		}
 	}
 
@@ -168,7 +177,7 @@
 			<Item on:SMUI:action={connectWithLedgerWallet}>
 				<Text>
 					<div class="item">
-						<img class="logo" src={ledgerWalletLogo} alt="partisia wallet logo" />
+						<img class="logo" src={ledgerWalletLogo} alt="ledger wallet logo" />
 						<span>Ledger</span>
 					</div>
 				</Text>
