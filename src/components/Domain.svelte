@@ -32,11 +32,11 @@
 	$: hasSocialRecords = Object.keys(domain.records).some((v) => socialRecords.includes(v));
 	$: hasProfileRecords = Object.keys(domain.records).some((v) => profileRecords.includes(v));
 	$: ownerConnected = $walletAddress === domain.owner;
-
-	const records = Object.fromEntries(
+	// Derived reactively, not once: the page reuses this component across domains.
+	$: records = Object.fromEntries(
 		Object.entries(domain.records).map(([key, value]) => [key, String(value)])
 	);
-	const ownerBrowserUrl = explorerAddressUrl(domain.owner);
+	$: ownerBrowserUrl = explorerAddressUrl(domain.owner);
 
 	let tabs: Array<DomainTab> = [DomainTab.details];
 	if (!isTld) tabs.push(DomainTab.settings);

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { Domain as DomainModel } from '@metanames/sdk';
@@ -12,36 +13,45 @@
 	import { metaNamesSdk } from '$lib/stores/sdk';
 
 	let domain = writable<DomainModel | undefined>();
-	const domainName = $page.params.name ?? '';
+	let requestId = 0;
 
+	// SvelteKit reuses this component when only `[name]` changes, so the name has to be read
+	// reactively — a value captured once goes stale on the very redirect below.
+	$: domainName = $page.params.name ?? '';
 	$: pageName = $domain ? $domain.name + ' | ' : '';
+	$: if (browser) showDomain(domainName);
 
 	onMount(() =>
 		refresh.subscribe((val) => {
 			if (!val) return;
 
-			domain.set(undefined);
-			loadDomain();
+			loadDomain(domainName);
 			refresh.set(false);
 		})
 	);
 
-	async function loadDomain() {
-		const domainResponse = await $metaNamesSdk.domainRepository.find(domainName);
+	async function showDomain(name: string) {
+		const loweredName = name.toLocaleLowerCase();
+		// The redirect re-runs this with the normalised param; loading the un-normalised name
+		// here would race that second pass and could resolve to "not found".
+		if (loweredName !== name) return goto(`/domain/${loweredName}`, { replaceState: true });
+
+		await loadDomain(name);
+	}
+
+	async function loadDomain(name: string) {
+		const currentRequestId = ++requestId;
+		domain.set(undefined);
+
+		const domainResponse = await $metaNamesSdk.domainRepository.find(name);
+		if (currentRequestId !== requestId) return;
+
 		if (domainResponse) domain.set(domainResponse);
 		else {
 			alertMessage.set('Domain not found. Register it now!');
-			goto(`/register/${domainName}`, { replaceState: true });
+			goto(`/register/${name}`, { replaceState: true });
 		}
 	}
-
-	onMount(async () => {
-		const loweredDomainName = domainName.toLocaleLowerCase();
-		if (loweredDomainName !== domainName)
-			goto(`/domain/${loweredDomainName}`, { replaceState: true });
-
-		await loadDomain();
-	});
 </script>
 
 <svelte:head>
