@@ -1,6 +1,7 @@
 import { config } from './config';
 import type { MetaMaskSdk } from '@metanames/sdk';
 import type { AccountData } from './types';
+import { accountCoinsQuery } from './queries';
 import { backendBrowserUrl } from './url';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- widening to `object` breaks the `wallet.connection` / `wallet.request` probes in getAddress; typing both wallet clients honestly is its own task
@@ -24,11 +25,7 @@ export const connectPartisia = async () => {
 };
 
 export const getAccountBalance = async (address: string) => {
-	const body = {
-		query:
-			'query AccountSingleQuery(\n		$address: BLOCKCHAIN_ADDRESS!\n	) {\n		account(address: $address) {\n			...Coins_Account\n		}\n	}\n\n	fragment Byoc_Account on Account {\n		displayCoins {\n			symbol\n			balance\n			conversionRate\n			balanceAsGas\n		}\n		id\n	}\n\n	fragment Coins_Account on Account {\n		...Byoc_Account\n		...NonBridgeableCoins_Account\n	}\n\n	fragment NonBridgeableCoins_Account on Account {\n		mpc20Balances {\n			contract\n			symbol\n			balance\n		}\n	}',
-		variables: { address }
-	};
+	const body = { query: accountCoinsQuery, variables: { address } };
 
 	const headers = { 'Content-Type': 'application/json' };
 	const response = await fetch(backendBrowserUrl, {
