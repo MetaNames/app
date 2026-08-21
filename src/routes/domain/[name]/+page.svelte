@@ -16,13 +16,15 @@
 
 	$: pageName = $domain ? $domain.name + ' | ' : '';
 
-	refresh.subscribe((val) => {
-		if (val) {
+	onMount(() =>
+		refresh.subscribe((val) => {
+			if (!val) return;
+
 			domain.set(undefined);
 			loadDomain();
 			refresh.set(false);
-		}
-	});
+		})
+	);
 
 	async function loadDomain() {
 		const domainResponse = await $metaNamesSdk.domainRepository.find(domainName);
