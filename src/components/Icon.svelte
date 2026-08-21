@@ -4,19 +4,15 @@
 	let align: 'left' | 'right' | undefined = undefined;
 	let key: string;
 
-	const icon = `ic:baseline-${key}`;
 	let width = '1.125rem';
 	let height = '1.125rem';
 	let color: string | undefined = undefined;
 
-	let alignClass = '';
-	if (align === 'right') {
-		alignClass = 'align-icon-right';
-	} else if (align === 'left') {
-		alignClass = 'align-icon-left';
-	}
-
 	export { key as icon, align, width, height, color };
+
+	$: icon = `ic:baseline-${key}`;
+	$: alignClass =
+		align === 'right' ? 'align-icon-right' : align === 'left' ? 'align-icon-left' : '';
 </script>
 
 <Icon class={alignClass} {icon} {height} {width} {color} {...$$restProps} />
