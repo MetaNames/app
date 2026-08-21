@@ -6,6 +6,7 @@ import { config } from '$lib/config';
 
 Sentry.init({
 	dsn: config.sentryDsn,
+	environment: config.environment,
 	tracesSampleRate: config.sentryTracesSampleRate
 
 	// uncomment the line below to enable Spotlight (https://spotlightjs.com)

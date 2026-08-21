@@ -5,6 +5,7 @@ import { config } from '$lib/config';
 
 Sentry.init({
 	dsn: config.sentryDsn,
+	environment: config.environment,
 	tracesSampleRate: config.sentryTracesSampleRate
 });
 
