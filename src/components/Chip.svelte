@@ -2,6 +2,8 @@
 	import Icon from 'src/components/Icon.svelte';
 	import Button, { Label } from '@smui/button';
 	import { goto } from '$app/navigation';
+	import { alertMessage } from '$lib/stores/main';
+	import { onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	export let label: string;
@@ -14,14 +16,29 @@
 
 	let icon = writable(type === 'url' ? 'open-in-new' : 'content-copy');
 
+	let resetIconTimeout: ReturnType<typeof setTimeout>;
+
+	onDestroy(() => clearTimeout(resetIconTimeout));
+
 	const action = () => {
 		if (type === 'url') {
 			if (openInNewTab) window.open(href, '_blank', 'noopener,noreferrer');
 			else goto(value);
 		} else {
-			navigator.clipboard.writeText(href ?? value);
-			icon.set('done');
-			setTimeout(() => icon.set('content-copy'), 1000);
+			// The write can reject (denied permission, non-secure context). Confirming the copy
+			// before it resolves showed a checkmark for a copy that never happened, and left the
+			// rejection unhandled.
+			navigator.clipboard
+				.writeText(href ?? value)
+				.then(() => {
+					icon.set('done');
+					clearTimeout(resetIconTimeout);
+					resetIconTimeout = setTimeout(() => icon.set('content-copy'), 1000);
+				})
+				.catch((error) => {
+					console.error('Failed to copy to the clipboard', error);
+					alertMessage.set('Could not copy to the clipboard');
+				});
 		}
 	};
 
