@@ -16,11 +16,11 @@
 		shortLinkUrl,
 		socialRecords
 	} from '$lib';
-	import { DomainTab } from 'src/lib/types';
+	import { DomainTab } from '$lib/types';
 	import Chip from 'src/components/Chip.svelte';
 	import Records from 'src/components/Records.svelte';
-	import { walletAddress } from 'src/lib/stores/main';
-	import { metaNamesSdk } from 'src/lib/stores/sdk';
+	import { walletAddress } from '$lib/stores/main';
+	import { metaNamesSdk } from '$lib/stores/sdk';
 	import Button from '@smui/button';
 
 	export let domain: Domain;

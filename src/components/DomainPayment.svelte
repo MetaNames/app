@@ -5,7 +5,7 @@
 	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import type { BYOC } from '@metanames/sdk';
-	import { InsufficientBalanceError } from 'src/lib/error';
+	import { InsufficientBalanceError } from '$lib/error';
 	import { writable } from 'svelte/store';
 
 	import { Label } from '@smui/button';
@@ -16,8 +16,8 @@
 	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
-	import type { DomainFeesResponse, DomainPaymentParams } from 'src/lib/types';
-	import { fetchApiJson } from 'src/lib/api';
+	import type { DomainFeesResponse, DomainPaymentParams } from '$lib/types';
+	import { fetchApiJson } from '$lib/api';
 
 	export let domainName: string;
 	export let tld: string;
