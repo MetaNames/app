@@ -197,5 +197,31 @@ describe('API Endpoints', () => {
 			expect(stats.recentDomains[1].name).toBe('middle');
 			expect(stats.recentDomains[2].name).toBe('old');
 		});
+
+		it('should issue the three lookups concurrently', async () => {
+			const domainRepository = await mockedDomainRepository();
+
+			// Sequential awaits interleave as start/end/start/end...; running them together
+			// starts all three before the first one settles.
+			const events: string[] = [];
+			const defer = <T>(name: string, value: T) => {
+				events.push(`start:${name}`);
+				return new Promise<T>((resolve) =>
+					setTimeout(() => {
+						events.push(`end:${name}`);
+						resolve(value);
+					}, 0)
+				);
+			};
+
+			domainRepository.count = vi.fn(() => defer('count', 7));
+			domainRepository.getOwners = vi.fn(() => defer('getOwners', ['0x1']));
+			domainRepository.getAll = vi.fn(() => defer('getAll', []));
+
+			const stats = await getStats();
+
+			expect(events.slice(0, 3)).toEqual(['start:count', 'start:getOwners', 'start:getAll']);
+			expect(stats).toEqual({ domainCount: 7, ownerCount: 1, recentDomains: [] });
+		});
 	});
 });
