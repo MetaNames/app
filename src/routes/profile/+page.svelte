@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Domain } from '@metanames/sdk';
+	import { filterDomainsByName } from '$lib/filter';
 	import { walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 
@@ -15,31 +16,18 @@
 	let loaded = false;
 	let search = '';
 
-	$: if (search !== '') {
-		domainsFiltered = domains.filter((domain) => isFuzzyMatch(domain.name, search));
-	}
+	$: domainsFiltered = filterDomainsByName(domains, search);
 
 	walletAddress.subscribe(async (address) => {
 		if (!address) return;
 
 		loaded = false;
 		domains = await $metaNamesSdk.domainRepository.findByOwner(address);
-		domainsFiltered = domains;
 		loaded = true;
 	});
 
 	function cleanSearch() {
 		search = '';
-		domainsFiltered = domains;
-	}
-
-	function isFuzzyMatch(domain: string, search: string) {
-		const trimmedDomain = domain.trim().toLowerCase();
-		const trimmedSearch = search.trim().toLowerCase();
-
-		if (trimmedDomain.startsWith(trimmedSearch) || trimmedDomain.includes(trimmedSearch))
-			return true;
-		else return false;
 	}
 </script>
 
