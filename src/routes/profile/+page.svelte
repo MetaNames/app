@@ -47,6 +47,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Profile | Meta Names</title>
+</svelte:head>
+
 <div class="profile content">
 	<Paper class="w-100" variant="raised">
 		<div class="paper-content">

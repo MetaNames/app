@@ -19,6 +19,12 @@ test.describe('Feature 8: User Profile', () => {
 		await expect(page.locator('.mdc-data-table__pagination')).not.toBeVisible();
 	});
 
+	test('the profile page sets a document title', async ({ page }) => {
+		await page.goto('/profile');
+
+		await expect(page).toHaveTitle('Profile | Meta Names');
+	});
+
 	test.describe('Authenticated', () => {
 		test.beforeEach(async ({ page }) => {
 			await page.goto('/profile', { waitUntil: 'networkidle' });
