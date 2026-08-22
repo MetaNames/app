@@ -115,4 +115,17 @@ test.describe('Feature 3: Domain Registration', () => {
 			await expect(page.locator('button:has-text("Register")')).toBeVisible({ timeout: 10000 });
 		});
 	});
+
+	test('3.10 - subdomain of an unregistered parent lands on the parent checkout', async ({
+		page
+	}) => {
+		// A parent nobody has registered, so `/api/domains/.../check` reports parentPresent:false
+		// and the page redirects to the parent's own registration URL.
+		const parent = `nope${Date.now()}.mpc`;
+
+		await page.goto(`/register/sub.${parent}`);
+		await page.waitForURL(`**/register/${parent}`);
+
+		await expect(page.locator('[data-testid="checkout-content"] h4')).toHaveText(parent);
+	});
 });

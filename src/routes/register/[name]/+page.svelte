@@ -15,11 +15,19 @@
 	import { track } from '@vercel/analytics';
 	import { page } from '$app/stores';
 
-	const isDomainPresent = writable<boolean>();
+	const isDomainPresent = writable<boolean | undefined>();
 	const isParentPresent = writable<boolean>();
 	const analyzed = writable<IDomainAnalyzed>();
 
-	const nameParam = $page.params.name ?? '';
+	let mounted = false;
+	let requestId = 0;
+
+	// SvelteKit reuses this component when only `[name]` changes, and the parent-not-found branch
+	// below redirects to `/register/<parent>` — the same route. A name captured once would leave
+	// the old domain rendered under the new URL.
+	$: nameParam = $page.params.name ?? '';
+	// Gated on `mounted` so the first run happens after mount, never mid-hydration.
+	$: if (mounted) analyzeAndCheck(nameParam);
 
 	$: domainName = $analyzed?.name;
 	$: parentDomainName = $analyzed?.parentId;
@@ -49,10 +57,16 @@
 		return goto(`/domain/${domainName}`);
 	}
 
-	onMount(async () => {
+	onMount(() => {
+		mounted = true;
+	});
+
+	async function analyzeAndCheck(name: string) {
+		const currentRequestId = ++requestId;
+		isDomainPresent.set(undefined);
+
 		try {
-			const domainAnalysis = $metaNamesSdk.domainRepository.analyze(nameParam);
-			analyzed.set(domainAnalysis);
+			analyzed.set($metaNamesSdk.domainRepository.analyze(name));
 		} catch (error) {
 			let errorMessage = 'Failed to analyze domain.';
 			if (error instanceof Error) errorMessage = error.message;
@@ -62,24 +76,26 @@
 		}
 
 		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${$analyzed.name}/check`);
+		// A redirect started a newer pass; that pass owns the stores now.
+		if (currentRequestId !== requestId) return;
 
 		if ('error' in check) {
 			alertMessage.set(check.error);
-			return goto(`/`, { replaceState: true });
+
+			return goto('/', { replaceState: true });
 		}
 
 		isDomainPresent.set(check.domainPresent);
-		if ($isDomainPresent) {
+		if (check.domainPresent) {
 			alertMessage.set('Domain already registered.');
-			return goto(`/domain/${domainName}`, { replaceState: true });
+
+			return goto(`/domain/${$analyzed.name}`, { replaceState: true });
 		}
 
 		isParentPresent.set(check.parentPresent);
-		if (parentDomainName && !$isParentPresent) {
-			alertMessage.set('Parent domain not found, please register it first.');
-			return goto(`/register/${parentDomainName}`, { replaceState: true });
-		}
-	});
+		if ($analyzed.parentId && !check.parentPresent)
+			return goto(`/register/${$analyzed.parentId}`, { replaceState: true });
+	}
 </script>
 
 <svelte:head>
