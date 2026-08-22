@@ -3,7 +3,7 @@ import { get } from 'svelte/store';
 import { alertTransactionAndFetchResult } from './utils';
 import { alertMessage, alertTransaction } from './stores/main';
 
-vi.mock('@sentry/sveltekit', () => ({ captureException: vi.fn() }));
+vi.mock('@sentry/sveltekit', () => ({ captureException: vi.fn(), init: vi.fn() }));
 
 describe('alertTransactionAndFetchResult', () => {
 	beforeEach(() => {

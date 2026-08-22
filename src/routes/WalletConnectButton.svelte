@@ -9,7 +9,7 @@
 	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.png';
 	import ledgerWalletLogo from '$lib/assets/images/ledger-wallet-white.png';
 
-	import { captureException } from '@sentry/sveltekit';
+	import { reportError } from '$lib/sentry';
 
 	import 'src/styles/wallet-connect.scss';
 	import Button from '@smui/button';
@@ -22,7 +22,7 @@
 
 	function reportConnectionFailure(wallet: string, error: unknown) {
 		console.error(`Failed to connect the ${wallet} wallet`, error);
-		captureException(error, { extra: { wallet } });
+		void reportError(error, { extra: { wallet } });
 		alertMessage.set(`Couldn't connect to ${wallet} wallet`);
 	}
 

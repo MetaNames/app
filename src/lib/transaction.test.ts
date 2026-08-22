@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { runTransaction } from './transaction';
 
-vi.mock('@sentry/sveltekit', () => ({ captureException: vi.fn() }));
+vi.mock('@sentry/sveltekit', () => ({ captureException: vi.fn(), init: vi.fn() }));
 
 describe('runTransaction', () => {
 	beforeEach(() => {

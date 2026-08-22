@@ -1,4 +1,4 @@
-import { captureException } from '@sentry/sveltekit';
+import { reportError } from './sentry';
 import { alertMessage } from './stores/main';
 
 /**
@@ -20,7 +20,7 @@ export async function loadOrReport<T>(
 		return await read;
 	} catch (error) {
 		console.error(error);
-		captureException(error);
+		await reportError(error);
 		alertMessage.set(failureMessage);
 
 		return undefined;

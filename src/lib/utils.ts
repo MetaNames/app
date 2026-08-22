@@ -1,6 +1,6 @@
 import type { ITransactionIntent, ITransactionResult } from '@metanames/sdk';
 import { alertMessage, alertTransaction } from './stores/main';
-import { captureException } from '@sentry/sveltekit';
+import { reportError } from './sentry';
 import { formatDistanceToNow } from 'date-fns';
 
 export const formatDate = (date: string | Date) => {
@@ -19,11 +19,11 @@ export const alertTransactionAndFetchResult = async (
 	const transactionHash = intent.transactionHash;
 	alertTransaction.set(transactionHash);
 
-	return await intent.fetchResult.catch((error) => {
+	return await intent.fetchResult.catch(async (error) => {
 		let message = 'Something went wrong';
 		if (error && error instanceof Error) message = error.message;
 
-		captureException(error);
+		await reportError(error);
 		console.error(error);
 		alertMessage.set(message);
 

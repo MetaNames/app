@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { get } from 'svelte/store';
 
 const { captureExceptionMock } = vi.hoisted(() => ({ captureExceptionMock: vi.fn() }));
-vi.mock('@sentry/sveltekit', () => ({ captureException: captureExceptionMock }));
+vi.mock('@sentry/sveltekit', () => ({ captureException: captureExceptionMock, init: vi.fn() }));
 
 import { loadOrReport } from './read';
 import { alertMessage } from './stores/main';
@@ -37,6 +37,6 @@ describe('loadOrReport', () => {
 		await expect(loadOrReport(Promise.reject(error), 'Could not load.')).resolves.toBeUndefined();
 
 		expect(get(alertMessage)).toBe('Could not load.');
-		expect(captureExceptionMock).toHaveBeenCalledWith(error);
+		expect(captureExceptionMock).toHaveBeenCalledWith(error, undefined);
 	});
 });

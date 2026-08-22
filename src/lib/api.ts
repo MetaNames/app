@@ -1,4 +1,4 @@
-import { captureException } from '@sentry/sveltekit';
+import { reportError } from './sentry';
 import type { ApiError } from './types';
 
 export async function fetchApiJson<T>(
@@ -22,7 +22,7 @@ export async function fetchApiJson<T>(
 		console.error(error);
 
 		// Only the request shape, never `options` — it can carry an auth header or a body.
-		captureException(error, {
+		await reportError(error, {
 			extra: { url, method: options.method ?? 'GET', status: response?.status }
 		});
 

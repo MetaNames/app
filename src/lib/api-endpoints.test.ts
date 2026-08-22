@@ -2,7 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock @sentry/sveltekit
 vi.mock('@sentry/sveltekit', () => ({
-	captureException: vi.fn()
+	captureException: vi.fn(),
+	init: vi.fn()
 }));
 
 // Mock the SDK

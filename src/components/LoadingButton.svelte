@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { alertMessage } from '$lib/stores/main';
-	import { captureException } from '@sentry/sveltekit';
+	import { reportError } from '$lib/sentry';
 	import Button, { Label } from '@smui/button';
 	import Icon from 'src/components/Icon.svelte';
 	import CircularProgress from '@smui/circular-progress';
@@ -14,7 +14,7 @@
 		if (error && error instanceof Error) message = error.message;
 		else message = 'Something went wrong';
 
-		captureException(error);
+		void reportError(error);
 		console.error(error);
 		alertMessage.set(message);
 	};

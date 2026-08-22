@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 
 // Mock Sentry
 vi.mock('@sentry/sveltekit', () => ({
-	captureException: vi.fn()
+	captureException: vi.fn(),
+	init: vi.fn()
 }));
 
 // Mock stores
