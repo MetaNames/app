@@ -18,6 +18,12 @@ export default defineConfig({
 		}),
 		tsconfigPaths()
 	],
+	// Ledger's lib-es builds use extensionless ESM imports (`./helpers`), which
+	// Node's native ESM resolver rejects when Vite externalizes them during SSR.
+	// Force them through Vite's bundler instead.
+	ssr: {
+		noExternal: [/^@ledgerhq\//]
+	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}
