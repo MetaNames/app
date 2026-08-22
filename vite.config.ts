@@ -43,6 +43,16 @@ export default defineConfig({
 			}
 		}
 	},
+	// `bn.js` was bundled 7 times (~709 KB rendered): once as the hoisted 5.2.3 that
+	// the Partisia packages ask for, plus a private 4.12.x copy each for elliptic,
+	// tiny-secp256k1, asn1.js, create-ecdh, diffie-hellman, miller-rabin and
+	// public-encrypt. Deduping resolves them all to the root 5.2.3. That crosses a
+	// major boundary for the 4.x consumers — 5.0 renamed `strip` to `_strip` and
+	// dropped `inspect` — so `crypto-vectors.test.ts` pins the elliptic + bn.js
+	// signature/address output to catch a silently-wrong implementation.
+	resolve: {
+		dedupe: ['bn.js']
+	},
 	// Ledger's lib-es builds use extensionless ESM imports (`./helpers`), which
 	// Node's native ESM resolver rejects when Vite externalizes them during SSR.
 	// Force them through Vite's bundler instead.
