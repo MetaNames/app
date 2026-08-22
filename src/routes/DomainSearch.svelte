@@ -6,6 +6,7 @@
 	import type { Domain as DomainModel } from '@metanames/sdk';
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { loadOrReport } from '$lib/read';
 	import { goto } from '$app/navigation';
 	import Icon from 'src/components/Icon.svelte';
 
@@ -44,7 +45,12 @@
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
-		const result = await $metaNamesSdk.domainRepository.find(domainName);
+		// `loadOrReport` yields `undefined` on failure, which clears the result card and leaves the
+		// snackbar to explain — instead of the spinner running forever.
+		const result = await loadOrReport(
+			$metaNamesSdk.domainRepository.find(domainName),
+			'Could not search for that domain. Please try again.'
+		);
 
 		if (currentRequestId === requestId) {
 			domain = result;
