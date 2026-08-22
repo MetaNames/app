@@ -3,6 +3,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
 	plugins: [
@@ -16,8 +17,33 @@ export default defineConfig({
 		nodePolyfills({
 			include: ['buffer', 'crypto', 'stream']
 		}),
-		tsconfigPaths()
+		tsconfigPaths(),
+		// Keep this LAST so it sees the final bundle
+		visualizer({
+			filename: 'bundle-report.html',
+			template: 'raw-data',
+			gzipSize: true,
+			brotliSize: true
+		})
 	],
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks: (id) => {
+					// Split Partisia SDK by submodule so routes load only what they need
+					if (id.includes('@partisiablockchain/zk-client')) return 'sdk-zk';
+					if (id.includes('@partisiablockchain/blockchain-api-transaction-client'))
+						return 'sdk-tx';
+					if (id.includes('@partisiablockchain/abi-client')) return 'sdk-abi';
+					if (id.includes('@partisiablockchain/rpc-client')) return 'sdk-rpc';
+					// MetaMask SDK is also large
+					if (id.includes('@metamask/')) return 'metamask';
+					if (id.includes('ethers')) return 'ethers';
+					// Everything else: let Vite decide
+				}
+			}
+		}
+	},
 	// Ledger's lib-es builds use extensionless ESM imports (`./helpers`), which
 	// Node's native ESM resolver rejects when Vite externalizes them during SSR.
 	// Force them through Vite's bundler instead.
