@@ -1,0 +1,19 @@
+# Round-3 baseline — 2026-08-22 12:38 UTC
+
+Entry chunk (code loaded on every route):
+  App entry: 77 KB (app.B0TBrkyM.js)
+  + implicit shared chunks below
+
+Top 5 chunks by size:
+     1539 KB  .svelte-kit/output/client/_app/immutable/chunks/BaCJQgiX.js
+     1016 KB  .svelte-kit/output/client/_app/immutable/chunks/fBFJsNmh.js
+      123 KB  .svelte-kit/output/client/_app/immutable/chunks/OEj5HjrN.js
+       81 KB  .svelte-kit/output/client/_app/immutable/chunks/B1e55F05.js
+       77 KB  .svelte-kit/output/client/_app/immutable/entry/app.B0TBrkyM.js
+
+Total JS: 0 KB
+Total build: 4.8 MB
+Playwright: 1.48.1 | Vite: 5.4.21 | SvelteKit: latest
+
+**KEY INSIGHT**: BaCJQgiX.js (1539 KB SDK) and fBFJsNmh.js (1016 KB) = super-shared chunks.
+Likely everyone loads both. Splitting them by route = round-3 goal.
