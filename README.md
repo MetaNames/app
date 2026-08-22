@@ -25,6 +25,9 @@ npm test           # unit + playwright integration
 
 Use `npm`, not `yarn`: the repo's lockfile is `package-lock.json`, and `yarn check`
 is shadowed by Yarn's built-in dependency checker so it never runs svelte-check.
+The same goes for pnpm: a `pnpm-lock.yaml` next to `package-lock.json` means CI
+(`npm ci`) and your local tree can resolve to different versions, so both are
+gitignored.
 
 ## Building
 
