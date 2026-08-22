@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"generate:themes": "npm run smui-theme-light && npm run smui-theme-dark",
+		"generate:themes": "npm run smui-theme-dark",
 		"smui-theme-light": "smui-theme compile src/styles/theme/smui.css -i src/theme",
 		"smui-theme-dark": "smui-theme compile src/styles/theme/smui-dark.css -i src/theme/dark",
 		"dev": "vite dev",
