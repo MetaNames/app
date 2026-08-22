@@ -10,6 +10,7 @@
 	import { writable } from 'svelte/store';
 	import { alertMessage, refresh } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { loadOrReport } from '$lib/read';
 
 	let domain = writable<DomainModel | undefined>();
 	let requestId = 0;
@@ -47,14 +48,23 @@
 		const currentRequestId = ++requestId;
 		domain.set(undefined);
 
-		const domainResponse = await $metaNamesSdk.domainRepository.find(name);
+		const domainResponse = await loadOrReport(
+			$metaNamesSdk.domainRepository.find(name),
+			'Could not load the domain. Please try again.'
+		);
 		if (currentRequestId !== requestId) return;
 
-		if (domainResponse) domain.set(domainResponse);
-		else {
+		if (domainResponse) return domain.set(domainResponse);
+
+		// `null` is a confirmed absence and an invitation to register; `undefined` means the read
+		// failed, so send the user somewhere usable rather than leaving the spinner running.
+		if (domainResponse === null) {
 			alertMessage.set('Domain not found. Register it now!');
-			goto(`/register/${name}`, { replaceState: true });
+
+			return goto(`/register/${name}`, { replaceState: true });
 		}
+
+		return goto('/', { replaceState: true });
 	}
 </script>
 
