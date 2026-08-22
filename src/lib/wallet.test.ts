@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock the config module
 vi.mock('$lib/config', () => ({
@@ -36,18 +36,64 @@ describe('Wallet Connection', () => {
 	});
 
 	describe('connectPartisia', () => {
-		it('should throw error when connection is null', async () => {
-			// Test the connection failure case
-			// The actual SDK connection logic throws when connection is falsy
-			const mockSdk = {
-				connect: vi.fn().mockResolvedValue(undefined),
-				connection: null
-			};
+		it('connects with the configured chain and returns the client', async () => {
+			const connect = vi.fn().mockResolvedValue(undefined);
+			vi.resetModules();
+			vi.doMock('partisia-blockchain-applications-sdk', () => ({
+				default: vi.fn().mockImplementation(() => ({
+					connect,
+					connection: { account: { address: '0xabcd1234' } }
+				}))
+			}));
 
-			// This simulates what happens when connection fails
-			expect(() => {
-				if (!mockSdk.connection) throw new Error('Connection failed');
-			}).toThrow('Connection failed');
+			const { connectPartisia } = await import('$lib/wallet');
+			const client = await connectPartisia();
+
+			expect(connect).toHaveBeenCalledWith({
+				chainId: 'Partisia Blockchain Testnet',
+				permissions: ['sign'],
+				dappName: 'Meta Names'
+			});
+			expect(client.connection).toEqual({ account: { address: '0xabcd1234' } });
+		});
+
+		it('throws when the wallet hands back no connection', async () => {
+			vi.resetModules();
+			vi.doMock('partisia-blockchain-applications-sdk', () => ({
+				default: vi.fn().mockImplementation(() => ({
+					connect: vi.fn().mockResolvedValue(undefined),
+					connection: null
+				}))
+			}));
+
+			const { connectPartisia } = await import('$lib/wallet');
+
+			await expect(connectPartisia()).rejects.toThrow('Connection failed');
+		});
+	});
+
+	describe('connectMetaMask', () => {
+		afterEach(() => {
+			vi.unstubAllGlobals();
+		});
+
+		it('throws when MetaMask is not installed', async () => {
+			vi.stubGlobal('window', {});
+			const { connectMetaMask } = await import('$lib/wallet');
+
+			await expect(connectMetaMask()).rejects.toThrow('MetaMask is not installed');
+		});
+
+		it('requests the Partisia snap and returns the provider', async () => {
+			const request = vi.fn().mockResolvedValue(undefined);
+			vi.stubGlobal('window', { ethereum: { request } });
+			const { connectMetaMask } = await import('$lib/wallet');
+
+			await expect(connectMetaMask()).resolves.toEqual({ request });
+			expect(request).toHaveBeenCalledWith({
+				method: 'wallet_requestSnaps',
+				params: { 'npm:@partisiablockchain/snap': {} }
+			});
 		});
 	});
 
