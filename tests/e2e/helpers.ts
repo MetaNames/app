@@ -2,6 +2,51 @@ import { expect, type Page } from '@playwright/test';
 
 export const TEST_PRIVATE_KEY = 'df4642ef258f9aef2adb6c148590208b20387fb067f2c0907d6c85697c27928c';
 
+/** Selector for the header Connect button. Distinct from body buttons on protected pages. */
+const HEADER_CONNECT_BTN = 'button.mdc-top-app-bar__action-item';
+/** Selector for the Dev Private Key input rendered inside the opened wallet menu. */
+const DEV_KEY_INPUT = '.dev-key-input';
+
+/**
+ * Open the header wallet-connect menu deterministically.
+ *
+ * Why this exists: on a cold start (especially the first test on a worker) the SvelteKit
+ * dev server can return HTML before hydration has attached SMUI click handlers. A single
+ * click on the header button then does nothing — no menu opens, no `.dev-key-input` ever
+ * appears, and the test fails with `expect(...).toBeVisible()` timeout. The previous
+ * mitigation was a fixed `page.waitForTimeout(2000)` sleep before clicking, but that is
+ * not reliable under CI load.
+ *
+ * Strategy: click the header button, then poll for `.dev-key-input` with a short timeout.
+ * If it doesn't appear, the click was lost to a not-yet-hydrated handler — close any
+ * open overlay (Escape), click again, and retry. After `MAX_ATTEMPTS` failed clicks,
+ * fall through to the final visibility assertion which surfaces the real failure
+ * with its diagnostic message intact.
+ */
+export async function openWalletMenu(page: Page) {
+	const MAX_ATTEMPTS = 5;
+	const PER_ATTEMPT_TIMEOUT_MS = 3000;
+
+	await expect(page.locator(HEADER_CONNECT_BTN)).toBeVisible({ timeout: 15000 });
+
+	const keyInput = page.locator(DEV_KEY_INPUT);
+	for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+		await page.locator(HEADER_CONNECT_BTN).click();
+		try {
+			await expect(keyInput).toBeVisible({ timeout: PER_ATTEMPT_TIMEOUT_MS });
+			return;
+		} catch {
+			// Click was dropped (handler not hydrated yet, or menu was already open
+			// and the click closed it). Dismiss any open overlay and retry.
+			await page.keyboard.press('Escape').catch(() => {});
+		}
+	}
+
+	// Final attempt: surface the real diagnostic instead of swallowing the last
+	// per-attempt timeout error.
+	await expect(keyInput).toBeVisible({ timeout: PER_ATTEMPT_TIMEOUT_MS });
+}
+
 /**
  * Login via the top-bar wallet connect menu's "Dev Private Key" input.
  * The page must already be loaded. Works on any page with the top-bar.
@@ -25,26 +70,14 @@ export async function loginOnCurrentPage(page: Page) {
 		await page.reload({ waitUntil: 'networkidle' });
 	}
 
-	// The header button has .mdc-top-app-bar__action-item — unique to the TopAppBar.
-	// The ConnectionRequired body button does NOT have this class.
-	const connectBtn = page.locator('button.mdc-top-app-bar__action-item');
-	await expect(connectBtn).toBeVisible({ timeout: 15000 });
-
-	// Wait for SvelteKit hydration — the SMUI button needs JS to handle click events.
-	// Without this, clicking the button does nothing (no menu opens).
-	await page.waitForTimeout(2000);
+	// Open the wallet menu with retry — see openWalletMenu() for the rationale.
+	await openWalletMenu(page);
 
 	// Wait for any loading spinners to disappear (page still fetching data)
 	await page.waitForLoadState('networkidle');
 
-	// Click the Connect button.
-	await connectBtn.click();
-
-	// Wait for the dev-key-input to appear and be visible.
-	// The SMUI Menu opens anchored to the header div — the dev-key-input appears inside it.
-	// On testnet, the dev-key section is always rendered when the menu is open.
-	const keyInput = page.locator('.dev-key-input');
-	await expect(keyInput).toBeVisible({ timeout: 15000 });
+	// Fill the dev private key and submit.
+	const keyInput = page.locator(DEV_KEY_INPUT);
 	await keyInput.fill(TEST_PRIVATE_KEY);
 
 	// Click the Connect button next to the input (inside the menu, not the header button)
@@ -53,7 +86,7 @@ export async function loginOnCurrentPage(page: Page) {
 	await devConnectBtn.click();
 
 	// Verify wallet is connected — the header button text changes to a short address
-	await expect(connectBtn).toContainText('...', { timeout: 10000 });
+	await expect(page.locator(HEADER_CONNECT_BTN)).toContainText('...', { timeout: 10000 });
 }
 
 /**
