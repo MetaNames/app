@@ -4,6 +4,7 @@
 	import { filterDomainsByName } from '$lib/filter';
 	import { walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { loadOrReport } from '$lib/read';
 
 	import Paper from '@smui/paper';
 	import DomainsTable from './DomainsTable.svelte';
@@ -29,10 +30,14 @@
 			const currentRequestId = ++requestId;
 			loaded = false;
 
-			const owned = await $metaNamesSdk.domainRepository.findByOwner(address);
+			const owned = await loadOrReport(
+				$metaNamesSdk.domainRepository.findByOwner(address),
+				'Could not load your domains. Please try again.'
+			);
 			if (currentRequestId !== requestId) return;
 
-			domains = owned;
+			// Even a failed read has to stop the table's progress bar; the snackbar carries why.
+			domains = owned ?? [];
 			loaded = true;
 		})
 	);
