@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { alertMessage, walletAddress } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
+	import { loadOrReport } from '$lib/read';
 	import { Label } from '@smui/button';
 	import Card, { Content } from '@smui/card';
 	import { onMount } from 'svelte';
@@ -21,8 +22,15 @@
 	$: parentLink = `/domain/${parentDomainName}`;
 
 	onMount(async () => {
-		parentDomain = await $metaNamesSdk.domainRepository.find(parentDomainName);
+		const found = await loadOrReport(
+			$metaNamesSdk.domainRepository.find(parentDomainName),
+			'Could not load the parent domain. Please try again.'
+		);
+		// Only a confirmed absence (`null`) should bounce to the parent's registration page. On
+		// `undefined` the lookup failed and we do not know either way, so stay put.
+		if (found === undefined) return;
 
+		parentDomain = found;
 		if (!parentDomain) goto(`/register/${parentDomainName}`);
 	});
 
