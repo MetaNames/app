@@ -4,7 +4,9 @@ const config: PlaywrightTestConfig = {
 	webServer: {
 		command: 'npm run dev -- --port 4173',
 		port: 4173,
-		reuseExistingServer: true
+		// Always boot a fresh dev server: a stale one left over from an earlier run
+		// serves the previous bundle, which silently masks bundle-size changes.
+		reuseExistingServer: false
 	},
 	testDir: 'tests',
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
