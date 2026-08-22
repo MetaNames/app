@@ -32,8 +32,7 @@ export default defineConfig({
 				manualChunks: (id) => {
 					// Split Partisia SDK by submodule so routes load only what they need
 					if (id.includes('@partisiablockchain/zk-client')) return 'sdk-zk';
-					if (id.includes('@partisiablockchain/blockchain-api-transaction-client'))
-						return 'sdk-tx';
+					if (id.includes('@partisiablockchain/blockchain-api-transaction-client')) return 'sdk-tx';
 					if (id.includes('@partisiablockchain/abi-client')) return 'sdk-abi';
 					if (id.includes('@partisiablockchain/rpc-client')) return 'sdk-rpc';
 					// MetaMask SDK is also large
