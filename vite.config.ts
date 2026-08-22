@@ -25,6 +25,22 @@ export default defineConfig({
 		noExternal: [/^@ledgerhq\//]
 	},
 	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}']
+		include: ['src/**/*.{test,spec}.{js,ts}'],
+		coverage: {
+			provider: 'v8',
+			// Vitest instruments everything by default, which pulled `playwright.config.ts`,
+			// `svelte.config.js` and all 25 `.svelte` files — none of which a Vitest test can
+			// reach — into the report. That reported 14.09 % while `src/lib` was at 88 %.
+			// Components are covered by the Playwright suite instead.
+			include: ['src/lib/**/*.ts'],
+			exclude: ['src/lib/**/*.{test,spec}.ts', 'src/lib/index.ts'],
+			reporter: ['text', 'lcov'],
+			thresholds: {
+				statements: 90,
+				branches: 90,
+				functions: 90,
+				lines: 90
+			}
+		}
 	}
 });
