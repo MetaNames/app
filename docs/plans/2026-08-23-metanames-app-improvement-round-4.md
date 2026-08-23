@@ -2493,6 +2493,145 @@ message stand, and nothing in Steps 2–4 is disputed here. One residue the plan
 no longer exist. Ignore entries for missing paths are inert, and this is a plan-only commit, so they
 are left in place — worth folding into a later cleanup.
 
+### E4: A1, A2, A3 — the spec could pass on a spinner, and three of the CSS claims name the wrong cause
+
+Batch A's gate went green and both reviews landed, but the quality review's follow-up work found
+that the batch's _evidence_ was weaker than its result. The fixes are right; three of the reasons
+given for them are not, and the test that proves them could pass without measuring a layout.
+`9f0f7fa` corrects all three. No behaviour changed on any route.
+
+#### A1 — `networkidle` plus a fixed sleep does not prove there is a layout to measure
+
+**What the plan asserted.** A1 Step 1 waits with `page.goto(path, { waitUntil: 'networkidle' })`
+followed by `await page.waitForTimeout(2000)`, on the comment "the chain read behind /domain and
+/register resolves after hydration", and Step 2 expects **5 passed, 2 failed**.
+
+**What was actually true.** The assertion is `scrollWidth <= clientWidth`, which is trivially true
+of a page that rendered nothing. Neither wait establishes that anything rendered: `networkidle`
+fires on the shell, and 2 s is a guess about testnet latency, not a fact about it. With the chain
+reads stalled, `/domain` and `/register` both report `320px of content in a 320px viewport` and
+pass — off 17 elements under `main`, which is a spinner, not a layout. So Step 2's "2 failed" was
+never the spec's verdict; it was the verdict on the runs where the reads happened to resolve inside
+2 s, and the same spec reports green on the runs where they do not. A test whose result depends on
+whether the network beat a timer cannot pin a regression.
+
+Two smaller defects in the same table. `/register/zzunregistered123` is a fixed name: register it
+once on testnet and the route redirects to `/domain/zzunregistered123`, after which the test keeps
+passing while silently measuring a different page. And the sleep is unconditional — 2 s × 7 routes
+is 14 s of dead wall clock every run, up to 56 s once retries are counted.
+
+**Root cause.** The wait was written against the _cause_ of slowness (a chain read) rather than
+against the _effect_ the assertion depends on (content laid out). Any wait that is not the thing
+being measured can drift out from under the assertion; a `<=` assertion is the case where that
+drift is invisible, because the degenerate state satisfies it.
+
+**What was done instead.** `9f0f7fa` gives each route an anchor that exists only on its loaded
+branch and waits on that, deleting the sleep:
+
+| route                | anchor                              | why this one                                        |
+| -------------------- | ----------------------------------- | --------------------------------------------------- |
+| `/`                  | `.domain-input`                     | the search card, wider than the SSR'd heading above |
+| `/domain/test.mpc`   | `button.chip:has-text("Owner")`     | a chip — the subtree A3 is about                    |
+| `/register/<name>`   | `.card-content h4`                  | the domain-name heading that overflowed             |
+| `/profile`           | `p:has-text("Connect your wallet")` | the real unauthenticated empty state                |
+| `/tld`               | `button.chip:has-text("Owner")`     | same chip subtree as `/domain`                      |
+| `/domain/…/renew`    | `.card-content h4`                  | same card as `/register`                            |
+| `/domain/…/transfer` | `h4`                                | the card heading                                    |
+
+`toBeVisible({ timeout: 15000 })` replaces the sleep, so a slow read costs waiting time and a
+never-rendering page costs a failure — where the sleep charged 2 s for both and called the second
+one a pass. `/register` moves to a `` `zzunregistered${Date.now()}` `` name, which cannot already be
+taken. `/profile` anchors on the empty state deliberately: unauthenticated is what this suite runs
+as, so anchoring on the domains table would hang for 15 s and fail.
+
+#### A2 — the 391 px was the heading, not the padding
+
+**What the plan asserted.** A2's objective is "make `/register/[name]` pass A1 by removing the 5 rem
+padding that leaves 96 px of usable width at 320 px"; Step 2's comment states that the padding
+"pushed the document to 391px of scroll width"; the `h4` wrap in Step 1 is introduced as a separate
+clipping problem ("Separately, `h4` has no `overflow-wrap` …").
+
+**What was actually true.** The ranking is inverted. Reverting `padding: 0 clamp(0.5rem, 12vw, 5rem)`
+to `padding: 0 5rem` moves document scroll width by **0 px** at every width measured. The whole 391
+px was Step 1's target: `zzunregistered123.mpc` is one unbreakable word that lays out 359 px of text
+in a 256 px box, and it is the only thing on the card that overflowed — identically on `/register`
+and `/renew`, since both feed this `h4` the name from the URL.
+
+**Root cause.** The 96 px figure is correct arithmetic about _content width_ — 320 px minus 160 px
+of padding — but content width is not scroll width. A padded box that fits the viewport does not
+overflow it; it just leaves less room inside. Only something that refuses to shrink below its own
+text — the unbreakable name — can push the document past 320 px. The plan measured the wrong
+quantity and then attributed the overflow to it.
+
+**What was done instead.** Both declarations stay: each is correct on its own merits, and A2's
+objective, gates and commit message stand. `9f0f7fa` rewrites the two comments to say what each
+declaration actually does. The clamp is a **legibility** change, not a reflow one: 160 px of padding
+left the fee rows 96 px of a 320 px viewport, and scaling it with the viewport gives them **179 px**.
+`12vw` reaches 80 px at 667 px, so from 667 px up the padding — and the desktop layout — is
+byte-identical to before, which is the "desktop layout is unchanged" Step 3 asked to confirm, now
+stated as the width at which it starts holding. Longer names are worse than the test's; `test.mpc`
+happens to be short enough to fit either way, which is why only `/register` and not `/renew` showed
+the failure.
+
+#### A3 — three declarations were inert, and the load-bearing ones were explained wrongly
+
+**What the plan asserted.** A3 Step 1's comment credits `.value`'s `min-width: 0` with the shrink
+("Without this a 280px 'Expires' chip made /domain scroll sideways at 320px"). E1 above then adds
+four more declarations and credits `min-width: 0` on Domain `.section` and `.chips` with dropping
+the `min-width: auto` floor, and `min-width: 0` on Chip `.container` and `:global(.mdc-button__label)`
+with stopping the chip being "held open at the value's full text width".
+
+**What was actually true.** CSSOM probes that restore each new declaration to its initial value, one
+at a time, at 320/360/480/768/1440 px, show three of the seven do nothing at any width:
+
+| declaration                                | restoring it to `auto`     | verdict      |
+| ------------------------------------------ | -------------------------- | ------------ |
+| `Chip .container { min-width: 0 }`         | no change                  | inert        |
+| `Domain .section { min-width: 0 }`         | no change                  | inert        |
+| `Domain .chips { min-width: 0 }`           | no change                  | inert        |
+| `Chip :global(.chip) { max-width: 100% }`  | 314 px chip, 362 px doc    | load-bearing |
+| `Chip .mdc-button__label { min-width: 0 }` | label spills the chip      | load-bearing |
+| `Chip .value { overflow: hidden }`         | `/domain` → 456 px         | load-bearing |
+| `Domain .section { align-self: stretch }`  | `/domain`, `/tld` → 373 px | load-bearing |
+
+And the three that survive were described by the wrong mechanism:
+
+- **`max-width: 100%` is what caps the chip**, not the label's `min-width: 0`. Remove it and the
+  widest chip ("Expires" on `/domain`, "Owner" on `/tld`) lays out at 314 px and takes both routes
+  to 362 px of scroll width in a 320 px viewport.
+- **The label's `min-width: 0` stops a spill, not a stretch.** Under that cap the chip stays 224 px
+  wide either way; without the declaration the label refuses to shrink and renders _outside_ it —
+  the value's right edge moves from 240 px to 288 px and the trailing icon from `x=248` to `x=296`,
+  both past the chip's own right edge at 272 px.
+- **`.value` shrinks because of `overflow: hidden`, not the `min-width: 0` beside it.** Per CSS
+  Flexbox §4.5 the automatic minimum size applies only while overflow is visible in the main axis,
+  so `min-width: auto` already resolves to 0 on that element. Restoring `overflow: visible` takes
+  `/domain` to 456 px at 320 px; the adjacent `min-width: 0` was redundant with the `text-overflow:
+ellipsis` rule two lines above it.
+
+**Root cause.** Both A3 and E1 reasoned forward from "this is a flex item, flex items have a
+`min-width: auto` floor" and added the floor-removal everywhere the pattern appeared, without
+probing which instance was actually binding. That is how three no-ops shipped next to four fixes,
+and how the fixes ended up labelled with the pattern rather than with their measured effect. E1's
+own root-cause paragraph is the entry corrected here: `align-self: stretch` is what drops the
+`fit-content` sizing, and it does so alone — the two `min-width: 0` declarations E1 credits
+alongside it contribute nothing. Per errata policy item 5, E1's text is left as written.
+
+**What was done instead.** `9f0f7fa` deletes the three inert declarations and rewrites the comments
+on the survivors to the measured mechanism and its cost. Same commit corrects the owner-width
+assertion's comment in `tests/e2e/domain-management.spec.ts`: the chip renders 14 px Roboto, not the
+13 px claimed — 7.79 px per character plus 1.25 px of letter-spacing, which is how 100 px fit ~11
+characters of a 42-character address — and `min(28ch, 60vw)` resolves to 218 px at 1440 px, above
+the 180 px the test asserts. The assertion itself is unchanged.
+
+**Scope and residue.** No gate moved: 72/72 e2e, 213/213 unit, `lint` and `svelte-check` clean, and
+Batch A's exit criteria — reflow 7/7, zero `color-contrast` violations on `/`, the owner-address
+assertion, SHARED 1023 KB / 20 chunks — all still hold, now on a spec that fails when a route does
+not render. A1's objective and commit message stand; A2's and A3's objectives, gates and commit
+messages stand. §3.3's 339 px and A1 Step 2's 391 px remain valid measurements of the loaded pages
+and are not adjusted. The same commit also clears the residue E3 left open: `.prettierignore`'s
+entries for `static/~@fontsource` and `static/~normalize.css`, deleted in `3031e71`.
+
 ---
 
 ## Appendix A: audit method
