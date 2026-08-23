@@ -2442,6 +2442,57 @@ A4 still takes the app's one `color-contrast` violation to zero and Task B's ass
 `color-contrast` is clean still holds. Nothing outside the `.subtitle` rule changed. The overstated
 8.05 was never a gate — no task asserts a contrast ratio above AA.
 
+### E3: A5 — Step 1's grep can never print `NO REFERENCES`; the proof has to be narrower
+
+**What the plan asserted.** Task A5 Step 1 runs
+`grep -rn "fontsource\|normalize" src/ svelte.config.js vite.config.ts package.json || echo "NO REFERENCES"`
+and states `Expected: NO REFERENCES`.
+
+**What was actually true.** That command cannot produce `NO REFERENCES`. The bare word `normalize`
+matches 13 lines of unrelated live code, so `grep` exits 0 and the `||` branch never runs:
+
+| matched by `normalize`                                        | what it actually is                     | lines |
+| ------------------------------------------------------------- | --------------------------------------- | ----- |
+| `src/lib/domain-validator.test.ts:42–51`                      | `validator.normalize()` — SDK API       | 6     |
+| `src/lib/node-compat/wallet-crypto.ts:52,58,80,83`            | `.normalize('NFKD')` / BIP-39 helper    | 4     |
+| `src/routes/api/register/[name]/fees/[coin]/+server.ts:10,12` | `domainValidator.normalize(name)`       | 2     |
+| `src/lib/api-endpoints.test.ts:19`                            | `normalize: vi.fn(...)` mock of the API | 1     |
+
+`fontsource` contributes zero matches; all 13 are `normalize`. The plan also disagrees with itself:
+§3.7 states this same proof as `grep -rn "fontsource\|normalize.css"` over `src/`,
+`svelte.config.js` and `vite.config.ts` — that pattern does exit 1. Step 1 dropped the `.css`.
+
+**Root cause.** The claim under test is that no **path** references these static files, but Step 1
+widened §3.7's path-shaped token `normalize.css` into the bare identifier `normalize`, which is
+common in this codebase (`String.prototype.normalize`, the SDK's `domainValidator.normalize`). The
+widened pattern stopped testing the claim; it tests nothing.
+
+**What was done instead.** `3031e71` deletes the same 9 files A5 names, on these narrower proofs in
+place of Step 1:
+
+1. §3.7's own pattern, restored — `grep -rn "fontsource\|normalize.css"` over `src/`,
+   `svelte.config.js` and `vite.config.ts` → no output, exit 1.
+2. The two path prefixes by which a `static/` file is actually addressed, over the whole tracked
+   tree: `git grep -n -E '~normalize|~@fontsource'` → hits only `.prettierignore:20–21` and plan
+   documents. No `src/` or build-config reference.
+3. Stylesheet entry-point enumeration: the only `<link>` in `src/` is `+layout.svelte:72`'s favicon,
+   and every stylesheet reaches the bundle through a relative `@import` in `src/styles/app.scss` (3)
+   or `src/theme/{,dark/}_smui-theme.scss` (2). No absolute `/~…` URL exists anywhere — and an
+   absolute URL is the only way a file under `static/` is ever loaded.
+4. The `~@fontsource` CSS was inert even if reached: every `@font-face` `src` is
+   `url(./files/…-normal.woff2)`, and `git ls-tree -r 3031e71^ static/` tracks no `.woff2`/`.woff`/
+   `.ttf`. The font binaries were never in the repo, so those 8 files could only ever have produced
+   404s.
+
+Taken together these are strictly stronger than Step 1's intent: (2) shows no reference by path,
+(3) shows no mechanism by which one could exist, (4) shows the files were non-functional regardless.
+
+**Scope.** Step 1's expected output is the only defect. A5's objective, file list, gates and commit
+message stand, and nothing in Steps 2–4 is disputed here. One residue the plan does not mention:
+`.prettierignore:20–21` still ignores `static/~@fontsource` and `static/~normalize.css`, paths that
+no longer exist. Ignore entries for missing paths are inert, and this is a plan-only commit, so they
+are left in place — worth folding into a later cleanup.
+
 ---
 
 ## Appendix A: audit method
