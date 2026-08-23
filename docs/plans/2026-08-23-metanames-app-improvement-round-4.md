@@ -2362,7 +2362,48 @@ This plan is wrong somewhere. When you find it:
 
 ## Errata
 
-_None yet. Append as `### E1: <task id> — <summary>`._
+### E1: A3 — the min-content floor is in `Domain.svelte`, not `Chip.svelte`
+
+**What the plan asserted.** Task A3 names exactly one file, `src/components/Chip.svelte`, and
+predicts **7 passed** on `tests/e2e/reflow.spec.ts` after Steps 1–2.
+
+**What was actually true.** With Steps 1 and 2 applied verbatim and nothing else changed, the spec
+still failed on `/domain`, and failed _wider_ than the baseline A1 pinned:
+
+| `/domain` doc `scrollWidth` @ 320 px viewport | source                                      |
+| --------------------------------------------- | ------------------------------------------- |
+| 339 px                                        | §3.3 and A1 Step 2, at `bab1d37`            |
+| **373 px**                                    | A3 Steps 1–2 as written, `Chip.svelte` only |
+| ≤ 320 px — **7 passed**                       | shipped `414c379`, re-run to confirm        |
+
+`domain: 373px of content in a 320px viewport`. The step meant to fix the failure moved it 34 px
+the wrong way.
+
+**Root cause.** `min-width: 0` on `.value` frees the chip's own text to shrink; it does not free
+the flex ancestors between that text and the card. In `Domain.svelte`, `.container` is a column
+flex container with `align-items: start`, which sizes each `.section` to `fit-content` — and
+`fit-content` is floored at `min-content`. `.section` and `.chips` both keep the default
+`min-width: auto`, so the widest nowrap chip set the subtree's min-content width and pushed
+`documentElement.scrollWidth` past the viewport no matter what `Chip.svelte` permitted. Step 1's
+replacement of `.value.ellipsis`'s hard `width: 100px` with `max-width: min(28ch, 60vw)` — correct
+on its own merits, and the whole point of Step 4's desktop assertion — _raised_ that floor, which
+is why the number went 339 → 373 instead of down.
+
+**What was done instead.** `414c379` ships Steps 1–4 as written, plus the two corrections the plan
+omits:
+
+- `src/components/Domain.svelte`, a file A3's **Files** list does not mention:
+  `.section { align-self: stretch; min-width: 0; }` and `.chips { min-width: 0; }`. Stretching the
+  section to the card drops the `fit-content` sizing; the two `min-width: 0` declarations drop the
+  `min-width: auto` floor.
+- `src/components/Chip.svelte`, beyond Step 2's `max-width: 100%`: `min-width: 0` on `.container`
+  and on `:global(.mdc-button__label)`. `mdc-button` is itself a flex container and its label a
+  flex item, so both carry the same `auto` floor and would have held the chip open at the value's
+  full text width, defeating the `max-width`.
+
+**Scope.** A3's objective, gates and commit message stand; only the file list and the two style
+steps were wrong. No other task is affected — A2 had already taken `/register` green at `66d8ac8`,
+and nothing outside `/domain/[name]`'s chip subtree changed.
 
 ---
 
