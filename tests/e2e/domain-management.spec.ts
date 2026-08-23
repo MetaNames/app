@@ -59,4 +59,15 @@ test.describe('Feature 4: Domain Management', () => {
 		await expect(page.locator('button:has-text("details")')).not.toBeVisible();
 		await expect(page.locator('button:has-text("settings")')).not.toBeVisible();
 	});
+
+	test('shows more than a stub of the owner address on desktop', async ({ page }) => {
+		await page.setViewportSize({ width: 1440, height: 900 });
+		await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
+
+		const ownerValue = page.locator('button.chip', { hasText: 'Owner' }).locator('.value');
+		await expect(ownerValue).toBeVisible();
+		// 100px of Roboto at 13px fits ~11 characters; the address is 42.
+		const width = (await ownerValue.boundingBox())!.width;
+		expect(width).toBeGreaterThan(180);
+	});
 });

@@ -63,9 +63,19 @@
 
 <style lang="scss">
 	:global(.chip) {
+		max-width: 100%;
+
+		// mdc-button is a flex container and its label a flex item; both default to
+		// min-width: auto, which would hold the chip open at the value's full text
+		// width and defeat the max-width above.
+		:global(.mdc-button__label) {
+			min-width: 0;
+		}
+
 		.container {
 			display: flex;
 			justify-content: center;
+			min-width: 0;
 
 			.label {
 				font-weight: bold;
@@ -78,15 +88,16 @@
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				text-transform: none;
+				// Shrink below content width rather than forcing the chip — and the document —
+				// wider than the viewport. Without this a 280px "Expires" chip made /domain
+				// scroll sideways at 320px.
+				min-width: 0;
 
 				&.ellipsis {
+					// Was a hard 100px at every viewport, which cut a 42-char owner address to
+					// eleven characters on a 1440px screen. Give it the room it has.
 					display: inline-block;
-					width: 100px;
-				}
-
-				@media (max-width: 768px) {
-					max-width: 200px;
-					overflow-wrap: anywhere;
+					max-width: min(28ch, 60vw);
 				}
 			}
 		}

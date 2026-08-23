@@ -182,10 +182,20 @@
 			flex-direction: column;
 			align-items: start;
 
+			// align-items: start sizes each section to fit-content, and fit-content is
+			// floored at min-content — so a nowrap chip wider than the card dragged the
+			// section (and the document) past the viewport. Stretch them to the card
+			// instead and let the chips shrink inside.
+			.section {
+				align-self: stretch;
+				min-width: 0;
+			}
+
 			.chips {
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
+				min-width: 0;
 			}
 
 			h5 {
