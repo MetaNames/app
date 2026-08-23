@@ -32,7 +32,10 @@
 	.subtitle {
 		text-transform: uppercase;
 		font-size: x-small;
-		color: var(--mdc-theme-text-hint-on-background);
+		// --mdc-theme-text-hint-on-background is rgba(255,255,255,.5), which composites to
+		// #9b9a9a on the #363535 background: 4.36:1, under the 4.5:1 SC 1.4.3 needs at 10px.
+		// The secondary token is rgba(255,255,255,.7) -> #c3c2c2 -> 6.88:1.
+		color: var(--mdc-theme-text-secondary-on-background);
 	}
 	h3 {
 		margin-top: auto;
