@@ -2,6 +2,8 @@ import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha256';
 import { Buffer } from 'buffer';
 import { ec as EC } from 'elliptic';
+import { toBytes, type BinaryLike } from './bytes';
+import { requireWalletCrypto, type NodeCipher } from './lazy-crypto';
 
 /**
  * The slice of Node's `crypto` this app actually reaches, and nothing else.
@@ -9,7 +11,7 @@ import { ec as EC } from 'elliptic';
  * `vite-plugin-node-polyfills` used to satisfy these imports with
  * `crypto-browserify`, which drags in scrypt, pbkdf2, browserify-aes, des.js,
  * asn1.js, public-encrypt, diffie-hellman and a `stream` shim — ~480 KB rendered
- * into the chunk every route loads — to serve the six calls enumerated below.
+ * into the chunk every route loads — to serve the seven calls enumerated below.
  *
  * Anything not implemented here throws *naming itself*. That is the whole point:
  * the previous attempt at this let Vite externalize `crypto` instead, which
@@ -23,32 +25,22 @@ import { ec as EC } from 'elliptic';
  *   createHash    utils-buffer.ts, ecies.ts — implemented, sha256 only
  *   createHmac    ecies.ts         — implemented, sha256 only
  *   createECDH    wallet.ts, ecies.ts — implemented (elliptic, secp256k1 only)
- *   createCipheriv / createDecipheriv  ecies.ts, keystore.ts — NOT implemented
- *   pbkdf2Sync    keystore.ts      — NOT implemented
+ *   createCipheriv / createDecipheriv  ecies.ts, keystore.ts — forwarded (AES)
+ *   pbkdf2Sync    keystore.ts      — forwarded (sha256 only)
  *
- * The three unimplemented entries back `encryptMessage`/`decryptMessage` and the
- * keystore, none of which this app calls: it signs with a private key or delegates
- * to an external wallet. They are deliberately left as named throws rather than
- * reimplemented, because ecies asks for `aes-128-ecb` and keystore for
- * `aes-256-ctr` — and @noble/ciphers, the substitute the plan proposed, omits ECB
- * on purpose. A hand-rolled ECB would be a plausible-looking cipher that nobody
- * exercises, which is a worse failure mode than a loud error.
+ * The last three are the ecies envelope and the keystore. ecies is on the live
+ * Partisia Wallet connect and sign paths — `sdk.connect()` decrypts the extension's
+ * reply with `aes-128-ecb` — so they are implemented, but by @noble/ciphers behind
+ * the lazy seam in lazy-crypto.ts rather than here: @noble/ciphers is ~35 KB of the
+ * 228 KB that path needs (HD derivation is the rest), and this module is in the chunk
+ * every route loads.
  */
 function notPolyfilled(name: string): never {
 	throw new Error(
 		`crypto.${name} is not polyfilled in app scope. ` +
-			`It backs a keystore/ecies path this app does not use; ` +
-			`implement it in src/lib/node-compat/crypto.ts if that changes.`
+			`Implement it in src/lib/node-compat/crypto.ts, or in wallet-crypto.ts if it ` +
+			`belongs behind the lazy Partisia wallet seam.`
 	);
-}
-
-type BinaryLike = Uint8Array | ArrayBufferView | string;
-
-function toBytes(data: BinaryLike, encoding?: BufferEncoding): Uint8Array {
-	if (typeof data === 'string') return new Uint8Array(Buffer.from(data, encoding ?? 'utf8'));
-	if (data instanceof Uint8Array) return data;
-
-	return new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
 }
 
 /** Node returns a Buffer from `digest()` and a string from `digest(encoding)`. */
@@ -181,16 +173,49 @@ export function createECDH(curveName: string): Secp256k1ECDH {
 	return new Secp256k1ECDH();
 }
 
-export function createCipheriv(algorithm: string): never {
-	notPolyfilled(`createCipheriv('${algorithm}')`);
+/**
+ * AES, forwarded to the lazily-loaded backend. `loadWalletCrypto()` has to have
+ * resolved first — Node's cipher API is synchronous, so there is nowhere to await —
+ * and calling before it does throws naming the function. See lazy-crypto.ts.
+ */
+export function createCipheriv(
+	algorithm: string,
+	key: BinaryLike,
+	iv: BinaryLike | null
+): NodeCipher {
+	return requireWalletCrypto(`crypto.createCipheriv('${algorithm}')`).ciphers.createCipheriv(
+		algorithm,
+		key,
+		iv
+	);
 }
 
-export function createDecipheriv(algorithm: string): never {
-	notPolyfilled(`createDecipheriv('${algorithm}')`);
+export function createDecipheriv(
+	algorithm: string,
+	key: BinaryLike,
+	iv: BinaryLike | null
+): NodeCipher {
+	return requireWalletCrypto(`crypto.createDecipheriv('${algorithm}')`).ciphers.createDecipheriv(
+		algorithm,
+		key,
+		iv
+	);
 }
 
-export function pbkdf2Sync(): never {
-	notPolyfilled('pbkdf2Sync');
+export function pbkdf2Sync(
+	password: BinaryLike,
+	salt: BinaryLike,
+	iterations: number,
+	keylen: number,
+	digest: string
+): Buffer {
+	return requireWalletCrypto('crypto.pbkdf2Sync').ciphers.pbkdf2Sync(
+		password,
+		salt,
+		iterations,
+		keylen,
+		digest
+	);
 }
 
 // The consumers are CJS compiled with esModuleInterop (`crypto_1.default.createHash`),

@@ -2,6 +2,7 @@ import { config } from './config';
 import type { MetaMaskSdk } from '@metanames/sdk';
 import type { AccountData } from './types';
 import { accountCoinsQuery } from './queries';
+import { loadWalletCrypto } from './node-compat/lazy-crypto';
 import { backendBrowserUrl } from './url';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- widening to `object` breaks the `wallet.connection` / `wallet.request` probes in getAddress; typing both wallet clients honestly is its own task
@@ -10,7 +11,17 @@ export type OptionalWalletClient = any | undefined | null;
 const metaMaskSnapId = 'npm:@partisiablockchain/snap';
 
 export const connectPartisia = async () => {
-	const { default: PartisiaSdk } = await import('partisia-blockchain-applications-sdk');
+	// The Partisia Wallet is the only path in the app that runs HD derivation and AES:
+	// `sdk.connect()` derives a BIP32 session keypair from its own seed and then
+	// ecies-decrypts the extension's reply, and `signMessage` does both again. Both
+	// primitives live behind `loadWalletCrypto()` so that bip39's wordlist,
+	// @scure/bip32 and @noble/ciphers stay out of the chunk every route loads — see
+	// src/lib/node-compat/lazy-crypto.ts. It has to resolve *before* connect() runs,
+	// because the Node APIs partisia calls into are synchronous.
+	const [{ default: PartisiaSdk }] = await Promise.all([
+		import('partisia-blockchain-applications-sdk'),
+		loadWalletCrypto()
+	]);
 	const sdk = new PartisiaSdk();
 
 	await sdk.connect({

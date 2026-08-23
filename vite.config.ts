@@ -24,8 +24,8 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const nodeCompatAliases: Record<string, string> = {
 	crypto: 'src/lib/node-compat/crypto.ts',
 	assert: 'src/lib/node-compat/assert.cjs',
-	bip39: 'src/lib/node-compat/bip39-stub.ts',
-	bip32: 'src/lib/node-compat/bip32-stub.ts'
+	bip39: 'src/lib/node-compat/bip39.ts',
+	bip32: 'src/lib/node-compat/bip32.ts'
 };
 
 const nodeCompatAliasEntries = Object.fromEntries(
@@ -105,16 +105,18 @@ export default defineConfig({
 		// Note `include: []` would mean *all* modules, not none.
 		//
 		// `global` and `process` are kept deliberately, not by inertia. Measured with
-		// `process: false`: dev leaves `globalThis.process` undefined with no page
-		// error on /, /domain/[name], /register/[name] or /profile, the 58 non-testnet
-		// e2e specs stay green, and SHARED drops 1022 KB -> 1020 KB. So the shim is
-		// unreachable on every path the suite covers, and it costs 2 KB.
+		// `process: false`: SHARED drops 1023 KB -> 1021 KB, and dev leaves
+		// `globalThis.process` undefined with no page error on /, /domain/[name],
+		// /register/[name] or /profile. So the shim costs 2 KB and no page load needs it.
 		//
-		// It stays for the paths the suite does *not* cover — Ledger WebUSB, the
-		// MetaMask and Partisia wallet SDKs — where a bare `process.env` read is a
-		// common CommonJS idiom. 0.2% of the payload buys immunity from the exact
-		// failure this whole step is built to avoid: a wallet path that throws only
-		// once a user reaches it. Drop it when those paths are covered, not before.
+		// It stays because a wallet SDK does. partisia-blockchain-applications-sdk reads
+		// a bare `process.env.DEV` in `sdk-listeners.js`, on the connect and sign paths,
+		// inside the loop that waits for the extension to answer — so a real
+		// (asynchronous) extension reaches it and the synchronous stub in
+		// tests/e2e/crypto-shim.spec.ts does not. The same CommonJS idiom is all over
+		// Ledger WebUSB and the MetaMask SDK, neither of which any spec drives. 0.2% of
+		// the payload buys immunity from the exact failure this whole step is built to
+		// avoid: a wallet path that throws only once a user reaches it.
 		nodePolyfills({
 			include: ['buffer'],
 			globals: { Buffer: true, global: true, process: true }
@@ -152,6 +154,16 @@ export default defineConfig({
 	// major boundary for the 4.x consumers — 5.0 renamed `strip` to `_strip` and
 	// dropped `inspect` — so `crypto-vectors.test.ts` pins the elliptic + bn.js
 	// signature/address output to catch a silently-wrong implementation.
+	//
+	// `@noble/hashes` deliberately is *not* deduped, though it looks like the same
+	// case: `crypto.ts` asks for the root 1.8.0, so npm nests a private 1.4.0 under
+	// each of @scure/bip32, @scure/bip39 and @noble/curves, and all three want the
+	// same `~1.4.0` — three identical copies of sha256, sha512, ripemd160, hmac and
+	// utils, ~60 KB rendered in the wallet-crypto chunk. Adding it here fails the
+	// build: 1.8.0 renamed `_assert`'s `bytes` export to `abytes`, and @scure/bip32
+	// imports the old name from that private path. Tolerable, because the whole 60 KB
+	// is in an async chunk only the Partisia wallet fetches, never in SHARED. Revisit
+	// when @scure/bip32 moves to @noble/hashes 1.8+, not before.
 	resolve: {
 		dedupe: ['bn.js'],
 		alias: nodeCompatAliasEntries
@@ -178,9 +190,11 @@ export default defineConfig({
 		// one either way. Verified by making `createHash` throw and watching
 		// crypto-vectors.test.ts still pass. Those vectors therefore pin the
 		// elliptic + bn.js half of the stack (the part `resolve.dedupe` moved) under
-		// Node's real crypto; the shim's own output is pinned by smoke.test.ts, and
-		// the two are wired together only in a browser, which
-		// tests/e2e/crypto-shim.spec.ts covers against the dev server.
+		// Node's real crypto; the shims' own output is pinned by smoke.test.ts and
+		// node-compat/wallet-crypto.test.ts, and the two are wired together only in a
+		// browser, which tests/e2e/crypto-shim.spec.ts covers against the dev server —
+		// including the Partisia connect handshake, which is the only path that reaches
+		// HD derivation and the ciphers.
 		alias: nodeCompatAliasEntries,
 		coverage: {
 			provider: 'v8',

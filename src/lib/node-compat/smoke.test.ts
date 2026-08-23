@@ -14,12 +14,16 @@ import { describe, expect, it } from 'vitest';
  * Node's signatures — which is exactly the module we are asserting we do *not* get.
  * Naming our own module's type is the assertion.
  *
- * Golden crypto output for the real SDK call paths lives in crypto-vectors.test.ts.
+ * Golden crypto output for the real SDK call paths lives in crypto-vectors.test.ts,
+ * and the HD/AES backend's own vectors in wallet-crypto.test.ts. This file
+ * deliberately never calls `loadWalletCrypto()`: what it asserts about `bip39`,
+ * `bip32` and the ciphers is how they fail *before* that happens, and the registry is
+ * module state that Vitest only isolates per file.
  */
 type CompatCrypto = typeof import('./crypto');
 type CompatAssert = { default: typeof import('./assert.cjs') };
-type CompatBip39 = typeof import('./bip39-stub');
-type CompatBip32 = typeof import('./bip32-stub');
+type CompatBip39 = typeof import('./bip39');
+type CompatBip32 = typeof import('./bip32');
 
 const importCrypto = async () => (await import('crypto')) as unknown as CompatCrypto;
 const importAssert = async () => (await import('assert')) as unknown as CompatAssert;
@@ -78,13 +82,18 @@ describe('node-compat crypto', () => {
 		expect(() => crypto.createHash('md5')).toThrow(/crypto\.createHash\('md5'\)/);
 	});
 
-	it('names the function when a cipher is not implemented', async () => {
+	it('names the function when a cipher is called before its backend loads', async () => {
 		const crypto = await importCrypto();
 
-		expect(() => crypto.createCipheriv('aes-128-ecb')).toThrow(
-			/crypto\.createCipheriv\('aes-128-ecb'\) is not polyfilled/
+		expect(() =>
+			crypto.createCipheriv('aes-128-ecb', new Uint8Array(16), new Uint8Array(0))
+		).toThrow(/crypto\.createCipheriv\('aes-128-ecb'\) needs the Partisia wallet crypto backend/);
+		expect(() =>
+			crypto.createDecipheriv('aes-128-ecb', new Uint8Array(16), new Uint8Array(0))
+		).toThrow(/crypto\.createDecipheriv\('aes-128-ecb'\) needs the Partisia wallet crypto backend/);
+		expect(() => crypto.pbkdf2Sync(new Uint8Array(8), new Uint8Array(8), 1, 32, 'sha256')).toThrow(
+			/crypto\.pbkdf2Sync needs the Partisia wallet crypto backend/
 		);
-		expect(() => crypto.pbkdf2Sync()).toThrow(/crypto\.pbkdf2Sync is not polyfilled/);
 	});
 });
 
@@ -107,18 +116,40 @@ describe('node-compat assert', () => {
 	});
 });
 
-describe('node-compat keystore stubs', () => {
-	it('imports bip39 cleanly but throws a named error when called', async () => {
-		const bip39 = (await import('bip39')) as unknown as CompatBip39;
+describe('node-compat HD shims before the backend loads', () => {
+	it('reports no backend installed', async () => {
+		const { isWalletCryptoLoaded } = await import('./lazy-crypto');
 
-		expect(() => bip39.generateMnemonic()).toThrow(/bip39\.generateMnemonic is not polyfilled/);
-		expect(() => bip39.mnemonicToSeedSync()).toThrow(/bip39\..* is not polyfilled/);
+		expect(isWalletCryptoLoaded()).toBe(false);
 	});
 
-	it('imports bip32 cleanly but throws a named error when called', async () => {
+	it('imports bip39 cleanly but names the function when called', async () => {
+		const bip39 = (await import('bip39')) as unknown as CompatBip39;
+
+		// Importing has to stay side-effect free: partisia's wallet.ts imports bip39 at
+		// module scope, and the private-key login path goes through that same module
+		// without ever deriving an HD key.
+		expect(typeof bip39.entropyToMnemonic).toBe('function');
+		expect(() => bip39.generateMnemonic()).toThrow(
+			/bip39\.generateMnemonic needs the Partisia wallet crypto backend/
+		);
+		expect(() => bip39.mnemonicToSeedSync('whatever')).toThrow(
+			/bip39\.mnemonicToSeedSync needs the Partisia wallet crypto backend/
+		);
+		expect(() => bip39.wordlists.english).toThrow(
+			/bip39\.wordlists\.english needs the Partisia wallet crypto backend/
+		);
+	});
+
+	it('imports bip32 cleanly but names the function when called', async () => {
 		const bip32 = (await import('bip32')) as unknown as CompatBip32;
 
-		expect(() => bip32.fromSeed()).toThrow(/bip32\.fromSeed is not polyfilled/);
+		expect(() => bip32.fromSeed(new Uint8Array(64))).toThrow(
+			/bip32\.fromSeed needs the Partisia wallet crypto backend/
+		);
+		expect(() => bip32.fromBase58('xprv')).toThrow(
+			/bip32\.fromBase58 needs the Partisia wallet crypto backend/
+		);
 	});
 });
 
