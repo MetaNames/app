@@ -15,7 +15,3 @@ yarn.lock
 # Agent journals
 .jules
 .Jules
-
-# Vendored third-party CSS
-static/~@fontsource
-static/~normalize.css

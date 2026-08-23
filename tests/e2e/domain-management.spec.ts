@@ -66,7 +66,8 @@ test.describe('Feature 4: Domain Management', () => {
 
 		const ownerValue = page.locator('button.chip', { hasText: 'Owner' }).locator('.value');
 		await expect(ownerValue).toBeVisible();
-		// 100px of Roboto at 13px fits ~11 characters; the address is 42.
+		// The old hard 100px fit ~11 characters of 14px Roboto (7.79px per ch plus 1.25px of
+		// letter-spacing); the address is 42. min(28ch, 60vw) resolves to 218px here.
 		const width = (await ownerValue.boundingBox())!.width;
 		expect(width).toBeGreaterThan(180);
 	});

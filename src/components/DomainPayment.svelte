@@ -174,6 +174,11 @@
 	h4 {
 		margin-top: 0;
 		text-align: center;
+		// A domain name is one unbreakable word, and it is the only thing on this card that
+		// overflowed. Left to wrap normally, zzunregistered123.mpc lays out 359px of text in a
+		// 256px box and takes the document to 391px of scroll width at 320px — identically on
+		// /register and /renew, since both feed this h4 the name from the URL. Longer names are
+		// worse; test.mpc happens to be short enough to fit either way.
 		overflow-wrap: anywhere;
 	}
 
@@ -189,9 +194,11 @@
 		align-items: center;
 
 		margin-top: 1rem;
-		// 5rem is 160px of padding; at 320px that left 96px for the fee rows and pushed the
-		// document to 391px of scroll width. Scale it with the viewport instead of dropping it,
-		// so the desktop layout is unchanged.
+		// Legibility, not reflow: reverting this to `0 5rem` moves scroll width by 0px at every
+		// width — the h4 above was what overflowed. What 5rem cost was content. 160px of
+		// padding left the fee rows 96px of a 320px viewport; scaling it with the viewport
+		// gives them 179px. 12vw reaches 80px at 667px, so from there up the padding — and the
+		// desktop layout — is byte-identical to what it was.
 		padding: 0 clamp(0.5rem, 12vw, 5rem);
 
 		.title {

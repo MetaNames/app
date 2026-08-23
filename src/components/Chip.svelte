@@ -63,11 +63,16 @@
 
 <style lang="scss">
 	:global(.chip) {
+		// Load-bearing: without this cap the widest chip ("Expires" on /domain, "Owner" on
+		// /tld) lays itself out at 314px and takes both routes to 362px of scroll width in a
+		// 320px viewport.
 		max-width: 100%;
 
-		// mdc-button is a flex container and its label a flex item; both default to
-		// min-width: auto, which would hold the chip open at the value's full text
-		// width and defeat the max-width above.
+		// Not what sets the chip's width — the cap above does that. mdc-button is a flex
+		// container and its label a flex item defaulting to min-width: auto, so under that cap
+		// the label refuses to shrink and spills its contents out of an unchanged 224px chip:
+		// the value's right edge moves from 240px to 288px and the trailing icon from x=248 to
+		// x=296, both past the chip's own right edge at 272px.
 		:global(.mdc-button__label) {
 			min-width: 0;
 		}
@@ -75,7 +80,6 @@
 		.container {
 			display: flex;
 			justify-content: center;
-			min-width: 0;
 
 			.label {
 				font-weight: bold;
@@ -84,14 +88,14 @@
 			.value {
 				margin-left: 0.5rem;
 				color: var(--mdc-theme-text-primary-on-background);
+				// Doubles as what lets this flex item shrink past its text width: per CSS Flexbox
+				// §4.5 the automatic minimum size only applies while overflow is visible in the
+				// main axis, so min-width: auto already resolves to 0 here. Restoring
+				// `overflow: visible` takes /domain to 456px of scroll width at 320px.
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				text-transform: none;
-				// Shrink below content width rather than forcing the chip — and the document —
-				// wider than the viewport. Without this a 280px "Expires" chip made /domain
-				// scroll sideways at 320px.
-				min-width: 0;
 
 				&.ellipsis {
 					// Was a hard 100px at every viewport, which cut a 42-char owner address to
