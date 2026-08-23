@@ -174,6 +174,7 @@
 	h4 {
 		margin-top: 0;
 		text-align: center;
+		overflow-wrap: anywhere;
 	}
 
 	.centered {
@@ -188,7 +189,10 @@
 		align-items: center;
 
 		margin-top: 1rem;
-		padding: 0 5rem;
+		// 5rem is 160px of padding; at 320px that left 96px for the fee rows and pushed the
+		// document to 391px of scroll width. Scale it with the viewport instead of dropping it,
+		// so the desktop layout is unchanged.
+		padding: 0 clamp(0.5rem, 12vw, 5rem);
 
 		.title {
 			font-weight: bold;
