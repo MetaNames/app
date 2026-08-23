@@ -2405,6 +2405,43 @@ omits:
 steps were wrong. No other task is affected — A2 had already taken `/register` green at `66d8ac8`,
 and nothing outside `/domain/[name]`'s chip subtree changed.
 
+### E2: A4 — the `.7` white composite is `#c3c2c2` at 6.9:1, not `#c4c3c3` at 8.05:1
+
+**What the plan asserted.** Task A4 Step 1's comment and Step 2's snippet both name `#c4c3c3` as the
+composite of `--mdc-theme-text-secondary-on-background` (`rgba(255,255,255,.7)`) over `#363535`, and
+Step 2 states `Expected: ... new ... = 8.05`.
+
+**What was actually true.** Both halves of that prediction are off — the hex by one step per channel,
+the ratio by 1.1:
+
+| `rgba(255,255,255,.7)` on `#363535`   | hex       | ratio  |
+| ------------------------------------- | --------- | ------ |
+| A4 Step 1 comment and Step 2 expected | `#c4c3c3` | 8.05:1 |
+| browser composited `getComputedStyle` | `#c3c2c2` | 6.88:1 |
+| A4's own Step 2 snippet on `#c4c3c3`  | `#c4c3c3` | 6.95:1 |
+
+So the plan disagrees with itself: run its snippet on the hex it predicts and the answer is 6.95,
+not the 8.05 the same step tells you to expect. The measured value is lower again, because the real
+composite is `#c3c2c2`.
+
+**Root cause.** Two independent slips, neither of which the plan's own verification step would have
+caught if its expected value had been trusted over its output. The hex is a rounding error in the
+`.7`-over-`#363535` composite — `0.7*255 + 0.3*0x36` is 195.4, which truncates to `0xc3`, not the
+`0xc4` the plan carries. The `8.05` is an arithmetic error in the expected value only; the snippet
+itself is correct (sRGB threshold `0.03928`, exponent `2.4`, channels at offsets 1/3/5) and was
+never the source of that number.
+
+**What was done instead.** `1a5ab16` ships Step 1's one-line `color:` change exactly as written — the
+token is unchanged, so the fix and its commit message stand — with the comment corrected to the
+measured values: `#9b9a9a` at 4.36:1 for the old hint token, `#c3c2c2` at 6.88:1 for the new
+secondary one. Per errata policy item 5, Task A4's text above is left as written; this entry records
+the disagreement rather than retrofitting the plan to the measurement.
+
+**Scope.** The conclusion is unaffected: 6.88:1 clears the 4.5:1 that SC 1.4.3 requires at 10 px, so
+A4 still takes the app's one `color-contrast` violation to zero and Task B's assumption that
+`color-contrast` is clean still holds. Nothing outside the `.subtitle` rule changed. The overstated
+8.05 was never a gate — no task asserts a contrast ratio above AA.
+
 ---
 
 ## Appendix A: audit method
