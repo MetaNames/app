@@ -2,3 +2,35 @@
 .mdc-icon-button:disabled {
 	color: var(--mdc-theme-text-disabled-on-background);
 }
+
+// MDC signals focus with `outline: none` plus a ::before overlay at .24 opacity. On the header
+// button that is #6849FE -> #8C75FE: a 1.53:1 change of contrast, against the 3:1 of WCAG 2.2
+// SC 2.4.13, and a different indicator from the UA outline that native links still use. One ring
+// for everything instead. `:focus-visible` keeps it off for pointer users, which is why MDC's
+// overlay stays as-is underneath.
+:focus-visible {
+	outline: 3px solid var(--mdc-theme-secondary);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+// MDC inverts the snackbar, so `.mdc-snackbar__surface` compiles to #d3d3d3 — the one light
+// surface in this dark theme. The ring above is 1.06:1 there, invisible, and two real controls
+// live on it (the transaction "View" action and both Dismiss icon buttons). The dark counterpart
+// is 10.72:1 on the same surface. Erratum E7.
+.mdc-snackbar__surface :focus-visible {
+	outline-color: var(--mdc-theme-surface);
+}
+
+// SC 2.3.3 and the spirit of 2.2.2: MDC ripples, the indeterminate spinners and the
+// snackbar/menu transitions all animate unconditionally. Honour the OS setting.
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
