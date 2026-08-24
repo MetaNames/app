@@ -2850,6 +2850,81 @@ deprecation warnings as at `df9ad0a` — the added `@use` introduces none — an
 
 ---
 
+### E6: B5 — a `role="status"` spinner is not an `h1`, so E5's residue does not land inside B5
+
+**What the plan asserted.** E5's "Scope and residue — the `h1`s are conditional, and that belongs to
+B5" paragraph hands the conditional-heading residue to this task: "Fixing it means giving the
+loading and failure branches something to announce, which is Task **B5**'s subject, not B2's: B5
+already owns `/domain/[name]`'s unlabelled spinner at `:75-83` and the missing live region, and the
+same treatment covers the empty `data.analyzed` branches. Recorded here so B5 picks it up."
+
+**What was actually true.** Three things, and none of them lets B5 as written close that residue.
+
+1. **B5's scope is two files, and neither is a checkout route.** B5's Files list is exactly
+   `src/routes/DomainSearch.svelte:91-127` and `src/routes/domain/[name]/+page.svelte:75-83`; Steps
+   1–4 never mention `data.analyzed`, `/register/[name]`, `/domain/[name]/renew` or
+   `/domain/[name]/transfer`. "The same treatment covers the empty `data.analyzed` branches"
+   describes work B5 does not specify, so executing B5 verbatim leaves those branches byte-identical.
+
+2. **The treatment is an announcement, not a heading.** Step 3 adds `role="status"` and
+   `aria-label="Loading domain"`. `page-has-heading-one` and the a11y spec's `has exactly one
+level-one heading` case both count `h1` elements; a live region satisfies SC 4.1.3, not SC 1.3.1
+   heading structure. Measured on the committed B5 tree (`ff014bd`) with a throwaway spec, deleted
+   before this commit — `git status` is clean apart from `.svelte-kit/tsconfig.json`:
+
+   ```
+   DOMAIN-LOADING   h1=0 spinnerLabel=Loading domain
+   REGISTER-LOADING h1=0 spinners=1 statusRegions=2
+   CHECKOUT /domain/zz!!/renew    h1=0 checkoutInnerHTML=""  urlAfter=/domain/zz!!/renew
+   CHECKOUT /domain/zz!!/transfer h1=0 checkoutInnerHTML=" " urlAfter=/domain/zz!!/transfer
+   ```
+
+   So `/domain/[name]`'s loading branch still has zero `h1` **after** B5 — the change B5 owns cannot
+   move that number. `statusRegions=2` is not something B5 added: it is the layout's two
+   `@smui/snackbar` instances, which carry `role="status"` at
+   `node_modules/@smui/snackbar/dist/Snackbar.svelte:23` on every route.
+
+3. **The checkout failure branch is a transient frame, not a resting state.** E5 says a bad or
+   unresolvable name "gives a page with no heading and no text at all". `analyzeDomain` only returns
+   `{ error }` from its `catch`, and both checkout pages' `onMount` then
+   `goto('/', { replaceState: true })`. Measured the same way:
+
+   ```
+   SETTLE /domain/zz!!/renew    early={"h1":0,"url":".../domain/zz!!/renew"}    late={"h1":1,"url":"/"}
+   SETTLE /domain/zz!!/transfer early={"h1":0,"url":".../domain/zz!!/transfer"} late={"h1":1,"url":"/"}
+   ```
+
+   The headingless render is real and observable, but it is the frame before a redirect that lands
+   on a route with exactly one `h1`. The same holds for `/register/[name]` and `/domain/[name]`,
+   whose spinners resolve into branches that do carry an `h1`.
+
+**What was done instead.** B5's Objective, Steps 1–5 and commit message stand and were executed
+verbatim in the two named files: the failing assertion first (`Error: no aria-live / role=status
+ancestor`, `expect(received).toBe(expected) … Expected: true Received: false`), then one
+always-present `role="status" aria-live="polite" aria-atomic="true"` wrapper around all three
+`DomainSearch` branches, then `role="status"` plus `aria-label="Loading domain"` on the domain-page
+spinner. The scope was **not** widened to the checkout routes, and no heading was invented for any
+loading branch: giving a spinner an `h1` is a content decision with its own failure modes (a
+heading that appears and vanishes, or a duplicate `h1` once the branch settles), and E5's own
+reasoning — "re-levelling a heading and inventing a loading-state heading are different changes
+with different failure modes" — applies to B5 taking it on unspecified just as it did to B2.
+
+**Residual risk, unowned by any task in this plan.** After B5, four branches still render zero `h1`
+while unsettled: `/domain/[name]` behind `{#if !$domain}`, `/register/[name]` behind
+`{#if $isDomainPresent === undefined}`, and `/renew` / `/transfer` behind `{#if data.analyzed}`.
+`page-has-heading-one` is therefore still clean only on settled states, which is what the gate
+samples (it waits `networkidle` + 2000 ms). Closing it needs a new task that decides what those
+branches say, not a wider B5. Recorded rather than fixed, per §8's errata policy.
+
+**Two snippet inaccuracies in B5, harmless, noted so a reviewer does not file them as bugs.** Step
+2's snippet writes the loading spinner's label as `aria-label="Searching"`, while B5's own "Why"
+paragraph cites that spinner as already labelled at `:100`; live it reads
+`aria-label="Loading domain search results"`, and it was left alone, since renaming an existing
+accessible name is a change, not the minimal fix the task asks for. Step 3's snippet writes
+`{:else}` where the live file has `{:else if $domain}`; the live branch was kept.
+
+---
+
 ## Appendix A: audit method
 
 So the numbers can be reproduced or disputed.
