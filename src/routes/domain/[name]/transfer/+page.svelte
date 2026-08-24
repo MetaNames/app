@@ -56,10 +56,10 @@
 
 <div class="content checkout">
 	{#if data.analyzed}
-		<h2 class="mt-0">Transfer domain</h2>
+		<h1 class="mt-0 type-headline2">Transfer domain</h1>
 		<Card class="w-100 flex-content">
 			<Content>
-				<h4>{domainName}</h4>
+				<h2 class="type-headline4">{domainName}</h2>
 				<p>
 					Please note that all transfers are irreversible.
 					<br />
@@ -93,7 +93,7 @@
 </div>
 
 <style lang="scss">
-	h4 {
+	h2 {
 		margin: 0;
 		margin-top: 1rem;
 	}

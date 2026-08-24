@@ -20,13 +20,13 @@ const ROUTES = [
 	// The search card, not the SSR'd heading above it — it is the wider of the two.
 	['/', 'home', '.domain-input'],
 	['/domain/test.mpc', 'domain', 'button.chip:has-text("Owner")'],
-	// The domain-name h4, which is the element that overflowed here.
-	[`/register/${unregisteredName}`, 'register', '.card-content h4'],
+	// The domain-name heading, which is the element that overflowed here.
+	[`/register/${unregisteredName}`, 'register', '.card-content h2'],
 	// Unauthenticated: this covers the empty state, not the domains table.
 	['/profile', 'profile', 'p:has-text("Connect your wallet")'],
 	['/tld', 'tld', 'button.chip:has-text("Owner")'],
-	['/domain/test.mpc/renew', 'renew', '.card-content h4'],
-	['/domain/test.mpc/transfer', 'transfer', 'h4']
+	['/domain/test.mpc/renew', 'renew', '.card-content h2'],
+	['/domain/test.mpc/transfer', 'transfer', 'h2']
 ] as const;
 
 test.describe('reflow at 320 CSS px', () => {

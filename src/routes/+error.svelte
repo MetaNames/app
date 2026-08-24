@@ -9,10 +9,10 @@
 
 <div class="content">
 	{#if $page.status === 404}
-		<h2>Not found!</h2>
+		<h1 class="type-headline2">Not found!</h1>
 		<GoBackButton />
 	{:else}
-		<h2>Something went wrong</h2>
+		<h1 class="type-headline2">Something went wrong</h1>
 		<GoBackButton />
 	{/if}
 </div>

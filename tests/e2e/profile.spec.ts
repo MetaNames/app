@@ -12,7 +12,7 @@ test.describe('Feature 8: User Profile', () => {
 		});
 
 		// None of the authenticated UI should render
-		await expect(page.locator('h4.domains')).not.toBeVisible();
+		await expect(page.locator('h2.domains')).not.toBeVisible();
 		await expect(page.locator('.chip')).not.toBeVisible();
 		await expect(page.locator('.search-bar')).not.toBeVisible();
 		await expect(page.locator('table[aria-label="Domain list"]')).not.toBeVisible();
@@ -34,7 +34,7 @@ test.describe('Feature 8: User Profile', () => {
 		test('8.2 - Shows address chip and "Domains" heading', async ({ page }) => {
 			await expect(page.locator('.chip').first()).toBeVisible({ timeout: 10000 });
 
-			const domainsHeading = page.locator('h4.domains');
+			const domainsHeading = page.locator('h2.domains');
 			await expect(domainsHeading).toBeVisible({ timeout: 10000 });
 			await expect(domainsHeading).toHaveText('Domains');
 		});
@@ -49,7 +49,7 @@ test.describe('Feature 8: User Profile', () => {
 		});
 
 		test('8.4 - Search bar visible', async ({ page }) => {
-			await expect(page.locator('h4.domains')).toBeVisible({ timeout: 10000 });
+			await expect(page.locator('h2.domains')).toBeVisible({ timeout: 10000 });
 			await expect(page.locator('.search-bar')).toBeVisible({ timeout: 5000 });
 		});
 
@@ -62,7 +62,7 @@ test.describe('Feature 8: User Profile', () => {
 			await testDomainLink.click();
 
 			await page.waitForURL(/\/domain\/test\.mpc/, { timeout: 10000 });
-			await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+			await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 		});
 	});
 });

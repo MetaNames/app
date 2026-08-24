@@ -8,7 +8,7 @@
 
 <div class="container">
 	<div class="header">
-		<h3>Find your Meta Name</h3>
+		<h1 class="type-headline3">Find your Meta Name</h1>
 		<p class="subtitle">Powered by Partisia</p>
 	</div>
 	<DomainSearch />
@@ -37,7 +37,7 @@
 		// The secondary token is rgba(255,255,255,.7) -> #c3c2c2 -> 6.88:1.
 		color: var(--mdc-theme-text-secondary-on-background);
 	}
-	h3 {
+	h1 {
 		margin-top: auto;
 		margin-bottom: 0.5rem;
 	}

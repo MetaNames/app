@@ -54,7 +54,7 @@
 <Card class="domain-container">
 	<Content>
 		<div class="card-content">
-			<h4 class="domain-title">{domainName}</h4>
+			<h2 class="domain-title type-headline4">{domainName}</h2>
 
 			<div class="content">
 				<Chip class="flex mt-2" label="Parent" value={parentDomainName} href={parentLink} />

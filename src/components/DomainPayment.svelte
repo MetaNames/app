@@ -100,7 +100,7 @@
 <Card class="domain-container">
 	<Content>
 		<div class="card-content">
-			<h4>{domainName}</h4>
+			<h2 class="type-headline4">{domainName}</h2>
 
 			<div class="years">
 				<IconButton
@@ -171,14 +171,14 @@
 </Card>
 
 <style lang="scss">
-	h4 {
+	h2 {
 		margin-top: 0;
 		text-align: center;
 		// A domain name is one unbreakable word, and it is the only thing on this card that
 		// overflowed. Left to wrap normally, zzunregistered123.mpc lays out 359px of text in a
 		// 256px box and takes the document to 391px of scroll width at 320px — identically on
-		// /register and /renew, since both feed this h4 the name from the URL. Longer names are
-		// worse; test.mpc happens to be short enough to fit either way.
+		// /register and /renew, since both feed this heading the name from the URL. Longer names
+		// are worse; test.mpc happens to be short enough to fit either way.
 		overflow-wrap: anywhere;
 	}
 

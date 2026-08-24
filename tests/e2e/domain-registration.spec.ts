@@ -52,7 +52,7 @@ test.describe('Feature 3: Domain Registration', () => {
 	test('3.4 - Subdomain shows parent chip and FREE price', async ({ page }) => {
 		await page.goto('/register/sub.test.mpc', { waitUntil: 'networkidle' });
 
-		const domainTitle = page.locator('h4.domain-title');
+		const domainTitle = page.locator('h2.domain-title');
 		await expect(domainTitle).toBeVisible({ timeout: 15000 });
 		await expect(domainTitle).toContainText('sub.test.mpc');
 
@@ -76,7 +76,7 @@ test.describe('Feature 3: Domain Registration', () => {
 		await page.goto('/register/test.mpc', { waitUntil: 'networkidle' });
 
 		await page.waitForURL(/\/domain\/test\.mpc/, { timeout: 15000 });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 	});
 
 	test.describe('Authenticated', () => {
@@ -108,7 +108,7 @@ test.describe('Feature 3: Domain Registration', () => {
 			const subdomain = `sub${Date.now()}.test.mpc`;
 			await page.goto(`/register/${subdomain}`, { waitUntil: 'networkidle' });
 
-			await expect(page.locator('h4.domain-title')).toBeVisible({ timeout: 15000 });
+			await expect(page.locator('h2.domain-title')).toBeVisible({ timeout: 15000 });
 
 			await loginOnCurrentPage(page);
 
@@ -126,6 +126,6 @@ test.describe('Feature 3: Domain Registration', () => {
 		await page.goto(`/register/sub.${parent}`);
 		await page.waitForURL(`**/register/${parent}`);
 
-		await expect(page.locator('[data-testid="checkout-content"] h4')).toHaveText(parent);
+		await expect(page.locator('[data-testid="checkout-content"] h2')).toHaveText(parent);
 	});
 });

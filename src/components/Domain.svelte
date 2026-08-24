@@ -50,7 +50,7 @@
 				{@html domainAvatar}
 			</div>
 		</div>
-		<h5 class="domain">{domainName}</h5>
+		<h1 class="domain type-headline5">{domainName}</h1>
 
 		{#if ownerConnected}
 			<TabBar {tabs} let:tab bind:active={activeTab}>
@@ -65,7 +65,7 @@
 				<Content>
 					<div class="container">
 						<div class="section">
-							<h5 class="mt-0">Profile</h5>
+							<h2 class="mt-0 type-headline5">Profile</h2>
 							<div class="chips">
 								<Chip
 									class="mt-1 mr-1"
@@ -104,7 +104,7 @@
 							</div>
 						</div>
 						<div class={`section ${hasProfileRecords ? 'mt-3' : ''}`}>
-							<h5>Whois</h5>
+							<h2 class="type-headline5">Whois</h2>
 							<div class="chips">
 								{#if !isTld}
 									{#if domain.parentId}
@@ -132,7 +132,7 @@
 						</div>
 						{#if hasSocialRecords}
 							<div class="section mt-3">
-								<h5>Social</h5>
+								<h2 class="type-headline5">Social</h2>
 								<div class="chips">
 									{#each socialRecords as klass}
 										{#if domain.records[klass]}
@@ -158,7 +158,7 @@
 						repository={domain.getRecordRepository($metaNamesSdk)}
 					/>
 					<br />
-					<h5 class="mt-0 mb-1">Actions</h5>
+					<h2 class="mt-0 mb-1 type-headline5">Actions</h2>
 					<Button
 						class="mt-1 mr-1 mobile--mr-0"
 						href={`/domain/${domain.name}/renew`}
@@ -197,7 +197,7 @@
 				align-items: flex-start;
 			}
 
-			h5 {
+			h2 {
 				margin: 0;
 				margin-top: 1rem;
 				text-align: start;
@@ -206,7 +206,7 @@
 			}
 
 			@media screen and (max-width: 768px) {
-				h5 {
+				h2 {
 					text-align: center;
 				}
 

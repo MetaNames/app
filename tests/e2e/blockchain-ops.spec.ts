@@ -48,12 +48,12 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 			timeout: 60000
 		});
 		await page.waitForURL(/\/domain\//, { timeout: 30000 });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 	});
 
 	test('B2 - Add a DNS record to the new domain', async ({ page }) => {
 		await page.goto(`/domain/${fullDomain}`, { waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 
 		await loginOnCurrentPage(page);
 
@@ -99,7 +99,7 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 
 	test('B3 - Edit the DNS record', async ({ page }) => {
 		await page.goto(`/domain/${fullDomain}`, { waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 
 		await loginOnCurrentPage(page);
 
@@ -141,7 +141,7 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 
 	test('B4 - Delete the DNS record', async ({ page }) => {
 		await page.goto(`/domain/${fullDomain}`, { waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 
 		await loginOnCurrentPage(page);
 
@@ -173,7 +173,7 @@ test.describe.serial('Blockchain Operations (sequential)', () => {
 
 		// Reload and click settings tab to ensure we're on the right tab
 		await page.reload({ waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 		await loginOnCurrentPage(page);
 		await page.locator('role=tab[name="settings"]').click();
 		await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });

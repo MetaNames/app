@@ -46,7 +46,7 @@
 
 <div class="content checkout">
 	{#if data.analyzed}
-		<h2 class="mt-0">Renew domain</h2>
+		<h1 class="mt-0 type-headline2">Renew domain</h1>
 		<DomainPayment
 			domainName={data.analyzed.name}
 			tld={data.analyzed.tld}

@@ -7,8 +7,8 @@ test.describe('Feature 6: Domain Transfer', () => {
 	}) => {
 		await page.goto('/domain/test.mpc/transfer', { waitUntil: 'networkidle' });
 
-		await expect(page.locator('h2:has-text("Transfer domain")')).toBeVisible({ timeout: 15000 });
-		await expect(page.locator('h4:has-text("test.mpc")')).toBeVisible({ timeout: 5000 });
+		await expect(page.locator('h1:has-text("Transfer domain")')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h2:has-text("test.mpc")')).toBeVisible({ timeout: 5000 });
 		await expect(page.locator('text=all transfers are irreversible')).toBeVisible({
 			timeout: 5000
 		});
@@ -28,14 +28,14 @@ test.describe('Feature 6: Domain Transfer', () => {
 
 	test('6.3 - Transfer button hidden without wallet (ConnectionRequired)', async ({ page }) => {
 		await page.goto('/domain/test.mpc/transfer', { waitUntil: 'networkidle' });
-		await expect(page.locator('h2:has-text("Transfer domain")')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1:has-text("Transfer domain")')).toBeVisible({ timeout: 15000 });
 
 		await expect(page.locator('button:has-text("Transfer domain")')).not.toBeVisible();
 	});
 
 	test('6.4 - Transfer button visible when logged in', async ({ page }) => {
 		await page.goto('/domain/test.mpc/transfer', { waitUntil: 'networkidle' });
-		await expect(page.locator('h2:has-text("Transfer domain")')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1:has-text("Transfer domain")')).toBeVisible({ timeout: 15000 });
 
 		await loginOnCurrentPage(page);
 
@@ -46,7 +46,7 @@ test.describe('Feature 6: Domain Transfer', () => {
 
 	test('6.5 - Invalid address shows validation error', async ({ page }) => {
 		await page.goto('/domain/test.mpc/transfer', { waitUntil: 'networkidle' });
-		await expect(page.locator('h2:has-text("Transfer domain")')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1:has-text("Transfer domain")')).toBeVisible({ timeout: 15000 });
 
 		await page.locator('input').first().fill('not-a-valid-address');
 

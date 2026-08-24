@@ -5,7 +5,7 @@ test.describe('Feature 5: Domain Renewal', () => {
 	test('5.1 - Page loads with heading, year selector, and go-back button', async ({ page }) => {
 		await page.goto('/domain/test.mpc/renew', { waitUntil: 'networkidle' });
 
-		await expect(page.locator('h2:has-text("Renew domain")')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1:has-text("Renew domain")')).toBeVisible({ timeout: 15000 });
 		await expect(page.locator('[aria-label="add-year"]')).toBeVisible({ timeout: 5000 });
 		await expect(page.locator('[aria-label="remove-year"]')).toBeVisible({ timeout: 5000 });
 		await expect(page.locator('a:has-text("Go back"), button:has-text("Go back")')).toBeVisible({
@@ -20,7 +20,7 @@ test.describe('Feature 5: Domain Renewal', () => {
 
 	test('5.3 - Shows payment token and fees when logged in', async ({ page }) => {
 		await page.goto('/domain/test.mpc/renew', { waitUntil: 'networkidle' });
-		await expect(page.locator('h2:has-text("Renew domain")')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1:has-text("Renew domain")')).toBeVisible({ timeout: 15000 });
 
 		await loginOnCurrentPage(page);
 

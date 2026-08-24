@@ -14,7 +14,7 @@ test.describe('Feature 7: DNS Records & Settings', () => {
 	test.describe('Unauthenticated', () => {
 		test('7.1 - No tabs visible when not logged in', async ({ page }) => {
 			await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
-			await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+			await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 
 			await expect(page.locator('button:has-text("settings")')).not.toBeVisible();
 			await expect(page.locator('button:has-text("details")')).not.toBeVisible();
@@ -24,7 +24,7 @@ test.describe('Feature 7: DNS Records & Settings', () => {
 	test.describe('Authenticated (owner)', () => {
 		test.beforeEach(async ({ page }) => {
 			await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
-			await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+			await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 			await loginOnCurrentPage(page);
 		});
 
@@ -91,16 +91,16 @@ test.describe('Feature 7: DNS Records & Settings', () => {
 
 		test('7.7 - Tab switching: details → settings → details', async ({ page }) => {
 			// Starts on details — Profile visible
-			await expect(page.locator('h5:has-text("Profile")').first()).toBeVisible({ timeout: 10000 });
+			await expect(page.locator('h2:has-text("Profile")').first()).toBeVisible({ timeout: 10000 });
 
 			// Switch to settings
 			await page.locator('button:has-text("settings")').click();
 			await expect(page.locator('.records')).toBeVisible({ timeout: 10000 });
-			await expect(page.locator('h5:has-text("Profile")').first()).not.toBeVisible();
+			await expect(page.locator('h2:has-text("Profile")').first()).not.toBeVisible();
 
 			// Switch back
 			await page.locator('button:has-text("details")').click();
-			await expect(page.locator('h5:has-text("Profile")').first()).toBeVisible({ timeout: 10000 });
+			await expect(page.locator('h2:has-text("Profile")').first()).toBeVisible({ timeout: 10000 });
 		});
 	});
 });

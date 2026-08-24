@@ -1,6 +1,26 @@
+@use '@material/typography' as typography;
+
 @import './theme-overrides.scss';
 @import './mixins.scss';
 @import './theme/smui-dark.css';
+
+// Decouple heading level from heading size. `src/theme/typography.scss` maps h1..h6 straight
+// onto MDC's headline1..headline6, so re-levelling a heading for screen readers would also
+// resize it — an h5 promoted to h1 jumps from headline5 to headline1. These classes carry the
+// size independently, so the document outline can be correct without touching the visual
+// hierarchy. Class (0,1,0) beats the element selectors in typography.scss (0,0,1) regardless
+// of load order; a component's own scoped rule still wins over both, which is how
+// `.domain`'s 1.8rem survives on top of `.type-headline5`.
+//
+// Only the four levels that are actually worn today (2..5) are emitted. No heading in this app
+// was ever sized headline1 or headline6, so `.type-headline1` / `.type-headline6` would be dead
+// CSS — and headline1 in particular (96px) is a size nothing here wants. Widen this list when a
+// heading needs one of them.
+@each $level in (2, 3, 4, 5) {
+	.type-headline#{$level} {
+		@include typography.typography('headline#{$level}');
+	}
+}
 
 body,
 html {

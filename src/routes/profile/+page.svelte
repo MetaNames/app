@@ -54,10 +54,10 @@
 <div class="profile content">
 	<Paper class="w-100" variant="raised">
 		<div class="paper-content">
-			<h3>Profile</h3>
+			<h1 class="type-headline3">Profile</h1>
 			{#if $walletConnected}
 				<Chip label="Address" value={$walletAddress || ''} />
-				<h4 class="domains">Domains</h4>
+				<h2 class="domains type-headline4">Domains</h2>
 				<Textfield
 					class="my-1 search-bar"
 					label="Search"
@@ -87,7 +87,7 @@
 		margin-bottom: 0;
 	}
 
-	h3 {
+	h1 {
 		margin-bottom: 1rem;
 	}
 
@@ -117,7 +117,7 @@
 		}
 	}
 
-	h3 {
+	h1 {
 		margin-top: 0;
 	}
 </style>

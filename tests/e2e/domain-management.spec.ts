@@ -13,7 +13,7 @@ test.describe('Feature 4: Domain Management', () => {
 		await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
 
 		// Domain heading with correct text
-		const domainHeading = page.locator('h5.domain');
+		const domainHeading = page.locator('h1.domain');
 		await expect(domainHeading).toBeVisible({ timeout: 15000 });
 		await expect(domainHeading).toContainText(/test/i);
 
@@ -21,7 +21,7 @@ test.describe('Feature 4: Domain Management', () => {
 		await expect(page.locator('.avatar svg').first()).toBeVisible({ timeout: 5000 });
 
 		// Profile section
-		await expect(page.locator('h5:has-text("Profile")')).toBeVisible({ timeout: 10000 });
+		await expect(page.locator('h2:has-text("Profile")')).toBeVisible({ timeout: 10000 });
 
 		// Short link chip
 		await expect(page.locator('.chip').filter({ hasText: 'link' }).first()).toBeVisible({
@@ -29,7 +29,7 @@ test.describe('Feature 4: Domain Management', () => {
 		});
 
 		// Whois section with owner and expiry
-		await expect(page.locator('h5:has-text("Whois")')).toBeVisible({ timeout: 10000 });
+		await expect(page.locator('h2:has-text("Whois")')).toBeVisible({ timeout: 10000 });
 		await expect(page.getByRole('button', { name: /Owner 0/i })).toBeVisible({ timeout: 5000 });
 		await expect(page.getByRole('button', { name: /Expires/i })).toBeVisible({ timeout: 5000 });
 	});
@@ -44,7 +44,7 @@ test.describe('Feature 4: Domain Management', () => {
 
 	test('4.3 - Owner sees TabBar with details and settings tabs', async ({ page }) => {
 		await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 
 		await loginOnCurrentPage(page);
 
@@ -54,7 +54,7 @@ test.describe('Feature 4: Domain Management', () => {
 
 	test('4.4 - Non-owner does NOT see TabBar', async ({ page }) => {
 		await page.goto(`/domain/${registeredDomain}`, { waitUntil: 'networkidle' });
-		await expect(page.locator('h5.domain')).toBeVisible({ timeout: 15000 });
+		await expect(page.locator('h1.domain')).toBeVisible({ timeout: 15000 });
 
 		await expect(page.locator('button:has-text("details")')).not.toBeVisible();
 		await expect(page.locator('button:has-text("settings")')).not.toBeVisible();

@@ -106,7 +106,7 @@
 	{#if $isDomainPresent === undefined}
 		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 	{:else}
-		<h2 class="mt-0">Register</h2>
+		<h1 class="mt-0 type-headline2">Register</h1>
 		{#if $isParentPresent && parentDomainName}
 			<SubdomainRegistration {domainName} {parentDomainName} />
 		{:else}
