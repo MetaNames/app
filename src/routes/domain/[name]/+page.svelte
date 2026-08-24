@@ -93,11 +93,24 @@
 		width: 100%;
 		max-width: 48rem;
 		margin: 2rem 1rem;
+		// Both branches have to occupy the same box, or swapping the spinner for the card moves the
+		// page around. Two things made them differ, and each cost its own layout shift:
+		//
+		// Height: `.content` is `flex-grow: 1`, so the loading branch is stretched to whatever is
+		// left of the viewport — 603px at 390x844, 495px at 1280x720 — and the footer sits under
+		// that. The loaded card, its `<br>` and the go-back button measure 695.14px, so the footer
+		// is shoved down 92px / 200px when the card lands. The card is 635.14px tall at both widths,
+		// so one floor covers both: 44rem is the smallest whole rem clearing 695.14px.
+		min-height: 44rem;
 	}
 
 	@media screen and (max-width: 768px) {
 		.domain {
-			width: initial;
+			// Width: `.content` is `align-self: center`, so it is shrink-to-fit, and `width: initial`
+			// here used to drop the 100% above — sizing the loading branch to its 32px spinner and
+			// the loaded one to the 351px card. That 32px→351px growth was 0.1419 of this route's
+			// 0.1425 CLS, and it is why the plan's height-only fix (32rem, erratum E9) could not
+			// have worked. Keeping `width: 100%` pins both branches to `max-width` instead.
 			max-width: 90vw;
 		}
 	}
