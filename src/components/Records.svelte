@@ -72,6 +72,7 @@
 				class="mr-1 mobile--mt-1 mobile--mr-0 mobile--w-100"
 				bind:value={selectedRecordClass}
 				label="Select Type"
+				anchor$aria-label="Select Type"
 				invalid={selectRecordInvalid}
 				variant="outlined"
 			>

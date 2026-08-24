@@ -123,6 +123,7 @@
 						bind:value={$selectedCoin}
 						label="Select Token"
 						variant="outlined"
+						anchor$aria-label="Select Token"
 						data-testid="payment-token-select"
 					>
 						{#each availableCoins as coin}

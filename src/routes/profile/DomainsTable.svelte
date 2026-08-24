@@ -94,7 +94,7 @@
 	<Pagination slot="paginate">
 		<svelte:fragment slot="rowsPerPage">
 			<Label>Rows Per Page</Label>
-			<Select variant="outlined" bind:value={rowsPerPage} noLabel>
+			<Select variant="outlined" bind:value={rowsPerPage} anchor$aria-label="Rows per page" noLabel>
 				<Option value={5}>5</Option>
 				<Option value={10}>10</Option>
 				<Option value={20}>20</Option>
