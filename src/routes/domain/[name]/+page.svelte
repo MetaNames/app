@@ -1,91 +1,43 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { invalidate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { Domain as DomainModel } from '@metanames/sdk';
 	import { onMount } from 'svelte';
 
-	import CircularProgress from '@smui/circular-progress';
 	import Domain from 'src/components/Domain.svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
-	import { writable } from 'svelte/store';
-	import { alertMessage, refresh } from '$lib/stores/main';
-	import { metaNamesSdk } from '$lib/stores/sdk';
-	import { loadOrReport } from '$lib/read';
+	import { refresh } from '$lib/stores/main';
 
-	let domain = writable<DomainModel | undefined>();
-	let requestId = 0;
-	let mounted = false;
+	import type { PageData } from './$types';
 
-	// SvelteKit reuses this component when only `[name]` changes, so the name has to be read
-	// reactively — a value captured once goes stale on the very redirect below.
-	$: domainName = $page.params.name ?? '';
-	$: pageName = $domain ? $domain.name + ' | ' : '';
-	// Gated on `mounted` rather than `browser` so the first run still happens after mount, as
-	// it did before, and never calls `goto` mid-hydration.
-	$: if (mounted) showDomain(domainName);
+	export let data: PageData;
 
-	onMount(() => {
-		mounted = true;
+	// Reactive, not captured once: SvelteKit reuses this component when only `[name]` changes.
+	$: domain = data.domain;
+	// The URL `load` fetched, which is what SvelteKit tracked as this page's dependency. Read from
+	// the params rather than from `domain.name`, which the SDK stores label-reversed.
+	$: domainApiUrl = `/api/domains/${$page.params.name}`;
 
-		return refresh.subscribe((val) => {
+	onMount(() =>
+		refresh.subscribe((val) => {
 			if (!val) return;
 
-			loadDomain(domainName);
+			// Re-runs `load`, so the record edit that asked for this shows up without a second
+			// read path living in this component. `domainApiUrl` is read at call time, so a
+			// refresh after an in-place navigation invalidates the domain now on screen.
+			invalidate(domainApiUrl);
 			refresh.set(false);
-		});
-	});
-
-	async function showDomain(name: string) {
-		const loweredName = name.toLocaleLowerCase();
-		// The redirect re-runs this with the normalised param; loading the un-normalised name
-		// here would race that second pass and could resolve to "not found".
-		if (loweredName !== name) return goto(`/domain/${loweredName}`, { replaceState: true });
-
-		await loadDomain(name);
-	}
-
-	async function loadDomain(name: string) {
-		const currentRequestId = ++requestId;
-		domain.set(undefined);
-
-		const domainResponse = await loadOrReport(
-			$metaNamesSdk.domainRepository.find(name),
-			'Could not load the domain. Please try again.'
-		);
-		if (currentRequestId !== requestId) return;
-
-		if (domainResponse) return domain.set(domainResponse);
-
-		// `null` is a confirmed absence and an invitation to register; `undefined` means the read
-		// failed, so send the user somewhere usable rather than leaving the spinner running.
-		if (domainResponse === null) {
-			alertMessage.set('Domain not found. Register it now!');
-
-			return goto(`/register/${name}`, { replaceState: true });
-		}
-
-		return goto('/', { replaceState: true });
-	}
+		})
+	);
 </script>
 
 <svelte:head>
-	<title>{pageName}Meta Names</title>
+	<title>{domain.name} | Meta Names</title>
 </svelte:head>
 
 <div class="content domain">
-	{#if !$domain}
-		<div role="status">
-			<CircularProgress
-				style="height: 32px; width: 32px;"
-				indeterminate
-				aria-label="Loading domain"
-			/>
-		</div>
-	{:else if $domain}
-		<Domain domain={$domain} />
-		<br />
-		<GoBackButton />
-	{/if}
+	<Domain {domain} />
+	<br />
+	<GoBackButton />
 </div>
 
 <style lang="scss">
@@ -93,24 +45,21 @@
 		width: 100%;
 		max-width: 48rem;
 		margin: 2rem 1rem;
-		// Both branches have to occupy the same box, or swapping the spinner for the card moves the
-		// page around. Two things made them differ, and each cost its own layout shift:
-		//
-		// Height: `.content` is `flex-grow: 1`, so the loading branch is stretched to whatever is
-		// left of the viewport — 603px at 390x844, 495px at 1280x720 — and the footer sits under
-		// that. The loaded card, its `<br>` and the go-back button measure 695.14px, so the footer
-		// is shoved down 92px / 200px when the card lands. The card is 635.14px tall at both widths,
-		// so one floor covers both: 44rem is the smallest whole rem clearing 695.14px.
+		// The card is server-rendered now, so there is no spinner branch to swap out of and the two
+		// shifts below cannot recur through that route. The floor stays as a guard: `.content` is
+		// `flex-grow: 1`, so a short first paint would be stretched to the leftover viewport —
+		// 603px at 390x844, 495px at 1280x720 — and the footer would sit under that until the card's
+		// 695.14px landed, shoving it down 92px / 200px. 44rem is the smallest whole rem clearing it.
 		min-height: 44rem;
 	}
 
 	@media screen and (max-width: 768px) {
 		.domain {
-			// Width: `.content` is `align-self: center`, so it is shrink-to-fit, and `width: initial`
-			// here used to drop the 100% above — sizing the loading branch to its 32px spinner and
-			// the loaded one to the 351px card. That 32px→351px growth was 0.1419 of this route's
-			// 0.1425 CLS, and it is why the plan's height-only fix (32rem, erratum E9) could not
-			// have worked. Keeping `width: 100%` pins both branches to `max-width` instead.
+			// And `width: 100%` above is load-bearing: `.content` is `align-self: center`, so it is
+			// shrink-to-fit, and `width: initial` here used to drop it — sizing an empty box to its
+			// 32px spinner and the loaded one to the 351px card. That 32px→351px growth was 0.1419 of
+			// this route's 0.1425 CLS, and it is why the plan's height-only fix (32rem, erratum E9)
+			// could not have worked. Overriding only `max-width` pins the box to a single width.
 			max-width: 90vw;
 		}
 	}

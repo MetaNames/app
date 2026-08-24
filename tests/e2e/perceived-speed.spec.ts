@@ -112,4 +112,25 @@ test.describe('/domain/[name] perceived speed', () => {
 			`footer was shifted — ${detail}`
 		).toEqual([]);
 	});
+
+	test('the domain name is in the bytes the server sent, not painted in after hydration', async ({
+		page
+	}) => {
+		const response = await page.goto(DOMAIN_ROUTE.path, { waitUntil: 'commit' });
+		expect(response?.status()).toBe(200);
+		const html = await response!.text();
+
+		// `h1.domain` is `Domain.svelte`'s heading and it exists only on the loaded branch, so
+		// finding it in the response body is the whole claim: the chain read ran as part of the
+		// request instead of waiting for ~1.5 MB of JS to download, parse and hydrate. Asserting
+		// the *heading* rather than just the string rules out a pass on the name appearing in
+		// SvelteKit's serialised data payload or in a preloaded URL.
+		expect(html, 'the server sent no h1.domain — the loaded branch was not rendered').toMatch(
+			/<h1[^>]*\bclass="[^"]*\bdomain\b[^"]*"[^>]*>\s*test\.mpc\s*<\/h1>/
+		);
+		// And the spinner it used to send instead is gone from the server's response.
+		expect(html, 'the server still sent the loading spinner').not.toContain(
+			'aria-label="Loading domain"'
+		);
+	});
 });
