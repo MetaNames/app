@@ -3007,6 +3007,131 @@ was verified independently to leave content visible (under `reducedMotion: 'redu
 indeterminate spinner keeps `opacity: 1` and a 32 × 32 box on every layer, because MDC's colour-1
 keyframe ends at `.99` and the arc keyframes end where they start).
 
+### E8: B6, B1 — the ring never reached two control families, and B1's gate could pass on a spinner
+
+Batch B's gate went green and the batch review landed, but the review's two blockers are both cases
+of a check that agreed with the plan while never touching the thing the plan is about. They are
+independent — one is CSS specificity, one is test timing — and are recorded together because they
+share that shape. `26cfd77` and `ff425f5` close them. No behaviour changed on any route.
+
+#### B6 — `:focus-visible` is (0,1,0), and MDC resets `outline` at (0,2,0)
+
+**What the plan asserted.** B6 Step 2 introduces a single bare `:focus-visible` rule under the
+heading "One ring for everything instead", and Step 1 gates it on three selectors: `a.link-logo`,
+`button.mdc-top-app-bar__action-item` and `button.chip`. Step 3 then verifies the ring's contrast
+against three backdrops (E7's subject) and the task reads as done.
+
+**What was actually true.** A bare `:focus-visible` has specificity (0,1,0), and the compiled theme
+ships `outline: none` at (0,2,0) on seven class-plus-`:focus` selectors:
+
+```console
+$ grep -o "[^}{]*{[^}]*outline:none[^}]*}" src/styles/theme/smui-dark.css \
+    | sed 's/{.*//' | tr ',' '\n' | sort -u | grep ':focus'
+.mdc-card__action:focus
+.mdc-deprecated-list-item:focus
+.mdc-deprecated-list:focus
+.mdc-list-item:focus
+.mdc-list:focus
+.mdc-menu-surface:focus
+.mdc-text-field__input:focus
+```
+
+Two of those render in this app on controls a keyboard user lands on: `.mdc-deprecated-list-item`
+is every wallet menu item, and `.mdc-text-field__input` is every Textfield input, including the
+search field on `/`. Both computed `outline-style: none` under a rule written to cover everything —
+so the ring B6 exists to add was absent from exactly the controls MDC had already opted out, while
+the task reported success. The theme's other ten `outline: none` selectors are single classes
+(`.mdc-button`, `.mdc-icon-button`, `.mdc-tab`, …), which tie at (0,1,0) and lose on source order —
+the one exception, `.mdc-button:active`, applies only while a pointer holds the button down. That
+is why the header button and the chips did get the ring.
+
+**Root cause.** Step 1's three selectors are all in families MDC does not reset — a link, an
+icon-button and a project-local `button.chip` — so the gate sampled only the part of the cascade
+where the new rule already won. A rule claiming to cover _everything_ was verified on three
+controls, and specificity was never part of the check.
+
+**What was done instead.** `26cfd77` re-states the same two declarations at MDC's own (0,2,0) for
+just the two families that render, in the same `theme-overrides.scss`; ordering holds because
+`app.scss` reaches `smui-dark.css` through a plain CSS `@import`, which the bundler hoists above
+everything Sass emits from this file, under `vite dev` and in the production bundle alike.
+Companions for the other five would be dead CSS: `.mdc-card__action`, `.mdc-list` and
+`.mdc-list-item` render zero times across all seven routes (SMUI 7 emits only the deprecated list
+family), and the resets on `.mdc-deprecated-list` and `.mdc-menu-surface` are correct — MDC focuses
+those containers only to hand focus to an item, so ringing them would draw two rings for one focus.
+The same commit drops Step 2's `border-radius: 2px`, which never rounded the outline (an outline
+already follows its control's radius) and only overwrote the control's own radius while focused,
+squaring MDC's 4 px buttons to 2 px and rounding otherwise square links, inputs and menu items.
+
+The gate now measures the ratio rather than the presence, at both 1280 and 320 px, and includes the
+two previously unreachable families: logo link and header button 3.35:1 on the app bar, chip and
+menu item 10.16:1, the search input 7.74:1, and E7's inverted snackbar ring 10.72:1. Both new
+controls fail on the parent commit at both viewports. The menu is opened from the keyboard, not with
+a click, because Chromium honours `:focus-visible` for a programmatic `focus()` only while the last
+input was a key press.
+
+#### B1 — the a11y gate shipped E4's two defects verbatim
+
+**What the plan asserted.** B1 Step 2's spec walks seven routes with
+`page.goto(path, { waitUntil: 'networkidle' })` followed by `await page.waitForTimeout(2000)`, on a
+route list whose register entry is the literal `/register/zzunregistered123`. Step 3 predicts a
+specific set of failures from that run.
+
+**What was actually true.** These are the same two defects E4 recorded against A1 — an unproven wait
+and a fixed register name — reproduced character-for-character in a spec written in the same plan.
+E4 fixed them in `reflow.spec.ts` only; nothing propagated the correction to B1, whose text predates
+it and was executed verbatim.
+
+The consequence here is worse than in reflow, because B1's two cases degrade in _opposite_
+directions on the same unsettled frame. With the chain reads outstanding, the four chain-backed
+routes render no page content at all — `/domain/[name]` a `role="status"` spinner behind
+`{#if !$domain}`, `/register/[name]` a bare `CircularProgress` behind
+`{#if $isDomainPresent === undefined}`, and `/renew` and `/transfer` an empty `.content` div behind
+`{#if data.analyzed}`. On that frame:
+
+| B1 case                                     | on the loading branch                                     | verdict     |
+| ------------------------------------------- | --------------------------------------------------------- | ----------- |
+| `<route> has no violations`                 | axe has almost no nodes to judge, so `violations` is `[]` | false green |
+| `<route> has exactly one level-one heading` | no `h1` exists — E6 measured `h1=0` on all four           | false red   |
+
+So a passing `has no violations` did not mean the route was clean, and a failing heading count did
+not mean the route was broken. Both verdicts were about whether testnet latency beat a 2 s timer.
+E6's own measurements are the evidence for the second row (`DOMAIN-LOADING h1=0`,
+`REGISTER-LOADING h1=0`, `CHECKOUT … h1=0 checkoutInnerHTML=""`), and E6's "the gate samples settled
+states (it waits `networkidle` + 2000 ms)" is the assumption this erratum retracts: the sleep does
+not sample a settled state, it samples whatever is on screen at 2 s.
+
+**Root cause.** Same as E4's: the wait was written against the cause of slowness rather than against
+the effect each assertion depends on. What B1 adds is that the defect survived being documented —
+E4 corrected one spec rather than the pattern, and B1's Step 2 was still pasted from the plan.
+
+**What was done instead.** `ff425f5` lifts the route table and the wait out of both specs into
+`tests/e2e/routes.ts`, so there is one definition to correct next time. `gotoLoaded(page, route)`
+returns only once two things hold: the route's loaded-branch anchor is visible
+(`toBeVisible({ timeout: 15000 })` — a slow read costs waiting time, a never-rendering page costs a
+failure), **and** `new URL(page.url()).pathname` is still the path that was asked for. The second
+half is not redundant: no anchor is unique to its route (`.card-content h2` renders on `/register`
+and `/renew`, `button.chip:has-text("Owner")` on `/domain` and `/tld`, and `/transfer` anchors on a
+bare `h2`), and four of the seven routes can leave their path while loading — `/domain/[name]` to a
+lowercased name, to `/register/<name>` on a confirmed absence, or to `/`; `/register/[name]` to
+`/domain/<name>`, `/register/<parent>` or `/`; `/renew` and `/transfer` to `/` on a `load` error,
+which is exactly the redirect E6 measured (`early h1=0 url=…/renew`, `late h1=1 url=/`). The
+register route moves to a `` `zzunregistered${Date.now()}` `` name; only the _name_ varies, since
+every test title is derived from `route.name`, so Playwright's test IDs stay stable across workers
+and retries.
+
+The gate is honest about what it does not prove: it catches a redirect that has already landed, not
+one still in flight. Of the seven routes, only `/register` can render its loaded branch with a
+`goto()` pending, because it sets the store its `{#if}` reads before redirecting — and both such
+branches are excluded for the route used, since a freshly generated name cannot be already
+registered and a name with no dot analyses to no `parentId`. Everywhere else the loaded branch and
+the redirect are mutually exclusive.
+
+**Scope.** B1's objective and its axe harness stand; only its route table and its wait were wrong,
+and `reflow.spec.ts` changes only by sourcing both from the shared module. Per errata policy item 5,
+B1's and B6's text above is left as written. Verified after both commits:
+`npx playwright test tests/e2e/a11y.spec.ts tests/e2e/reflow.spec.ts --trace=off` → **27 passed**,
+`npm run check` → 1779 files, 0 errors, `npm run lint` → clean.
+
 ---
 
 ## Appendix A: audit method
