@@ -55,6 +55,23 @@ test.describe('WCAG 2.2 A + AA', () => {
 	}
 });
 
+test('the search result is inside a live region', async ({ page }) => {
+	await page.goto('/', { waitUntil: 'networkidle' });
+	await page.locator('.mdc-text-field input').first().fill('test');
+
+	const result = page.locator('[data-testid^="domain-result"]');
+	await expect(result).toBeVisible({ timeout: 15000 });
+
+	const announced = await result.evaluate((el) => {
+		for (let n: Element | null = el; n && n !== document.body; n = n.parentElement) {
+			if (n.getAttribute('aria-live')) return true;
+			if (['status', 'alert', 'log'].includes(n.getAttribute('role') ?? '')) return true;
+		}
+		return false;
+	});
+	expect(announced, 'no aria-live / role=status ancestor').toBe(true);
+});
+
 test('an invalid recipient address is programmatically invalid, not just red', async ({ page }) => {
 	await page.goto('/domain/test.mpc/transfer', { waitUntil: 'networkidle' });
 	const input = page.locator('.mdc-text-field input').first();

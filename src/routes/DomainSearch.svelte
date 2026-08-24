@@ -89,43 +89,54 @@
 			</svelte:fragment>
 		</Textfield>
 	</form>
-	{#if isLoading}
-		<Card class="domain-link">
-			<CardContent>
-				<div class="card-content">
-					<span>{nameSearchedLabel}</span>
+	<!--
+		One region, not one per branch: a `role="status"` element that is inserted into the DOM is
+		announced unreliably, while a change of text inside a region that was already there is
+		announced by every screen reader.
+	-->
+	<div role="status" aria-live="polite" aria-atomic="true">
+		{#if isLoading}
+			<Card class="domain-link">
+				<CardContent>
+					<div class="card-content">
+						<span>{nameSearchedLabel}</span>
 
-					<CircularProgress
-						style="height: 32px; width: 32px;"
-						indeterminate
-						aria-label="Loading domain search results"
-					/>
-				</div>
-			</CardContent>
-		</Card>
-	{:else if domain}
-		<a class="domain-link" href={`/domain/${domain.name}`} data-testid="domain-result-registered">
-			<Card>
-				<CardContent>
-					<div class="card-content">
-						<span>{nameSearchedLabel}</span>
-						<span class="chip registered" data-testid="domain-status-registered">Registered</span>
+						<CircularProgress
+							style="height: 32px; width: 32px;"
+							indeterminate
+							aria-label="Loading domain search results"
+						/>
 					</div>
 				</CardContent>
 			</Card>
-		</a>
-	{:else if domain === null}
-		<a class="domain-link" href={`/register/${nameSearched}`} data-testid="domain-result-available">
-			<Card>
-				<CardContent>
-					<div class="card-content">
-						<span>{nameSearchedLabel}</span>
-						<span class="chip available" data-testid="domain-status-available">Available</span>
-					</div>
-				</CardContent>
-			</Card>
-		</a>
-	{/if}
+		{:else if domain}
+			<a class="domain-link" href={`/domain/${domain.name}`} data-testid="domain-result-registered">
+				<Card>
+					<CardContent>
+						<div class="card-content">
+							<span>{nameSearchedLabel}</span>
+							<span class="chip registered" data-testid="domain-status-registered">Registered</span>
+						</div>
+					</CardContent>
+				</Card>
+			</a>
+		{:else if domain === null}
+			<a
+				class="domain-link"
+				href={`/register/${nameSearched}`}
+				data-testid="domain-result-available"
+			>
+				<Card>
+					<CardContent>
+						<div class="card-content">
+							<span>{nameSearchedLabel}</span>
+							<span class="chip available" data-testid="domain-status-available">Available</span>
+						</div>
+					</CardContent>
+				</Card>
+			</a>
+		{/if}
+	</div>
 </div>
 
 <style lang="scss">

@@ -74,7 +74,13 @@
 
 <div class="content domain">
 	{#if !$domain}
-		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+		<div role="status">
+			<CircularProgress
+				style="height: 32px; width: 32px;"
+				indeterminate
+				aria-label="Loading domain"
+			/>
+		</div>
 	{:else if $domain}
 		<Domain domain={$domain} />
 		<br />
