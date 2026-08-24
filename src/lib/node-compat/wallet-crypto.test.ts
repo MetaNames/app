@@ -295,6 +295,18 @@ describe('AES through the lazy backend', () => {
 			crypto.createCipheriv('aes-128-ecb', ecbKey, Buffer.alloc(0)).setAutoPadding(false)
 		).toThrow(/setAutoPadding\(false\) is not supported/);
 	});
+
+	// Asking for the padding that is already on is a no-op Node allows, and it returns
+	// the cipher so callers can chain `.setAutoPadding(true).update(...)`.
+	it('accepts the padding it already applies and stays chainable', () => {
+		const shim = crypto.createCipheriv('aes-128-ecb', ecbKey, Buffer.alloc(0));
+
+		expect(shim.setAutoPadding()).toBe(shim);
+		expect(shim.setAutoPadding(true)).toBe(shim);
+		expect(Buffer.concat([shim.update(plaintext), shim.final()]).toString('hex')).toBe(
+			AES.ecbCipher
+		);
+	});
 });
 
 describe('pbkdf2Sync through the lazy backend', () => {
