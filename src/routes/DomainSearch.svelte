@@ -73,7 +73,6 @@
 			input$aria-invalid={invalid}
 			label="Domain name"
 			withTrailingIcon
-			autofocus
 		>
 			<svelte:fragment slot="trailingIcon">
 				<div class="submit">
