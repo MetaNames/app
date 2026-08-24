@@ -27,8 +27,8 @@
 
 	let alertsSnackbar: Snackbar;
 	let transactionSnackbar: Snackbar;
-	let snackbarTransactionMessage: string;
-	let snackbarMessage: string;
+	let snackbarTransactionMessage = '';
+	let snackbarMessage = '';
 	let alertsTimeout: ReturnType<typeof setTimeout>;
 
 	$: contractDisabled = config.contractDisabled;

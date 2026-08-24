@@ -20,7 +20,7 @@
 </script>
 
 <svelte:head>
-	<title>Meta | Meta Names</title>
+	<title>{metaNamesConfig.tld} | Meta Names</title>
 </svelte:head>
 
 <div class="content domain">

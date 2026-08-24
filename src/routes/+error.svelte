@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>{$page.status}</title>
+	<title>{$page.status === 404 ? 'Not found' : 'Something went wrong'} | Meta Names</title>
 </svelte:head>
 
 <div class="content">

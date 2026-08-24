@@ -30,4 +30,10 @@ test.describe('TLD Page', () => {
 		const settingsTab = page.locator('button:has-text("settings")');
 		await expect(settingsTab).not.toBeVisible();
 	});
+
+	test('the title names the TLD the page shows', async ({ page }) => {
+		await page.goto('/tld', { waitUntil: 'networkidle' });
+		const heading = await page.locator('h1').textContent();
+		await expect(page).toHaveTitle(`${heading?.trim()} | Meta Names`);
+	});
 });
