@@ -2923,6 +2923,90 @@ paragraph cites that spinner as already labelled at `:100`; live it reads
 accessible name is a change, not the minimal fix the task asks for. Step 3's snippet writes
 `{:else}` where the live file has `{:else if $domain}`; the live branch was kept.
 
+### E7: B6 — Step 3 checks three backdrops, and the app has four; the ring is 1.06:1 on the snackbar
+
+**What the plan asserted.** Task B6 Step 3 verifies `--mdc-theme-secondary` (`#d0c7ff`) against
+exactly three backdrops — the app bar `#6849fe`, the surface `#212125` and the background `#363535`
+— and gates on them: "Expected: all three ≥ 3.0. **If any is below 3.0, this task is not done**".
+All three do clear it, so Step 3 as written passes and the task reads as done.
+
+**What was actually true.** The three are not all the backdrops a focusable control sits on. MDC
+inverts the snackbar, and `.mdc-snackbar__surface` is the one light surface the compiled dark theme
+emits:
+
+```console
+$ grep -o "\.mdc-snackbar__surface{[^}]*}" src/styles/theme/smui-dark.css | head -1
+.mdc-snackbar__surface{background-color:rgb(210.6, 210.6, 211.4)}
+```
+
+Measured in the browser, on the ring the plan's Step 2 rule paints, with both snackbar controls
+keyboard-focused:
+
+```console
+SNACK view-button {"fv":true,"outline":"solid 3px rgb(208, 199, 255) off=2px",
+  "backdrop":"DIV.mdc-snackbar__surface","backdropBg":"rgb(211, 211, 211)","ratio":"1.06"}
+SNACK dismiss    {"fv":true,"outline":"solid 3px rgb(208, 199, 255) off=2px",
+  "backdrop":"DIV.mdc-snackbar__surface","backdropBg":"rgb(211, 211, 211)","ratio":"1.06"}
+```
+
+| ring `#d0c7ff` against | ratio      | in Step 3? |
+| ---------------------- | ---------- | ---------- |
+| app bar `#6849fe`      | 3.35:1     | yes        |
+| surface `#212125`      | 10.16:1    | yes        |
+| background `#363535`   | 7.74:1     | yes        |
+| snackbar `#d3d3d3`     | **1.06:1** | **no**     |
+
+1.06:1 is less indicator than the 1.53:1 tint B6 exists to replace, on two controls that are
+genuinely reachable: the transaction snackbar's "View" action and the Dismiss icon button on both
+snackbars (`src/routes/+layout.svelte:131-155`).
+
+**Root cause.** Step 3 enumerated the three `--mdc-theme-*` tokens rather than the surfaces the app
+actually paints. `.mdc-snackbar__surface` is not one of those tokens — MDC derives it by inverting
+the theme, so it does not appear in the token list Step 3 reads from and was never a candidate. It
+is also the only such surface: `.mdc-banner`, `.mdc-dialog__surface`, `.mdc-card`,
+`.mdc-menu-surface` and `.mdc-data-table` all compile to `#212125`, and `.mdc-text-field--filled`
+to `rgb(41.88, 41.88, 45.72)`, so the miss is one surface wide, not systemic.
+
+No single opaque ring colour can cover all four. Writing each 3:1 requirement as a band of relative
+luminance the ring may occupy: `#d3d3d3` admits only `L ≤ 0.184`; `#6849fe` admits `L ≥ 0.546` or
+`L ≤ 0.016`; `#363535` admits `L ≥ 0.208`; `#212125` admits `L ≥ 0.146`. Taking the app bar's high
+branch contradicts the snackbar, and its low branch contradicts the background — the intersection is
+empty either way. So "one ring for everything" is not reachable by picking a lighter token as Step 3
+instructs; the colour has to vary with the surface.
+
+**What was done instead.** `009305c` ships B6 Steps 1–5 verbatim — the `:focus-visible` rule, the
+reduced-motion block and the commit message are all exactly as written — plus one scoped four-line
+addition to the same file, `src/styles/theme-overrides.scss`:
+
+```scss
+.mdc-snackbar__surface :focus-visible {
+	outline-color: var(--mdc-theme-surface);
+}
+```
+
+`#212125` on `#d3d3d3` is 10.72:1. The ring stays one ring; only its colour inverts where the
+surface does, which is the smallest change that satisfies Step 3's own gate on the backdrop it
+missed. Per errata policy item 5, B6's text above is left as written.
+
+**Two further B6 inaccuracies, harmless, noted so a reviewer does not file them as bugs.** Step 1
+predicts the new assertion fails on `button.mdc-top-app-bar__action-item` with `Received: "none"`.
+At `51ae4b2` it fails one selector earlier, on `a.link-logo`, with `Expected: >= 2 / Received: 1` —
+the UA's `outline: auto 1px` on a native link, which is the second half of the "two indicators"
+B6's "Why" paragraph describes. Same test, same conclusion, different first failure. Separately,
+`src/theme/_smui-theme.scss` still defines a light palette (`$secondary: #676778`, `$surface: #fff`)
+where that ring would be 1.05:1 on the app bar, but `npm run generate:themes` runs
+`smui-theme-dark` only and `src/styles/app.scss:5` imports only `smui-dark.css`, so no light theme
+is built or served and B6 is not accountable for it.
+
+**Scope.** B6's objective, gates and commit message stand; only Step 3's backdrop list was
+incomplete. The shipped `tests/e2e/a11y.spec.ts` asserts the 3:1 ratio rather than only the
+presence of an outline, covers the snackbar surface alongside the three Step 3 checked, and repeats
+the whole check at a 320 px viewport — the 400 % zoom proxy `reflow.spec.ts` already uses. No other
+task is affected: nothing outside `theme-overrides.scss` changed, and the reduced-motion half of B6
+was verified independently to leave content visible (under `reducedMotion: 'reduce'` the
+indeterminate spinner keeps `opacity: 1` and a 32 × 32 box on every layer, because MDC's colour-1
+keyframe ends at `.99` and the arc keyframes end where they start).
+
 ---
 
 ## Appendix A: audit method
