@@ -3205,6 +3205,111 @@ Step 1 spec are superseded above. Per errata policy item 5, C1's text is left as
 
 ---
 
+### E10: C3 — both ways to start the read early breach invariant 5, so C3 is aborted
+
+**What the plan asserted.** C3 moves the domain read into a universal `+page.ts` (Step 2) so that it
+starts during navigation instead of after hydration, and it treats the change as payload-neutral: §5's
+per-batch gate keeps `npm run measure` at SHARED ≤ 1023 KB / ≤ 20 chunks, and §3.2's
+`/domain/[name]` row stays at 1297 KB. The only failure the Batch C gate anticipates is behavioural —
+"if Task C3's redirect semantics cannot be made to pass `dns-records.spec.ts` inside two attempts,
+revert C3 alone".
+
+**What was actually true.** The redirect semantics were never the problem. Both shapes SvelteKit
+offers for starting a read during navigation cost initial-load JS, and each one breaches invariant 5.
+
+_Alternative 1 — the universal `+page.ts`, shipped as `2c72bd3`._ `npm run build && npm run measure`:
+
+|                  | baseline `003f301`  | universal `+page.ts`    |
+| ---------------- | ------------------- | ----------------------- |
+| SHARED           | 1023 KB / 20 chunks | **1024 KB / 20 chunks** |
+| `/domain/[name]` | 1297 KB / 34 chunks | **1347 KB**             |
+
+The +50 KB is a single new chunk in that route's initial graph: `@sentry` at **50.99 KB**.
+`vite.config.ts:85` calls `sentrySvelteKit()` with no `autoInstrument` override, and that default
+rewrites every node exporting a client-side `load` to import `@sentry/sveltekit` and wrap the export
+(`wrapLoadWithSentry`). The route previously had no client `load`, so it had no such import; creating
+`+page.ts` is what pulls one in. Nothing in `src/` requests it, which is why the diff reads as
+payload-neutral and why review passed it.
+
+_Alternative 2 — a server-only `+page.server.ts`_, written specifically to dodge the above: the
+comment in it recorded that `autoInstrument` wraps client `load`s only, so keeping the read on the
+server should keep the chunk out. It does — and it charges a different, larger cost to every route.
+
+That cost was invisible at first because `npm run measure` printed six routes instead of seven:
+`scripts/measure-route-chunks.js` parses the generated route dictionary with
+`/"([^"]+)":\s*\[([\d,\s]+)\]/g`, and SvelteKit marks a node that has a server `load` with a `~`:
+
+```console
+$ grep -A 3 'export const dictionary' .svelte-kit/generated/client-optimized/app.js
+export const dictionary = {
+		"/": [2],
+		"/domain/[name]": [~3],
+		"/domain/[name]/renew": [4],
+```
+
+`~` is not in the character class, so the entry simply failed to match and the route dropped out of
+the table — a silent omission, not an error. With the class widened to `[\d,\s~]` and the marker
+stripped from the id (the id itself is unchanged: `~3` is still node 3), `npm run measure` reports:
+
+| Route                     | baseline `003f301` | `+page.server.ts` |
+| ------------------------- | -----------------: | ----------------: |
+| SHARED                    |            1023 KB |       **1029 KB** |
+| `/domain/[name]`          |            1297 KB |       **1302 KB** |
+| `/tld`                    |            1294 KB |           1300 KB |
+| `/profile`                |            1211 KB |           1217 KB |
+| `/domain/[name]/renew`    |            1178 KB |           1184 KB |
+| `/domain/[name]/transfer` |            1177 KB |           1183 KB |
+| `/register/[name]`        |            1136 KB |           1142 KB |
+| `/`                       |            1123 KB |           1129 KB |
+
+Every route grows by the same ~6 KB, which is the tell: the bytes are not this route's. SHARED is
+still 20 chunks and its five largest are unchanged to the KB (344, 250, 133, 81, 63), so the growth is
+spread through the shared entry graph rather than sitting in one new chunk. The app's first server
+`load` is what turns on SvelteKit's server-data client runtime — the code that requests and parses a
+node's `__data.json` during client-side navigation — and that runtime is shared, so it is billed to
+`/` exactly as much as to `/domain/[name]`. SHARED 1029 KB > 1023 KB fails invariant 5 outright, and
+fails it for six routes that C3 was never meant to touch.
+
+Neither result has a way out that this plan permits. Setting `autoInstrument: { load: false }` or
+dropping `sentrySvelteKit()` trades payload for the error reporting invariant 3 exists to protect;
+widening invariant 5's ceiling, or leaving the measure parser blind to `~` so the regression does not
+print, is invariant 5 measured against itself. Both were considered and rejected here rather than
+attempted.
+
+**Root cause of the mistake.** The plan scoped C3 as a change of _when_ the read happens and priced it
+accordingly. Both mechanisms that can change the when also change _what ships_ — one through a build
+plugin's default keyed on the mere presence of a client `load`, one through a framework feature gate
+that a single `+page.server.ts` flips on process-wide. Neither cost appears in the task's diff, in its
+file list, or in any assertion the plan wrote for it: §3.2's per-route payloads were measured at
+`003f301` and never re-derived for a route that gains a `load` at all. The gate's rollback clause
+inherited the same blind spot, naming `dns-records.spec.ts` as the thing that could go wrong.
+
+**What was done instead.** C3 is **aborted** under the Batch C gate's revert-C3-alone clause and
+errata policy items 1 and 4 — the defect invalidates the task's rationale, so the batch stops here
+rather than shipping a payload regression or improvising a fourth mechanism. Concretely:
+
+- the server-only experiment (`+page.server.ts`, its `+page.svelte` revive, and the
+  `measure-route-chunks.js` parser fix that exposed its cost) was discarded uncommitted — the parser
+  defect is real and is recorded above, but it belongs to a commit that has a reason to exist, and
+  after the abort no route carries a `~` for it to drop;
+- `2c72bd3` was reverted as its own `revert(perf):` commit. `1982358` (E9's formatting), C1
+  (`261a177`) and C2 (`c0a0a3d`) all stand.
+
+So the route returns to reading the chain from `onMount`, and §3.3's LCP 4064 ms stands unimproved.
+C1's CLS win does not depend on C3 and is unaffected; the spinner branch E9 pinned is back, and it is
+back in the pinned-geometry form C1 gave it, not the pre-C1 form. C2's `reviveDomain` loses its only
+production caller and is kept deliberately: it is the wire contract for what `/api/domains/[name]`
+already serves, its own unit tests keep it covered, and it is the half of this work that a Round 5
+attempt would otherwise have to write again.
+
+**Scope.** C3's objective (LCP < 2500 ms with `H1.domain` as the LCP element) is **not met and carries
+to Round 5**, which must budget the payload question up front: the open question is not how to start
+the read early — two ways are now known to work — but which of the Sentry auto-instrumentation
+default and the server-data runtime can be paid for or avoided. Per errata policy item 5, C3's text
+and §3.2's numbers are left as written. Batch C's other exit criteria are unaffected by this abort.
+
+---
+
 ## Appendix A: audit method
 
 So the numbers can be reproduced or disputed.
