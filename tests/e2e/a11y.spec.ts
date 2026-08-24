@@ -2,6 +2,8 @@ import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 
+import { ROUTES, gotoLoaded } from './routes';
+
 const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
@@ -24,21 +26,20 @@ async function scan(page: Page): Promise<Violation[]> {
 	}, TAGS);
 }
 
-const ROUTES = [
-	['/', 'home'],
-	['/domain/test.mpc', 'domain'],
-	['/register/zzunregistered123', 'register'],
-	['/profile', 'profile'],
-	['/tld', 'tld'],
-	['/domain/test.mpc/renew', 'renew'],
-	['/domain/test.mpc/transfer', 'transfer']
-] as const;
-
+// Both cases below judge whatever is on screen when they run, so what is on screen has to be the
+// thing they name. `tests/e2e/routes.ts` carries the seven routes with a loaded-branch anchor and a
+// fresh register name apiece; this file used to hard-code `/register/zzunregistered123` and
+// `waitForTimeout(2000)` — the false-route and unproven-wait pair erratum E4 already closed for
+// reflow. The two cases degrade in opposite directions when the 2 s runs out first, which is why
+// neither was trustworthy: a spinner has no violations for axe to report, so `has no violations`
+// goes green without ever scanning the route it names, while the same branch carries no `h1` at
+// all (E6 measured `DOMAIN-LOADING h1=0` and `REGISTER-LOADING h1=0`), so `has exactly one
+// level-one heading` goes red on a page it never saw. Both verdicts were about testnet latency
+// beating a timer, not about the page.
 test.describe('WCAG 2.2 A + AA', () => {
-	for (const [path, name] of ROUTES) {
-		test(`${name} has no violations`, async ({ page }) => {
-			await page.goto(path, { waitUntil: 'networkidle' });
-			await page.waitForTimeout(2000);
+	for (const route of ROUTES) {
+		test(`${route.name} has no violations`, async ({ page }) => {
+			await gotoLoaded(page, route);
 
 			const violations = await scan(page);
 			expect(
@@ -47,9 +48,8 @@ test.describe('WCAG 2.2 A + AA', () => {
 			).toEqual([]);
 		});
 
-		test(`${name} has exactly one level-one heading`, async ({ page }) => {
-			await page.goto(path, { waitUntil: 'networkidle' });
-			await page.waitForTimeout(2000);
+		test(`${route.name} has exactly one level-one heading`, async ({ page }) => {
+			await gotoLoaded(page, route);
 			await expect(page.locator('h1')).toHaveCount(1);
 		});
 	}
