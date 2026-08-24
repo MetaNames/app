@@ -125,10 +125,52 @@ async function ringOn(page: Page, selector: string) {
 	}, selector);
 }
 
+/** The four things a ring has to be: on, drawn, thick enough, and 3:1 against what is behind it. */
+async function expectRing(page: Page, sel: string) {
+	const ring = await ringOn(page, sel);
+	expect(ring.focusVisible, sel).toBe(true);
+	expect(ring.style, sel).not.toBe('none');
+	expect(ring.width, sel).toBeGreaterThanOrEqual(2);
+	expect(ring.ratio, `${sel} on ${ring.backdrop}`).toBeGreaterThanOrEqual(3);
+}
+
+/** The wallet menu item selector — the list family MDC resets, reachable from every route. */
+const MENU_ITEM = '.mdc-menu-surface--open .mdc-deprecated-list-item';
+
+/**
+ * Open the header wallet menu from the keyboard, retrying while SMUI's handler hydrates — the
+ * same cold-start race `helpers.ts` documents for the click path.
+ *
+ * Keyboard rather than `click()` on purpose. Chromium only honours `:focus-visible` for a
+ * programmatic `focus()` while the last input was a key press, so clicking here would make every
+ * ring assertion below fail for a reason that has nothing to do with the CSS under test.
+ */
+async function openWalletMenuFromKeyboard(page: Page) {
+	const item = page.locator(MENU_ITEM).first();
+
+	for (let attempt = 1; attempt <= 5; attempt++) {
+		await page.locator('button.mdc-top-app-bar__action-item').press('Enter');
+		try {
+			await expect(item).toBeVisible({ timeout: 3000 });
+			return;
+		} catch {
+			await page.keyboard.press('Escape').catch(() => {});
+		}
+	}
+
+	// Surface the real diagnostic rather than the last swallowed per-attempt timeout.
+	await expect(item).toBeVisible({ timeout: 3000 });
+}
+
 /**
  * SC 2.4.7 was already met before this ring existed — MDC does indicate focus. SC 2.4.13 is what
  * the tint failed: 1.53:1 of change-of-contrast on the header button where 3:1 is asked for. So
  * measure the number, not merely the presence.
+ *
+ * The wallet menu item and the text input are here because a bare `:focus-visible` is (0,1,0) and
+ * MDC resets `outline` on both families at (0,2,0) — `.mdc-deprecated-list-item:focus` and
+ * `.mdc-text-field__input:focus`. Neither was in the original three-selector list, so both
+ * computed `outline-style: none` under a rule that was supposed to be ringing them.
  *
  * Both widths are checked because a ring is only useful if it survives magnification, and 320 CSS
  * px is what a 1280 px desktop looks like at the 400 % zoom SC 1.4.10 names — the same proxy
@@ -144,12 +186,18 @@ for (const [zoom, width] of [
 		await expect(page.locator('button.chip').first()).toBeVisible({ timeout: 15000 });
 
 		for (const sel of ['a.link-logo', 'button.mdc-top-app-bar__action-item', 'button.chip']) {
-			const ring = await ringOn(page, sel);
-			expect(ring.focusVisible, sel).toBe(true);
-			expect(ring.style, sel).not.toBe('none');
-			expect(ring.width, sel).toBeGreaterThanOrEqual(2);
-			expect(ring.ratio, `${sel} on ${ring.backdrop}`).toBeGreaterThanOrEqual(3);
+			await expectRing(page, sel);
 		}
+
+		// The menu sits on `.mdc-menu-surface` (#212125), not on the app bar behind it.
+		await openWalletMenuFromKeyboard(page);
+		await expectRing(page, MENU_ITEM);
+
+		// `/domain/[name]` renders no enabled text input; the search field on `/` is the same
+		// `.mdc-text-field__input` every Textfield in the app produces.
+		await page.goto('/', { waitUntil: 'networkidle' });
+		await expect(page.locator('.mdc-text-field__input').first()).toBeVisible({ timeout: 15000 });
+		await expectRing(page, '.mdc-text-field__input');
 	});
 }
 

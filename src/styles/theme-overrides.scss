@@ -8,10 +8,31 @@
 // SC 2.4.13, and a different indicator from the UA outline that native links still use. One ring
 // for everything instead. `:focus-visible` keeps it off for pointer users, which is why MDC's
 // overlay stays as-is underneath.
+//
+// No `border-radius` here. The outline already follows whatever radius the control has, so the
+// declaration this rule used to carry only overwrote that radius — squaring MDC's 4px buttons off
+// to 2px and rounding square links, inputs and menu items — on focus and nowhere else.
 :focus-visible {
 	outline: 3px solid var(--mdc-theme-secondary);
 	outline-offset: 2px;
-	border-radius: 2px;
+}
+
+// The rule above is (0,1,0) and loses to the `outline: none` MDC ships at (0,2,0), so on these two
+// families it never applied: the wallet menu items and every Textfield input computed
+// `outline-style: none` while appearing to be covered. Same ring, re-declared at MDC's own (0,2,0)
+// and emitted after it — `app.scss` pulls the theme in through a plain CSS `@import`, which the
+// bundler hoists above everything Sass produces from this file, under `vite dev` and in the
+// production bundle alike.
+//
+// Only these two of the seven families MDC resets. `.mdc-card__action`, `.mdc-list` and
+// `.mdc-list-item` render zero times on all seven routes — SMUI 7 emits only the deprecated list
+// family — so companions for them would be dead CSS. `.mdc-deprecated-list` and
+// `.mdc-menu-surface` do render, but their reset is correct: MDC gives the container focus only to
+// hand it straight to an item, and ringing both would draw two rings for one focus.
+.mdc-deprecated-list-item:focus-visible,
+.mdc-text-field__input:focus-visible {
+	outline: 3px solid var(--mdc-theme-secondary);
+	outline-offset: 2px;
 }
 
 // MDC inverts the snackbar, so `.mdc-snackbar__surface` compiles to #d3d3d3 — the one light
