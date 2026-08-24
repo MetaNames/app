@@ -3143,10 +3143,10 @@ that makes the prescribed value inert.
 **What was actually true.** The shift's own source rects settle it. Measured at 390 × 844 with
 `isMobile`, before any fix:
 
-| | `DIV.content` x | y | width | height |
-| --- | --- | --- | --- | --- |
-| previous rect | 179 | 88 | **32** | 603 |
-| current rect | 19.5 | 88 | **351** | 603 |
+|               | `DIV.content` x | y   | width   | height |
+| ------------- | --------------- | --- | ------- | ------ |
+| previous rect | 179             | 88  | **32**  | 603    |
+| current rect  | 19.5            | 88  | **351** | 603    |
 
 `y` does not change. The shift is **horizontal**: the box grows 32 px → 351 px wide and its left
 edge moves 159.5 px. That reproduces the score exactly — impact fraction
@@ -3166,11 +3166,11 @@ never "only as tall as a 32px spinner": `.content` is `flex-grow: 1`, so the loa
 stretched to the leftover viewport — **603 px** at 390 × 844, **495 px** at 1280 × 720, not 39 px.
 The card needs 695.14 px, so the footer moves 723 → 815.14 (mobile, **0.0157**) and 623 → 823.14
 (desktop, **0.0211**). A floor does fix that, but it has to clear the stretched height to do
-anything: `32rem` = 512 px is *below* 603 px on the measured phone, so the plan's value would have
+anything: `32rem` = 512 px is _below_ 603 px on the measured phone, so the plan's value would have
 been inert on both counts. The card is 635.14 px tall at both widths, so one floor covers both
 viewports, and 44rem = 704 px is the smallest whole rem clearing 695.14 px.
 
-**Root cause of the mistake.** The audit recorded the shift's *sources* (`DIV.content`, `FOOTER`)
+**Root cause of the mistake.** The audit recorded the shift's _sources_ (`DIV.content`, `FOOTER`)
 but not their rects, and "container is too short, give it a floor" is the shape a `DIV`-plus-`FOOTER`
 CLS entry usually has. The plan reasoned from the familiar shape instead of from the geometry, so it
 picked the right file, the right element and the wrong axis — then sized the wrong-axis fix against a
@@ -3182,10 +3182,10 @@ at `max-width`, and add `min-height: 44rem` so neither depends on the leftover v
 identical geometry across the swap at both viewports — `.content` 351 × 704 at 390 × 844 and
 768 × 704 at 1280 × 720, footer at y = 824 and y = 832, loading and loaded alike.
 
-| | before | after |
-| --- | --- | --- |
+|                           | before | after       |
+| ------------------------- | ------ | ----------- |
 | CLS, 390 × 844 `isMobile` | 0.1425 | **0.00059** |
-| CLS, 1280 × 720 | 0.0218 | **0.00073** |
+| CLS, 1280 × 720           | 0.0218 | **0.00073** |
 
 The residue is one 0.0006 shift in the top app bar when the `TESTNET` badge's font loads, which is
 not this route's and not this task's.
