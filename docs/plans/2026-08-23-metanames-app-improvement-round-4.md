@@ -3132,6 +3132,77 @@ B1's and B6's text above is left as written. Verified after both commits:
 `npx playwright test tests/e2e/a11y.spec.ts tests/e2e/reflow.spec.ts --trace=off` → **27 passed**,
 `npm run check` → 1779 files, 0 errors, `npm run lint` → clean.
 
+### E9: C1 — the dominant shift is horizontal, and `min-height: 32rem` could not have moved it
+
+**What the plan asserted.** C1's "Why" reads the 0.1406 shift as the footer being pushed down while
+only a 32 px spinner is on screen, and Step 2 fixes it with `min-height: 32rem` on `.domain`,
+commented "the card is ~640px tall once the chain read lands. Without a floor the page is only as
+tall as a 32px spinner until then". Both halves of that are wrong, and the second is wrong in a way
+that makes the prescribed value inert.
+
+**What was actually true.** The shift's own source rects settle it. Measured at 390 × 844 with
+`isMobile`, before any fix:
+
+| | `DIV.content` x | y | width | height |
+| --- | --- | --- | --- | --- |
+| previous rect | 179 | 88 | **32** | 603 |
+| current rect | 19.5 | 88 | **351** | 603 |
+
+`y` does not change. The shift is **horizontal**: the box grows 32 px → 351 px wide and its left
+edge moves 159.5 px. That reproduces the score exactly — impact fraction
+`351 × 603 / (390 × 844) = 0.643`, distance fraction `159.5 / 844 = 0.189`, product `0.1216`; at the
+704 px height the interim `min-height: 44rem` produced it is `0.751 × 0.189 = 0.1419`, the figure the
+failing run reported against a total of 0.1425.
+
+The cause is a cascade interaction the plan's diff never touches. `.content` in `src/styles/app.scss`
+is `align-self: center`, so in `main`'s column flex it is **shrink-to-fit**, not stretched. `.domain`
+sets `width: 100%` — but the route's own `@media (max-width: 768px)` block reset it to
+`width: initial`, i.e. `auto`. So on every phone the box was sized by its content: 32 px for the
+spinner, 351 px (`max-width: 90vw`) for the card. `min-height` cannot affect an inline-axis size, so
+`32rem` — or any other value — leaves this shift untouched.
+
+The plan's footer jump is real but secondary, and its stated mechanism is also wrong. The page is
+never "only as tall as a 32px spinner": `.content` is `flex-grow: 1`, so the loading branch is
+stretched to the leftover viewport — **603 px** at 390 × 844, **495 px** at 1280 × 720, not 39 px.
+The card needs 695.14 px, so the footer moves 723 → 815.14 (mobile, **0.0157**) and 623 → 823.14
+(desktop, **0.0211**). A floor does fix that, but it has to clear the stretched height to do
+anything: `32rem` = 512 px is *below* 603 px on the measured phone, so the plan's value would have
+been inert on both counts. The card is 635.14 px tall at both widths, so one floor covers both
+viewports, and 44rem = 704 px is the smallest whole rem clearing 695.14 px.
+
+**Root cause of the mistake.** The audit recorded the shift's *sources* (`DIV.content`, `FOOTER`)
+but not their rects, and "container is too short, give it a floor" is the shape a `DIV`-plus-`FOOTER`
+CLS entry usually has. The plan reasoned from the familiar shape instead of from the geometry, so it
+picked the right file, the right element and the wrong axis — then sized the wrong-axis fix against a
+height (39 px) that flex stretching means the element never has.
+
+**What was done instead.** Both branches are made to occupy the same box, which needs one declaration
+per axis: drop `width: initial` from the mobile block so `width: 100%` survives and both branches sit
+at `max-width`, and add `min-height: 44rem` so neither depends on the leftover viewport. Verified
+identical geometry across the swap at both viewports — `.content` 351 × 704 at 390 × 844 and
+768 × 704 at 1280 × 720, footer at y = 824 and y = 832, loading and loaded alike.
+
+| | before | after |
+| --- | --- | --- |
+| CLS, 390 × 844 `isMobile` | 0.1425 | **0.00059** |
+| CLS, 1280 × 720 | 0.0218 | **0.00073** |
+
+The residue is one 0.0006 shift in the top app bar when the `TESTNET` badge's font loads, which is
+not this route's and not this task's.
+
+`tests/e2e/perceived-speed.spec.ts` keeps its frame-counted settle (E4's lesson) and its
+`gotoLoaded` anchor (E8's), and is corrected on two points. Its footer assertion was **dead**: it
+matched `sources.includes('FOOTER')` against labels built as ``tagName + `.${firstClass}` ``, and the
+footer's only class is a Svelte scoping hash, so the label is `FOOTER.s-o9NEEvOBTASq` and the filter
+could never fire. Sources now carry `tag` and `label` separately, the footer is matched on `tag` so a
+recompiled hash cannot silently disarm it again, and a second assertion names `DIV.content` — the
+axis this erratum is about had no assertion of its own.
+
+**Scope.** C1's objective (CLS ≤ 0.02) and its file list stand; its "Why", its Step 2 value and its
+Step 1 spec are superseded above. Per errata policy item 5, C1's text is left as written. Verified:
+`perceived-speed` **1 passed**, `reflow` **21 passed**, `domain-management` **7 passed**,
+`npm run check` → 0 errors, `npm run lint` → clean.
+
 ---
 
 ## Appendix A: audit method
