@@ -70,6 +70,7 @@
 			variant="outlined"
 			bind:value={domainName}
 			bind:invalid
+			input$aria-invalid={invalid}
 			label="Domain name"
 			withTrailingIcon
 			autofocus

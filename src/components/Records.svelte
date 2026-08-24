@@ -87,6 +87,7 @@
 					input$maxlength={newRecordValueMaxLength}
 					label="Record value"
 					bind:invalid={recordValueInvalid}
+					input$aria-invalid={recordValueInvalid}
 					variant="outlined"
 				>
 					<svelte:fragment slot="helper">

@@ -71,6 +71,7 @@
 						variant="outlined"
 						bind:value={address}
 						bind:invalid
+						input$aria-invalid={invalid}
 						label="Recipient address"
 					>
 						<svelte:fragment slot="helper">

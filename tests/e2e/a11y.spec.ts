@@ -54,3 +54,12 @@ test.describe('WCAG 2.2 A + AA', () => {
 		});
 	}
 });
+
+test('an invalid recipient address is programmatically invalid, not just red', async ({ page }) => {
+	await page.goto('/domain/test.mpc/transfer', { waitUntil: 'networkidle' });
+	const input = page.locator('.mdc-text-field input').first();
+	await input.fill('nope');
+
+	await expect(page.locator('.mdc-text-field')).toHaveClass(/mdc-text-field--invalid/);
+	await expect(input).toHaveAttribute('aria-invalid', 'true');
+});

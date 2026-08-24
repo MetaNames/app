@@ -77,6 +77,7 @@
 			input$maxlength={maxLength}
 			bind:value={recordValue}
 			bind:invalid
+			input$aria-invalid={invalid}
 			variant="outlined"
 			textarea
 			{disabled}
