@@ -2634,6 +2634,222 @@ entries for `static/~@fontsource` and `static/~normalize.css`, deleted in `3031e
 
 ---
 
+### E5: B2 — the mapping leaves three routes with no `h1`, and the size-pinning recipe is inverted
+
+Task B2's objective — "Clear `page-has-heading-one` on 7/7 routes and `heading-order` on 3" — is
+sound and is met. The **Files** list that is supposed to deliver it is not: applied verbatim it
+clears 4 routes of 7, omits one file entirely, omits every test file the change breaks, and rests
+on a claim about existing `font-size` declarations that is false for 8 of the 9 elements it covers.
+
+#### B2.1 — `/register`, `/renew` and `/transfer` end up with zero `h1`
+
+**What the plan asserted.** The Files list says `src/routes/register/[name]/+page.svelte:109` —
+**"keep `h2`"**; it does not list `src/routes/domain/[name]/renew/+page.svelte` at any line; and for
+`src/routes/domain/[name]/transfer/+page.svelte` it lists only `:62` (`h4` → `h3`), leaving `:59`
+`<h2 class="mt-0">Transfer domain</h2>` untouched. The rationale then leans on this on purpose:
+"`DomainPayment`'s domain name sits under `/register`'s and `/renew`'s existing `h2 Register` /
+`h2 Renew domain`, so it becomes `h3`."
+
+**What was actually true.** Those three routes have no heading above those `h2`s. Measured at
+`df9ad0a`, with every heading on each of the seven routes dumped with its tag:
+
+```
+MEASURE register    H2 "Register"         H4 "zzunregistered123.mpc"
+MEASURE renew       H2 "Renew domain"     H4 "test.mpc"
+MEASURE transfer    H2 "Transfer domain"  H4 "test.mpc"
+```
+
+There is no `h1` on any of them, and the plan's mapping adds none — it promotes the `h4` to `h3`
+and stops. `tests/e2e/a11y.spec.ts`'s `toHaveCount(1)` on `h1` would therefore still fail on 3 of 7
+routes after Step 2, and Step 3's predicted **7 passed** is unreachable from the listed edits. The
+objective and the mapping contradict each other; the objective is the one worth keeping.
+
+**Root cause.** The mapping was derived per-component, from "what is this heading's rank inside its
+card", and `DomainPayment` is the component the plan was thinking about. The page-level question —
+"does this _route_ now start at level 1" — was only asked of the four routes whose subject heading
+happened to live in a component that was already being edited (`/`, `/profile`, `/domain`, `/tld`).
+The three checkout routes own their top heading in the route file, so nothing prompted the check.
+
+**What was done instead.** Each route's own subject heading becomes its `h1`, and the card heading
+below it becomes `h2` rather than `h3`:
+
+| file                                     | plan says      | shipped                | why                                          |
+| ---------------------------------------- | -------------- | ---------------------- | -------------------------------------------- |
+| `register/[name]/+page.svelte:109`       | keep `h2`      | `h1` "Register"        | the route had no `h1`                        |
+| `domain/[name]/renew/+page.svelte:49`    | _(not listed)_ | `h1` "Renew domain"    | the route had no `h1`                        |
+| `domain/[name]/transfer/+page.svelte:59` | _(not listed)_ | `h1` "Transfer domain" | the route had no `h1`                        |
+| `DomainPayment.svelte:103`               | `h4` → `h3`    | `h4` → `h2`            | under an `h1`, `h3` is itself a skip         |
+| `SubdomainRegistration.svelte:57`        | `h4` → `h3`    | `h4` → `h2`            | same, on the subdomain branch of `/register` |
+| `domain/[name]/transfer/+page.svelte:62` | `h4` → `h3`    | `h4` → `h2`            | same                                         |
+
+The plan's remaining rows ship as written: `+page.svelte:11` and `profile/+page.svelte:57` to `h1`,
+`profile/+page.svelte:60` to `h2`, `Domain.svelte:53` to `h1` with `:68`/`:107`/`:135`/`:161` to
+`h2`, `+error.svelte:12,15` to `h1`. Note the `h3` the plan wanted would have converted a
+`h2 → h4` skip into an `h1 → h3` skip, so it does not survive B2.1 even on its own terms.
+
+Verified with axe 4.10.2 run against the three rules by name — `heading-order`,
+`page-has-heading-one` and `empty-heading` — on all seven routes, rather than through `TAGS` (both
+of the first two are `best-practice`, so the committed gate does not reach them):
+
+```
+HEADRULES home: CLEAN      HEADRULES domain: CLEAN    HEADRULES register: CLEAN
+HEADRULES profile: CLEAN   HEADRULES tld: CLEAN       HEADRULES renew: CLEAN
+HEADRULES transfer: CLEAN
+```
+
+#### B2.2 — eight e2e specs pin the old tags, and none of them is in the Files list or the `git add`
+
+**What the plan asserted.** B2's Files list names only files under `src/`, and Step 5 stages
+`git add src/routes src/components`. No test file appears in either.
+
+**What was actually true.** 33 selectors across 8 specs match on the heading tag B2 changes; every
+one of them breaks. The tag-plus-class/pseudo-class form is greppable and accounts for 29 of them at
+`df9ad0a`:
+
+```
+$ git grep -c "h[1-6][.:]" df9ad0a -- tests/e2e | awk -F: '{n+=$NF} END {print n}'
+29
+```
+
+That is `h5.domain` (12×, across `blockchain-ops`, `dns-records`, `domain-management`,
+`domain-registration`, `profile`), `h5:has-text("Profile"|"Whois")` (5×), `h4.domain-title` (2×),
+`h4.domains` (3×), `h2:has-text("Renew domain"|"Transfer domain")` (6×) and
+`h4:has-text("test.mpc")` (1×). The grep pattern requires a `.` or `:` straight after the tag, so it
+misses the remaining 4, which end the selector at the tag: `[data-testid="checkout-content"] h4` in
+`domain-registration.spec.ts`, and `reflow.spec.ts`'s three anchors `.card-content h4` (×2) and a
+bare `h4` — themselves written by `9f0f7fa` two commits earlier and documented in E4's own table as
+`.card-content h4` / `h4`.
+
+**Root cause.** B2 was scoped as a markup change, and the plan's per-task Files lists are
+consistently source-only; the tag was load-bearing for the suite because the components had no
+stable test hooks on these headings, which is not visible from the component file alone.
+
+**What was done instead.** All 33 selectors updated to the new tag and nothing else — each keeps
+its class, `:has-text`, ancestor and count constraints exactly as before, so no assertion is
+weakened. That is 34 changed lines under `tests/e2e` (`git diff --numstat` sums to 34/34): the 33
+selectors plus one comment in `reflow.spec.ts` that named the old tag in prose
+("the domain-name `h4`" → "the domain-name heading"). `blockchain-ops.spec.ts`,
+`dns-records.spec.ts`, `domain-management.spec.ts`,
+`domain-registration.spec.ts`, `domain-renewal.spec.ts`, `domain-transfer.spec.ts`,
+`profile.spec.ts` and `reflow.spec.ts` are staged with the source in the same commit, so the tree is
+never in a state where the suite is red. Two selectors change meaning slightly and are safe:
+`[data-testid="checkout-content"] h2` still resolves to exactly one element (the card name; the
+"Register" heading beside it is now `h1`, not `h2`), and reflow's bare `h2` anchor on `/transfer`
+likewise. Step 5's `git add` line is superseded.
+
+#### B2.3 — only 1 of the 9 re-levelled elements carried an explicit `font-size`, not 7
+
+**What the plan asserted.** "Every element changed above already carries an explicit `font-size` in
+its component's style block _except_ the section labels in `Domain.svelte` and the error page."
+On that basis the recipe pins sizes in exactly those two places.
+
+**What was actually true.** The claim is inverted. Reading every changed element's style block at
+`df9ad0a`:
+
+| element                                        | explicit `font-size` at HEAD?                                   |
+| ---------------------------------------------- | --------------------------------------------------------------- |
+| `Domain.svelte` `.domain`                      | **yes** — `1.8rem`                                              |
+| `Domain.svelte` `.container h5` (×4)           | no                                                              |
+| `+page.svelte` `h3`                            | no — rule is margins only                                       |
+| `profile/+page.svelte` `h3`, `.domains`        | no — margins only                                               |
+| `DomainPayment.svelte` `h4`                    | no — the file's only `font-size` is `xx-large` on `.years span` |
+| `SubdomainRegistration.svelte` `.domain-title` | no — margins and `text-align` only                              |
+| `transfer/+page.svelte` `h4`                   | no — margins only                                               |
+| `+error.svelte` `h2`                           | no — the file has no `<style>` at all                           |
+| `register/[name]/+page.svelte` `h2`            | no                                                              |
+
+So every one of these took its size from `src/theme/typography.scss`'s `h1`…`h6` → `headline1`
+…`headline6` element rules, which is precisely the mapping B2 re-levels through. Pinning only the
+two elements the plan names would have left "Find your Meta Name" at `headline1` (96 px, from 48 px)
+and "Register", "Renew domain" and "Transfer domain" unchanged only by luck of already being `h2`.
+This is the §8 risk-table row "Task B2's heading changes inherit MDC's `headline1`–`headline3` sizes
+and blow up the layout" — its stated mitigation ("B2 pins explicit `font-size` on every element it
+re-levels") is exactly what the Files-list claim above prevents from happening.
+
+**Root cause.** The audit read each component's `<style>` block and saw a rule keyed on the heading
+tag, and treated the presence of that rule as the presence of a size. Seven of the nine rules set
+only margins and alignment.
+
+**What was done instead.** Rather than pin nine sizes across eight files, the level is decoupled
+from the size once, globally, in `src/styles/app.scss`:
+
+```scss
+@each $level in (2, 3, 4, 5) {
+	.type-headline#{$level} {
+		@include typography.typography('headline#{$level}');
+	}
+}
+```
+
+Only the four levels actually worn are emitted. Across the nine re-levelled elements the sizes in
+play are `headline2` (the three checkout `h1`s and `+error.svelte`), `headline3` (home and
+`/profile`), `headline4` (the three card domain names and `.domains`) and `headline5` (`.domain` and
+`Domain.svelte`'s four section labels); no heading in this app was ever sized `headline1` or
+`headline6`, so emitting those two would be dead CSS. Widen the list when a heading needs one.
+
+Each re-levelled element carries the `type-headlineN` matching the level it had before, so its
+computed typography is unchanged. Class specificity `(0,1,0)` beats typography.scss's element
+selectors `(0,0,1)` at any load order, and a component's own scoped rule — Svelte compiles
+`.domain` to `.domain.svelte-xxxxxx`, `(0,2,0)` — still beats both, which is how `.domain`'s
+`1.8rem` survives on top of `.type-headline5`. It lives in `app.scss` and not in `typography.scss`
+because `typography.scss` is an input to `smui-theme compile`, whose output
+`src/styles/theme/smui-dark.css` is gitignored and is _not_ regenerated by `vite dev` — a rule added
+there would be silently absent under the Playwright webServer until someone ran
+`npm run generate:themes`.
+
+Proven by dumping tag, `font-size`, `font-weight`, `letter-spacing` and `line-height` for every
+heading on all seven routes before and after. Every value is identical; only the tag moves:
+
+| route    | before                                               | after                                                |
+| -------- | ---------------------------------------------------- | ---------------------------------------------------- |
+| home     | `H3` 48px/400/normal/50px                            | `H1` 48px/400/normal/50px                            |
+| domain   | `H5` 28.8px/800, `H5` 24px/800 ×2                    | `H1` 28.8px/800, `H2` 24px/800 ×2                    |
+| register | `H2` 60px/300/-0.5px/60px, `H4` 34px/400/0.25px/40px | `H1` 60px/300/-0.5px/60px, `H2` 34px/400/0.25px/40px |
+| profile  | `H3` 48px/400/normal/50px                            | `H1` 48px/400/normal/50px                            |
+| tld      | `H5` 28.8px/800, `H5` 24px/800 ×2                    | `H1` 28.8px/800, `H2` 24px/800 ×2                    |
+| renew    | `H2` 60px/300, `H4` 34px/400                         | `H1` 60px/300, `H2` 34px/400                         |
+| transfer | `H2` 60px/300, `H4` 34px/400                         | `H1` 60px/300, `H2` 34px/400                         |
+
+The measurement harness that produced both halves was a throwaway spec, deleted before the commit;
+`git status` is clean apart from the B2 change itself. The plan's `Domain.svelte` `h2` snippet is
+superseded — the scoped rule keeps its `margin`, `text-align`, `font-weight: 800` and `word-wrap`
+and drops the proposed `font-size: 1.25rem`, which would have been a change, not a preservation:
+`headline5` renders 24 px, and `1.25rem` is 20 px.
+
+**Scope and residue — the `h1`s are conditional, and that belongs to B5.** Every `h1` B2 adds to a
+checkout route sits inside a branch that does not always render one. `/register` shows only a bare
+`CircularProgress` while `$isDomainPresent === undefined`; `/renew` and `/transfer` render an empty
+`div.content.checkout` whenever `data.analyzed` is falsy — a bad or unresolvable name gives a page
+with no heading and no text at all; `/domain/[name]` is the same shape behind `{#if !$domain}`. So
+`page-has-heading-one` is clean only on the settled state, which is the state the gate and the
+measurements above sample. Fixing it means giving the loading and failure branches something to
+announce, which is Task **B5**'s subject, not B2's: B5 already owns `/domain/[name]`'s unlabelled
+spinner at `:75-83` and the missing live region, and the same treatment covers the empty
+`data.analyzed` branches. Recorded here so B5 picks it up; B2 deliberately does not widen to it,
+since re-levelling a heading and inventing a loading-state heading are different changes with
+different failure modes.
+
+**Scope and residue.** B2's objective, Steps 1–4 and commit message stand. Gates after the change,
+all rerun on the committed tree with `--trace=off`:
+
+| run                                                                                                            | result              |
+| -------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `a11y.spec.ts` + `reflow.spec.ts`                                                                              | 19 passed, 2 failed |
+| — of which the 7 `has exactly one level-one heading` cases                                                     | 7 passed            |
+| — of which `reflow.spec.ts`                                                                                    | 7 passed            |
+| `dns-records` + `domain-management` + `domain-registration` + `domain-renewal` + `domain-transfer` + `profile` | 36 passed           |
+| `blockchain-ops.spec.ts`                                                                                       | 4 passed            |
+
+The only 2 failures are the `has no violations` cases on `/register` and `/renew`, each reporting
+exactly `serious aria-input-field-name x1` on `.mdc-select__anchor` — pre-existing at `df9ad0a` and
+the stated objective of **Task B3**, which is not implemented here. The suite is therefore not
+fully green after B2, and B2 does not claim it is. `lint` clean, `svelte-check` 0 errors 0 warnings
+across 1778 files, `test:unit` 213/213. `app.scss` compiles with the same 2 pre-existing `@import`
+deprecation warnings as at `df9ad0a` — the added `@use` introduces none — and emits exactly
+`.type-headline2`…`.type-headline5`.
+
+---
+
 ## Appendix A: audit method
 
 So the numbers can be reproduced or disputed.
