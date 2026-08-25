@@ -162,6 +162,7 @@ describe('Wallet Connection', () => {
 			};
 
 			global.fetch = vi.fn().mockResolvedValue({
+				ok: true,
 				json: vi.fn().mockResolvedValue(mockResponse)
 			});
 
@@ -181,6 +182,32 @@ describe('Wallet Connection', () => {
 			await expect(getAccountBalance('0x1234567890abcdef1234567890abcdef12345678')).rejects.toThrow(
 				'Network error'
 			);
+		});
+
+		describe.each([
+			['an HTTP error response', { ok: false, status: 500, json: vi.fn().mockResolvedValue({}) }],
+			[
+				'a GraphQL error payload',
+				{
+					ok: true,
+					status: 200,
+					json: vi.fn().mockResolvedValue({ errors: [{ message: 'boom' }] })
+				}
+			],
+			[
+				'a null data payload',
+				{ ok: true, status: 200, json: vi.fn().mockResolvedValue({ data: null }) }
+			]
+		])('when the balance lookup fails with %s', (_, mockResponse) => {
+			it('rejects with a clean error instead of a TypeError', async () => {
+				global.fetch = vi.fn().mockResolvedValue(mockResponse);
+
+				const { getAccountBalance } = await import('$lib/wallet');
+
+				await expect(
+					getAccountBalance('0x1234567890abcdef1234567890abcdef12345678')
+				).rejects.toThrow('Balance lookup failed');
+			});
 		});
 	});
 });

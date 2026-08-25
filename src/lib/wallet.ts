@@ -45,7 +45,14 @@ export const getAccountBalance = async (address: string) => {
 		headers
 	});
 
+	if (!response.ok) throw new Error('Balance lookup failed');
+
 	const data = await response.json();
+	// A GraphQL error payload comes back HTTP-200 with no `data`, and some
+	// backends return `{ data: null }` outright — guard so neither surfaces as a
+	// confusing TypeError from unchecked property access.
+	if (!data?.data?.account) throw new Error('Balance lookup failed');
+
 	return data.data as AccountData;
 };
 
