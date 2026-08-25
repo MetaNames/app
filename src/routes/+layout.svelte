@@ -1,20 +1,17 @@
 <script lang="ts">
 	import { dev } from '$app/environment';
-	import { onDestroy } from 'svelte';
 
 	import { inject } from '@vercel/analytics';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 	import Button from '@smui/button';
-	import Banner from '@smui/banner';
+	import Banner, { Label } from '@smui/banner';
 	import Icon from 'src/components/Icon.svelte';
-	import IconButton from '@smui/icon-button';
-	import Snackbar, { Actions, Label } from '@smui/snackbar';
+	import SnackbarHost from 'src/components/SnackbarHost.svelte';
 	import TopAppBar, { Row, Title, Section } from '@smui/top-app-bar';
 	import { Anchor } from '@smui/menu-surface';
 
-	import { config, explorerTransactionUrl } from '$lib';
-	import { alertMessage, alertTransaction } from '$lib/stores/main';
+	import { config } from '$lib';
 	import WalletConnect from 'src/routes/WalletConnectStatus.svelte';
 	import Logo from 'src/routes/Logo.svelte';
 	import Footer from 'src/routes/Footer.svelte';
@@ -25,47 +22,12 @@
 	let anchor: HTMLDivElement;
 	let anchorClasses: { [k: string]: boolean } = {};
 
-	let alertsSnackbar: Snackbar;
-	let transactionSnackbar: Snackbar;
-	let snackbarTransactionMessage = '';
-	let snackbarMessage = '';
-	let alertsTimeout: ReturnType<typeof setTimeout>;
-
 	$: contractDisabled = config.contractDisabled;
 	$: isTestnet = config.environment === 'test';
 
 	// Analytics
 	inject({ mode: dev ? 'development' : 'production' });
 	injectSpeedInsights();
-
-	// Snackbars
-	const unsubscribeAlertTransaction = alertTransaction.subscribe((transaction) => {
-		if (!transaction) return;
-
-		snackbarTransactionMessage = 'New Transaction submitted';
-		transactionSnackbar?.open();
-	});
-	const unsubscribeAlertMessage = alertMessage.subscribe((message) => {
-		if (!message) return;
-
-		if (typeof message === 'string') snackbarMessage = message;
-		else snackbarMessage = message.message;
-
-		alertsSnackbar?.open();
-
-		// One timer, restarted per message: two alerts less than 5s apart used to leave the
-		// first one's timer running, so it closed the second one early.
-		clearTimeout(alertsTimeout);
-		alertsTimeout = setTimeout(() => {
-			alertsSnackbar?.close();
-		}, 5000);
-	});
-
-	onDestroy(() => {
-		clearTimeout(alertsTimeout);
-		unsubscribeAlertTransaction();
-		unsubscribeAlertMessage();
-	});
 </script>
 
 <svelte:head>
@@ -128,31 +90,7 @@
 		<slot />
 	</main>
 
-	<Snackbar bind:this={transactionSnackbar} timeoutMs={10_000}>
-		<Label>{snackbarTransactionMessage}</Label>
-		<Actions>
-			<Button
-				on:click={() =>
-					$alertTransaction &&
-					window.open(explorerTransactionUrl($alertTransaction), '_blank', 'noopener,noreferrer')}
-				>View</Button
-			>
-			<IconButton title="Dismiss" aria-label="close">
-				<Icon icon="close" />
-			</IconButton>
-		</Actions>
-	</Snackbar>
-	<Snackbar bind:this={alertsSnackbar}>
-		<Label>{snackbarMessage}</Label>
-		<Actions>
-			{#if $alertMessage && typeof $alertMessage !== 'string' && $alertMessage.action}
-				<Button on:click={$alertMessage.action.callback}>{$alertMessage.action.label}</Button>
-			{/if}
-			<IconButton title="Dismiss" aria-label="close">
-				<Icon icon="close" />
-			</IconButton>
-		</Actions>
-	</Snackbar>
+	<SnackbarHost />
 	<Footer />
 </div>
 
