@@ -2,6 +2,8 @@ import { metaNamesSdkFactory } from '$lib/sdk';
 import { captureException } from '@sentry/sveltekit';
 import { json } from '@sveltejs/kit';
 
+export const jsonError = (status: number, message: string) => json({ error: message }, { status });
+
 export const metaNamesSdk = metaNamesSdkFactory({ cache_ttl: 0 });
 
 export const handleError = (fn: () => Promise<Response>) =>
@@ -9,10 +11,14 @@ export const handleError = (fn: () => Promise<Response>) =>
 		console.error(error);
 		captureException(error);
 
-		let message = 'Cannot handle your request at the moment. Please try again later.';
-		if (error instanceof Error) message = error.message;
+		// Expected domain errors carry an HTTP status and a client-safe message; anything
+		// else is unexpected, so neither its status nor its message may reach the wire —
+		// `error.message` can quote internal URLs, query shapes or stack details.
+		const httpError = error as { status?: unknown; body?: { message?: unknown } };
+		if (typeof httpError?.status === 'number' && typeof httpError?.body?.message === 'string')
+			return jsonError(httpError.status, httpError.body.message);
 
-		return json({ error: message }, { status: 400 });
+		return jsonError(500, 'Internal Server Error');
 	});
 
 export interface DomainProjection {
@@ -58,5 +64,3 @@ export const getStats = async (): Promise<DomainStats> => {
 		recentDomains
 	};
 };
-
-export const apiError = (message: string, status = 400) => json({ error: message }, { status });
