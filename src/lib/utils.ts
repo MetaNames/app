@@ -1,6 +1,3 @@
-import type { ITransactionIntent, ITransactionResult } from '@metanames/sdk';
-import { alertTransaction } from './stores/main';
-import { reportAndAlert } from './error';
 import { formatDistanceToNow } from 'date-fns';
 
 export const formatDate = (date: string | Date) => {
@@ -11,22 +8,6 @@ export const formatDate = (date: string | Date) => {
 	const year = date.getFullYear();
 
 	return `${day} ${month}, ${year}`;
-};
-
-export const alertTransactionAndFetchResult = async (
-	intent: ITransactionIntent
-): Promise<ITransactionResult> => {
-	const transactionHash = intent.transactionHash;
-	alertTransaction.set(transactionHash);
-
-	return await intent.fetchResult.catch(async (error) => {
-		let message = 'Something went wrong';
-		if (error && error instanceof Error) message = error.message;
-
-		await reportAndAlert(error, message);
-
-		return { transactionHash, hasError: true, errorMessage: message, eventTrace: [] };
-	});
 };
 
 // Domain records are attacker-controlled: anyone who owns a domain can set its `Uri`
