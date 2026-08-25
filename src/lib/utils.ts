@@ -1,6 +1,6 @@
 import type { ITransactionIntent, ITransactionResult } from '@metanames/sdk';
-import { alertMessage, alertTransaction } from './stores/main';
-import { reportError } from './sentry';
+import { alertTransaction } from './stores/main';
+import { reportAndAlert } from './error';
 import { formatDistanceToNow } from 'date-fns';
 
 export const formatDate = (date: string | Date) => {
@@ -23,9 +23,7 @@ export const alertTransactionAndFetchResult = async (
 		let message = 'Something went wrong';
 		if (error && error instanceof Error) message = error.message;
 
-		await reportError(error);
-		console.error(error);
-		alertMessage.set(message);
+		await reportAndAlert(error, message);
 
 		return { transactionHash, hasError: true, errorMessage: message, eventTrace: [] };
 	});

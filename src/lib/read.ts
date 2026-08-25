@@ -1,5 +1,4 @@
-import { reportError } from './sentry';
-import { alertMessage } from './stores/main';
+import { reportAndAlert } from './error';
 
 /**
  * Await a chain read and never let a failure disappear.
@@ -19,9 +18,7 @@ export async function loadOrReport<T>(
 	try {
 		return await read;
 	} catch (error) {
-		console.error(error);
-		await reportError(error);
-		alertMessage.set(failureMessage);
+		await reportAndAlert(error, failureMessage);
 
 		return undefined;
 	}
