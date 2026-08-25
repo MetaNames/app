@@ -14,13 +14,14 @@
 	import { runTransaction } from '$lib/transaction';
 	import { track } from '@vercel/analytics';
 	import { page } from '$app/stores';
+	import { trackLatest } from '$lib/race';
 
 	const isDomainPresent = writable<boolean | undefined>();
 	const isParentPresent = writable<boolean>();
 	const analyzed = writable<IDomainAnalyzed>();
 
 	let mounted = false;
-	let requestId = 0;
+	const latest = trackLatest();
 
 	// SvelteKit reuses this component when only `[name]` changes, and the parent-not-found branch
 	// below redirects to `/register/<parent>` — the same route. A name captured once would leave
@@ -62,7 +63,7 @@
 	});
 
 	async function analyzeAndCheck(name: string) {
-		const currentRequestId = ++requestId;
+		const currentId = latest.next();
 		isDomainPresent.set(undefined);
 
 		try {
@@ -77,7 +78,7 @@
 
 		const check = await fetchApiJson<DomainCheckResponse>(`/api/domains/${$analyzed.name}/check`);
 		// A redirect started a newer pass; that pass owns the stores now.
-		if (currentRequestId !== requestId) return;
+		if (!latest.check(currentId)) return;
 
 		if ('error' in check) {
 			alertMessage.set(check.error);

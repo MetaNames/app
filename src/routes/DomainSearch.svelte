@@ -7,6 +7,8 @@
 	import IconButton from '@smui/icon-button';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { loadOrReport } from '$lib/read';
+	import { onDestroy } from 'svelte';
+	import { trackLatest } from '$lib/race';
 	import { goto } from '$app/navigation';
 	import Icon from 'src/components/Icon.svelte';
 
@@ -17,7 +19,7 @@
 	let nameSearched: string = '';
 	let isLoading: boolean = false;
 	let debounceTimer: ReturnType<typeof setTimeout>;
-	let requestId = 0;
+	const latest = trackLatest();
 
 	$: errors = invalid ? validator.getErrors() : [];
 	$: invalid = domainName !== '' && !validator.validate(domainName, { raiseError: false });
@@ -41,7 +43,7 @@
 			return goto(url);
 		}
 
-		const currentRequestId = ++requestId;
+		const currentId = latest.next();
 		nameSearched = domainName.toLocaleLowerCase();
 		isLoading = true;
 
@@ -52,7 +54,7 @@
 			'Could not search for that domain. Please try again.'
 		);
 
-		if (currentRequestId === requestId) {
+		if (latest.check(currentId)) {
 			domain = result;
 			isLoading = false;
 		}
@@ -61,6 +63,8 @@
 	async function submit() {
 		await search(true);
 	}
+
+	onDestroy(() => clearTimeout(debounceTimer));
 </script>
 
 <div class="search-container">

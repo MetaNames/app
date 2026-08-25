@@ -10,6 +10,7 @@
 	import { onMount } from 'svelte';
 
 	import { runTransaction } from '$lib/transaction';
+	import { trackLatest } from '$lib/race';
 	import Chip from 'src/components/Chip.svelte';
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
@@ -18,14 +19,19 @@
 	export let parentDomainName: string;
 
 	let parentDomain: DomainModel | null;
+	// Defensive only: this lookup happens once per mount, so there is no realistic in-flight
+	// race today — the guard exists so a future re-trigger cannot let a stale response through.
+	const latest = trackLatest();
 
 	$: parentLink = `/domain/${parentDomainName}`;
 
 	onMount(async () => {
+		const currentId = latest.next();
 		const found = await loadOrReport(
 			$metaNamesSdk.domainRepository.find(parentDomainName),
 			'Could not load the parent domain. Please try again.'
 		);
+		if (!latest.check(currentId)) return;
 		// Only a confirmed absence (`null`) should bounce to the parent's registration page. On
 		// `undefined` the lookup failed and we do not know either way, so stay put.
 		if (found === undefined) return;

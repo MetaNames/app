@@ -5,6 +5,7 @@
 	import { walletAddress, walletConnected } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { loadOrReport } from '$lib/read';
+	import { trackLatest } from '$lib/race';
 
 	import Paper from '@smui/paper';
 	import DomainsTable from './DomainsTable.svelte';
@@ -17,7 +18,7 @@
 	let domainsFiltered: Domain[] = [];
 	let loaded = false;
 	let search = '';
-	let requestId = 0;
+	const latest = trackLatest();
 
 	$: domainsFiltered = filterDomainsByName(domains, search);
 
@@ -27,14 +28,14 @@
 
 			// Switching wallets starts a second lookup while the first is in flight; without
 			// this guard a slower earlier response overwrites the newer owner's domains.
-			const currentRequestId = ++requestId;
+			const currentId = latest.next();
 			loaded = false;
 
 			const owned = await loadOrReport(
 				$metaNamesSdk.domainRepository.findByOwner(address),
 				'Could not load your domains. Please try again.'
 			);
-			if (currentRequestId !== requestId) return;
+			if (!latest.check(currentId)) return;
 
 			// Even a failed read has to stop the table's progress bar; the snackbar carries why.
 			domains = owned ?? [];

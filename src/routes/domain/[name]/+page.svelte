@@ -11,9 +11,10 @@
 	import { alertMessage, refresh } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { loadOrReport } from '$lib/read';
+	import { trackLatest } from '$lib/race';
 
 	let domain = writable<DomainModel | undefined>();
-	let requestId = 0;
+	const latest = trackLatest();
 	let mounted = false;
 
 	// SvelteKit reuses this component when only `[name]` changes, so the name has to be read
@@ -45,14 +46,14 @@
 	}
 
 	async function loadDomain(name: string) {
-		const currentRequestId = ++requestId;
+		const currentId = latest.next();
 		domain.set(undefined);
 
 		const domainResponse = await loadOrReport(
 			$metaNamesSdk.domainRepository.find(name),
 			'Could not load the domain. Please try again.'
 		);
-		if (currentRequestId !== requestId) return;
+		if (!latest.check(currentId)) return;
 
 		if (domainResponse) return domain.set(domainResponse);
 
