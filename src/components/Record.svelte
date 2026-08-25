@@ -59,10 +59,10 @@
 		aria-labelledby="confirmation-title"
 		aria-describedby="confirmation-content"
 	>
-		<Title id="simple-title">Confirm action</Title>
-		<Content id="simple-content">Do you really want to remove the record?</Content>
+		<Title id="confirmation-title">Confirm action</Title>
+		<Content id="confirmation-content">Do you really want to remove the record?</Content>
 		<Actions>
-			<Button>
+			<Button on:click={() => (dialogOpen = false)}>
 				<Label>No</Label>
 			</Button>
 			<Button on:click={destroy}>

@@ -6,7 +6,7 @@
 	import Select, { Option } from '@smui/select';
 	import Button from '@smui/button';
 	import IconButton from '@smui/icon-button';
-	import { compareByKey } from '$lib/sort';
+	import { paginateSorted } from '$lib/sort';
 
 	export let domains: Domain[] = [];
 	export let loaded = false;
@@ -19,18 +19,11 @@
 	$: domainsLength = domains.length;
 	$: start = currentPage * rowsPerPage;
 	$: end = Math.min(start + rowsPerPage, domainsLength);
-	$: slice = domains.slice(start, end);
+	// Sorting derives a fresh page from the prop; the prop itself is never mutated.
+	$: slice = paginateSorted(domains, sort, sortDirection, currentPage, rowsPerPage);
 	$: lastPage = Math.max(Math.ceil(domainsLength / rowsPerPage) - 1, 0);
 	$: if (currentPage > lastPage) {
 		currentPage = lastPage;
-	}
-	$: if (domainsLength > 0) {
-		handleSort();
-	}
-
-	function handleSort() {
-		domains.sort(compareByKey(sort, sortDirection));
-		domains = domains;
 	}
 </script>
 
@@ -38,7 +31,9 @@
 	sortable
 	bind:sort
 	bind:sortDirection
-	on:SMUIDataTable:sorted={handleSort}
+	on:SMUIDataTable:sorted={() => {
+		/* sort/sortDirection are bind:bound — reactive `slice` recomputes on its own */
+	}}
 	table$aria-label="Domain list"
 	class="w-100"
 >

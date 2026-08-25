@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { RecordRepository } from '@metanames/sdk';
 	import { RecordClassEnum } from '@metanames/sdk';
+	import { createEventDispatcher } from 'svelte';
 
 	import { getRecordClassFrom, getValidator } from '$lib';
 	import { runTransaction } from '$lib/transaction';
@@ -21,21 +22,28 @@
 	let selectedRecordClass: string | undefined;
 	let newRecordValue: string = '';
 	let newRecordSubmitted = false;
+	// Locally created records (class -> value), layered over the prop.
+	// The prop itself is never mutated.
+	let createdRecords: Record<string, string> = {};
 
+	// Validator is declared first so dependents below always see it.
+	$: validator = selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined;
 	$: canEdit = $walletAddress === ownerAddress;
 	$: newRecordClass = selectedRecordClass && getRecordClassFrom(selectedRecordClass);
-	$: existingRecordClasses = Object.keys(records);
+	$: allRecords = { ...records, ...createdRecords };
+	$: existingRecordClasses = Object.keys(allRecords);
 	$: unusedRecordsClasses = Object.values(RecordClassEnum).filter(
-		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(klass)
+		(klass) => typeof klass === 'string' && !existingRecordClasses.includes(String(klass))
 	);
 	$: selectRecordInvalid = newRecordSubmitted && selectedRecordClass === '';
 	$: recordValueInvalid =
 		!!newRecordClass &&
 		!validator?.validate({ data: newRecordValue, class: newRecordClass }, { raiseError: false });
 	$: recordValueErrors = validator && recordValueInvalid ? validator.getErrors() : [];
-	$: validator = selectedRecordClass !== undefined ? getValidator(selectedRecordClass) : undefined;
 	$: newRecordValueMaxLength =
 		validator && 'maxLength' in validator.rules ? (validator.rules['maxLength'] as number) : 64;
+
+	const dispatch = createEventDispatcher<{ created: string }>();
 
 	async function createRecord() {
 		if (selectedRecordClass === undefined) selectedRecordClass = '';
@@ -46,7 +54,10 @@
 		const recordClass = getRecordClassFrom(selectedRecordClass);
 		const transactionIntent = await repository.create({ class: recordClass, data: newRecordValue });
 		await runTransaction(transactionIntent, 'Failed to create record.');
-		records[selectedRecordClass] = newRecordValue;
+		// Immutable local update instead of mutating the prop; parent is notified
+		// so it can refresh its own copy of the records when it needs to.
+		createdRecords = { ...createdRecords, [recordClass]: newRecordValue };
+		dispatch('created', String(recordClass));
 		selectedRecordClass = undefined;
 		newRecordValue = '';
 		newRecordSubmitted = false;
@@ -55,12 +66,12 @@
 
 <div class="records">
 	<div>
-		{#if !records || Object.keys(records).length === 0}
+		{#if !allRecords || Object.keys(allRecords).length === 0}
 			<p class="no-records">No records found</p>
 		{:else}
-			{#each Object.keys(records) as key (key)}
+			{#each Object.keys(allRecords) as key (key)}
 				<div class="mt-1">
-					<RecordComponent {repository} klass={key} value={records[key]} editMode={true} />
+					<RecordComponent {repository} klass={key} value={allRecords[key]} editMode={true} />
 				</div>
 			{/each}
 		{/if}

@@ -11,3 +11,18 @@ export const compareByKey =
 
 		return sign * (Number(aVal) - Number(bVal));
 	};
+
+/**
+ * Sort a copy of `items` by `sortKey`/`direction` and return the page slice.
+ * Never mutates the input array (the caller keeps ownership of its prop).
+ */
+export const paginateSorted = <T>(
+	items: T[],
+	sortKey: keyof T,
+	direction: SortDirection,
+	page: number,
+	rowsPerPage: number
+): T[] => {
+	const start = page * rowsPerPage;
+	return [...items].sort(compareByKey(sortKey, direction)).slice(start, start + rowsPerPage);
+};
