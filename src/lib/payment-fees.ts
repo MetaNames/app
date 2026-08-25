@@ -32,3 +32,19 @@ export function assertSufficientBalance(
 ): void {
 	if (Number(balance) < totalFees) throw new InsufficientBalanceError(coin);
 }
+
+/**
+ * Staleness guard for async fee responses in DomainPayment. A resolution may
+ * only write state when its request is still the newest one: same generation
+ * (Retry bumps it) and same coin (a token switch starts a new request). A slow
+ * older fetch resolving late must never overwrite fresher state — otherwise a
+ * payment card could show, and let the user approve against, another coin's fees.
+ */
+export function isStaleFeeResponse(
+	requestGeneration: number,
+	currentGeneration: number,
+	requestCoin: string,
+	currentCoin: string
+): boolean {
+	return requestGeneration !== currentGeneration || requestCoin !== currentCoin;
+}

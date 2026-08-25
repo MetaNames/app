@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { InsufficientBalanceError } from './error';
-import { assertSufficientBalance, computeTotalFees, formatTotalFees } from './payment-fees';
+import {
+	assertSufficientBalance,
+	computeTotalFees,
+	formatTotalFees,
+	isStaleFeeResponse
+} from './payment-fees';
 
 /**
  * Characterization tests for the fee math that used to live inline in
@@ -77,5 +82,30 @@ describe('assertSufficientBalance', () => {
 
 	it('allows a zero fee regardless of balance', () => {
 		expect(() => assertSufficientBalance('0', 0, 'ETH')).not.toThrow();
+	});
+});
+
+describe('isStaleFeeResponse', () => {
+	// Guards the DomainPayment race: a slow older fetch (Retry or coin switch)
+	// must not overwrite the state written by a newer request.
+	it('accepts a response from the newest request for the current coin', () => {
+		expect(isStaleFeeResponse(3, 3, 'ETH', 'ETH')).toBe(false);
+	});
+
+	it('rejects a response from an older generation (superseded Retry)', () => {
+		expect(isStaleFeeResponse(2, 3, 'ETH', 'ETH')).toBe(true);
+	});
+
+	it('rejects a response for a different coin than the one now selected', () => {
+		expect(isStaleFeeResponse(1, 1, 'ETH', 'MATIC')).toBe(true);
+	});
+
+	it('rejects when both generation and coin have moved on', () => {
+		expect(isStaleFeeResponse(2, 4, 'ETH', 'MATIC')).toBe(true);
+	});
+
+	it('does not confuse generation 0 with an unset guard', () => {
+		expect(isStaleFeeResponse(0, 0, 'ETH', 'ETH')).toBe(false);
+		expect(isStaleFeeResponse(0, 1, 'ETH', 'ETH')).toBe(true);
 	});
 });

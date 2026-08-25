@@ -6,7 +6,12 @@
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import type { BYOC } from '@metanames/sdk';
 	import { InsufficientBalanceError } from '$lib/error';
-	import { assertSufficientBalance, computeTotalFees, formatTotalFees } from '$lib/payment-fees';
+	import {
+		assertSufficientBalance,
+		computeTotalFees,
+		formatTotalFees,
+		isStaleFeeResponse
+	} from '$lib/payment-fees';
 
 	import Button, { Label } from '@smui/button';
 	import Icon from 'src/components/Icon.svelte';
@@ -33,35 +38,47 @@
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
 
-	let feesRetryKey = 0;
-	function reloadFees() {
-		feesError = false;
-		feesRetryKey += 1;
-	}
+	// Bumped by Retry. Together with $selectedCoin it identifies the newest fee
+	// request; responses from older generations/coins are dropped as stale.
+	let feesGeneration = 0;
 
-	// Keyed on feesRetryKey (via the always-true guard) so the Retry button re-triggers the fetch.
-	$: loadFees =
-		browser && feesRetryKey >= 0
-			? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${$selectedCoin}`)
-			: Promise.resolve(null);
-
-	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
-	$: yearsLabel = years === 1 ? 'year' : 'years';
-
+	let loadFees: Promise<DomainFeesResponse | ApiError | null>;
 	let fees: DomainFeesResponse | ApiError | null = null;
 	let feesError = false;
 
-	// `loadFees` is a plain Promise, not a store — track it by chaining instead of
-	// `$loadFees` auto-subscription. Rejections surface through `{#await}`'s `{:catch}`.
-	$: loadFees.then(
-		(result: Awaited<typeof loadFees>) => {
-			fees = result;
-			feesError = false;
-		},
-		() => {
-			feesError = true;
-		}
-	);
+	function reloadFees() {
+		feesError = false;
+		feesGeneration += 1;
+	}
+
+	// Re-runs on Retry (generation bump) and coin switches. The generation/coin
+	// pair captured before .then guards against a slow older request resolving
+	// after a newer one and overwriting fresher state with the wrong coin's
+	// fees. `fees` is dropped up front so no stale total stays visible — or
+	// approvable via approveFees() — while a reload is in flight.
+	$: {
+		const generation = feesGeneration;
+		const coin = $selectedCoin;
+		fees = null;
+		loadFees = browser
+			? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${coin}`).then(
+					(result) => {
+						if (isStaleFeeResponse(generation, feesGeneration, coin, $selectedCoin)) return null;
+						fees = result;
+						feesError = false;
+						return result;
+					},
+					() => {
+						if (isStaleFeeResponse(generation, feesGeneration, coin, $selectedCoin)) return null;
+						feesError = true;
+						return null;
+					}
+				)
+			: Promise.resolve(null);
+	}
+
+	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
+	$: yearsLabel = years === 1 ? 'year' : 'years';
 
 	// Pure derivation — no store writes during render.
 	$: totalFees = fees && 'symbol' in fees ? computeTotalFees(fees.feesLabel, years) : 0;
@@ -155,6 +172,7 @@
 				{#await loadFees}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 				{:then result}
+					<!-- Same error + Retry markup as {:catch}; kept inline because Svelte 4 has no snippets. -->
 					{#if feesError || (result && 'error' in result)}
 						<p class="fees-error" data-testid="fees-error" role="alert">
 							Could not load the fee breakdown. Check your connection and try again.
@@ -182,6 +200,8 @@
 						</div>
 					{/if}
 				{:catch}
+					<!-- Duplicated error + Retry block: Svelte 4 has no {#snippet}, and an
+						inline component would need every prop threaded through. -->
 					<p class="fees-error" data-testid="fees-error" role="alert">
 						Could not load the fee breakdown. Check your connection and try again.
 					</p>
@@ -247,10 +267,29 @@
 		// gives them 179px. 12vw reaches 80px at 667px, so from there up the padding — and the
 		// desktop layout — is byte-identical to what it was.
 		padding: 0 clamp(0.5rem, 12vw, 5rem);
-	}
 
-	.fees .title {
-		font-weight: bold;
+		.title {
+			font-weight: bold;
+		}
+
+		.row {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			width: 100%;
+		}
+
+		@media (max-width: 768px) {
+			.row {
+				flex-direction: column;
+				align-items: center;
+				padding-top: 1rem;
+			}
+
+			.title {
+				margin-bottom: 0;
+			}
+		}
 	}
 
 	.fees .fees-error {
@@ -261,25 +300,6 @@
 
 	.fees :global(.retry-button) {
 		margin-top: 0.75rem;
-	}
-
-	.fees .row {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		width: 100%;
-	}
-
-	.fees .title {
-		font-weight: bold;
-	}
-
-	@media (max-width: 768px) {
-		.fees .row {
-			flex-direction: column;
-			align-items: center;
-			padding-top: 1rem;
-		}
 	}
 
 	.submit {
