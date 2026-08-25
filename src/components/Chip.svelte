@@ -18,8 +18,12 @@
 
 	let resetIconTimeout: ReturnType<typeof setTimeout>;
 
-	onDestroy(() => clearTimeout(resetIconTimeout));
+	// The failure path is announced already — it goes through `alertMessage` into the snackbar,
+	// whose surface is a `role="status"` region. Success had no announcement at all: the only
+	// signal was the icon swapping to a checkmark, which nothing reads aloud. The status ping
+	// in the markup below carries the confirmation instead.
 
+	onDestroy(() => clearTimeout(resetIconTimeout));
 	const action = () => {
 		if (type === 'url') {
 			if (openInNewTab) window.open(href, '_blank', 'noopener,noreferrer');
@@ -53,6 +57,7 @@
 		</div>
 	</Label>
 	{#if $icon === 'done'}
+		<span class="sr-only" role="status">Copied to the clipboard</span>
 		<Icon icon="done" align="right" />
 	{:else if $icon === 'open-in-new'}
 		<Icon icon="open-in-new" align="right" />

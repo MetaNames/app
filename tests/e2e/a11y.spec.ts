@@ -81,6 +81,48 @@ test('an invalid recipient address is programmatically invalid, not just red', a
 	await expect(input).toHaveAttribute('aria-invalid', 'true');
 });
 
+// The register route's loading spinner used to be a bare CircularProgress — a silent animation.
+// It now sits in a `role="status"` region that names what is being waited for, the same wrapper
+// /domain gives its own spinner. Asserted on the unsettled branch on purpose: this test judges
+// the wait, not the form, so it must not wait for the form.
+test('the register page announces its loading state', async ({ page }) => {
+	await page.goto(`/register/zzunregistered${Date.now()}`, { waitUntil: 'domcontentloaded' });
+
+	const spinner = page.locator('div[role="status"]');
+	await expect(spinner).toBeVisible({ timeout: 15000 });
+	// The region itself carries the name — not its animated child, which comes and goes.
+	await expect(spinner).toHaveAttribute('aria-label', /Loading/);
+});
+
+// Copy success was a purely visual checkmark; copy failure was already announced through the
+// snackbar's role="status" surface. The success ping is a status element inside the chip, so
+// grantClipboardPermissions + click has to make it appear. Skipped when the browser context
+// cannot be granted clipboard access rather than red for an environment reason.
+test('a successful chip copy is announced', async ({ browser }) => {
+	const ctx = await browser.newContext();
+	let granted = true;
+	try {
+		await ctx.grantPermissions(['clipboard-read', 'clipboard-write'], {
+			origin: process.env.E2E_ORIGIN || 'http://localhost:4173'
+		});
+	} catch {
+		granted = false;
+	}
+	test.skip(!granted, 'clipboard permissions unsupported in this environment');
+
+	const page = await ctx.newPage();
+	await page.goto('/domain/test.mpc', { waitUntil: 'networkidle' });
+
+	// The 'link' chip is type="text" even though it carries an href (see src/lib/chips.ts), so
+	// clicking it copies instead of navigating — the one chip guaranteed to take the copy path.
+	const chip = page.locator('button.chip:has-text("link")').first();
+	await expect(chip).toBeVisible({ timeout: 15000 });
+	await chip.click();
+
+	await expect(chip.locator('[role="status"]')).toHaveText('Copied to the clipboard');
+	await ctx.close();
+});
+
 /**
  * The focus ring as a sighted keyboard user meets it: how thick, and how far it stands off the
  * thing behind it. MDC paints most controls transparent, so the backdrop to compare against is

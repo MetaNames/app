@@ -104,7 +104,15 @@
 
 <div class="content checkout" data-testid="checkout-content">
 	{#if $isDomainPresent === undefined}
-		<CircularProgress style="height: 32px; width: 32px;" indeterminate />
+		<!-- The same role="status" wrapper /domain gives its spinner: the region carries the
+		     accessible name, so the wait is announced instead of being a silent animation. -->
+		<div role="status">
+			<CircularProgress
+				style="height: 32px; width: 32px;"
+				indeterminate
+				aria-label="Loading the registration form"
+			/>
+		</div>
 	{:else}
 		<h1 class="mt-0 type-headline2">Register</h1>
 		{#if $isParentPresent && parentDomainName}
