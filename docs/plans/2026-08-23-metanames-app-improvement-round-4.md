@@ -3310,6 +3310,102 @@ and §3.2's numbers are left as written. Batch C's other exit criteria are unaff
 
 ---
 
+### E11: C2 — the constructor re-normalizes, so the plan's `domainFromJSON` double-reverses subdomains
+
+**What the plan asserted.** C2's "Why" locates exactly one thing that a JSON round trip damages —
+"dates as **ISO strings**" — and Step 2 prices the fix accordingly: a type
+`DomainJSON = Omit<IDomain, 'createdAt' | 'expiresAt'> & { createdAt: string; expiresAt?: string }`,
+and a function `domainFromJSON` whose whole body is a spread with the two dates revived:
+
+```typescript
+return new Domain({
+	...json,
+	createdAt: new Date(json.createdAt),
+	expiresAt: json.expiresAt === undefined ? undefined : new Date(json.expiresAt)
+});
+```
+
+Step 3 expects **4 passed**, against a `PAYLOAD` fixture of `test.mpc` with no `parentId`.
+
+**What was actually true.** Two further fields do not survive the spread, and both fail silently.
+
+_The name is normalized on the way in and served already-normalized on the way out._ The
+constructor (`node_modules/@metanames/sdk/dist/models/domain.js:18-30`) runs the name through
+`DomainValidator#normalize(name, { reverse: true })` and re-appends the TLD; `normalize`
+(`dist/validators/domain-validator.js:37-49`) strips the TLD, **reverses the labels**, then
+`toUnicode`s. Line 28 gives `parentId` the same treatment, with the domain's own TLD appended.
+`toJSON()` (lines 56-67) hands back `this.name` and `this.parentId` — constructor output. So
+`/api/domains/[name]`, which answers `json({ domain: domain.toJSON() })`
+(`src/routes/api/domains/[name]/+server.ts:8`), puts an already-reversed name on the wire, and
+feeding it back to the constructor reverses a second time. Measured against the shipped SDK:
+
+```console
+$ node -e '<construct, toJSON, JSON round-trip, then the plan verbatim>'
+orig.name        = alice.sub.meta | parentId = sub.meta
+wire             = {"name":"alice.sub.meta",…,"parentId":"sub.meta",…}
+plan verbatim    = sub.alice.meta  | parentId = sub.meta
+deep.name        = alice.sub.x.meta | parentId = alice.sub.meta
+deep plan        = x.sub.alice.meta | parentId = sub.alice.meta
+```
+
+The plan's function returns a `Domain` naming a **different domain** than the one the API was asked
+for, and `nameWithoutTLD` — the value C3's `h1` renders — is wrong with it. Only the single-label
+case is safe, because reversing one label is the identity. `parentId` survives at one level for the
+same accidental reason (`sub.meta` → `sub.meta`) and breaks at two (`alice.sub.meta` →
+`sub.alice.meta`), so a fix that pre-reverses the name alone is still wrong for a subdomain's parent.
+
+_The absent-expiry guard tests the wrong absence._ `expiresAt` is optional on `IDomain`, and
+`Domain.svelte:121` renders `domain.expiresAt ? formatDate(domain.expiresAt) : 'Never'`. The plan's
+`json.expiresAt === undefined` catches a dropped key but not an explicit `null`:
+
+```console
+new Date(null)      = 1970-01-01T00:00:00.000Z
+new Date(undefined) = Invalid Date
+plan, expiresAt:null → Thu Jan 01 1970 00:00:00 GMT+0000
+```
+
+An epoch `Date` is truthy, so the page prints a formatted **1 January 1970** where it should print
+"Never" — a wrong answer wearing the shape of a right one, unlike the `Invalid Date` the `undefined`
+branch exists to avoid. This endpoint cannot emit that `null` today (`json()` is `JSON.stringify`,
+which drops `undefined` keys), so the shipped handling is tolerance of a shape any other JSON
+producer may hand over, not a fix for an observed payload; it is recorded here as such.
+
+**Root cause of the mistake.** The fixture chose the one name shape that cannot show the defect.
+`test.mpc` is single-label and carries no `parentId`, so all four planned tests pass against an
+implementation that is wrong for every subdomain — the test list and the implementation share one
+blind spot, and Step 3's "**4 passed**" would have confirmed it.
+
+**What was done instead.** `c0a0a3d` ships the same objective under different names, because the
+shape of the fix changed:
+
+| plan                                             | shipped                                               | why                                                                                  |
+| ------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `domainFromJSON`                                 | `reviveDomain`                                        | it no longer just parses JSON; it undoes a normalization                             |
+| `DomainJSON = Omit<IDomain, …> & { … }`          | standalone `interface DomainDto`                      | an `Omit` cannot widen `expiresAt`/`parentId` to `\| null`, nor narrow record values |
+| —                                                | `denormalize(name, tld)`                              | pre-reverses name and `parentId` so the constructor's pass is a no-op                |
+| `expiresAt === undefined ? undefined : new Date` | `dto.expiresAt ? new Date(dto.expiresAt) : undefined` | absent **and** `null` both mean "no expiry"                                          |
+| 4 tests                                          | 10 tests                                              | the three defects above need cases the fixture could not express                     |
+
+`DomainDto.records` is `Record<string, string>` rather than the SDK's
+`Records = Record<string, string | Buffer>` (`dist/interface.d.ts:18`): records are built by
+`extractRecords` with `extractedRecords[key] = data.toString()`
+(`dist/partisia-name-system.js:138`), so a `Buffer` never reaches the wire.
+
+The six tests beyond the plan's four are the evidence, not decoration: a subdomain that must not
+re-reverse (`sub.alice.meta`, `parentId: 'alice.meta'`), an explicit `expiresAt: null`, an absent
+`parentId`, a name arriving without its TLD (the suffix strip must not eat the last label), the
+plain fields carried across, and a `toJSON` → `reviveDomain` → `toJSON` round trip that pins the
+whole contract at once.
+
+**Scope.** C2's objective and its two files stand; its Step 1 fixture and test list, its Step 2 body
+and type, and its "4 passed" are superseded above. Per errata policy item 5, C2's text is left as
+written. Verified: `npx vitest run src/lib/domain-dto.test.ts` → **10 passed**; `npm run test:unit`
+→ **243 passed** across 29 files (the plan's expected 217 was written at `003f301`; `5189dcc` has
+added unit tests since). Per E10, `reviveDomain` currently has no production caller and is kept
+deliberately.
+
+---
+
 ## Appendix A: audit method
 
 So the numbers can be reproduced or disputed.
