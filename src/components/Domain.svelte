@@ -7,15 +7,8 @@
 	import Tab, { Label } from '@smui/tab';
 	import TabBar from '@smui/tab-bar';
 
-	import {
-		explorerAddressUrl,
-		formatDate,
-		isValidURL,
-		profileRecords,
-		removeHTTPIfPresent,
-		shortLinkUrl,
-		socialRecords
-	} from '$lib';
+	import { buildProfileChips, buildSocialChips, type ChipSpec } from '$lib/chips';
+	import { explorerAddressUrl, formatDate, profileRecords, socialRecords } from '$lib';
 	import { DomainTab } from '$lib/types';
 	import Chip from 'src/components/Chip.svelte';
 	import Records from 'src/components/Records.svelte';
@@ -37,6 +30,20 @@
 		Object.entries(domain.records).map(([key, value]) => [key, String(value)])
 	);
 	$: ownerBrowserUrl = explorerAddressUrl(domain.owner);
+	// One declarative spec list per chip section, consumed by a single {#each} below.
+	// Derived reactively, not once: the page reuses this component across domains.
+	$: profileChips = buildProfileChips(domain.nameWithoutTLD, domain.records, profileRecords);
+	$: socialChips = buildSocialChips(domain.records, socialRecords);
+
+	// Chip takes `href: string | undefined` and derives its `type` (`href ? 'url' :
+	// 'text'`) from it, so an absent href must not be passed at all — an explicit
+	// `undefined` would clobber the default and flip linked chips to copy behavior.
+	// Spreading only what a spec actually carries keeps each chip's props identical to
+	// what the old nested conditionals passed by hand.
+	const chipExtras = (chip: ChipSpec) => ({
+		...(chip.href ? { href: chip.href } : {}),
+		...(chip.type ? { type: chip.type } : {})
+	});
 
 	let tabs: Array<DomainTab> = [DomainTab.details];
 	if (!isTld) tabs.push(DomainTab.settings);
@@ -67,40 +74,15 @@
 						<div class="section">
 							<h2 class="mt-0 type-headline5">Profile</h2>
 							<div class="chips">
-								<Chip
-									class="mt-1 mr-1"
-									type="text"
-									label="link"
-									value={removeHTTPIfPresent(shortLinkUrl(domain.nameWithoutTLD))}
-									href={shortLinkUrl(domain.nameWithoutTLD)}
-									ellipsis
-								/>
-								{#if hasProfileRecords}
-									{#each profileRecords as klass}
-										{#if domain.records[klass]}
-											{#if klass === 'Uri' && isValidURL(domain.records[klass].toString())}
-												<Chip
-													class="mt-1 mr-1"
-													label={klass}
-													value={removeHTTPIfPresent(domain.records[klass]?.toString() ?? '')}
-													href={domain.records[klass].toString()}
-												/>
-											{:else if klass === 'Price'}
-												<Chip
-													class="mt-1 mr-1"
-													label={klass}
-													value={domain.records[klass]?.toString() + '$'}
-												/>
-											{:else}
-												<Chip
-													class="mt-1 mr-1"
-													label={klass}
-													value={domain.records[klass]?.toString()}
-												/>
-											{/if}
-										{/if}
-									{/each}
-								{/if}
+								{#each profileChips as chip (chip.label)}
+									<Chip
+										class="mt-1 mr-1"
+										label={chip.label}
+										value={chip.value}
+										{...chipExtras(chip)}
+										ellipsis={chip.ellipsis ?? false}
+									/>
+								{/each}
 							</div>
 						</div>
 						<div class={`section ${hasProfileRecords ? 'mt-3' : ''}`}>
@@ -134,14 +116,8 @@
 							<div class="section mt-3">
 								<h2 class="type-headline5">Social</h2>
 								<div class="chips">
-									{#each socialRecords as klass}
-										{#if domain.records[klass]}
-											<Chip
-												class="mt-1 mr-1"
-												label={klass}
-												value={domain.records[klass]?.toString() ?? ''}
-											/>
-										{/if}
+									{#each socialChips as chip (chip.label)}
+										<Chip class="mt-1 mr-1" label={chip.label} value={chip.value} />
 									{/each}
 								</div>
 							</div>
