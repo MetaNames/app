@@ -6,9 +6,9 @@
 	import { metaNamesSdk, selectedCoin } from '$lib/stores/sdk';
 	import type { BYOC } from '@metanames/sdk';
 	import { InsufficientBalanceError } from '$lib/error';
-	import { writable } from 'svelte/store';
+	import { assertSufficientBalance, computeTotalFees, formatTotalFees } from '$lib/payment-fees';
 
-	import { Label } from '@smui/button';
+	import Button, { Label } from '@smui/button';
 	import Icon from 'src/components/Icon.svelte';
 	import Card, { Content } from '@smui/card';
 	import CircularProgress from '@smui/circular-progress';
@@ -16,7 +16,7 @@
 	import Select, { Option } from '@smui/select';
 	import ConnectionRequired from 'src/components/ConnectionRequired.svelte';
 	import LoadingButton from 'src/components/LoadingButton.svelte';
-	import type { DomainFeesResponse, DomainPaymentParams } from '$lib/types';
+	import type { ApiError, DomainFeesResponse, DomainPaymentParams } from '$lib/types';
 	import { fetchApiJson } from '$lib/api';
 
 	export let domainName: string;
@@ -32,20 +32,39 @@
 		? domainName.replace(`.${tld}`, '')
 		: domainName;
 	$: charsLabel = nameWithoutTLD.length > 1 ? 'chars' : 'char';
-	$: loadFees = browser
-		? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${$selectedCoin}`)
-		: Promise.resolve(null);
+
+	let feesRetryKey = 0;
+	function reloadFees() {
+		feesError = false;
+		feesRetryKey += 1;
+	}
+
+	// Keyed on feesRetryKey (via the always-true guard) so the Retry button re-triggers the fetch.
+	$: loadFees =
+		browser && feesRetryKey >= 0
+			? fetchApiJson<DomainFeesResponse>(`/api/register/${domainName}/fees/${$selectedCoin}`)
+			: Promise.resolve(null);
+
 	$: nameLength = nameWithoutTLD.length > 6 ? '6+' : nameWithoutTLD.length;
 	$: yearsLabel = years === 1 ? 'year' : 'years';
 
-	const totalFees = writable(0);
+	let fees: DomainFeesResponse | ApiError | null = null;
+	let feesError = false;
 
-	const totalFeesLabel = (label: number, years: number) => {
-		const total = label * years;
-		totalFees.set(total);
+	// `loadFees` is a plain Promise, not a store — track it by chaining instead of
+	// `$loadFees` auto-subscription. Rejections surface through `{#await}`'s `{:catch}`.
+	$: loadFees.then(
+		(result: Awaited<typeof loadFees>) => {
+			fees = result;
+			feesError = false;
+		},
+		() => {
+			feesError = true;
+		}
+	);
 
-		return Math.ceil(total * 10000) / 10000;
-	};
+	// Pure derivation — no store writes during render.
+	$: totalFees = fees && 'symbol' in fees ? computeTotalFees(fees.feesLabel, years) : 0;
 
 	function addYears(amount: number) {
 		if (years + amount < 1) return;
@@ -75,8 +94,7 @@
 		const address = $walletAddress as string;
 		const account = await getAccountBalance(address);
 		const accountCoin = account.account.displayCoins.find((coin) => coin.symbol === $selectedCoin);
-		if (!accountCoin || Number(accountCoin.balance) < $totalFees)
-			throw new InsufficientBalanceError($selectedCoin);
+		assertSufficientBalance(accountCoin ? accountCoin.balance : 0, totalFees, $selectedCoin);
 
 		const transactionIntent = await $metaNamesSdk.domainRepository.approveMintFees(
 			domainName,
@@ -136,17 +154,45 @@
 				<p class="title text-center" data-testid="price-breakdown-label">Price breakdown</p>
 				{#await loadFees}
 					<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-				{:then fees}
-					{#if fees && 'symbol' in fees}
+				{:then result}
+					{#if feesError || (result && 'error' in result)}
+						<p class="fees-error" data-testid="fees-error" role="alert">
+							Could not load the fee breakdown. Check your connection and try again.
+						</p>
+						<Button
+							class="retry-button"
+							variant="raised"
+							data-testid="retry-fees"
+							on:click={reloadFees}
+						>
+							<Label>Retry</Label>
+						</Button>
+					{:else if result === null}
+						<p class="fees-error" data-testid="fees-unavailable" role="alert">
+							Fees are not available yet.
+						</p>
+					{:else if !('error' in result) && 'symbol' in result}
 						<div class="row">
 							<span>1 year registration for <b>{nameLength} {charsLabel}</b></span>
-							<span>{fees.feesLabel} {fees.symbol}</span>
+							<span>{result.feesLabel} {result.symbol}</span>
 						</div>
 						<div class="row" data-testid="total-fees">
 							<span>Total (excluding network fees)</span>
-							<span><b>{totalFeesLabel(fees.feesLabel, years)}</b> {fees.symbol}</span>
+							<span><b>{formatTotalFees(totalFees)}</b> {result.symbol}</span>
 						</div>
 					{/if}
+				{:catch}
+					<p class="fees-error" data-testid="fees-error" role="alert">
+						Could not load the fee breakdown. Check your connection and try again.
+					</p>
+					<Button
+						class="retry-button"
+						variant="raised"
+						data-testid="retry-fees"
+						on:click={reloadFees}
+					>
+						<Label>Retry</Label>
+					</Button>
 				{/await}
 			</div>
 
@@ -201,28 +247,38 @@
 		// gives them 179px. 12vw reaches 80px at 667px, so from there up the padding — and the
 		// desktop layout — is byte-identical to what it was.
 		padding: 0 clamp(0.5rem, 12vw, 5rem);
+	}
 
-		.title {
-			font-weight: bold;
-		}
+	.fees .title {
+		font-weight: bold;
+	}
 
-		.row {
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-			width: 100%;
-		}
+	.fees .fees-error {
+		margin: 1rem 0 0;
+		text-align: center;
+		color: var(--mdc-theme-error, #b00020);
+	}
 
-		@media (max-width: 768px) {
-			.row {
-				flex-direction: column;
-				align-items: center;
-				padding-top: 1rem;
-			}
+	.fees :global(.retry-button) {
+		margin-top: 0.75rem;
+	}
 
-			.title {
-				margin-bottom: 0;
-			}
+	.fees .row {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		width: 100%;
+	}
+
+	.fees .title {
+		font-weight: bold;
+	}
+
+	@media (max-width: 768px) {
+		.fees .row {
+			flex-direction: column;
+			align-items: center;
+			padding-top: 1rem;
 		}
 	}
 
