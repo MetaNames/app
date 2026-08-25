@@ -104,14 +104,11 @@
 
 <div class="content checkout" data-testid="checkout-content">
 	{#if $isDomainPresent === undefined}
-		<!-- The same role="status" wrapper /domain gives its spinner: the region carries the
-		     accessible name, so the wait is announced instead of being a silent animation. -->
-		<div role="status">
-			<CircularProgress
-				style="height: 32px; width: 32px;"
-				indeterminate
-				aria-label="Loading the registration form"
-			/>
+		<!-- The same role="status" wrapper /domain gives its spinner. The wrapper carries the
+		     accessible name: the region is what gets announced, so naming the child instead would
+		     leave the wait silent — and the child mounts and unmounts anyway. -->
+		<div role="status" aria-label="Loading the registration form">
+			<CircularProgress style="height: 32px; width: 32px;" indeterminate />
 		</div>
 	{:else}
 		<h1 class="mt-0 type-headline2">Register</h1>

@@ -16,11 +16,16 @@
 
 	let icon = writable(type === 'url' ? 'open-in-new' : 'content-copy');
 
+	// Text of the persistent status region below. Kept as state, not mounted/unmounted: an
+	// insertion-based announcement (the old `{#if $icon === 'done'}` ping) races the screen
+	// reader's queue and can go unheard — see DomainSearch.svelte for the same doctrine.
+	let copyStatus = '';
+
 	let resetIconTimeout: ReturnType<typeof setTimeout>;
 
 	// The failure path is announced already — it goes through `alertMessage` into the snackbar,
 	// whose surface is a `role="status"` region. Success had no announcement at all: the only
-	// signal was the icon swapping to a checkmark, which nothing reads aloud. The status ping
+	// signal was the icon swapping to a checkmark, which nothing reads aloud. The status region
 	// in the markup below carries the confirmation instead.
 
 	onDestroy(() => clearTimeout(resetIconTimeout));
@@ -36,14 +41,22 @@
 				.writeText(href ?? value)
 				.then(() => {
 					icon.set('done');
+					copyStatus = 'Copied to the clipboard';
 					clearTimeout(resetIconTimeout);
-					resetIconTimeout = setTimeout(() => icon.set('content-copy'), 1000);
+					resetIconTimeout = setTimeout(resetIcon, 1000);
 				})
 				.catch((error) => {
 					console.error('Failed to copy to the clipboard', error);
 					alertMessage.set('Could not copy to the clipboard');
 				});
 		}
+	};
+
+	const resetIcon = () => {
+		icon.set('content-copy');
+		// Cleared rather than left dangling: the region stays in the DOM, so stale text would be
+		// re-read on the chip's next focus pass instead of announcing a fresh copy.
+		copyStatus = '';
 	};
 
 	export { className as class };
@@ -56,8 +69,11 @@
 			<span class="value" class:ellipsis>{value}</span>
 		</div>
 	</Label>
+	<!-- Persistent, not mounted with the icon: an empty live region that exists from mount is
+	     reliably announced when its text changes, while a region inserted on success races the
+	     screen reader's queue (the anti-pattern documented in DomainSearch.svelte). -->
+	<span class="sr-only" role="status">{copyStatus}</span>
 	{#if $icon === 'done'}
-		<span class="sr-only" role="status">Copied to the clipboard</span>
 		<Icon icon="done" align="right" />
 	{:else if $icon === 'open-in-new'}
 		<Icon icon="open-in-new" align="right" />
