@@ -36,6 +36,14 @@ export function mnemonicToSeedSync(mnemonic: string, passphrase?: string | null)
 	return impl('mnemonicToSeedSync').mnemonicToSeedSync(mnemonic, passphrase);
 }
 
+/**
+ * Async seed derivation, kept for API parity with bip39 itself.
+ *
+ * No caller in this codebase uses it today — partisia's wallet path only needs
+ * the sync variant — but dropping it would break the module's promise of being
+ * a drop-in bip39 surface. Kept deliberately; do not remove without widening
+ * that contract decision.
+ */
 export function mnemonicToSeed(mnemonic: string, passphrase?: string | null): Promise<Buffer> {
 	return impl('mnemonicToSeed').mnemonicToSeed(mnemonic, passphrase);
 }

@@ -131,7 +131,7 @@ export function loadWalletCrypto(): Promise<void> {
 	return slot.loading;
 }
 
-/** True once `loadWalletCrypto()` has resolved. Exposed for tests and diagnostics. */
+/** True once `loadWalletCrypto()` has resolved. Test-only today — no production caller relies on it; kept for diagnostics in tests/e2e. Do not delete. */
 export function isWalletCryptoLoaded(): boolean {
 	return registry().backend !== undefined;
 }

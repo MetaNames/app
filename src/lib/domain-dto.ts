@@ -1,6 +1,16 @@
 import { Domain } from '@metanames/sdk';
 
 /**
+ * Deliberately retained with no live consumer.
+ *
+ * Round 4's C3 (delete this module) was aborted per errata E10/E11: the DTO
+ * contract it encodes is documented and tested, and re-deriving it from scratch
+ * proved more expensive than keeping it. Revisit only if a route starts
+ * consuming `/api/domains/[name]` payloads again — until then, expect no
+ * imports and do not "clean up" the exports.
+ */
+
+/**
  * A `Domain` as it survives a trip through `JSON`.
  *
  * `/api/domains/[name]` answers with `Domain#toJSON()`, so the two `Date` fields arrive as ISO
