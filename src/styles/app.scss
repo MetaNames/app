@@ -2,6 +2,7 @@
 
 @import './theme-overrides.scss';
 @import './mixins.scss';
+@import './fees.scss';
 @import './theme/smui-dark.css';
 
 // Decouple heading level from heading size. `src/theme/typography.scss` maps h1..h6 straight

@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { track } from '@vercel/analytics';
-	import { alertTransactionAndFetchResult, recipientAddressErrors } from '$lib';
+	import {
+		alertTransactionAndFetchResult,
+		onLoadErrorRedirect,
+		recipientAddressErrors
+	} from '$lib';
 	import { alertMessage, walletAddress } from '$lib/stores/main';
 	import { metaNamesSdk } from '$lib/stores/sdk';
-	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
 	import Card, { Content } from '@smui/card';
@@ -42,12 +45,7 @@
 		}
 	}
 
-	onMount(async () => {
-		if ('error' in data) {
-			alertMessage.set(data.error);
-			return goto('/', { replaceState: true });
-		}
-	});
+	onLoadErrorRedirect(data);
 </script>
 
 <svelte:head>

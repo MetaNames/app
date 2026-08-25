@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
+	import { onLoadErrorRedirect } from '$lib';
 	import { alertMessage } from '$lib/stores/main';
 	import DomainPayment from 'src/components/DomainPayment.svelte';
 	import type { DomainPaymentParams } from '$lib/types';
 	import { metaNamesSdk } from '$lib/stores/sdk';
 	import { runTransaction } from '$lib/transaction';
 	import { track } from '@vercel/analytics';
-	import { onMount } from 'svelte';
 	import GoBackButton from 'src/components/GoBackButton.svelte';
 
 	export let data: PageData;
@@ -32,12 +32,7 @@
 		return goto(`/domain/${params.domainName}`);
 	}
 
-	onMount(async () => {
-		if ('error' in data) {
-			alertMessage.set(data.error);
-			return goto('/', { replaceState: true });
-		}
-	});
+	onLoadErrorRedirect(data);
 </script>
 
 <svelte:head>
