@@ -88,7 +88,7 @@ test('an invalid recipient address is programmatically invalid, not just red', a
 test('the register page announces its loading state', async ({ page }) => {
 	await page.goto(`/register/zzunregistered${Date.now()}`, { waitUntil: 'domcontentloaded' });
 
-	const spinner = page.locator('div[role="status"]');
+	const spinner = page.locator('div[role="status"][aria-label="Loading the registration form"]');
 	await expect(spinner).toBeVisible({ timeout: 15000 });
 	// The region itself carries the name — not its animated child, which comes and goes.
 	await expect(spinner).toHaveAttribute('aria-label', /Loading/);

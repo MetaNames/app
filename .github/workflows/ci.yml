@@ -6,10 +6,19 @@ on:
   pull_request:
     branches: [main, staging]
 
+# The integration suite writes to the shared MPC testnet (registrations,
+# records). Two concurrent runs race on chain state and burn funds, so CI
+# runs are globally exclusive: one at a time across ALL branches/PRs, and a
+# queued run waits rather than being cancelled mid-transaction.
+concurrency:
+  group: metanames-testnet-exclusive
+  cancel-in-progress: false
+
 jobs:
   quality-gates:
     name: Lint and Typecheck
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +41,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -51,6 +61,7 @@ jobs:
   integration-tests:
     name: Integration Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 25
 
     steps:
       - uses: actions/checkout@v4

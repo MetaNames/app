@@ -43,6 +43,9 @@ test.describe('Feature 8: User Profile', () => {
 			const domainsTable = page.locator('table[aria-label="Domain list"]');
 			await expect(domainsTable).toBeVisible({ timeout: 15000 });
 
+			// The shared test wallet owns hundreds of accumulated domains; the
+			// default sort puts test.mpc far past page 1. Filter instead of paging.
+			await page.locator('.search-bar input').fill('test.mpc');
 			await expect(domainsTable.locator('a', { hasText: 'test.mpc' })).toBeVisible({
 				timeout: 10000
 			});
@@ -57,6 +60,8 @@ test.describe('Feature 8: User Profile', () => {
 			const domainsTable = page.locator('table[aria-label="Domain list"]');
 			await expect(domainsTable).toBeVisible({ timeout: 15000 });
 
+			// Same accumulated-wallet issue as 8.3 — filter before looking.
+			await page.locator('.search-bar input').fill('test.mpc');
 			const testDomainLink = domainsTable.locator('a', { hasText: 'test.mpc' });
 			await expect(testDomainLink).toBeVisible({ timeout: 10000 });
 			await testDomainLink.click();
