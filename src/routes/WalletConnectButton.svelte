@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { alertMessage, walletAddress, walletConnected } from '$lib/stores/main';
+	import { walletAddress, walletConnected } from '$lib/stores/main';
 	import { config } from '$lib';
 
 	import List, { Item, Separator, Text } from '@smui/list';
@@ -9,7 +9,15 @@
 	import partisiaWalletLogo from '$lib/assets/images/partisia-wallet.png';
 	import ledgerWalletLogo from '$lib/assets/images/ledger-wallet-white.png';
 
-	import { reportError } from '$lib/sentry';
+	// Orchestration (dynamic SDK imports, signing strategy, address lookup, store
+	// updates) lives in $lib/wallet-connect.ts so it can be unit-tested; this
+	// component keeps only view concerns.
+	import {
+		WALLET_CONNECTORS,
+		createPrivateKeyConnector,
+		connectWallet,
+		type PrivateKeyConnector
+	} from '$lib/wallet-connect';
 
 	import 'src/styles/wallet-connect.scss';
 	import Button from '@smui/button';
@@ -18,100 +26,42 @@
 	let toggleOpen = false;
 	let devPrivateKey = '';
 
+	// Guard so a double-click on a menu item (or Enter + click racing on the dev-key
+	// input) cannot re-enter a connect flow while one is already in flight.
+	let connecting = false;
+
 	$: isTestnet = config.environment === 'test';
 
-	function reportConnectionFailure(wallet: string, error: unknown) {
-		console.error(`Failed to connect the ${wallet} wallet`, error);
-		void reportError(error, { extra: { wallet } });
-		alertMessage.set(`Couldn't connect to ${wallet} wallet`);
+	function toggleMenu() {
+		toggleOpen = !toggleOpen;
+		menu.setOpen(toggleOpen);
 	}
 
-	async function connectWithMetaMaskWallet() {
-		const { metaNamesSdk } = await import('$lib/stores/sdk');
-		const { connectMetaMask, getAddress } = await import('$lib/wallet');
+	async function connect(connector: Parameters<typeof connectWallet>[0]) {
+		if (connecting) return;
+		connecting = true;
 		try {
-			const metamask = await connectMetaMask();
-
-			metaNamesSdk.update((sdk) => {
-				sdk.setSigningStrategy('MetaMask', metamask);
-				return sdk;
-			});
-
-			const address = await getAddress(metamask);
-			walletAddress.set(address);
-		} catch (e) {
-			reportConnectionFailure('MetaMask', e);
-		}
-	}
-
-	async function connectWithLedgerWallet() {
-		const { metaNamesSdk } = await import('$lib/stores/sdk');
-		try {
-			// Loaded on demand: the Ledger transport and its `@ledgerhq/errors` dependency are
-			// browser-only WebUSB code, and a static import pulls them into the root layout
-			// chunk — and into the SSR module graph — for every visitor who never uses Ledger.
-			const { default: TransportWebUSB } = await import('@ledgerhq/hw-transport-webusb');
-			const { PartisiaLedgerClient } = await import('@metanames/sdk/dist/transactions/ledger');
-
-			const transport = await TransportWebUSB.create();
-
-			metaNamesSdk.update((sdk) => {
-				sdk.setSigningStrategy('Ledger', transport);
-				return sdk;
-			});
-
-			const client = new PartisiaLedgerClient(transport);
-			const address = await client.getAddress();
-			walletAddress.set(address);
-		} catch (e) {
-			reportConnectionFailure('Ledger', e);
-		}
-	}
-
-	async function connectWithPartisiaWallet() {
-		const { metaNamesSdk } = await import('$lib/stores/sdk');
-		const { connectPartisia, getAddress } = await import('$lib/wallet');
-		try {
-			const client = await connectPartisia();
-			if (!client.connection) throw new Error('Connection failed');
-
-			metaNamesSdk.update((sdk) => {
-				sdk.setSigningStrategy('partisiaSdk', client);
-				return sdk;
-			});
-
-			const address = await getAddress(client);
-			walletAddress.set(address);
-		} catch (e) {
-			reportConnectionFailure('Partisia', e);
+			await connectWallet(connector);
+		} finally {
+			connecting = false;
 		}
 	}
 
 	async function connectWithPrivateKey() {
-		if (!devPrivateKey || devPrivateKey.length !== 64) return;
+		if (!devPrivateKey || devPrivateKey.length !== 64 || connecting) return;
 
-		const { metaNamesSdk } = await import('$lib/stores/sdk');
+		const connector: PrivateKeyConnector = createPrivateKeyConnector(devPrivateKey);
+		connecting = true;
 		try {
-			const { privateKeyToAccountAddress } =
-				await import('partisia-blockchain-applications-crypto/lib/main/wallet');
-			const address = await privateKeyToAccountAddress(devPrivateKey);
-			if (!address) {
-				alertMessage.set('Invalid private key');
-				return;
-			}
+			// Silent: a failure's error context would carry the dev key. The deliberate
+			// non-reporting decision lives in connectWallet's `silent` handling.
+			const ok = await connectWallet(connector, { silent: true });
+			if (!ok) return;
 
-			metaNamesSdk.update((sdk) => {
-				sdk.setSigningStrategy('privateKey', devPrivateKey);
-				return sdk;
-			});
-
-			walletAddress.set(address);
 			devPrivateKey = '';
 			toggleMenu();
-		} catch (e) {
-			// Deliberately not sent to Sentry: the failure context would carry the dev key.
-			console.error('Failed to connect with a private key', e);
-			alertMessage.set("Couldn't connect with private key");
+		} finally {
+			connecting = false;
 		}
 	}
 
@@ -126,11 +76,6 @@
 
 		devPrivateKey = '';
 		return true;
-	}
-
-	function toggleMenu() {
-		toggleOpen = !toggleOpen;
-		menu.setOpen(toggleOpen);
 	}
 
 	export let anchor: HTMLDivElement;
@@ -153,12 +98,14 @@
 >
 	<List>
 		{#if $walletConnected}
+			<!-- Slot name intentionally kept as-is: "connectedMenuIems" (sic) is paired
+				with the matching slot declaration in WalletConnectStatus.svelte. -->
 			<slot name="connectedMenuIems" />
 			<Item on:SMUI:action={async () => disconnectWallet().then(toggleMenu)}>
 				<Text>Disconnect</Text>
 			</Item>
 		{:else}
-			<Item on:SMUI:action={connectWithMetaMaskWallet}>
+			<Item on:SMUI:action={() => connect(WALLET_CONNECTORS.metaMask)}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={metamaskLogo} alt="metamask wallet logo" />
@@ -166,7 +113,7 @@
 					</div>
 				</Text>
 			</Item>
-			<Item on:SMUI:action={connectWithPartisiaWallet}>
+			<Item on:SMUI:action={() => connect(WALLET_CONNECTORS.partisia)}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={partisiaWalletLogo} alt="partisia wallet logo" />
@@ -174,7 +121,7 @@
 					</div>
 				</Text>
 			</Item>
-			<Item on:SMUI:action={connectWithLedgerWallet}>
+			<Item on:SMUI:action={() => connect(WALLET_CONNECTORS.ledger)}>
 				<Text>
 					<div class="item">
 						<img class="logo" src={ledgerWalletLogo} alt="ledger wallet logo" />
@@ -194,7 +141,9 @@
 							class="dev-key-input"
 							type="password"
 							placeholder="Private key (64 hex chars)..."
+							aria-label="Dev private key (64 hex chars)"
 							bind:value={devPrivateKey}
+							disabled={connecting}
 							on:keydown={(e) => e.key === 'Enter' && connectWithPrivateKey()}
 							on:click|stopPropagation
 							on:keydown|stopPropagation
@@ -202,7 +151,7 @@
 						<button
 							class="dev-key-connect"
 							on:click|stopPropagation={connectWithPrivateKey}
-							disabled={devPrivateKey.length !== 64}
+							disabled={connecting || devPrivateKey.length !== 64}
 						>
 							Connect
 						</button>
