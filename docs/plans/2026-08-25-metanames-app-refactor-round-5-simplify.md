@@ -62,6 +62,7 @@ npm run build && npm run measure    # ≤1023 KB / ≤20 chunks
 errors; merge the near-duplicate `apiError` helper.
 
 **Files:**
+
 - Modify: `src/lib/server/index.ts`
 - Test: `src/lib/server/index.test.ts` (create if absent — check first)
 
@@ -81,6 +82,7 @@ response shapes used by `tests/e2e/*` — grep them first. **Step 4:** gates gre
 **Objective:** A GraphQL error payload must surface as a clean Error, not a TypeError.
 
 **Files:**
+
 - Modify: `src/lib/wallet.ts:44-56`
 - Test: `src/lib/wallet.test.ts`
 
@@ -96,10 +98,11 @@ check + `data?.data?.account` guard. **Step 4:** gates green. **Step 5:** Commit
 utils.ts, loaders/read catch paths, api.ts.
 
 **Files:**
+
 - Modify: `src/lib/error.ts` (add helper), `src/lib/utils.ts`, `src/lib/read.ts`, `src/lib/api.ts`
 - Test: `src/lib/error.test.ts`
 
-**Constraints:** `loadOrReport`'s null-vs-undefined contract untouched — only its catch *body*
+**Constraints:** `loadOrReport`'s null-vs-undefined contract untouched — only its catch _body_
 dedupes. Sentry stays lazy (helper calls the existing lazy reporter, never imports Sentry eagerly).
 Keep each site's exact fallback message text so e2e assertions don't shift; grep `tests/e2e` for
 the strings first and list them in the commit body.
@@ -122,6 +125,7 @@ Commit `refactor(lib): relocate transaction alerting beside its subject`.
 **Objective:** Kill 4 repeated ternaries and the `'00'` magic string; make record lists honest.
 
 **Files:** Modify `src/lib/config.ts`, `src/lib/url.ts`, `src/lib/sdk.ts`; tests co-located.
+
 - config.ts: derive `{ rpcUrl, explorerUrl, sdkEnvironment, ... }` from one
   `TESTNET | MAINNET` record; name the account-prefix constant
   `ACCOUNT_ADDRESS_HEX_PREFIX = '00'` in url.ts with a comment.
@@ -152,6 +156,7 @@ No behavior change; tests untouched. Commit `docs(lib): annotate deliberately-re
 **Objective:** Replace 4 hand-rolled requestId guards.
 
 **Files:**
+
 - Create: `src/lib/race.ts` + `src/lib/race.test.ts`
 - Modify: `src/routes/DomainSearch.svelte`, `src/routes/domain/[name]/+page.svelte`,
   `src/routes/register/[name]/+page.svelte`, `src/routes/profile/+page.svelte` (and
@@ -169,6 +174,7 @@ Also clear `DomainSearch`'s `debounceTimer` on destroy (audit finding) and remov
 **Objective:** WalletConnectButton.svelte script shrinks to view concerns; flows become testable.
 
 **Files:**
+
 - Create: `src/lib/wallet-connect.ts` + `src/lib/wallet-connect.test.ts`
 - Modify: `src/routes/WalletConnectButton.svelte:29-129`
 
@@ -186,6 +192,7 @@ Commit `refactor(wallet): extract connect flows into testable lib module`.
 **Objective:** Money math becomes pure lib functions; failed fee fetch shows an error state.
 
 **Files:**
+
 - Create: `src/lib/payment-fees.ts` + `src/lib/payment-fees.test.ts`
 - Modify: `src/components/DomainPayment.svelte:43-88,137-150`
 
@@ -221,6 +228,7 @@ action if SMUI requires it — verify manually in e2e run. Commit
 ### Task B6: Extract SnackbarHost from +layout.svelte
 
 **Files:**
+
 - Create: `src/components/SnackbarHost.svelte`
 - Modify: `src/routes/+layout.svelte:28-68,131-155`
 

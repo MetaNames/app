@@ -58,7 +58,16 @@ vi.mock('@metanames/sdk', () => {
 });
 
 // Import after mocking
-import { handleError } from '$lib/server';
+import { handleError, getStats } from '$lib/server';
+
+// The mocked domain repository shared by every MetaNamesSdk instance this module creates.
+// The factory is mocked, so its return type has to be asserted to reach the shared mock.
+async function mockedDomainRepository(): Promise<Record<string, unknown>> {
+	const mod = (await import('@metanames/sdk')) as unknown as {
+		metaNamesSdkFactory: () => { domainRepository: Record<string, unknown> };
+	};
+	return mod.metaNamesSdkFactory().domainRepository;
+}
 
 describe('server handleError', () => {
 	beforeEach(() => {
@@ -116,5 +125,86 @@ describe('server handleError', () => {
 		expect(await result.json()).toEqual({ error: 'Domain not found' });
 
 		consoleError.mockRestore();
+	});
+});
+
+describe('getStats', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('returns domain count, owner count, and recent domains', async () => {
+		const mockDomains = [
+			{ name: 'domain1', createdAt: new Date('2026-01-01') },
+			{ name: 'domain2', createdAt: new Date('2026-01-02') }
+		];
+		const domainRepository = await mockedDomainRepository();
+
+		domainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
+		domainRepository.count = vi.fn().mockResolvedValue(42);
+		domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1', '0x2', '0x3']);
+
+		const stats = await getStats();
+
+		expect(stats.domainCount).toBe(42);
+		expect(stats.ownerCount).toBe(3);
+		expect(stats.recentDomains).toHaveLength(2);
+	});
+
+	it('handles getAll errors gracefully as an empty recent list', async () => {
+		const domainRepository = await mockedDomainRepository();
+
+		// Only getAll has a catch handler, so it should degrade to an empty array.
+		domainRepository.getAll = vi.fn().mockRejectedValue(new Error('DB error'));
+
+		const stats = await getStats();
+
+		expect(stats.recentDomains).toEqual([]);
+	});
+
+	it('sorts recent domains by creation date descending', async () => {
+		const domainRepository = await mockedDomainRepository();
+
+		const mockDomains = [
+			{ name: 'old', createdAt: new Date('2026-01-01') },
+			{ name: 'new', createdAt: new Date('2026-03-01') },
+			{ name: 'middle', createdAt: new Date('2026-02-01') }
+		];
+
+		domainRepository.getAll = vi.fn().mockResolvedValue(mockDomains);
+		domainRepository.count = vi.fn().mockResolvedValue(3);
+		domainRepository.getOwners = vi.fn().mockResolvedValue(['0x1']);
+
+		const stats = await getStats();
+
+		expect(stats.recentDomains[0].name).toBe('new');
+		expect(stats.recentDomains[1].name).toBe('middle');
+		expect(stats.recentDomains[2].name).toBe('old');
+	});
+
+	it('issues the three lookups concurrently', async () => {
+		const domainRepository = await mockedDomainRepository();
+
+		// Sequential awaits interleave as start/end/start/end...; running them together
+		// starts all three before the first one settles.
+		const events: string[] = [];
+		const defer = <T>(name: string, value: T) => {
+			events.push(`start:${name}`);
+			return new Promise<T>((resolve) =>
+				setTimeout(() => {
+					events.push(`end:${name}`);
+					resolve(value);
+				}, 0)
+			);
+		};
+
+		domainRepository.count = vi.fn(() => defer('count', 7));
+		domainRepository.getOwners = vi.fn(() => defer('getOwners', ['0x1']));
+		domainRepository.getAll = vi.fn(() => defer('getAll', []));
+
+		const stats = await getStats();
+
+		expect(events.slice(0, 3)).toEqual(['start:count', 'start:getOwners', 'start:getAll']);
+		expect(stats).toEqual({ domainCount: 7, ownerCount: 1, recentDomains: [] });
 	});
 });
