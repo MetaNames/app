@@ -4,8 +4,8 @@
 	"private": true,
 	"scripts": {
 		"generate:themes": "pnpm smui-theme-dark",
-		"smui-theme-light": "smui-theme compile src/styles/theme/smui.css -i src/theme -i node_modules",
-		"smui-theme-dark": "smui-theme compile src/styles/theme/smui-dark.css -i src/theme/dark -i node_modules",
+		"smui-theme-light": "smui-theme compile src/styles/theme/smui.css -i src/theme -i node_modules -i node_modules/.pnpm/node_modules",
+		"smui-theme-dark": "smui-theme compile src/styles/theme/smui-dark.css -i src/theme/dark -i node_modules -i node_modules/.pnpm/node_modules",
 		"dev": "vite dev",
 		"build": "pnpm generate:themes && vite build",
 		"build:themes": "pnpm generate:themes",
