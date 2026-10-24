@@ -4,37 +4,35 @@ The Meta Names app. Let you interact with the Smart Contract on Partisia Blockch
 
 ## Developing
 
-Once you've installed dependencies with `npm install`, start a development server:
+Once you've installed dependencies with `pnpm install`, start a development server:
 
 ```bash
-npm run dev
+pnpm dev
 
 # or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm dev --open
 ```
 
 ## Quality gates
 
 ```bash
-npm run lint       # prettier --check + eslint
-npm run typecheck  # svelte-check
-npm run test:unit  # vitest, single run
-npm run test:coverage
-npm test           # unit + playwright integration
+pnpm lint       # prettier --check + eslint
+pnpm typecheck  # svelte-check
+pnpm test:unit  # vitest, single run
+pnpm test:coverage
+pnpm test       # unit + playwright integration
 ```
 
-Use `npm`, not `yarn`: the repo's lockfile is `package-lock.json`, and `yarn check`
-is shadowed by Yarn's built-in dependency checker so it never runs svelte-check.
-The same goes for pnpm: a `pnpm-lock.yaml` next to `package-lock.json` means CI
-(`npm ci`) and your local tree can resolve to different versions, so both are
-gitignored.
+Use `pnpm` (the version is pinned by `packageManager` in `package.json`; with
+Corepack or pnpm itself it is picked up automatically). The lockfile is
+`pnpm-lock.yaml`; lockfiles from other package managers are gitignored.
 
 ## Building
 
 To create a production version of your app:
 
 ```bash
-npm run build
+pnpm build
 ```
 
-You can preview the production build with `npm run preview`.
+You can preview the production build with `pnpm preview`.

@@ -21,9 +21,8 @@ vite.config.ts.timestamp-*
 coverage/
 test-results/
 
-# This repo is npm-based (package-lock.json). Stray artifacts from other package
+# This repo is pnpm-based (pnpm-lock.yaml). Stray artifacts from other package
 # managers must not be committed alongside it.
-pnpm-lock.yaml
-pnpm-workspace.yaml
+package-lock.json
 yarn.lock
 bundle-report.html

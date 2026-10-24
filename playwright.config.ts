@@ -2,7 +2,7 @@ import type { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
 	webServer: {
-		command: 'npm run dev -- --port 4173',
+		command: 'pnpm dev --port 4173',
 		port: 4173,
 		// Always boot a fresh dev server: a stale one left over from an earlier run
 		// serves the previous bundle, which silently masks bundle-size changes.
